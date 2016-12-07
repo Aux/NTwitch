@@ -11,6 +11,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Twitch.Net.Chat", "src\Twit
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Twitch.Net.PubSub", "src\Twitch.Net.PubSub\Twitch.Net.PubSub.xproj", "{55B04E52-4151-4AFB-AD9C-D3C576E468A8}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Twitch.Net.Tests", "tests\Twitch.Net.Tests\Twitch.Net.Tests.xproj", "{DB885F62-2E62-48C2-8C61-E105C865A70D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{55B04E52-4151-4AFB-AD9C-D3C576E468A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55B04E52-4151-4AFB-AD9C-D3C576E468A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55B04E52-4151-4AFB-AD9C-D3C576E468A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB885F62-2E62-48C2-8C61-E105C865A70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB885F62-2E62-48C2-8C61-E105C865A70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB885F62-2E62-48C2-8C61-E105C865A70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB885F62-2E62-48C2-8C61-E105C865A70D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
