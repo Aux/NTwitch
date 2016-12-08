@@ -31,7 +31,7 @@ namespace Twitch.Rest
             }
         }
 
-        internal async Task SendAsync(string method, string endpoint, object payload = null)
+        internal HttpRequestMessage BuildRequest(string method, string endpoint, object payload)
         {
             EnsureHttpClientCreated();
             var request = new HttpRequestMessage(new HttpMethod(method), endpoint);
@@ -39,20 +39,23 @@ namespace Twitch.Rest
             if (payload != null)
                 request.Content = new StringContent(JsonConvert.SerializeObject(payload));
 
+            return request;
+        }
+
+        internal async Task SendAsync(string method, string endpoint, object payload = null)
+        {
+            var request = BuildRequest(method, endpoint, payload);
             var response = await _http.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
         }
 
         internal async Task<T> SendAsync<T>(string method, string endpoint, object payload = null)
         {
-            EnsureHttpClientCreated();
-            var request = new HttpRequestMessage(new HttpMethod(method), endpoint);
-
-            if (payload != null)
-                request.Content = new StringContent(JsonConvert.SerializeObject(payload));
-
+            var request = BuildRequest(method, endpoint, payload);
             var response = await _http.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
             {
                 throw new HttpRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
