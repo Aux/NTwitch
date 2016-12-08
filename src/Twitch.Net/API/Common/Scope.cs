@@ -1,4 +1,4 @@
-﻿namespace Twitch.Rest
+﻿namespace Twitch
 {
     public sealed class Scope
     {
