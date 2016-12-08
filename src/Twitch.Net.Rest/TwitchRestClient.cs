@@ -18,10 +18,17 @@ namespace Twitch.Rest
             _config = config;
         }
 
-        public Task LoginAsync(string token)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary> Authenticate this client with the twitch oauth servers. </summary>
+        public async Task LoginAsync(string token)
+            => await _rest.LoginAsync(token);
+
+        /// <summary> Get information about a user. </summary>
+        public async Task<RestUser> GetUserAsync(string name)
+            => await _rest.SendAsync<RestUser>("GET", "users/" + name);
+
+        /// <summary> Get information about the current user. </summary>
+        public async Task<RestSelfUser> GetCurrentUserAsync()
+            => await _rest.SendAsync<RestSelfUser>("GET", "user");
 
         // ITwitchClient
         public ConnectionState ConnectionState { get; }
