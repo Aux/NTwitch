@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Twitch.Rest;
 
-namespace Twitch.Chat
+namespace Twitch.Rest
 {
-    public class ChatUser : RestUser
+    internal static class BadgeHelper
     {
 
     }

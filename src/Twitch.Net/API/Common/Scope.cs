@@ -1,8 +1,8 @@
-﻿namespace Twitch
+﻿namespace Twitch.Rest
 {
     public sealed class Scope
     {
-        private readonly string _text;
+        private readonly string _name;
 
         public static readonly Scope UserRead = new Scope("user_read");
         public static readonly Scope UserBlocksEdit = new Scope("user_blocks_edit");
@@ -19,12 +19,12 @@
         public static readonly Scope ChannelFeedRead = new Scope("channel_feed_read");
         public static readonly Scope ChannelFeedEdit = new Scope("channel_feed_edit");
 
-        private Scope(string text)
+        private Scope(string name)
         {
-            _text = text;
+            _name = name;
         }
 
         public override string ToString()
-            => _text;
+            => _name;
     }
 }

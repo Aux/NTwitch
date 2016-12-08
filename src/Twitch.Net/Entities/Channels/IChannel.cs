@@ -30,7 +30,10 @@ namespace Twitch
         bool IsPartner { get; }
         string[] Links { get; }
 
-        Task GetVideosAsync();
-        Task GetFollowsAsync();
+        Task<IVideo> GetVideoAsync(string id);
+        Task<IEnumerable<IVideo>> GetVideosAsync(bool broadcasts = false, bool hls = false, int limit = 10, int page = 1);
+        Task<IEnumerable<IVideo>> GetTopVideosAsync(string game = null, int limit = 10, int page = 1);
+        Task<IEnumerable<IUser>> GetFollowersAsync(VideoPeriod period = VideoPeriod.Week, int limit = 10, int page = 1);
+        Task<IEnumerable<IBadge>> GetBadgesAsync();
     }
 }

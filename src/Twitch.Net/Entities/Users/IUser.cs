@@ -23,5 +23,8 @@ namespace Twitch
         string LogoUrl { get; }
         /// <summary> Links to relevant api endpoints for this user. </summary>
         string[] Links { get; }
+
+        Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortMode sort = SortMode.Ascending);
+        Task<IChannel> GetFollow(string name);
     }
 }

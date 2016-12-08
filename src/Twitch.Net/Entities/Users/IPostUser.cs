@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Twitch.Rest;
 
-namespace Twitch.Chat
+namespace Twitch
 {
-    public class ChatUser : RestUser
+    public interface IPostUser : IUser
     {
-
+        string Type { get; set; }
     }
 }

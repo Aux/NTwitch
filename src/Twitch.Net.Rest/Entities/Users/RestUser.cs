@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Twitch.Rest
 {
@@ -14,6 +16,16 @@ namespace Twitch.Rest
         public string LogoUrl { get; }
         public string[] Links { get; }
         
+        public Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortMode sort = SortMode.Ascending)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IChannel> GetFollow(string name)
+        {
+            throw new NotImplementedException();
+        }
+
         public override string ToString()
             => DisplayName;
     }

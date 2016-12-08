@@ -30,6 +30,10 @@ namespace Twitch.Rest
         public async Task<RestSelfUser> GetCurrentUserAsync()
             => await _rest.SendAsync<RestSelfUser>("GET", "user");
 
+        /// <summary> Get the top streamed games on Twitch. </summary>
+        public async Task GetTopGamesAsync()
+            => await _rest.SendAsync<RestTopGame>("GET", "games/top");
+
         // ITwitchClient
         public ConnectionState ConnectionState { get; }
 
