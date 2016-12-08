@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Twitch.Chat
 {
-    public class TwitchChatClient : ITwitchClient
+    public partial class TwitchChatClient : ITwitchClient
     {
         private TwitchChatClientConfig _config;
         private string _token;
@@ -16,12 +16,7 @@ namespace Twitch.Chat
 
         // ITwitchClient
         public ConnectionState ConnectionState { get; }
-
-        public Task LoginAsync(string username, string token)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public Task ConnectAsync()
         {
             throw new NotImplementedException();

@@ -3,7 +3,8 @@
 
     "dependencies": {
         "NETStandard.Library": "1.6.0",
-        "Twitch.Net": "1.0.0-*"
+        "Twitch.Net": "1.0.0-*",
+        "Twitch.Net.Rest": "1.0.0-*"
     },
 
   "frameworks": {
