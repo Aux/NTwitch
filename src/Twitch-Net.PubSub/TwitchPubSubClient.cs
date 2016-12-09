@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Twitch.Net.PubSub
 {
-    public class TwitchPubSubClient : ITwitchClient
+    public class TwitchPubSubClient
     {
 
     }
