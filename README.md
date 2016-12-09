@@ -1,15 +1,15 @@
-# Twitch.Net
+# Twitch-Net
 [![Discord](https://discordapp.com/api/guilds/158057120493862912/widget.png)](https://discord.gg/0sjlWZiGRvRNZAqx)  
 
 A .Net Core implementation of the https://twitch.tv/ version 3 api.
 
 | Release  | Nuget  | Build Status  |
 | -------- |:------:| -------------:|
-| Stable   | [![NuGet](https://img.shields.io/nuget/v/Twitch.Net.svg)]() | [![Travis branch](https://img.shields.io/travis/Aux/Twitch.Net/master.svg)]() |
-| Unstable | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/Twitch.Net.svg)]() | [![Travis branch](https://img.shields.io/travis/Aux/Twitch.Net/dev.svg)]()
+| Stable   | [![NuGet](https://img.shields.io/nuget/v/Twitch-Net.svg)]() | [![Build status](https://ci.appveyor.com/api/projects/status/6kyvy6w9sc29w4y9/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/twitch-net/branch/master) |
+| Unstable | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/Twitch-Net.svg)]() | [![Build status](https://ci.appveyor.com/api/projects/status/6kyvy6w9sc29w4y9/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/twitch-net/branch/dev)
 
 ## Builds
-Stable and unstable builds can be found on Nuget as [Twitch.Net]().
+Stable and unstable builds can be found on Nuget as [Twitch-Net](https://www.nuget.org/packages/Twitch-Net/).
 
 ## Compiling
 To compile Twitch.Net yourself, you will need either of the following:
