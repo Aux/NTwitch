@@ -2,7 +2,8 @@
 {
     public enum SortMode
     {
-        Ascending,
-        Descending
+        CreatedAt,
+        LastBroadcast,
+        Login
     }
 }

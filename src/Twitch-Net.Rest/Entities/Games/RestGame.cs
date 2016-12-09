@@ -10,7 +10,7 @@ namespace Twitch.Rest
         public uint Id { get; }
         public uint GiantBombId { get; }
         public string Name { get; }
-        public GameImage BoxArt { get; }
-        public GameImage Logo { get; }
+        public TwitchImage BoxArt { get; }
+        public TwitchImage Logo { get; }
     }
 }

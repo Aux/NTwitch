@@ -24,7 +24,8 @@ namespace Twitch
         /// <summary> Links to relevant api endpoints for this user. </summary>
         string[] Links { get; }
 
-        Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortMode sort = SortMode.Ascending);
-        Task<IChannel> GetFollow(string name);
+        Task<IChannelFollow> GetFollowAsync(string channel);
+        Task<IChannelFollow> GetFollowAsync(IChannel channel);
+        Task<IEnumerable<IChannel>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, SortDirection direction = SortDirection.Ascending, int limit = 10, int page = 1);
     }
 }

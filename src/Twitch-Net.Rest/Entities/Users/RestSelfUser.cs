@@ -45,7 +45,7 @@ namespace Twitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortMode sort = SortMode.Ascending)
+        public Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortDirection sort = SortDirection.Ascending)
         {
             throw new NotImplementedException();
         }

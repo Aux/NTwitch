@@ -10,7 +10,7 @@ namespace Twitch
         uint Id { get; }
         uint GiantBombId { get; }
         string Name { get; }
-        GameImage BoxArt { get; }
-        GameImage Logo { get; }
+        TwitchImage BoxArt { get; }
+        TwitchImage Logo { get; }
     }
 }

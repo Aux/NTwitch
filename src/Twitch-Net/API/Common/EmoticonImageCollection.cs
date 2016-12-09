@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Twitch
 {
-    public class EmoticonCollection
+    public class EmoticonImageCollection
     {
         [JsonProperty("regex")]
         public string Regex { get; }

@@ -16,14 +16,19 @@ namespace Twitch
 
         /// <summary> Get a collection of emoticons this user is authorized to use. </summary>
         /// <remarks> Authenticated, required scope `user_subscriptions` </remarks>
-        Task<IEnumerable<string>> GetEmotesAsync();
-        /// <summary> Get a collection of stream objects that this user is following. </summary>
+        Task<IEnumerable<Emoticon>> GetEmotesAsync();
+        /// <summary> Get a collection of streams that this user is following. </summary>
         /// <remarks> Authenticated, required scope `user_read` </remarks>
-        Task GetStreamsAsync(int limit = 10, int page = 1, StreamType type = StreamType.All);
+        Task<IEnumerable<IStream>> GetStreamsAsync(StreamType type = StreamType.All, int limit = 10, int page = 1);
         /// <summary> Get a collection of videos from channels that this user is following. </summary>
         /// <remarks> Authenticated, required scope `user_read` </remarks>
-        Task GetVideosAsync(int limit = 10, int page = 1, BroadcastType type = BroadcastType.All);
-        Task AddFollow(string name);
+        Task GetVideosAsync(BroadcastType type = BroadcastType.All, int limit = 10, int page = 1);
+        Task SetNotificationAsync(string channel, bool notify);
+        Task SetNotificationAsync(IChannel channel, bool notify);
+        Task AddFollow(string channel);
+        Task AddFollow(IChannel channel);
         Task RemoveFollow(string name);
+        Task RemoveFollow(IChannel name);
+        Task<IChannelSubscription> GetSubscriptionAsync(string name);
     }
 }
