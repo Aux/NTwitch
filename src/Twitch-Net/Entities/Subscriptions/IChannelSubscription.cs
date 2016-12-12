@@ -2,11 +2,8 @@
 
 namespace Twitch
 {
-    public interface IChannelSubscription
+    public interface IChannelSubscription : ISubscription
     {
-        DateTime CreatedAt { get; }
-        string Id { get; }
         IChannel Channel { get; }
-        string[] Links { get; }
     }
 }

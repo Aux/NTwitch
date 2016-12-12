@@ -17,8 +17,8 @@ namespace Twitch
         string Game { get; }
         int Length { get; }
         string PreviewUrl { get; }
-        string Url { get; set; }
-        int Views { get; set; }
+        string Url { get; }
+        int Views { get; }
         BroadcastType Type { get; }
         string[] Links { get; }
         IChannel Channel { get; }

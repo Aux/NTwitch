@@ -1,12 +1,7 @@
-﻿using System;
-
-namespace Twitch
+﻿namespace Twitch
 {
-    public interface IChannelFollow
+    public interface IChannelFollow : IFollow
     {
-        DateTime CreatedAt { get; }
-        string[] Links { get; }
-        bool Notifications { get; }
         IChannel Channel { get; }
     }
 }

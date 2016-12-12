@@ -39,32 +39,32 @@ namespace Twitch.Rest
             => await _rest.SendAsync<RestTopGame>("GET", "games/top");
 
         /// <summary> Find streams related to a query. </summary>
-        public async Task<IEnumerable<IStream>> FindStreamsAsync(string query, bool? hls = null, int limit = 25, int page = 1)
-            => await _rest.SendAsync<IEnumerable<IStream>>("GET", "search/streams");
+        public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, int limit = 25, int page = 1)
+            => await _rest.SendAsync<IEnumerable<RestStream>>("GET", "search/streams");
 
         /// <summary> Get all streams on Twitch. </summary>
         public async Task GetStreamsAsync(string game = null, string channel = null, string language = null, StreamType type = StreamType.All, int limit = 25, int page = 1)
-            => await _rest.SendAsync<IStream>("GET", "streams");
+            => await _rest.SendAsync<RestStream>("GET", "streams");
 
         /// <summary> Get featured (promoted) streams on Twitch. </summary>
         public async Task GetFeaturedStreamsAsync(int limit = 25, int page = 1)
-            => await _rest.SendAsync<IStream>("GET", "streams/featured");
+            => await _rest.SendAsync<RestStream>("GET", "streams/featured");
 
         /// <summary> Get featured (promoted) streams on Twitch. </summary>
         public async Task GetStreamSummaryAsync(string game = null)
-            => await _rest.SendAsync<IStreamSummary>("GET", "streams/summary");
+            => await _rest.SendAsync<RestStreamSummary>("GET", "streams/summary");
 
         /// <summary> Get a specific video by id. </summary>
-        public async Task<IVideo> GetVideoAsync(string id)
-            => await _rest.SendAsync<IVideo>("GET", "videos/" + id);
+        public async Task<RestVideo> GetVideoAsync(string id)
+            => await _rest.SendAsync<RestVideo>("GET", "videos/" + id);
         
         /// <summary> Get the top videos in the specified period. </summary>
-        public async Task<IEnumerable<IVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, int limit = 10, int page = 1)
-            => await _rest.SendAsync<IEnumerable<IVideo>>("GET", "videos/top");
+        public async Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, int limit = 10, int page = 1)
+            => await _rest.SendAsync<IEnumerable<RestVideo>>("GET", "videos/top");
 
         /// <summary> Find channels related to a query. </summary>
-        public async Task<IEnumerable<IChannel>> FindChannelsAsync(string query, int limit = 25, int page = 1)
-            => await _rest.SendAsync<IEnumerable<IChannel>>("GET", "search/channels");
+        public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, int limit = 25, int page = 1)
+            => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels");
 
         // ITwitchClient
         public ConnectionState ConnectionState { get; }

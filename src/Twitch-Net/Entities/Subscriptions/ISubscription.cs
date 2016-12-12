@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Twitch
 {
-    public interface IPostReaction
+    public interface ISubscription
     {
-        string Name { get; }
-        IEnumerable<uint> UserIds { get; }
+        DateTime CreatedAt { get; }
+        string Id { get; }
+        string[] Links { get; }
     }
 }
