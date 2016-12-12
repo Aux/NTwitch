@@ -1,5 +1,5 @@
 # Twitch-Net
-[![Discord](https://discordapp.com/api/guilds/158057120493862912/widget.png)](https://discord.gg/0sjlWZiGRvRNZAqx)  
+[![Discord](https://discordapp.com/api/guilds/257698577894080512/widget.png)](https://discord.gg/yd8x2wM)  
 
 A .Net Core implementation of the https://twitch.tv/ version 3 api.
 
