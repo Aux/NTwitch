@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Twitch-Net": "0.0.1-alpha-*",
+    "Twitch-Net.Chat": "0.0.1-alpha-*",
+    "Twitch-Net.PubSub": "1.0.0-*",
+    "Twitch-Net.Rest": "0.0.1-alpha-*"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
