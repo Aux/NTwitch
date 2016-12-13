@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1-alpha-*",
+    "version": "0.0.1-*",
     "description": "A .Net Core implementation of the https://twitch.tv/ version 3 api.",
     "authors": [ "Auxesis" ],
 
@@ -27,7 +27,7 @@
 
     "dependencies": {
         "NETStandard.Library": "1.6.0",
-        "Twitch-Net": "1.0.0-*",
+        "Twitch-Net.Core": "1.0.0-*",
         "Twitch-Net.Rest": "1.0.0-*"
     },
 
