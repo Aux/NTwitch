@@ -4,7 +4,7 @@
 A .Net Core implementation of the https://twitch.tv/ version 3 api.
 
 | Release  | Nuget  | Build Status  |
-| -------- |:------:| -------------:|
+| -------- |:------:|:-------------:|
 | Stable   | [![NuGet Master](https://img.shields.io/nuget/v/Twitch-Net.svg)](https://www.nuget.org/packages/Twitch-Net/) | [![Build status](https://ci.appveyor.com/api/projects/status/i5hafxnpkmq2oia8/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/twitch-net/branch/master) |
 | Unstable | [![NuGet Dev](https://img.shields.io/nuget/vpre/Twitch-Net.svg)](https://www.nuget.org/packages/Twitch-Net/) | [![Build status](https://ci.appveyor.com/api/projects/status/i5hafxnpkmq2oia8/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/twitch-net/branch/dev) |
 
