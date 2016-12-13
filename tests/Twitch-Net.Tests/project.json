@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true
@@ -6,9 +6,10 @@
 
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.1"
-    }
+        "type": "platform",
+        "version": "1.0.1"
+    },
+    "Twitch-Net": "0.0.1-*"
   },
 
   "frameworks": {

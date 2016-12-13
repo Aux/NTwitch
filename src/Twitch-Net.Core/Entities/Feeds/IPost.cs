@@ -13,7 +13,7 @@ namespace Twitch
         IPostUser Author { get; }
         string Body { get; }
         string[] Emotes { get; }
-        IEnumerable<PostReaction> Reactions { get; }
+        IEnumerable<IPostReaction> Reactions { get; }
         bool IsDeleted { get; }
 
         Task DeleteAsync();
