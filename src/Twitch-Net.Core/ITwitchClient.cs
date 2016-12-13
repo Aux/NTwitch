@@ -8,8 +8,7 @@ namespace Twitch
     public interface ITwitchClient
     {
         ConnectionState ConnectionState { get; }
-        
-        Task ConnectAsync();
-        Task DisconnectAsync();
+
+        Task LoginAsync(string token = null);
     }
 }

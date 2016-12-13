@@ -10,6 +10,7 @@ namespace Twitch.Rest
     {
         private TwitchRestClientConfig _config;
         private RestApiClient _rest;
+        private uint _clientid;
         private string _token;
         
         public TwitchRestClient() { }
@@ -17,10 +18,6 @@ namespace Twitch.Rest
         {
             _config = config;
         }
-
-        /// <summary> Authenticate this client with the twitch oauth servers. </summary>
-        public async Task LoginAsync(string token)
-            => await _rest.LoginAsync(token);
 
         /// <summary> Get information about a user. </summary>
         public async Task<RestUser> GetUserAsync(string name)
@@ -69,14 +66,10 @@ namespace Twitch.Rest
         // ITwitchClient
         public ConnectionState ConnectionState { get; }
 
-        public Task ConnectAsync()
+        /// <summary> Authenticate this client with the twitch oauth servers. </summary>
+        public async Task LoginAsync(string token)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task DisconnectAsync()
-        {
-            throw new NotImplementedException();
+            var info = await _rest.LoginAsync(token);
         }
     }
 }

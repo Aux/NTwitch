@@ -67,9 +67,14 @@ namespace Twitch.Rest
             }
         }
 
-        internal async Task LoginAsync(string token)
+        internal async Task<TwitchValidation> LoginAsync(string token)
         {
-            await Task.Delay(1);
+            var validation = await SendAsync<TwitchValidation>("POST", "oauth2/token");
+
+            if (!validation.IsValid)
+                throw new HttpRequestException("Token is not valid.");
+            else
+                return validation;
         }
 
         public void Dispose()
