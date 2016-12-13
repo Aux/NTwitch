@@ -13,7 +13,7 @@ namespace Twitch.Rest
         public string[] Emotes { get; }
         public uint Id { get; }
         public bool IsDeleted { get; }
-        public IEnumerable<PostReaction> Reactions { get; }
+        public IEnumerable<IPostReaction> Reactions { get; }
 
         public Task CreateReactionAsync(uint id)
         {

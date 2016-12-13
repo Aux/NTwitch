@@ -16,12 +16,17 @@ namespace Twitch.Rest
         public string LogoUrl { get; }
         public string[] Links { get; }
         
-        public Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortDirection sort = SortDirection.Ascending)
+        public Task<IChannelFollow> GetFollowAsync(string channel)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IChannel> GetFollow(string name)
+        public Task<IChannelFollow> GetFollowAsync(IChannel channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IChannel>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, SortDirection direction = SortDirection.Ascending, int limit = 10, int page = 1)
         {
             throw new NotImplementedException();
         }

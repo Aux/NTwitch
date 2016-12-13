@@ -20,22 +20,37 @@ namespace Twitch.Rest
         public bool IsPartnered { get; }
         public bool[] Notifications { get; }
         
-        public Task<IEnumerable<string>> GetEmotesAsync()
+        public Task<IEnumerable<Emoticon>> GetEmotesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task GetStreamsAsync(int limit = 10, int page = 1, StreamType type = StreamType.All)
+        public Task<IEnumerable<IStream>> GetStreamsAsync(StreamType type = StreamType.All, int limit = 10, int page = 1)
         {
             throw new NotImplementedException();
         }
 
-        public Task GetVideosAsync(int limit = 10, int page = 1, BroadcastType type = BroadcastType.All)
+        public Task GetVideosAsync(BroadcastType type = BroadcastType.All, int limit = 10, int page = 1)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddFollow(string name)
+        public Task SetNotificationAsync(string channel, bool notify)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetNotificationAsync(IChannel channel, bool notify)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddFollow(string channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddFollow(IChannel channel)
         {
             throw new NotImplementedException();
         }
@@ -45,12 +60,27 @@ namespace Twitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IChannel>> GetFollowsAsync(int limit = 10, int page = 1, SortDirection sort = SortDirection.Ascending)
+        public Task RemoveFollow(IChannel name)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IChannel> GetFollow(string name)
+        public Task<IChannelSubscription> GetSubscriptionAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IChannelFollow> GetFollowAsync(string channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IChannelFollow> GetFollowAsync(IChannel channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IChannel>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, SortDirection direction = SortDirection.Ascending, int limit = 10, int page = 1)
         {
             throw new NotImplementedException();
         }
