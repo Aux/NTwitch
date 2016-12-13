@@ -5,10 +5,10 @@ namespace Twitch
     public class TwitchValidation
     {
         [JsonProperty("authorization")]
-        TwitchAuthorization Authorization { get; }
+        public TwitchAuthorization Authorization { get; }
         [JsonProperty("user_name")]
-        string Username { get; }
+        public string Username { get; }
         [JsonProperty("valid")]
-        bool IsValid { get; }
+        public bool IsValid { get; }
     }
 }
