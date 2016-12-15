@@ -6,10 +6,10 @@
     "packOptions": {
         "tags": [ "twitch", "twitchtv" ],
         "licenseUrl": "http://opensource.org/licenses/MIT",
-        "projectUrl": "https://github.com/Aux/Twitch.Net",
+        "projectUrl": "https://github.com/Aux/NTwitch",
         "repository": {
             "type": "git",
-            "url": "git://github.com/Aux/Twitch.Net"
+            "url": "git://github.com/Aux/NTwitch"
         }
     },
 
@@ -26,8 +26,9 @@
     },
 
     "dependencies": {
-        "NETStandard.Library": "1.6.1",
-        "Twitch-Net.Core": "1.0.0-*"
+      "NETStandard.Library": "1.6.1",
+        "NTwitch.Core": "0.0.1-*",
+        "NTwitch.Rest": "0.0.1-*"
     },
 
     "frameworks": {
