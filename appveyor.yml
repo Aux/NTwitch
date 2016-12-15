@@ -32,10 +32,10 @@
     only:
       - dev
 
-  version: '0.0.0.1-beta{build}'
+  version: '0.0.1-beta{build}'
   before_build: 
     - dotnet restore
-    - ps: $Env:DOTNET_BUILD_VERSION = "$Env:APPVEYOR_BUILD_VERSION"
+    - ps: $Env:DOTNET_BUILD_VERSION = "beta{build}"
   nuget:
     account_feed: true
     project_feed: true
