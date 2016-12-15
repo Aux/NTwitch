@@ -13,6 +13,18 @@
         }
     },
 
+    "configurations": {
+        "Release": {
+            "buildOptions": {
+                "define": [ "RELEASE" ],
+                "nowarn": [ "CS1573", "CS1591" ],
+                "optimize": true,
+                "warningsAsErrors": true,
+                "xmlDoc": true
+            }
+        }
+    },
+
 	"dependencies": {
 		"NETStandard.Library": "1.6.1",
 		"NTwitch.Chat": "0.0.1-*",
@@ -27,10 +39,6 @@
 		}
 	},
   
-	"buildOptions": {
-		"xmlDoc": false
-	},
-
 	"scripts": {
 		"postcompile": [
 			"dotnet pack --no-build --configuration %compile:Configuration%"
