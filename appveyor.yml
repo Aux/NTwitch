@@ -7,8 +7,19 @@
 
   version: '0.0.1'
   configuration: Release
+  before_build: dotnet restore
+  nuget:
+    account_feed: true
+    project_feed: true
+    disable_publish_on_pr: false
+  build:
+    publish_nuget: true
+    publish_nuget_symbols: true
+    include_nuget_references: true
   deploy:
     provider: NuGet
+  artifacts:
+    - path: '**\*.nupkg'
 
 # configuration for "dev" branch
 # build in Release mode and deploy to NuGet pre-release
@@ -18,9 +29,19 @@
       - dev
 
   version: '0.0.1-beta{build}'
-  configuration: Release
+  before_build: dotnet restore
+  nuget:
+    account_feed: true
+    project_feed: true
+    disable_publish_on_pr: false
+  build:
+    publish_nuget: true
+    publish_nuget_symbols: true
+    include_nuget_references: true
   deploy:
     provider: NuGet
+  artifacts:
+    - path: '**\*.nupkg'
 
 # "fall back" configuration for all other branches
 # no "branches" section defined
