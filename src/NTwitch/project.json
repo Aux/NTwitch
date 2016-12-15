@@ -1,26 +1,27 @@
 {
-  "version": "0.0.1-*",
-  "dependencies": {
-    "NETStandard.Library": "1.6.1",
-    "NTwitch.Chat": "0.0.1-*",
-    "NTwitch.Core": "0.0.1-*",
-    "NTwitch.Rest": "0.0.1-*",
-    "NTwitch.PubSub": "0.0.1-*"
-  },
+	"version": "0.0.1-*",
+	
+	"dependencies": {
+		"NETStandard.Library": "1.6.1",
+		"NTwitch.Chat": "0.0.1-*",
+		"NTwitch.Core": "0.0.1-*",
+		"NTwitch.Rest": "0.0.1-*",
+		"NTwitch.PubSub": "0.0.1-*"
+	},
+
+	"frameworks": {
+		"netstandard1.6": {
+		  "imports": "dnxcore50"
+		}
+	},
   
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
-    }
-  },
-  
-  "buildOptions": {
-    "xmlDoc": false
-  }
-  
-    "scripts": {
-        "postcompile": [
-            "dotnet pack --no-build --configuration %compile:Configuration%"
-        ]
-    }
+	"buildOptions": {
+		"xmlDoc": false
+	},
+
+	"scripts": {
+		"postcompile": [
+			"dotnet pack --no-build --configuration %compile:Configuration%"
+		]
+	}
 }
