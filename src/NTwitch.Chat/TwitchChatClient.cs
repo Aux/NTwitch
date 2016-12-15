@@ -40,5 +40,9 @@ namespace Twitch.Chat
             throw new NotImplementedException();
         }
 
+        public Task LoginAsync(string token = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
