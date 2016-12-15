@@ -7,7 +7,9 @@
 
   version: '0.0.1'
   configuration: Release
-  before_build: dotnet restore
+  before_build: 
+    - dotnet restore
+    - dotnet publish --version-suffix -beta{build}
   nuget:
     account_feed: true
     project_feed: true
@@ -32,8 +34,9 @@
       - dev
 
   version: '$0.0.1-beta{build}'
-  before_build: dotnet restore
-  before_build: dotnet publish --version-suffix -beta{build}
+  before_build: 
+    - dotnet restore
+    - dotnet publish --version-suffix -beta{build}
   nuget:
     account_feed: true
     project_feed: true
