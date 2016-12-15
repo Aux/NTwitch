@@ -12,7 +12,7 @@ A .Net Core implementation of the https://twitch.tv/ version 3 api.
 Stable and unstable builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/Twitch-Net/).
 
 ## Compiling
-To compile Twitch.Net yourself, you will need either of the following:
+To compile NTwitch yourself, you will need either of the following:
 
 ##### Visual Studio
 - [Visual Studio 2015 Update 3](https://www.microsoft.com/net/core#windowsvs2015)
