@@ -36,7 +36,6 @@
   before_build: 
     - dotnet restore
     - ps: $Env:DOTNET_BUILD_VERSION = "$Env:APPVEYOR_BUILD_VERSION"
-    - ps: $Env:DOTNET_ASSEMBLY_FILE_VERSION = "$Env:APPVEYOR_BUILD_VERSION"
   nuget:
     account_feed: true
     project_feed: true
