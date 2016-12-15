@@ -5,8 +5,8 @@ A .Net Core implementation of the https://twitch.tv/ version 3 api.
 
 | Release  | Nuget  | Build Status  |
 | -------- |:------:|:-------------:|
-| Stable   | [![NuGet Master](https://img.shields.io/nuget/v/NTwitch.svg)](https://www.nuget.org/packages/NTwitch/) | [![Build status](https://ci.appveyor.com/api/projects/status/8np19e0l4giorgte/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/master) |
-| Unstable | [![NuGet Dev](https://img.shields.io/nuget/vpre/NTwitch.svg)](https://www.nuget.org/packages/NTwitch/) | [![Build status](https://ci.appveyor.com/api/projects/status/8np19e0l4giorgte/branch/dev?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/master) |
+| Stable   | [![NuGet](https://img.shields.io/nuget/v/NTwitch.Core.svg)](https://github.com/Aux/NTwitch/branch/master) | [![Build status](https://ci.appveyor.com/api/projects/status/8np19e0l4giorgte/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/master) |
+| Unstable | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.Core.svg)](https://github.com/Aux/NTwitch/branch/dev) | [![Build status](https://ci.appveyor.com/api/projects/status/8np19e0l4giorgte/branch/dev?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/dev) |
 
 ## Builds
 Stable and unstable builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/Twitch-Net/).
