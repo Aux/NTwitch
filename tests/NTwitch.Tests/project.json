@@ -5,7 +5,7 @@
   },
 
   "dependencies": {
-    "Microsoft.NETCore.App": "1.1.0",
+    "Microsoft.NETCore.App": "1.0.3",
     "NTwitch": "0.0.1-*"
   },
 
