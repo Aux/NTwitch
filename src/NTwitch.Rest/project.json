@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1-*",
+    "version": "0.0.1-beta*",
     "description": "A .Net Core implementation of the https://twitch.tv/ version 3 api.",
     "authors": [ "Auxesis" ],
 
