@@ -1,3 +1,6 @@
+environment:
+  packageVersion: 0.0.1
+
 # configuration for "master" branch
 # build in Release mode and deploy to NuGet
 -
@@ -5,7 +8,7 @@
     only:
       - master
 
-  version: '0.0.1'
+  version: '$(packageVersion)'
   configuration: Release
   before_build: dotnet restore
   nuget:
@@ -31,8 +34,9 @@
     only:
       - dev
 
-  version: '0.0.1-beta{build}'
+  version: '$(packageVersion)-beta{build}'
   before_build: dotnet restore
+  before_build: dotnet publish --version-suffix -beta{build}
   nuget:
     account_feed: true
     project_feed: true
