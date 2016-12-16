@@ -4,19 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     public class TwitchRestClient : ITwitchClient
     {
-        private TwitchRestClientConfig _config;
         private RestApiClient _rest;
-        private uint _clientid;
-        private string _token;
+        public string BaseUrl { get; }
         
-        public TwitchRestClient() { }
+        public TwitchRestClient() : this(new TwitchRestClientConfig()) { }
         public TwitchRestClient(TwitchRestClientConfig config)
         {
-            _config = config;
+            BaseUrl = config.BaseUrl;
         }
 
         /// <summary> Get information about a user. </summary>
@@ -64,12 +62,14 @@ namespace Twitch.Rest
             => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels");
 
         // ITwitchClient
-        public ConnectionState ConnectionState { get; }
+        public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
 
         /// <summary> Authenticate this client with the twitch oauth servers. </summary>
-        public async Task LoginAsync(string token)
+        public async Task LoginAsync(string clientid, string token = null)
         {
-            var info = await _rest.LoginAsync(token);
+            _rest = new RestApiClient(BaseUrl, clientid, token);
+            await Task.Delay(1);
+            //var info = await _rest.LoginAsync(token);
         }
     }
 }
