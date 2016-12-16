@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     public class RestSelfUser : ISelfUser
     {
@@ -16,7 +16,7 @@ namespace Twitch.Rest
         public string Email { get; }
         public string Bio { get; }
         public string LogoUrl { get; }
-        public string[] Links { get; }
+        public TwitchLinks Links { get; }
         public bool IsPartnered { get; }
         public bool[] Notifications { get; }
         
