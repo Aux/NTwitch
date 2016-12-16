@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     public class RestPostReaction : IPostReaction
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Twitch.Chat
+namespace NTwitch.Chat
 {
     public partial class TwitchChatClient : ITwitchClient
     {
@@ -39,8 +39,8 @@ namespace Twitch.Chat
         {
             throw new NotImplementedException();
         }
-
-        public Task LoginAsync(string token = null)
+        
+        public Task LoginAsync(string clientid, string token = null)
         {
             throw new NotImplementedException();
         }

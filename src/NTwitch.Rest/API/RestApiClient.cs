@@ -3,18 +3,20 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     internal class RestApiClient : IDisposable
     {
         private HttpClient _http;
-        private string _clientid;
         private string _baseurl;
+        private string _clientid;
+        private string _token;
 
-        internal RestApiClient(string clientid, string baseurl)
+        internal RestApiClient(string baseurl, string clientid, string token = null)
         {
             _clientid = clientid;
             _baseurl = baseurl;
+            _token = token;
         }
 
         internal void EnsureHttpClientCreated()
@@ -26,6 +28,9 @@ namespace Twitch.Rest
                 http.BaseAddress = new Uri(_baseurl);
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v2+json");
                 http.DefaultRequestHeaders.Add("Client-ID", _clientid);
+
+                if (string.IsNullOrWhiteSpace(_token))
+                    http.DefaultRequestHeaders.Add("Authorization", "OAuth " + _token);
 
                 _http = http;
             }

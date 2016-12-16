@@ -1,4 +1,4 @@
-﻿namespace Twitch
+﻿namespace NTwitch
 {
     public enum VideoPeriod
     {

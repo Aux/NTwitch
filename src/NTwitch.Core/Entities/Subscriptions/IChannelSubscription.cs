@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Twitch
+namespace NTwitch
 {
     public interface IChannelSubscription : ISubscription
     {

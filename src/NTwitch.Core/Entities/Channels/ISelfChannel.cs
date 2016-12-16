@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Twitch
+namespace NTwitch
 {
     public interface ISelfChannel : IChannel
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     public class RestFollow : IFollow
     {

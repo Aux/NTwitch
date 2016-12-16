@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace Twitch.Chat
+namespace NTwitch.Chat
 {
     public class ChatTcpClient : IDisposable
     {

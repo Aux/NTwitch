@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Twitch
+namespace NTwitch
 {
     public interface IUser
     {
@@ -17,12 +17,10 @@ namespace Twitch
         string Name { get; }
         /// <summary> This user's display name. </summary>
         string DisplayName { get; }
-        /// <summary> This user's profile biography. </summary>
-        string Bio { get; }
         /// <summary> This user's logo url. </summary>
         string LogoUrl { get; }
         /// <summary> Links to relevant api endpoints for this user. </summary>
-        string[] Links { get; }
+        TwitchLinks Links { get; }
 
         Task<IChannelFollow> GetFollowAsync(string channel);
         Task<IChannelFollow> GetFollowAsync(IChannel channel);

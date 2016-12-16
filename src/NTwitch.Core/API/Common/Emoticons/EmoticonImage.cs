@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Twitch
+namespace NTwitch
 {
     public class EmoticonImage
     {

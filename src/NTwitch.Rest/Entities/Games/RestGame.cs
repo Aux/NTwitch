@@ -1,4 +1,4 @@
-﻿namespace Twitch.Rest
+﻿namespace NTwitch.Rest
 {
     public class RestGame : IGame
     {

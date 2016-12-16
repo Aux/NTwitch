@@ -1,4 +1,4 @@
-﻿namespace Twitch
+﻿namespace NTwitch
 {
     public interface IBadge
     {
