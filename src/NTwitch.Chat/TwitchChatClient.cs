@@ -8,27 +8,12 @@ namespace NTwitch.Chat
     {
         private TwitchChatClientConfig _config;
         private string _token;
-        
-        public IEnumerable<ChatChannel> Channels { get; private set; }
 
-        public TwitchChatClient() { }
+        public TwitchChatClient() : this(new TwitchChatClientConfig()) { }
         public TwitchChatClient(TwitchChatClientConfig config)
         {
             _config = config;
         }
-
-        public async Task JoinChannel(string name)
-        {
-            await Task.Delay(1);
-        }
-
-        public async Task LeaveChannel(string name)
-        {
-            await Task.Delay(1);
-        }
-
-        // ITwitchClient
-        public ConnectionState ConnectionState { get; }
         
         public Task ConnectAsync()
         {
@@ -39,8 +24,11 @@ namespace NTwitch.Chat
         {
             throw new NotImplementedException();
         }
+
+        // ITwitchClient
+        public ConnectionState ConnectionState { get; }
         
-        public Task LoginAsync(string clientid, string token = null)
+        public Task LoginAsync(string username, string token)
         {
             throw new NotImplementedException();
         }

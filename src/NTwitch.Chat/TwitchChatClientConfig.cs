@@ -9,5 +9,6 @@ namespace NTwitch.Chat
     {
         public string Host { get; } = "irc.chat.twitch.tv";
         public int Port { get; } = 6667;
+        public int SslPort { get; } = 443;
     }
 }

@@ -23,5 +23,15 @@ namespace NTwitch.PubSub
         {
             throw new NotImplementedException();
         }
+
+        public Task ConnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DisconnectAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

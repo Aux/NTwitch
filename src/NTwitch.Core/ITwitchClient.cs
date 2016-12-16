@@ -8,7 +8,5 @@ namespace NTwitch
     public interface ITwitchClient
     {
         ConnectionState ConnectionState { get; }
-
-        Task LoginAsync(string clientid, string token = null);
     }
 }
