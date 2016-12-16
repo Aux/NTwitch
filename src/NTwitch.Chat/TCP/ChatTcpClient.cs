@@ -22,7 +22,7 @@ namespace NTwitch.Chat
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _tcp.Dispose();
         }
     }
 }
