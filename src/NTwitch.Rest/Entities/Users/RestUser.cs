@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Twitch.Rest
+namespace NTwitch.Rest
 {
     public class RestUser : IUser
     {
@@ -14,7 +14,7 @@ namespace Twitch.Rest
         public string DisplayName { get; }
         public string Bio { get; }
         public string LogoUrl { get; }
-        public string[] Links { get; }
+        public TwitchLinks Links { get; }
         
         public Task<IChannelFollow> GetFollowAsync(string channel)
         {
