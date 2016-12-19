@@ -19,7 +19,7 @@ namespace NTwitch.Rest
             _token = token;
         }
 
-        internal void EnsureHttpClientCreated()
+        private void EnsureHttpClientCreated()
         {
             if (_http == null)
             {
@@ -36,7 +36,7 @@ namespace NTwitch.Rest
             }
         }
 
-        internal HttpRequestMessage BuildRequest(string method, string endpoint, object payload)
+        private HttpRequestMessage BuildRequest(string method, string endpoint, object payload)
         {
             EnsureHttpClientCreated();
             var request = new HttpRequestMessage(new HttpMethod(method), endpoint);
@@ -52,8 +52,7 @@ namespace NTwitch.Rest
             var request = BuildRequest(method, endpoint, payload);
             var response = await _http.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
+            response.EnsureSuccessStatusCode();
         }
 
         internal async Task<T> SendAsync<T>(string method, string endpoint, object payload = null)
@@ -61,15 +60,9 @@ namespace NTwitch.Rest
             var request = BuildRequest(method, endpoint, payload);
             var response = await _http.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new HttpRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
-            }
-            else
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(content);
-            }
+            response.EnsureSuccessStatusCode();
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(content);
         }
 
         internal async Task<TwitchValidation> LoginAsync(string token)
