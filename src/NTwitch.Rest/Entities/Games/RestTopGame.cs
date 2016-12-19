@@ -1,13 +1,14 @@
-﻿namespace NTwitch.Rest
+﻿using Newtonsoft.Json;
+
+namespace NTwitch.Rest
 {
-    public class RestTopGame : ITopGame
+    public class RestTopGame
     {
-        public uint Id { get; }
-        public uint GiantBombId { get; }
-        public string Name { get; }
-        public TwitchImage BoxArt { get; }
-        public TwitchImage Logo { get; }
-        public int Channels { get; }
-        public int Viewers { get; }
+        [JsonProperty("game")]
+        public RestGame Game { get; internal set; }
+        [JsonProperty("channels")]
+        public int Channels { get; internal set; }
+        [JsonProperty("viewers")]
+        public int Viewers { get; internal set; }
     }
 }
