@@ -25,7 +25,7 @@ namespace NTwitch.Test
                 Console.Write($"Find User: ");
                 string search = Console.ReadLine();
                 var user = await _client.GetUserAsync(search);
-
+                
                 var properties = user.GetType().GetProperties();
 
                 foreach (var p in properties)
