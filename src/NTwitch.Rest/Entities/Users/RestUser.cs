@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,15 +7,24 @@ namespace NTwitch.Rest
 {
     public class RestUser : IUser
     {
-        public TwitchRestClient Client { get; }
-        public DateTime CreatedAt { get; }
-        public DateTime UpdatedAt { get; }
-        public uint Id { get; }
-        public string Name { get; }
-        public string DisplayName { get; }
-        public string Bio { get; }
-        public string LogoUrl { get; }
-        public TwitchLinks Links { get; }
+        [JsonIgnore]
+        public TwitchRestClient Client { get; internal set; }
+        [JsonProperty("created_at")]
+        public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("updated_at")]
+        public DateTime UpdatedAt { get; internal set; }
+        [JsonProperty("_id")]
+        public uint Id { get; internal set; }
+        [JsonProperty("name")]
+        public string Name { get; internal set; }
+        [JsonProperty("display_name")]
+        public string DisplayName { get; internal set; }
+        [JsonProperty("staff")]
+        public bool IsStaff { get; internal set; }
+        [JsonProperty("logo")]
+        public string LogoUrl { get; internal set; }
+        [JsonProperty("_links")]
+        public TwitchLinks Links { get; internal set; }
         
         public Task<IChannelFollow> GetFollowAsync(string channel)
         {
@@ -30,7 +40,7 @@ namespace NTwitch.Rest
         {
             throw new NotImplementedException();
         }
-
+        
         public override string ToString()
             => DisplayName;
     }
