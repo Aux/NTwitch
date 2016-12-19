@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace NTwitch
 {
@@ -16,5 +13,7 @@ namespace NTwitch
         public string Ingests { get; }
         public string Teams { get; }
         public string Search { get; }
+        [JsonProperty("self")]
+        public string Self { get; }
     }
 }
