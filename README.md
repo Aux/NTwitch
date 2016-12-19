@@ -9,7 +9,7 @@ A .Net Core implementation of the https://twitch.tv/ version 3 api.
 | Unstable | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.Core.svg)](https://github.com/Aux/NTwitch/branch/dev) | [![Build status](https://ci.appveyor.com/api/projects/status/8np19e0l4giorgte/branch/dev?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/dev) |
 
 ## Builds
-Stable and unstable builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/Twitch-Net/).
+Stable and unstable builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/NTwitch/).
 
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
