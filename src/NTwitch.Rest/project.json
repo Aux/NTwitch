@@ -30,15 +30,9 @@
         "NTwitch.Core": "0.0.1-*"
     },
 
-    "frameworks": {
-        "netstandard1.6": {
-            "imports": "dnxcore50"
-        }
-    },
-
-    "scripts": {
-        "postcompile": [
-            "dotnet pack --no-build --configuration %compile:Configuration%"
-        ]
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
     }
+  }
 }
