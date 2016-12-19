@@ -36,9 +36,10 @@ namespace NTwitch.Rest
             }
         }
 
-        private HttpRequestMessage BuildRequest(string method, string endpoint, object payload)
+        private HttpRequestMessage BuildRequest(string method, string endpoint, TwitchPagination options, object payload)
         {
             EnsureHttpClientCreated();
+            endpoint += options?.ToString();
             var request = new HttpRequestMessage(new HttpMethod(method), endpoint);
 
             if (payload != null)
@@ -47,17 +48,17 @@ namespace NTwitch.Rest
             return request;
         }
 
-        internal async Task SendAsync(string method, string endpoint, object payload = null)
+        internal async Task SendAsync(string method, string endpoint, TwitchPagination options = null, object payload = null)
         {
-            var request = BuildRequest(method, endpoint, payload);
+            var request = BuildRequest(method, endpoint, options, payload);
             var response = await _http.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
         }
 
-        internal async Task<T> SendAsync<T>(string method, string endpoint, object payload = null)
+        internal async Task<T> SendAsync<T>(string method, string endpoint, TwitchPagination options = null, object payload = null)
         {
-            var request = BuildRequest(method, endpoint, payload);
+            var request = BuildRequest(method, endpoint, options, payload);
             var response = await _http.SendAsync(request);
 
             response.EnsureSuccessStatusCode();

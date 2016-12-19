@@ -18,21 +18,19 @@ namespace NTwitch.Test
 
             _client = new TwitchRestClient();
 
+            _client.Log += (l) => Task.Run(() =>
+            {
+                Console.WriteLine(l);
+            });
+
             await _client.LoginAsync(clientid);
 
-            while (true)
-            {
-                Console.Write($"Find User: ");
-                string search = Console.ReadLine();
-                var user = await _client.GetUserAsync(search);
-                
-                var properties = user.GetType().GetProperties();
+            var top = await _client.GetTopGamesAsync(new TwitchPagination(50));
 
-                foreach (var p in properties)
-                {
-                    Console.WriteLine($"{p.Name}: {p.GetValue(user)}");
-                }
-            }
+            foreach (var g in top.Games)
+                Console.WriteLine($"{g.Game.Name}\n{g.Channels}c\t{g.Viewers}v");
+            
+            Console.ReadKey();
         }
     }
 }

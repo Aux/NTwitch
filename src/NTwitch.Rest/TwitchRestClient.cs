@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class TwitchRestClient : ITwitchClient
+    public partial class TwitchRestClient : ITwitchClient
     {
         private RestApiClient _rest;
         public string BaseUrl { get; }
@@ -19,9 +19,14 @@ namespace NTwitch.Rest
 
         /// <summary> Get information about a user. </summary>
         public async Task<RestUser> GetUserAsync(string name)
-            => await _rest.SendAsync<RestUser>("GET", "users/" + name);
+        {
+            var user = await _rest.SendAsync<RestUser>("GET", "users/" + name);
+            await _logEvent.InvokeAsync(new LogMessage(LogLevel.Info, "Rest", "GET users/" + name));
+            return user;
+        }
 
         /// <summary> Get information about the current user. </summary>
+        /// <remarks> Requires scope: `user_read` </remarks>
         public async Task<RestSelfUser> GetCurrentUserAsync()
             => await _rest.SendAsync<RestSelfUser>("GET", "user");
 
@@ -30,15 +35,19 @@ namespace NTwitch.Rest
             => await _rest.SendAsync<IEnumerable<RestGame>>("GET", "search/games");
 
         /// <summary> Get the top streamed games on Twitch. </summary>
-        public async Task GetTopGamesAsync()
-            => await _rest.SendAsync<RestTopGame>("GET", "games/top");
+        public async Task<RestTopGameCollection> GetTopGamesAsync(TwitchPagination options = null)
+        {
+            await _logEvent.InvokeAsync(new LogMessage(LogLevel.Info, "Rest", "GET games/top" + options.ToString()));
+            var games = await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options);
+            return games;
+        }
 
         /// <summary> Find streams related to a query. </summary>
-        public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, int limit = 25, int page = 1)
+        public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, TwitchPagination options = null)
             => await _rest.SendAsync<IEnumerable<RestStream>>("GET", "search/streams");
 
         /// <summary> Get all streams on Twitch. </summary>
-        public async Task GetStreamsAsync(string game = null, string channel = null, string language = null, StreamType type = StreamType.All, int limit = 25, int page = 1)
+        public async Task GetStreamsAsync(string game = null, string channel = null, string language = null, StreamType type = StreamType.All, TwitchPagination options = null)
             => await _rest.SendAsync<RestStream>("GET", "streams");
 
         /// <summary> Get featured (promoted) streams on Twitch. </summary>
@@ -54,11 +63,11 @@ namespace NTwitch.Rest
             => await _rest.SendAsync<RestVideo>("GET", "videos/" + id);
         
         /// <summary> Get the top videos in the specified period. </summary>
-        public async Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, int limit = 10, int page = 1)
+        public async Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, TwitchPagination options = null)
             => await _rest.SendAsync<IEnumerable<RestVideo>>("GET", "videos/top");
 
         /// <summary> Find channels related to a query. </summary>
-        public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, int limit = 25, int page = 1)
+        public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, TwitchPagination options = null)
             => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels");
 
         // ITwitchClient
