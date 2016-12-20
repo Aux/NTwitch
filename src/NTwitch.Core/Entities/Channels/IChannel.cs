@@ -28,7 +28,7 @@ namespace NTwitch
         int Followers { get; }
         bool IsMature { get; }
         bool IsPartner { get; }
-        string[] Links { get; }
+        TwitchLinks Links { get; }
 
         Task<IUserSubscription> GetSubscriberAsync(string name);
         Task<IEnumerable<IUserSubscription>> GetSubscribersAsync(SortDirection sort = SortDirection.Descending, int limit = 10, int page = 1);
