@@ -7,13 +7,15 @@ namespace NTwitch.Rest
 {
     internal class RestApiClient : IDisposable
     {
+        private LogManager _log;
         private HttpClient _http;
         private string _baseurl;
         private string _clientid;
         private string _token;
 
-        internal RestApiClient(string baseurl, string clientid, string token = null)
+        internal RestApiClient(LogManager log, string baseurl, string clientid, string token = null)
         {
+            _log = log;
             _clientid = clientid;
             _baseurl = baseurl;
             _token = token;
@@ -45,6 +47,7 @@ namespace NTwitch.Rest
             if (payload != null)
                 request.Content = new StringContent(JsonConvert.SerializeObject(payload));
 
+            _log.InfoAsync("RestApiClient", method + " " + endpoint + options?.ToString());
             return request;
         }
 
@@ -52,7 +55,7 @@ namespace NTwitch.Rest
         {
             var request = BuildRequest(method, endpoint, options, payload);
             var response = await _http.SendAsync(request);
-
+            
             response.EnsureSuccessStatusCode();
         }
 
@@ -63,6 +66,8 @@ namespace NTwitch.Rest
 
             response.EnsureSuccessStatusCode();
             string content = await response.Content.ReadAsStringAsync();
+
+            await _log.DebugAsync("RestApiClient", "Return " + typeof(T).Name);
             return JsonConvert.DeserializeObject<T>(content);
         }
 

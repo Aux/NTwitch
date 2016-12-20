@@ -8,8 +8,8 @@ namespace NTwitch
     public enum LogLevel
     {
         Critical,
-        Errors,
-        Warnings,
+        Error,
+        Warning,
         Info,
         Debug
     }

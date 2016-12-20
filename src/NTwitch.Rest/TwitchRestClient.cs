@@ -9,22 +9,25 @@ namespace NTwitch.Rest
     public partial class TwitchRestClient : ITwitchClient
     {
         private RestApiClient _rest;
+        private LogManager _log;
         public string BaseUrl { get; }
         
         public TwitchRestClient() : this(new TwitchRestClientConfig()) { }
         public TwitchRestClient(TwitchRestClientConfig config)
         {
             BaseUrl = config.BaseUrl;
+
+            _log = new LogManager(config.LogLevel);
+            _log.LogReceived += OnLogReceived;
         }
+
+        private async Task OnLogReceived(LogMessage msg)
+            => await _logEvent.InvokeAsync(msg);
 
         /// <summary> Get information about a user. </summary>
         public async Task<RestUser> GetUserAsync(string name)
-        {
-            var user = await _rest.SendAsync<RestUser>("GET", "users/" + name);
-            await _logEvent.InvokeAsync(new LogMessage(LogLevel.Info, "Rest", "GET users/" + name));
-            return user;
-        }
-
+            => await _rest.SendAsync<RestUser>("GET", "users/" + name);
+        
         /// <summary> Get information about the current user. </summary>
         /// <remarks> Requires scope: `user_read` </remarks>
         public async Task<RestSelfUser> GetCurrentUserAsync()
@@ -32,19 +35,15 @@ namespace NTwitch.Rest
 
         /// <summary> Find games related to a query. </summary>
         public async Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool? islive = null)
-            => await _rest.SendAsync<IEnumerable<RestGame>>("GET", "search/games");
+            => await _rest.SendAsync<IEnumerable<RestGame>>("GET", "search/games?q=" + query);
 
         /// <summary> Get the top streamed games on Twitch. </summary>
         public async Task<RestTopGameCollection> GetTopGamesAsync(TwitchPagination options = null)
-        {
-            await _logEvent.InvokeAsync(new LogMessage(LogLevel.Info, "Rest", "GET games/top" + options.ToString()));
-            var games = await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options);
-            return games;
-        }
-
+            => await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options);
+        
         /// <summary> Find streams related to a query. </summary>
         public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, TwitchPagination options = null)
-            => await _rest.SendAsync<IEnumerable<RestStream>>("GET", "search/streams");
+            => await _rest.SendAsync<IEnumerable<RestStream>>("GET", "search/streams?q=" + query);
 
         /// <summary> Get all streams on Twitch. </summary>
         public async Task GetStreamsAsync(string game = null, string channel = null, string language = null, StreamType type = StreamType.All, TwitchPagination options = null)
@@ -68,7 +67,7 @@ namespace NTwitch.Rest
 
         /// <summary> Find channels related to a query. </summary>
         public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, TwitchPagination options = null)
-            => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels");
+            => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels?q=" + query);
 
         // ITwitchClient
         public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
@@ -76,9 +75,14 @@ namespace NTwitch.Rest
         /// <summary> Authenticate this client with the twitch oauth servers. </summary>
         public async Task LoginAsync(string clientid, string token = null)
         {
-            _rest = new RestApiClient(BaseUrl, clientid, token);
-            await Task.Delay(1);
-            //var info = await _rest.LoginAsync(token);
+            _rest = new RestApiClient(_log, BaseUrl, clientid, token);
+            await _log.DebugAsync("TwitchRestClient", "RestApiClient created successfully");
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                await _log.DebugAsync("TwitchRestClient", "Validating token");
+                await _rest.LoginAsync(token);
+            }
         }
     }
 }
