@@ -16,7 +16,10 @@ namespace NTwitch.Test
         {
             string clientid = "";
 
-            _client = new TwitchRestClient();
+            _client = new TwitchRestClient(new TwitchRestClientConfig()
+            {
+                LogLevel = LogLevel.Debug
+            });
 
             _client.Log += (l) => Task.Run(() =>
             {
@@ -25,7 +28,7 @@ namespace NTwitch.Test
 
             await _client.LoginAsync(clientid);
 
-            var top = await _client.GetTopGamesAsync(new TwitchPagination(50));
+            var top = await _client.GetTopGamesAsync();
 
             foreach (var g in top.Games)
                 Console.WriteLine($"{g.Game.Name}\n{g.Channels}c\t{g.Viewers}v");
