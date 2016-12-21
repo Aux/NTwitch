@@ -3,38 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch
+namespace NTwitch.v5
 {
     public interface IChannel
     {
-        DateTime CreatedAt { get; }
-        DateTime UpdatedAt { get; }
         uint Id { get; }
-        string Name { get; }
-        string DisplayName { get; }
-        string Status { get; }
-        string Game { get; }
-        string Url { get; }
-        string LogoUrl { get; }
-        string BannerUrl { get; }
-        string VideoBannerUrl { get; }
-        string Background { get; }
-        string ProfileBannerUrl { get; }
-        string ProfileBackground { get; }
         string BroadcasterLanguage { get; }
+        DateTime CreatedAt { get; }
+        string DisplayName { get; }
+        int FollowerCount { get; }
+        string Game { get; }
         string Language { get; }
-        int Delay { get; }
-        int Views { get; }
-        int Followers { get; }
+        string LogoUrl { get; }
         bool IsMature { get; }
+        string Name { get; }
         bool IsPartner { get; }
-        TwitchLinks Links { get; }
+        string ProfileBannerUrl { get; }
+        string ProfileBackgroundColor { get; }
+        string Status { get; }
+        DateTime UpdatedAt { get; }
+        string Url { get; }
+        string VideoBannerUrl { get; }
+        int ViewCount { get; }
 
-        Task<IUserSubscription> GetSubscriberAsync(string name);
-        Task<IEnumerable<IUserSubscription>> GetSubscribersAsync(SortDirection sort = SortDirection.Descending, int limit = 10, int page = 1);
-        Task<IUserFollow> GetFollowAsync(string name);
-        Task<IEnumerable<IUserFollow>> GetFollowersAsync(SortDirection sort = SortDirection.Descending, int limit = 10, int page = 1);
-        Task<IEnumerable<IVideo>> GetVideosAsync(bool broadcasts = false, bool hls = false, int limit = 10, int page = 1);
-        Task<IEnumerable<IBadge>> GetBadgesAsync();
+        /// <summary> Gets a list of users who follow a specified channel, sorted by the date when they started following the channel. </summary>
+        Task GetFollowersAsync(bool descending = true, TwitchPageOptions page = null);
+        /// <summary> Gets a list of teams to which a specified channel belongs. </summary>
+        Task GetTeamsAsync();
+        /// <summary>  </summary>
+        Task GetVideosAsync();
     }
 }

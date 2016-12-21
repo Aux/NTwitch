@@ -67,7 +67,7 @@ namespace NTwitch.Rest
             response.EnsureSuccessStatusCode();
             string content = await response.Content.ReadAsStringAsync();
 
-            await _log.DebugAsync("RestApiClient", "Return " + typeof(T).Name);
+            await _log.DebugAsync("RestApiClient", "Return: " + content);
             return JsonConvert.DeserializeObject<T>(content);
         }
 
