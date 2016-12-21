@@ -19,7 +19,8 @@
     include_nuget_references: true
   deploy:
     provider: NuGet
-    api_key: $Env:NUGET_KEY
+    api_key:
+      secure: qKZfjnc/dh+lBsv3JAvjMcGPBJyQarsUorC83R/ihU2ppGuZuDT5Y6BPDkliA/2G
     artifact: /.*\.symbols\.nupkg/
   artifacts:
     - path: '**\*.nupkg'
@@ -45,7 +46,8 @@
     include_nuget_references: true
   deploy:
     provider: NuGet
-    api_key: $Env:NUGET_KEY
+    api_key:
+      secure: qKZfjnc/dh+lBsv3JAvjMcGPBJyQarsUorC83R/ihU2ppGuZuDT5Y6BPDkliA/2G
     artifact: /.*\.symbols\.nupkg/
   artifacts:
     - path: '**\*.nupkg'
