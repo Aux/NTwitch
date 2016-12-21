@@ -6,11 +6,11 @@ namespace NTwitch.Chat
 {
     public partial class TwitchChatClient : ITwitchClient
     {
-        private TwitchChatClientConfig _config;
+        private TwitchChatConfig _config;
         private string _token;
 
-        public TwitchChatClient() : this(new TwitchChatClientConfig()) { }
-        public TwitchChatClient(TwitchChatClientConfig config)
+        public TwitchChatClient() : this(new TwitchChatConfig()) { }
+        public TwitchChatClient(TwitchChatConfig config)
         {
             _config = config;
         }
