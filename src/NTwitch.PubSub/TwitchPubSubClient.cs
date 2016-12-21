@@ -10,8 +10,8 @@ namespace NTwitch.PubSub
         private PubSubSocketClient SocketClient { get; }
         public string SocketUrl { get; }
 
-        public TwitchPubSubClient() : this(new TwitchPubSubClientConfig()) { }
-        public TwitchPubSubClient(TwitchPubSubClientConfig config)
+        public TwitchPubSubClient() : this(new TwitchPubSubConfig()) { }
+        public TwitchPubSubClient(TwitchPubSubConfig config)
         {
             SocketUrl = config.SocketUrl;
         }
