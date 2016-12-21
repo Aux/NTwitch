@@ -1,6 +1,6 @@
 {
     "version": "0.0.1-*",
-    "description": "A .Net Core implementation of the https://twitch.tv/ version 3 api.",
+    "description": "A .Net Core implementation of the https://twitch.tv/ version 5 api.",
     "authors": [ "Auxesis" ],
 
     "packOptions": {

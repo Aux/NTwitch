@@ -25,8 +25,8 @@ namespace NTwitch.Rest
             => await _logEvent.InvokeAsync(msg);
 
         /// <summary> Get information about a user. </summary>
-        public async Task<RestUser> GetUserAsync(string name)
-            => await _rest.SendAsync<RestUser>("GET", "users/" + name);
+        public async Task<RestUser> FindUserAsync(string name)
+            => await _rest.SendAsync<RestUser>("GET", "users?login=" + name);
         
         /// <summary> Get information about the current user. </summary>
         /// <remarks> Requires scope: `user_read` </remarks>
@@ -38,8 +38,8 @@ namespace NTwitch.Rest
             => await _rest.SendAsync<IEnumerable<RestGame>>("GET", "search/games?q=" + query);
 
         /// <summary> Get the top streamed games on Twitch. </summary>
-        public async Task<RestTopGameCollection> GetTopGamesAsync(TwitchPagination options = null)
-            => await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options);
+        public async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(TwitchPagination options = null)
+            => (await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options)).Games;
         
         /// <summary> Find streams related to a query. </summary>
         public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, TwitchPagination options = null)
