@@ -20,7 +20,7 @@
   deploy:
     provider: NuGet
     api_key:
-      secure: Txu/AUePrIc9SwTYJ5+YZ6Qm++Y5itDIvYa/jm9c4fIZml+rZVigJDaYPykZjZR6
+      secure: $Env:NUGET_KEY
     artifact: /.*\.symbols\.nupkg/
   artifacts:
     - path: '**\*.nupkg'
@@ -47,7 +47,7 @@
   deploy:
     provider: NuGet
     api_key:
-      secure: Txu/AUePrIc9SwTYJ5+YZ6Qm++Y5itDIvYa/jm9c4fIZml+rZVigJDaYPykZjZR6
+      secure: $Env:NUGET_KEY
     artifact: /.*\.symbols\.nupkg/
   artifacts:
     - path: '**\*.nupkg'
