@@ -20,7 +20,7 @@ namespace NTwitch.Rest
         public bool IsMature { get; }
         public bool IsPartner { get; }
         public string Language { get; }
-        public string[] Links { get; }
+        public TwitchLinks Links { get; }
         public string LogoUrl { get; }
         public string Name { get; }
         public string ProfileBackground { get; }

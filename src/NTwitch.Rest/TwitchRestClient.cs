@@ -75,6 +75,9 @@ namespace NTwitch.Rest
         /// <summary> Authenticate this client with the twitch oauth servers. </summary>
         public async Task LoginAsync(string clientid, string token = null)
         {
+            if (string.IsNullOrWhiteSpace(clientid))
+                throw new ArgumentNullException("clientid");
+
             _rest = new RestApiClient(_log, BaseUrl, clientid, token);
             await _log.DebugAsync("TwitchRestClient", "RestApiClient created successfully");
 
