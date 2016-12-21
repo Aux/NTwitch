@@ -16,7 +16,7 @@ namespace NTwitch.Test
         {
             string clientid = "";
 
-            _client = new TwitchRestClient(new TwitchRestClientConfig()
+            _client = new TwitchRestClient(new TwitchRestConfig()
             {
                 LogLevel = LogLevel.Debug
             });

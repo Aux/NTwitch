@@ -12,8 +12,8 @@ namespace NTwitch.Rest
         private LogManager _log;
         public string BaseUrl { get; }
         
-        public TwitchRestClient() : this(new TwitchRestClientConfig()) { }
-        public TwitchRestClient(TwitchRestClientConfig config)
+        public TwitchRestClient() : this(new TwitchRestConfig()) { }
+        public TwitchRestClient(TwitchRestConfig config)
         {
             BaseUrl = config.BaseUrl;
 
