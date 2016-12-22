@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NTwitch.Socket
+namespace NTwitch.WebSocket
 {
     internal class SocketApiClient : IDisposable
     {

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.v5
+namespace NTwitch
 {
-    public interface IChannel
+    public interface IChannel : IEntity
     {
-        uint Id { get; }
         string BroadcasterLanguage { get; }
         DateTime CreatedAt { get; }
         string DisplayName { get; }

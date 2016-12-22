@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.v5
+namespace NTwitch
 {
     public interface ISelfChannel : IChannel
     {
