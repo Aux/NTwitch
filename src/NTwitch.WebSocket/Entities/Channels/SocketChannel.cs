@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.Socket
+namespace NTwitch.WebSocket.Entities.Channels
 {
-    public partial class TwitchSocketClient : ITwitchClient
+    public class SocketChannel
     {
-
     }
 }

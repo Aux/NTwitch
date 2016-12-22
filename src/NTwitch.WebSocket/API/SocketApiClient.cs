@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace NTwitch.PubSub
+namespace NTwitch.Socket
 {
-    internal class PubSubSocketClient : IDisposable
+    internal class SocketApiClient : IDisposable
     {
 
 

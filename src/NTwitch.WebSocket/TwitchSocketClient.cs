@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.PubSub
+namespace NTwitch.Socket
 {
-    public partial class TwitchPubSubClient : ITwitchClient
+    public partial class TwitchSocketClient : ITwitchClient
     {
-        private PubSubSocketClient SocketClient { get; }
+        private SocketApiClient SocketClient { get; }
         public string SocketUrl { get; }
 
-        public TwitchPubSubClient() : this(new TwitchSocketConfig()) { }
-        public TwitchPubSubClient(TwitchSocketConfig config)
+        public TwitchSocketClient() : this(new TwitchSocketConfig()) { }
+        public TwitchSocketClient(TwitchSocketConfig config)
         {
             SocketUrl = config.SocketUrl;
         }
