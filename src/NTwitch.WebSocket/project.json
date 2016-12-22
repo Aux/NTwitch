@@ -27,7 +27,8 @@
 
     "dependencies": {
         "NETStandard.Library": "1.6.1",
-        "NTwitch.Core": "0.0.1-*"
+        "NTwitch.Core": "0.0.1-*",
+        "NTwitch.Rest": "0.0.1-*"
     },
 
     "frameworks": {

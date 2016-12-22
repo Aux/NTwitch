@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.PubSub
 {
-    public class TwitchPubSubConfig
+    public class TwitchSocketConfig
     {
         public string SocketUrl { get; set; } = "wss://pubsub-edge.twitch.tv";
     }

@@ -8,7 +8,7 @@
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>97d240ed-383d-49c9-a75c-f18a4514422c</ProjectGuid>
-    <RootNamespace>NTwitch.PubSub</RootNamespace>
+    <RootNamespace>NTwitch.WebSocket</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
