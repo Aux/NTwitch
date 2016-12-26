@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch
@@ -31,5 +30,11 @@ namespace NTwitch
         Task GetTeamsAsync();
         /// <summary>  </summary>
         Task GetVideosAsync();
+        /// <summary> Gets a list of badges that can be used in chat. </summary>
+        Task<IEnumerable<IBadge>> GetBadgesAsync();
+        /// <summary> Gets all chat emoticons (including their images). </summary>
+        Task<IEnumerable<IEmote>> GetEmotesAsync();
+        /// <summary> Gets all chat emoticons (not including their images). </summary>
+        Task GetEmoteSetAsync(ulong setid);
     }
 }
