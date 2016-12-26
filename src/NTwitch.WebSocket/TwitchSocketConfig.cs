@@ -8,5 +8,6 @@ namespace NTwitch.WebSocket
     public class TwitchSocketConfig
     {
         public string SocketUrl { get; set; } = "wss://pubsub-edge.twitch.tv";
+        public LogLevel LogLevel { get; set; } = LogLevel.Error;
     }
 }
