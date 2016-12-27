@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch
@@ -19,10 +17,6 @@ namespace NTwitch
         /// <summary> Returns a subscription object if the user is subscribed to the specified channel. </summary>
         /// <remarks> Required scope: user_subscriptions </remarks>
         Task<IChannelSubscription> GetSubscriptionAsync(ulong id);
-        /// <summary> Returns a collection of follow objects for all of the channels this user follows. </summary>
-        Task<IEnumerable<IChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null);
-        /// <summary> Returns a follow object if the user is following the specified channel. </summary>
-        Task<IChannelFollow> GetFollowAsync(ulong id);
         /// <summary> Adds a specified user to the followers of a specified channel. </summary>
         /// <remarks> Required scope: user_follows_edit </remarks>
         Task<IChannelFollow> FollowAsync(ulong id, bool notify = false);
