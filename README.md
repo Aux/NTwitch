@@ -11,6 +11,9 @@ NTwitch is a fully async-compatible implementation of TwitchTV's version 5 api. 
 ## Builds
 Release and pre-release builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/NTwitch/). For nightly and unstable builds, add `https://ci.appveyor.com/nuget/ntwitch-dm6ux7yx7q4u` to your nuget feed in Visual Studio.
 
+## Documentation
+Documentation for released NTwitch features will be available at https://ntwitch.auxesis.tv/. To view the source and submit issues for the docs visit [the repo](https://github.com/Aux/NTwitch-docs).
+
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
 
