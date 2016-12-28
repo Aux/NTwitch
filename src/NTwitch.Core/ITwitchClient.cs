@@ -8,7 +8,7 @@ namespace NTwitch
         ConnectionState ConnectionState { get; }
         
         Task<IChannel> GetChannelAsync(ulong id);
-        Task<IEnumerable<ITopGame>> GetTopGames(TwitchPageOptions options = null);
+        Task<IEnumerable<ITopGame>> GetTopGamesAsync(TwitchPageOptions options = null);
         Task<IEnumerable<IIngest>> GetIngestsAsync();
         Task<IEnumerable<IChannel>> FindChannelsAsync(string query, TwitchPageOptions options = null);
         Task<IEnumerable<IGame>> FindGamesAsync(string query, bool islive = true);
