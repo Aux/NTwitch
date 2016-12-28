@@ -6,5 +6,14 @@ matrix:
     sudo: required
     dotnet: 1.0.0-preview2-003121
     env: DOTNETCORE=1
-script:
-- bash build.sh
+
+deploy:
+  provider: script
+  skip_cleanup: true
+#  script:
+#    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
+
+branches:
+  only:
+  - master
+  - dev
