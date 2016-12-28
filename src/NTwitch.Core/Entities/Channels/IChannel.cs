@@ -36,5 +36,7 @@ namespace NTwitch
         Task<IEnumerable<IEmote>> GetEmotesAsync();
         /// <summary> Gets all chat emoticons (not including their images). </summary>
         Task GetEmoteSetAsync(ulong setid);
+        /// <summary>  </summary>
+        Task<IStream> GetStreamAsync();
     }
 }
