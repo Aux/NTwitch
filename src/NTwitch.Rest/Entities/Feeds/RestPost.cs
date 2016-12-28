@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestPost : RestEntity, IPost
+    public class RestPost
     {
     }
 }

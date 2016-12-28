@@ -8,7 +8,7 @@ namespace NTwitch
         string Body { get; }
         DateTime CreatedAt { get; }
         bool IsDeleted { get; }
-        IEnumerable<IEmbed> Embeds { get; }
+        //IEnumerable<IEmbed> Embeds { get; }
         IEnumerable<IEmote> Emotes { get; }
         IPostPermissions Permissions { get; }
         IEnumerable<IPostReaction> Reactions { get; }

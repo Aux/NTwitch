@@ -14,24 +14,25 @@ namespace NTwitch.Test
 
         public async Task Start()
         {
-            string clientid = "";
+            await Task.Delay(1);
+            //string clientid = "";
 
-            _client = new TwitchRestClient(new TwitchRestConfig()
-            {
-                LogLevel = LogLevel.Debug
-            });
+            //_client = new TwitchRestClient(new TwitchRestConfig()
+            //{
+            //    LogLevel = LogLevel.Debug
+            //});
 
-            _client.Log += (l) => Task.Run(() =>
-            {
-                Console.WriteLine(l);
-            });
+            //_client.Log += (l) => Task.Run(() =>
+            //{
+            //    Console.WriteLine(l);
+            //});
 
-            await _client.LoginAsync(clientid);
+            //await _client.LoginAsync(clientid);
 
-            var top = await _client.GetTopGamesAsync();
+            //var top = await _client.GetTopGamesAsync();
 
-            foreach (var g in top.Games)
-                Console.WriteLine($"{g.Game.Name}\n{g.Channels}c\t{g.Viewers}v");
+            //foreach (var g in top.Games)
+            //    Console.WriteLine($"{g.Game.Name}\n{g.Channels}c\t{g.Viewers}v");
             
             Console.ReadKey();
         }
