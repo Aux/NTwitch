@@ -10,7 +10,8 @@ matrix:
 deploy:
   provider: script
   skip_cleanup: true
-#  script:
+  script:
+    - xbuild /p:Configuration=Release NTwitch.sln
 #    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
 
 branches:
