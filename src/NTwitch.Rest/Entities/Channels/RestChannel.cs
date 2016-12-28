@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -38,6 +37,26 @@ namespace NTwitch.Rest
         }
 
         public Task GetVideosAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IBadge>> GetBadgesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IEmote>> GetEmotesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetEmoteSetAsync(ulong setid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IStream> GetStreamAsync()
         {
             throw new NotImplementedException();
         }

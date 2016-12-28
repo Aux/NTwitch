@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -12,12 +10,12 @@ namespace NTwitch.Rest
 
         internal RestSelfChannel(TwitchRestClient client, ulong id) : base(client, id) { }
 
-        public Task GetEditorsAsync()
+        public Task ModifyAsync(Action<ModifyChannelParams> action)
         {
             throw new NotImplementedException();
         }
 
-        public Task GetSubscriberAsync(uint id)
+        public Task GetEditorsAsync()
         {
             throw new NotImplementedException();
         }
@@ -27,17 +25,17 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task ModifyAsync(Action<ModifyChannelParams> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ResetStreamKeyAsync()
+        public Task GetSubscriberAsync(uint id)
         {
             throw new NotImplementedException();
         }
 
         public Task StartCommercialAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ResetStreamKeyAsync()
         {
             throw new NotImplementedException();
         }
