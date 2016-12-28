@@ -6,8 +6,8 @@ namespace NTwitch
     public interface ITwitchClient
     {
         ConnectionState ConnectionState { get; }
-
-        Task LoginAsync();
+        
+        Task<IChannel> GetChannelAsync(ulong id);
         Task<IEnumerable<ITopGame>> GetTopGames(TwitchPageOptions options = null);
         Task<IEnumerable<IIngest>> GetIngestsAsync();
         Task<IEnumerable<IChannel>> FindChannelsAsync(string query, TwitchPageOptions options = null);
@@ -19,5 +19,6 @@ namespace NTwitch
         Task<IEnumerable<IStreamSummary>> GetStreamSummaryAsync(string game);
         Task<IEnumerable<ITeamInfo>> GetTeamsAsync(TwitchPageOptions options = null);
         Task<IEnumerable<ITeam>> GetTeamAsync(string name);
+        Task<IUser> GetUserAsync(ulong id);
     }
 }
