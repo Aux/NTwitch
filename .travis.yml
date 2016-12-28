@@ -18,4 +18,8 @@ branches:
   - dev
 script:
   - dotnet restore
-  - dotnet build ./Aux/NTwitch --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build ./Aux/NTwitch/src/NTwitch --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build ./Aux/NTwitch/src/NTwitch.Core --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build ./Aux/NTwitch/src/NTwitch.Rest --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build ./Aux/NTwitch/src/NTwitch.WebSocket --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build ./Aux/NTwitch/src/NTwitch.Chat --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
