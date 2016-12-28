@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NTwitch.Chat
+﻿namespace NTwitch.Chat
 {
     public class TwitchChatConfig
     {
-        public string Host { get; } = "irc.chat.twitch.tv";
-        public int Port { get; } = 6667;
-        public int SslPort { get; } = 443;
+        public string Host { get; set; } = "irc.chat.twitch.tv";
+        public int Port { get; set; } = 6667;
+        public LogLevel LogLevel { get; set; }
     }
 }

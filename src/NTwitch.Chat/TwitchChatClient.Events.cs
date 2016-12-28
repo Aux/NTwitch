@@ -1,76 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
     public partial class TwitchChatClient
     {
-        public event Func<Task> Connected
+        private readonly AsyncEvent<Func<LogMessage, Task>> _logEvent = new AsyncEvent<Func<LogMessage, Task>>();
+        public event Func<LogMessage, Task> Log
         {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> Disconnected
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> Ready
-        {
-			add { }
-			remove { }
-        }
-
-        public event Func<Task> MessageReceived
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> PrivateMessageReceived
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> UserNoticeReceived
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> JoinedChannel
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> LeftChannel
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> UserJoined
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> UserLeft
-        {
-            add { }
-            remove { }
-        }
-
-        public event Func<Task> UserModeUpdated
-        {
-            add { }
-            remove { }
+            add { _logEvent.Add(value); }
+            remove { _logEvent.Remove(value); }
         }
     }
 }
