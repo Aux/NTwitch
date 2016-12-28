@@ -4,7 +4,7 @@ namespace NTwitch
 {
     public interface IEmote : IEntity
     {
-        string Name { get; set; }
-        IEnumerable<IEmoteImage> Images { get; set; }
+        string Name { get; }
+        IEnumerable<IEmoteImage> Images { get; }
     }
 }

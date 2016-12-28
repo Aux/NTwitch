@@ -4,6 +4,6 @@ namespace NTwitch
 {
     public interface IEmoteSet : IEntity
     {
-        IEnumerable<IEmote> Emotes { get; set; }
+        IEnumerable<IEmote> Emotes { get; }
     }
 }
