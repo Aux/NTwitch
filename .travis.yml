@@ -5,7 +5,7 @@ sudo: required
 mono: none
 dotnet: 1.0.0-preview2-003131
 script:
-  - ./build.sh --quiet verify
+  - ./build.sh
 matrix:
   include:
     - dotnet: 1.0.0-preview2-003131
