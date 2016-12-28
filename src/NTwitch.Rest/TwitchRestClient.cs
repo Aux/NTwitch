@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -23,52 +21,7 @@ namespace NTwitch.Rest
 
         private async Task OnLogReceived(LogMessage msg)
             => await _logEvent.InvokeAsync(msg);
-
-        /// <summary> Get information about a user. </summary>
-        public async Task<RestUser> FindUserAsync(string name)
-            => await _rest.SendAsync<RestUser>("GET", "users?login=" + name);
         
-        /// <summary> Get information about the current user. </summary>
-        /// <remarks> Requires scope: `user_read` </remarks>
-        public async Task<RestSelfUser> GetCurrentUserAsync()
-            => await _rest.SendAsync<RestSelfUser>("GET", "user");
-
-        /// <summary> Find games related to a query. </summary>
-        public async Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool? islive = null)
-            => await _rest.SendAsync<IEnumerable<RestGame>>("GET", "search/games?q=" + query);
-
-        /// <summary> Get the top streamed games on Twitch. </summary>
-        public async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(TwitchPagination options = null)
-            => (await _rest.SendAsync<RestTopGameCollection>("GET", "games/top", options)).Games;
-        
-        /// <summary> Find streams related to a query. </summary>
-        public async Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool? hls = null, TwitchPagination options = null)
-            => await _rest.SendAsync<IEnumerable<RestStream>>("GET", "search/streams?q=" + query);
-
-        /// <summary> Get all streams on Twitch. </summary>
-        public async Task GetStreamsAsync(string game = null, string channel = null, string language = null, StreamType type = StreamType.All, TwitchPagination options = null)
-            => await _rest.SendAsync<RestStream>("GET", "streams");
-
-        /// <summary> Get featured (promoted) streams on Twitch. </summary>
-        public async Task GetFeaturedStreamsAsync(int limit = 25, int page = 1)
-            => await _rest.SendAsync<RestStream>("GET", "streams/featured");
-
-        /// <summary> Get featured (promoted) streams on Twitch. </summary>
-        public async Task GetStreamSummaryAsync(string game = null)
-            => await _rest.SendAsync<RestStreamSummary>("GET", "streams/summary");
-
-        /// <summary> Get a specific video by id. </summary>
-        public async Task<RestVideo> GetVideoAsync(string id)
-            => await _rest.SendAsync<RestVideo>("GET", "videos/" + id);
-        
-        /// <summary> Get the top videos in the specified period. </summary>
-        public async Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, TwitchPagination options = null)
-            => await _rest.SendAsync<IEnumerable<RestVideo>>("GET", "videos/top");
-
-        /// <summary> Find channels related to a query. </summary>
-        public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, TwitchPagination options = null)
-            => await _rest.SendAsync<IEnumerable<RestChannel>>("GET", "search/channels?q=" + query);
-
         // ITwitchClient
         public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
 
@@ -86,6 +39,71 @@ namespace NTwitch.Rest
                 await _log.DebugAsync("TwitchRestClient", "Validating token");
                 await _rest.LoginAsync(token);
             }
+        }
+
+        public Task<IChannel> GetChannelAsync(ulong id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ITopGame>> GetTopGames(TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IIngest>> GetIngestsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IChannel>> FindChannelsAsync(string query, TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IGame>> FindGamesAsync(string query, bool islive = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IStream> GetStreamAsync(ulong id, StreamType type = StreamType.All)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IStream>> FindStreamsAsync(string query, bool hls = true, TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IStream>> GetStreamsAsync(string game = null, ulong[] channelids = null, string language = null, StreamType type = StreamType.All, TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IFeaturedStream>> GetFeaturedStreamsAsync(TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IStreamSummary>> GetStreamSummaryAsync(string game)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ITeamInfo>> GetTeamsAsync(TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ITeam>> GetTeamAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IUser> GetUserAsync(ulong id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
