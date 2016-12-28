@@ -1,14 +1,10 @@
 language: csharp
-solution: NTwitch.sln
-dist: trusty
-sudo: required
-mono: none
-dotnet: 1.0.0-preview2-003131
-script:
-  - ./build.sh
 matrix:
   include:
-    - dotnet: 1.0.0-preview2-003131
-      mono: none
-      env: DOTNETCORE=1
-    - mono: latest
+  - os: linux
+    dist: trusty
+    sudo: required
+    dotnet: 1.0.0-preview2-003121
+    env: DOTNETCORE=1
+script:
+- bash build.sh
