@@ -14,31 +14,13 @@ namespace NTwitch.WebSocket
         {
             SocketUrl = config.SocketUrl;
         }
-        
-        // ITwitchClient
-        public ConnectionState ConnectionState { get; } = ConnectionState.Disconnected;
-
-        public Task LoginAsync(string clientid, string token = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ConnectAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DisconnectAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<IChannel> GetChannelAsync(ulong id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITopGame>> GetTopGames(TwitchPageOptions options = null)
+        public Task<IEnumerable<ITopGame>> GetTopGamesAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -97,5 +79,50 @@ namespace NTwitch.WebSocket
         {
             throw new NotImplementedException();
         }
+
+        // ITwitchClient
+        public ConnectionState ConnectionState { get; } = ConnectionState.Disconnected;
+
+        public Task LoginAsync(string clientid, string token = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ConnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DisconnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        async Task<IChannel> ITwitchClient.GetChannelAsync(ulong id)
+            => await GetChannelAsync(id);
+        async Task<IEnumerable<ITopGame>> ITwitchClient.GetTopGamesAsync(TwitchPageOptions options)
+            => await GetTopGamesAsync(options);
+        async Task<IEnumerable<IIngest>> ITwitchClient.GetIngestsAsync()
+            => await GetIngestsAsync();
+        async Task<IEnumerable<IChannel>> ITwitchClient.FindChannelsAsync(string query, TwitchPageOptions options)
+            => await FindChannelsAsync(query, options);
+        async Task<IEnumerable<IGame>> ITwitchClient.FindGamesAsync(string query, bool islive)
+            => await FindGamesAsync(query, islive);
+        async Task<IStream> ITwitchClient.GetStreamAsync(ulong id, StreamType type)
+            => await GetStreamAsync(id, type);
+        async Task<IEnumerable<IStream>> ITwitchClient.FindStreamsAsync(string query, bool hls, TwitchPageOptions options)
+            => await FindStreamsAsync(query, hls, options);
+        async Task<IEnumerable<IStream>> ITwitchClient.GetStreamsAsync(string game, ulong[] channelids, string language, StreamType type, TwitchPageOptions options)
+            => await GetStreamsAsync(game, channelids, language, type, options);
+        async Task<IEnumerable<IFeaturedStream>> ITwitchClient.GetFeaturedStreamsAsync(TwitchPageOptions options)
+            => await GetFeaturedStreamsAsync(options);
+        async Task<IEnumerable<IStreamSummary>> ITwitchClient.GetStreamSummaryAsync(string game)
+            => await GetStreamSummaryAsync(game);
+        async Task<IEnumerable<ITeamInfo>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
+            => await GetTeamsAsync(options);
+        async Task<IEnumerable<ITeam>> ITwitchClient.GetTeamAsync(string name)
+            => await GetTeamAsync(name);
+        async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
+            => await GetUserAsync(id);
     }
 }
