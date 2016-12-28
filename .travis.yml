@@ -17,4 +17,5 @@ branches:
   - master
   - dev
 script:
-  - xbuild /p:Configuration=Release **/NTwitch.sln
+  - dotnet restore
+  - dotnet build
