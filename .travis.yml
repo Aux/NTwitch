@@ -1,4 +1,6 @@
 language: csharp
+script:
+  - xbuild /p:Configuration=Release NTwitch.sln
 matrix:
   include:
   - os: linux
@@ -10,8 +12,7 @@ matrix:
 deploy:
   provider: script
   skip_cleanup: true
-  script:
-    - xbuild /p:Configuration=Release NTwitch.sln
+#  script:
 #    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
 
 branches:
