@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NTwitch
+﻿namespace NTwitch
 {
-    public class IPostReaction
+    public interface IPostReaction
     {
+        string Name { get; }
+        int Count { get; }
+        string EmoteName { get; }
+        ulong[] UserIds { get; }
     }
 }
