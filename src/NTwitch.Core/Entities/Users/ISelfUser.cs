@@ -16,22 +16,16 @@ namespace NTwitch
         Task<IEnumerable<IEmoteSet>> GetEmotesAsync();
         /// <summary> Returns a subscription object if the user is subscribed to the specified channel. </summary>
         /// <remarks> Required scope: user_subscriptions </remarks>
-        Task<IChannelSubscription> GetSubscriptionAsync(ulong id);
+        Task<IChannelSubscription> GetSubscriptionAsync(ulong channelid);
         /// <summary> Adds a specified user to the followers of a specified channel. </summary>
         /// <remarks> Required scope: user_follows_edit </remarks>
-        Task<IChannelFollow> FollowAsync(ulong id, bool notify = false);
+        Task<IChannelFollow> FollowAsync(ulong channelid, bool notify = false);
         /// <summary> Deletes a specified user from the followers of a specified channel. </summary>
         /// <remarks> Required scope: user_follows_edit </remarks>
-        Task<IChannelFollow> UnfollowAsync(ulong id);
+        Task<IChannelFollow> UnfollowAsync(ulong channelid);
         /// <summary> Gets a user’s block list. List sorted by recency, newest first. </summary>
         /// <remarks> Required scope: user_blocks_read </remarks>
         Task<IEnumerable<IBlock>> GetBlockedUsersAsync();
-        /// <summary> Blocks the target user. </summary>
-        /// <remarks> Required scope: user_blocks_read </remarks>
-        Task<IBlock> BlockAsync(ulong id);
-        /// <summary> Unblocks the target user. </summary>
-        /// <remarks> Required scope: user_blocks_read </remarks>
-        Task<IBlock> UnblockAsync(ulong id);
         /// <summary> Gets the list of online streams a user follows based on the OAuth token provided. </summary>
         /// <remarks> Required scope: user_read </remarks>
         Task<IEnumerable<IStream>> GetFollowedStreamsAsync(StreamType type = StreamType.All, TwitchPageOptions options = null);

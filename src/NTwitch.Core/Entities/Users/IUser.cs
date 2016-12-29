@@ -18,5 +18,11 @@ namespace NTwitch
         Task<IEnumerable<IChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null);
         /// <summary> Returns a follow object if the user is following the specified channel. </summary>
         Task<IChannelFollow> GetFollowAsync(ulong id);
+        /// <summary> Blocks the target user. </summary>
+        /// <remarks> Required scope: user_blocks_read </remarks>
+        Task<IBlock> BlockAsync();
+        /// <summary> Unblocks the target user. </summary>
+        /// <remarks> Required scope: user_blocks_read </remarks>
+        Task<IBlock> UnblockAsync();
     }
 }
