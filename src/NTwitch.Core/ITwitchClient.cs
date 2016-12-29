@@ -18,7 +18,7 @@ namespace NTwitch
         Task<IEnumerable<IStream>> GetStreamsAsync(string game = null, ulong[] channelids = null, string language = null, StreamType type = StreamType.All, TwitchPageOptions options = null);
         Task<IEnumerable<IFeaturedStream>> GetFeaturedStreamsAsync(TwitchPageOptions options = null);
         Task<IEnumerable<IStreamSummary>> GetStreamSummaryAsync(string game);
-        Task<IEnumerable<ITeamInfo>> GetTeamsAsync(TwitchPageOptions options = null);
+        Task<IEnumerable<ITeamSummary>> GetTeamsAsync(TwitchPageOptions options = null);
         Task<IEnumerable<ITeam>> GetTeamAsync(string name);
         Task<ISelfUser> GetCurrentUserAsync();
         Task<IUser> GetUserAsync(ulong userid);

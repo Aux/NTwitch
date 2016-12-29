@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface ITeam : IEntity, ITeamInfo
+    public interface ITeam : IEntity, ITeamSummary
     {
         IEnumerable<IUser> Users { get; }
     }

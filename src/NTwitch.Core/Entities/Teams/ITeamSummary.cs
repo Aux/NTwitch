@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface ITeamInfo : IEntity
+    public interface ITeamSummary : IEntity
     {
         string Background { get; }
         string BannerUrl { get; }

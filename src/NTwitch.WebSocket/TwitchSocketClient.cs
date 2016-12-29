@@ -65,7 +65,7 @@ namespace NTwitch.WebSocket
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITeamInfo>> GetTeamsAsync(TwitchPageOptions options = null)
+        public Task<IEnumerable<ITeamSummary>> GetTeamsAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -118,7 +118,7 @@ namespace NTwitch.WebSocket
             => await GetFeaturedStreamsAsync(options);
         async Task<IEnumerable<IStreamSummary>> ITwitchClient.GetStreamSummaryAsync(string game)
             => await GetStreamSummaryAsync(game);
-        async Task<IEnumerable<ITeamInfo>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
+        async Task<IEnumerable<ITeamSummary>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
             => await GetTeamsAsync(options);
         async Task<IEnumerable<ITeam>> ITwitchClient.GetTeamAsync(string name)
             => await GetTeamAsync(name);

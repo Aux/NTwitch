@@ -138,7 +138,7 @@ namespace NTwitch.Rest
             => await GetFeaturedStreamsAsync(options);
         async Task<IEnumerable<IStreamSummary>> ITwitchClient.GetStreamSummaryAsync(string game)
             => await GetStreamSummaryAsync(game);
-        async Task<IEnumerable<ITeamInfo>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
+        async Task<IEnumerable<ITeamSummary>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
             => await GetTeamsAsync(options);
         async Task<IEnumerable<ITeam>> ITwitchClient.GetTeamAsync(string name)
             => await GetTeamAsync(name);
