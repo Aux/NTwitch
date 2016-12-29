@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch
@@ -9,27 +8,30 @@ namespace NTwitch
     {
         string Email { get; }
         string StreamKey { get; }
-
-        /// <summary> Updates specified properties of this channel. </summary>
-        /// <remarks> 
-        /// Required scope to update delay or channel_feed_enabled parameter: a channel_editor token from the channel owner
-        /// Required scope to update other parameters: channel_editor 
-        /// </remarks>
-        Task ModifyAsync(Action<ModifyChannelParams> action);
-        /// <summary> Gets a list of users who are editors for this channel. </summary>
+        
+        /// <summary> Creates a post in the channel feed. </summary> 
+        /// <remarks> Required scope: channel_feed_edit </remarks>
+        Task<IPost> CreatePostAsync(Action<CreatePostParams> args);
+        /// <summary> Deletes a specified post in the channel feed. </summary> 
+        /// <remarks> Required scope: channel_feed_edit </remarks>
+        Task<IPost> DeletePostAsync(ulong postid);
+        /// <summary> Updates specified properties of a specified channel. </summary> 
+        /// <remarks> Required scope: channel_editor </remarks>
+        Task<ISelfChannel> ModifyAsync(Action<ModifyChannelParams> args);
+        /// <summary> Gets a list of users who are editors for a specified channel. </summary> 
         /// <remarks> Required scope: channel_read </remarks>
-        Task GetEditorsAsync();
-        /// <summary> Gets a list of users subscribed to this channel, sorted by the date when they subscribed. </summary>
+        Task<IEnumerable<IUser>> GetEditorsAsync();
+        /// <summary> Gets a list of users subscribed to a specified channel, sorted by the date when they subscribed. </summary> 
         /// <remarks> Required scope: channel_subscriptions </remarks>
-        Task GetSubscribersAsync(bool descending = true, TwitchPageOptions page = null);
-        /// <summary> Returns a subscription object which includes the user if that user is subscribed. </summary>
+        Task<IEnumerable<IUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null);
+        /// <summary> Checks if a specified channel has a specified user subscribed to it. </summary> 
         /// <remarks> Required scope: channel_check_subscription </remarks>
-        Task GetSubscriberAsync(uint id);
-        /// <summary>  </summary>
-        /// <remarks>  </remarks>
-        Task StartCommercialAsync();
-        /// <summary>  </summary>
-        /// <remarks>  </remarks>
-        Task ResetStreamKeyAsync();
+        Task<IUserSubscription> GetSubscriberAsync(ulong userid);
+        /// <summary> Starts a commercial (advertisement) on a specified channel. </summary> 
+        /// <remarks> Required scope: channel_editor </remarks>
+        Task StartCommercialAsync(int duration = 30);
+        /// <summary> Deletes the stream key for a specified channel. </summary> 
+        /// <remarks> Required scope: channel_stream </remarks>
+        Task<ISelfChannel> ResetStreamKeyAsync();
     }
 }
