@@ -25,7 +25,7 @@ namespace NTwitch
         Task<IChannelFollow> UnfollowAsync(ulong channelid);
         /// <summary> Gets a user’s block list. List sorted by recency, newest first. </summary>
         /// <remarks> Required scope: user_blocks_read </remarks>
-        Task<IEnumerable<IBlock>> GetBlockedUsersAsync();
+        Task<IEnumerable<IBlockedUser>> GetBlockedUsersAsync();
         /// <summary> Gets the list of online streams a user follows based on the OAuth token provided. </summary>
         /// <remarks> Required scope: user_read </remarks>
         Task<IEnumerable<IStream>> GetFollowedStreamsAsync(StreamType type = StreamType.All, TwitchPageOptions options = null);

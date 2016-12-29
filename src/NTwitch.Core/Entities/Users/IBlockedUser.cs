@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface IBlock : IEntity
+    public interface IBlockedUser : IEntity
     {
         DateTime UpdatedAt { get; }
         IUser User { get; }
