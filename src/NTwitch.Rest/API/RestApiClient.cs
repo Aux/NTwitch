@@ -46,28 +46,32 @@ namespace NTwitch.Rest
 
             if (payload != null)
                 request.Content = new StringContent(JsonConvert.SerializeObject(payload));
-
-            _log.InfoAsync("RestApiClient", method + " " + endpoint + options?.ToString());
+            
             return request;
         }
 
         internal async Task SendAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
         {
+            var start = DateTime.UtcNow;
             var request = BuildRequest(method, endpoint, options, payload);
             var response = await _http.SendAsync(request);
             
             response.EnsureSuccessStatusCode();
+            double total = (DateTime.UtcNow - start).TotalMilliseconds;
+            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
         }
 
         internal async Task<T> SendAsync<T>(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
         {
+            var start = DateTime.UtcNow;
             var request = BuildRequest(method, endpoint, options, payload);
             var response = await _http.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
             string content = await response.Content.ReadAsStringAsync();
-
-            await _log.DebugAsync("RestApiClient", "Return: " + content);
+            
+            double total = (DateTime.UtcNow - start).TotalMilliseconds;
+            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
             return JsonConvert.DeserializeObject<T>(content);
         }
 

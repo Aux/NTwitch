@@ -22,17 +22,22 @@ namespace NTwitch.Rest
         private async Task OnLogReceived(LogMessage msg)
             => await _logEvent.InvokeAsync(msg);
 
+        public Task<RestSelfChannel> GetCurrentChannelAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<RestChannel> GetChannelAsync(ulong id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITopGame>> GetTopGamesAsync(TwitchPageOptions options = null)
+        public Task<IEnumerable<RestTopGame>> GetTopGamesAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IIngest>> GetIngestsAsync()
+        public Task<IEnumerable<RestIngest>> GetIngestsAsync()
         {
             throw new NotImplementedException();
         }
@@ -42,51 +47,56 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IGame>> FindGamesAsync(string query, bool islive = true)
+        public Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool islive = true)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IStream> GetStreamAsync(ulong id, StreamType type = StreamType.All)
+        public Task<RestStream> GetStreamAsync(ulong id, StreamType type = StreamType.All)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IStream>> FindStreamsAsync(string query, bool hls = true, TwitchPageOptions options = null)
+        public Task<IEnumerable<RestStream>> FindStreamsAsync(string query, bool hls = true, TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IStream>> GetStreamsAsync(string game = null, ulong[] channelids = null, string language = null, StreamType type = StreamType.All, TwitchPageOptions options = null)
+        public Task<IEnumerable<RestStream>> GetStreamsAsync(string game = null, ulong[] channelids = null, string language = null, StreamType type = StreamType.All, TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IFeaturedStream>> GetFeaturedStreamsAsync(TwitchPageOptions options = null)
+        public Task<IEnumerable<RestFeaturedStream>> GetFeaturedStreamsAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IStreamSummary>> GetStreamSummaryAsync(string game)
+        public Task<IEnumerable<RestStreamSummary>> GetStreamSummaryAsync(string game)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITeamInfo>> GetTeamsAsync(TwitchPageOptions options = null)
+        public Task<IEnumerable<RestTeamInfo>> GetTeamsAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITeam>> GetTeamAsync(string name)
+        public Task<IEnumerable<RestTeam>> GetTeamAsync(string name)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IUser> GetUserAsync(ulong id)
+        public Task<RestUser> GetUserAsync(ulong id)
         {
             throw new NotImplementedException();
         }
-        
+
+        public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         // ITwitchClient
         public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
 
@@ -106,6 +116,8 @@ namespace NTwitch.Rest
             }
         }
 
+        async Task<ISelfChannel> ITwitchClient.GetCurrentChannelAsync()
+            => await GetCurrentChannelAsync();
         async Task<IChannel> ITwitchClient.GetChannelAsync(ulong id)
             => await GetChannelAsync(id);
         async Task<IEnumerable<ITopGame>> ITwitchClient.GetTopGamesAsync(TwitchPageOptions options)
@@ -132,5 +144,7 @@ namespace NTwitch.Rest
             => await GetTeamAsync(name);
         async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
             => await GetUserAsync(id);
+        async Task<IEnumerable<IVideo>> ITwitchClient.GetTopVideosAsync(string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
+            => await GetTopVideosAsync(game, period, type, options);
     }
 }
