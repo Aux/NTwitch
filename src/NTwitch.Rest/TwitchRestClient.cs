@@ -22,6 +22,11 @@ namespace NTwitch.Rest
         private async Task OnLogReceived(LogMessage msg)
             => await _logEvent.InvokeAsync(msg);
 
+        public Task<RestSelfUser> GetCurrentUserAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<RestSelfChannel> GetCurrentChannelAsync()
         {
             throw new NotImplementedException();
@@ -77,7 +82,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<RestTeamInfo>> GetTeamsAsync(TwitchPageOptions options = null)
+        public Task<IEnumerable<RestTeamSummary>> GetTeamsAsync(TwitchPageOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -88,6 +93,11 @@ namespace NTwitch.Rest
         }
 
         public Task<RestUser> GetUserAsync(ulong id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RestUser> GetUserAsync(string name)
         {
             throw new NotImplementedException();
         }
@@ -116,6 +126,8 @@ namespace NTwitch.Rest
             }
         }
 
+        async Task<ISelfUser> ITwitchClient.GetCurrentUserAsync()
+            => await GetCurrentUserAsync();
         async Task<ISelfChannel> ITwitchClient.GetCurrentChannelAsync()
             => await GetCurrentChannelAsync();
         async Task<IChannel> ITwitchClient.GetChannelAsync(ulong id)
@@ -144,6 +156,8 @@ namespace NTwitch.Rest
             => await GetTeamAsync(name);
         async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
             => await GetUserAsync(id);
+        async Task<IUser> ITwitchClient.GetUserAsync(string name)
+            => await GetUserAsync(name);
         async Task<IEnumerable<IVideo>> ITwitchClient.GetTopVideosAsync(string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
             => await GetTopVideosAsync(game, period, type, options);
     }
