@@ -35,5 +35,8 @@ namespace NTwitch
         /// <summary> Gets the list of online streams a user follows based on the OAuth token provided. </summary>
         /// <remarks> Required scope: user_read </remarks>
         Task<IEnumerable<IStream>> GetFollowedStreamsAsync(StreamType type = StreamType.All, TwitchPageOptions options = null);
+        /// <summary> Gets the videos from channels the user is following based on the OAuth token provided. </summary>
+        /// <remarks> Required scope: user_read </remarks>
+        Task<IEnumerable<IVideo>> GetFollowedVideosAsync(BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null);
     }
 }
