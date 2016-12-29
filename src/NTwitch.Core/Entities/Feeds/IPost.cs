@@ -13,7 +13,7 @@ namespace NTwitch
         IEnumerable<IPostEmote> Emotes { get; }
         IPostPermissions Permissions { get; }
         IEnumerable<IPostReaction> Reactions { get; }
-        IUser User { get; set; }
+        IUser User { get; }
 
         /// <summary> Deletes this post in the channel feed. </summary> 
         /// <remarks> Required scope: channel_feed_edit </remarks>
@@ -31,6 +31,6 @@ namespace NTwitch
         Task<IPostComment> CreateCommentAsync(string content);
         /// <summary> Deletes a specified comment on this post in the channel feed. </summary> 
         /// <remarks> Required scope: channel_feed_edit </remarks>
-        Task<IPostComment> DeleteCommentAsync(ulong id);
+        Task<IPostComment> DeleteCommentAsync(ulong commentid);
     }
 }

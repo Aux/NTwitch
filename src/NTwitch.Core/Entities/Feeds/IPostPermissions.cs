@@ -2,8 +2,8 @@
 {
     public interface IPostPermissions
     {
-        bool? CanDelete { get; set; }
-        bool? CanModerate { get; set; }
-        bool? CanReply { get; set; }
+        bool? CanDelete { get; }
+        bool? CanModerate { get; }
+        bool? CanReply { get; }
     }
 }
