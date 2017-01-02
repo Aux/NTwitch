@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace NTwitch.WebSocket
 {
-    public partial class TwitchSocketClient : ITwitchClient
+    public partial class TwitchPubsubClient : ITwitchClient
     {
         private SocketApiClient SocketClient { get; }
         public string SocketUrl { get; }
 
-        public TwitchSocketClient() : this(new TwitchSocketConfig()) { }
-        public TwitchSocketClient(TwitchSocketConfig config)
+        public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
+        public TwitchPubsubClient(TwitchPubsubConfig config)
         {
             SocketUrl = config.SocketUrl;
         }

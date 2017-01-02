@@ -2,7 +2,7 @@
 
 namespace NTwitch.WebSocket
 {
-    internal class SocketApiClient : IDisposable
+    internal class PubsubApiClient : IDisposable
     {
         private LogManager _log;
         private SocketState _state;

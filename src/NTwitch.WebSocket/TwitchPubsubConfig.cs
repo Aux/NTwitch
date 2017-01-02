@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace NTwitch.WebSocket
 {
-    public class TwitchSocketConfig
+    public class TwitchPubsubConfig
     {
         public string SocketUrl { get; set; } = "wss://pubsub-edge.twitch.tv";
+        public bool PopulateOptionalEventData { get; set; } = true;
         public LogLevel LogLevel { get; set; } = LogLevel.Error;
     }
 }

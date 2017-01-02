@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NTwitch.WebSocket
 {
-    public class SocketState : IDisposable
+    public class PubsubState : IDisposable
     {
         public int BufferSize { get; set; }
         public byte[] Buffer { get; set; }

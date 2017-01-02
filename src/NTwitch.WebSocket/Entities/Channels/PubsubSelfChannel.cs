@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace NTwitch.WebSocket
 {
-    public class SocketSelfChannel : SocketChannel, ISelfChannel
+    public class PubsubSelfChannel : SocketChannel, ISelfChannel
     {
         public string Email { get; }
         public string StreamKey { get; }
 
-        internal SocketSelfChannel(TwitchSocketClient client, ulong id) : base(client, id) { }
+        internal SocketSelfChannel(TwitchPubsubClient client, ulong id) : base(client, id) { }
 
         public Task GetEditorsAsync()
         {

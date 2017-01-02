@@ -1,11 +1,11 @@
 ﻿namespace NTwitch.WebSocket
 {
-    public class SocketEntity : IEntity
+    public class PubsubEntity : IEntity
     {
-        public TwitchSocketClient Client { get; }
+        public TwitchPubsubClient Client { get; }
         public ulong Id { get; }
         
-        public SocketEntity(TwitchSocketClient client, ulong id)
+        public PubsubEntity(TwitchPubsubClient client, ulong id)
         {
             Client = client;
             Id = id;
