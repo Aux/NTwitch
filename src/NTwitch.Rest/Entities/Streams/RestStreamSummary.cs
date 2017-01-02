@@ -1,10 +1,21 @@
-﻿namespace NTwitch.Rest
-{
-    public class RestStreamSummary : RestEntity, IStreamSummary
-    {
-        public int Channels { get; }
-        public int Viewers { get; }
+﻿using System.Runtime.CompilerServices;
 
-        public RestStreamSummary(TwitchRestClient client, ulong id) : base(client, id) { }
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+namespace NTwitch.Rest
+{
+    public class RestStreamSummary : IEntity, IStreamSummary
+    {
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public int Channels { get; internal set; }
+        public int Viewers { get; internal set; }
+
+        internal RestStreamSummary(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
+
+        ITwitchClient IEntity.Client
+            => Client;
     }
 }

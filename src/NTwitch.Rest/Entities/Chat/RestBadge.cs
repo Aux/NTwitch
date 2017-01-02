@@ -1,12 +1,23 @@
-﻿namespace NTwitch.Rest
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+namespace NTwitch.Rest
 {
-    public class RestBadge : RestEntity, IBadge
+    public class RestBadge : IEntity, IBadge
     {
-        public string AlphaUrl { get; }
-        public string ImageUrl { get; }
-        public string Name { get; }
-        public string SvgUrl { get; }
-        
-        internal RestBadge(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string AlphaUrl { get; internal set; }
+        public string ImageUrl { get; internal set; }
+        public string Name { get; internal set; }
+        public string SvgUrl { get; internal set; }
+
+        internal RestBadge(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
+
+        ITwitchClient IEntity.Client
+            => Client;
     }
 }

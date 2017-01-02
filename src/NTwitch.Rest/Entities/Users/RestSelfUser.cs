@@ -1,25 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestSelfUser : RestEntity, ISelfUser
+    public class RestSelfUser : IEntity, ISelfUser
     {
-        public string Bio { get; }
-        public DateTime CreatedAt { get; }
-        public string DisplayName { get; }
-        public string Email { get; }
-        public bool IsPartnered { get; }
-        public bool IsTwitterConnected { get; }
-        public bool IsVerified { get; }
-        public string LogoUrl { get; }
-        public string Name { get; }
-        public TwitchNotifications Notifications { get; }
-        public string Type { get; }
-        public DateTime UpdatedAt { get; }
-        
-        public RestSelfUser(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string Bio { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public string DisplayName { get; internal set; }
+        public string Email { get; internal set; }
+        public bool IsPartnered { get; internal set; }
+        public bool IsTwitterConnected { get; internal set; }
+        public bool IsVerified { get; internal set; }
+        public string LogoUrl { get; internal set; }
+        public string Name { get; internal set; }
+        public TwitchNotifications Notifications { get; internal set; }
+        public string Type { get; internal set; }
+        public DateTime UpdatedAt { get; internal set; }
+
+        internal RestSelfUser(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
         public Task<RestBlockedUser> BlockAsync()
         {
@@ -77,7 +84,8 @@ namespace NTwitch.Rest
         }
 
         //ISelfUser
-
+        ITwitchClient IEntity.Client
+            => Client;
         async Task<IEnumerable<IEmoteSet>> ISelfUser.GetEmotesAsync()
             => await GetEmotesAsync();
         async Task<IChannelSubscription> ISelfUser.GetSubscriptionAsync(ulong channelid)

@@ -4,10 +4,10 @@
         "emitEntryPoint": true
     },
 
-    "dependencies": {
-        "Microsoft.NETCore.App": "1.1.0",
-        "NTwitch": "0.0.1-*"
-    },
+  "dependencies": {
+    "Microsoft.NETCore.App": "1.1.0",
+    "NTwitch.Chat": "0.0.1-*"
+  },
 
     "runtimes": {
         "win7-x64": {},

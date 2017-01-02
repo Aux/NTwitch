@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestUser : RestEntity, IUser
+    public class RestUser : IEntity, IUser
     {
-        public string Bio { get; }
-        public DateTime CreatedAt { get; }
-        public string DisplayName { get; }
-        public string LogoUrl { get; }
-        public string Name { get; }
-        public string Type { get; }
-        public DateTime UpdatedAt { get; }
-        
-        public RestUser(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string Bio { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public string DisplayName { get; internal set; }
+        public string LogoUrl { get; internal set; }
+        public string Name { get; internal set; }
+        public string Type { get; internal set; }
+        public DateTime UpdatedAt { get; internal set; }
+
+        internal RestUser(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
         public Task<RestBlockedUser> BlockAsync()
         {
@@ -37,7 +44,8 @@ namespace NTwitch.Rest
         }
 
         //IUser
-
+        ITwitchClient IEntity.Client
+            => Client;
         async Task<IEnumerable<IChannelFollow>> IUser.GetFollowsAsync(SortMode mode, SortDirection direction, TwitchPageOptions options)
             => await GetFollowsAsync(mode, direction, options);
         async Task<IChannelFollow> IUser.GetFollowAsync(ulong userid)

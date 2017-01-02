@@ -1,22 +1,30 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestStream : RestEntity, IStream
+    public class RestStream : IEntity, IStream
     {
-        public double AverageFps { get; }
-        public RestChannel Channel { get; }
-        public DateTime CreatedAt { get; }
-        public int Delay { get; }
-        public string Game { get; }
-        public bool IsPlaylist { get; }
-        public TwitchImage Preview { get; }
-        public int VideoHeight { get; }
-        public int Viewers { get; }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public double AverageFps { get; internal set; }
+        public RestChannel Channel { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public int Delay { get; internal set; }
+        public string Game { get; internal set; }
+        public bool IsPlaylist { get; internal set; }
+        public TwitchImage Preview { get; internal set; }
+        public int VideoHeight { get; internal set; }
+        public int Viewers { get; internal set; }
 
-        public RestStream(TwitchRestClient client, ulong id) : base(client, id) { }
+        internal RestStream(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
-        //IStream
+        ITwitchClient IEntity.Client
+            => Client;
         IChannel IStream.Channel
             => Channel;
     }

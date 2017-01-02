@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestPostComment : RestEntity, IPostComment
+    public class RestPostComment : IEntity, IPostComment
     {
-        public string Body { get; }
-        public DateTime CreatedAt { get; }
-        public IEnumerable<IEmote> Emotes { get; }
-        public bool IsDeleted { get; }
-        public IPostPermissions Permissions { get; }
-        public IEnumerable<IPostReaction> Reactions { get; }
-        public IUser User { get; }
-        
-        public RestPostComment(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string Body { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public IEnumerable<IEmote> Emotes { get; internal set; }
+        public bool IsDeleted { get; internal set; }
+        public IPostPermissions Permissions { get; internal set; }
+        public IEnumerable<IPostReaction> Reactions { get; internal set; }
+        public IUser User { get; internal set; }
+
+        internal RestPostComment(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
         public Task CreateReactionAsync(ulong emoteid)
         {
@@ -27,6 +34,8 @@ namespace NTwitch.Rest
         }
 
         //IPostComment
+        ITwitchClient IEntity.Client
+            => Client;
         IEnumerable<IEmote> IPostComment.Emotes
             => Emotes;
         IPostPermissions IPostComment.Permissions

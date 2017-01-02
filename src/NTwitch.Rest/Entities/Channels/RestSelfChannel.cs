@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
     public class RestSelfChannel : RestChannel, ISelfChannel
     {
-        public string Email { get; }
-        public string StreamKey { get; }
-        
-        internal RestSelfChannel(TwitchRestClient client, ulong id) : base(client, id) { }
+        public string Email { get; internal set; }
+        public string StreamKey { get; internal set; }
+
+        internal RestSelfChannel(ITwitchClient client) : base(client) { }
 
         public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
         {
@@ -53,6 +55,8 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
+        ITwitchClient IEntity.Client
+            => Client;
         async Task<IPost> ISelfChannel.CreatePostAsync(Action<CreatePostParams> args)
             => await CreatePostAsync(args);
         async Task<IPost> ISelfChannel.DeletePostAsync(ulong postid)

@@ -1,30 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestChannel : RestEntity, IChannel
+    public class RestChannel : IEntity, IChannel
     {
-        public string BroadcasterLanguage { get; }
-        public DateTime CreatedAt { get; }
-        public string DisplayName { get; }
-        public int FollowerCount { get; }
-        public string Game { get; }
-        public string Language { get; }
-        public string LogoUrl { get; }
-        public bool IsMature { get; }
-        public string Name { get; }
-        public bool IsPartner { get; }
-        public string ProfileBannerUrl { get; }
-        public string ProfileBackgroundColor { get; }
-        public string Status { get; }
-        public DateTime UpdatedAt { get; }
-        public string Url { get; }
-        public string VideoBannerUrl { get; }
-        public int ViewCount { get; }
-        
-        internal RestChannel(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string BroadcasterLanguage { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public string DisplayName { get; internal set; }
+        public int FollowerCount { get; internal set; }
+        public string Game { get; internal set; }
+        public string Language { get; internal set; }
+        public string LogoUrl { get; internal set; }
+        public bool IsMature { get; internal set; }
+        public string Name { get; internal set; }
+        public bool IsPartner { get; internal set; }
+        public string ProfileBannerUrl { get; internal set; }
+        public string ProfileBackgroundColor { get; internal set; }
+        public string Status { get; internal set; }
+        public DateTime UpdatedAt { get; internal set; }
+        public string Url { get; internal set; }
+        public string VideoBannerUrl { get; internal set; }
+        public int ViewCount { get; internal set; }
+
+        internal RestChannel(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
         public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, TwitchPageOptions options = null)
         {
@@ -87,6 +94,8 @@ namespace NTwitch.Rest
         }
 
         //IChannel
+        ITwitchClient IEntity.Client
+            => Client;
         async Task<IEnumerable<IPost>> IChannel.GetPostsAsync(int comments, TwitchPageOptions options)
             => await GetPostsAsync(comments, options);
         async Task<IPost> IChannel.GetPostAsync(ulong id, int comments)

@@ -1,15 +1,23 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestBlockedUser : RestEntity, IBlockedUser
+    public class RestBlockedUser : IEntity, IBlockedUser
     {
-        public DateTime UpdatedAt { get; }
-        public RestUser User { get; }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public DateTime UpdatedAt { get; internal set; }
+        public RestUser User { get; internal set; }
 
-        public RestBlockedUser(TwitchRestClient client, ulong id) : base(client, id) { }
+        internal RestBlockedUser(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
-        //IBlockedUser
+        ITwitchClient IEntity.Client
+            => Client;
         IUser IBlockedUser.User
             => User;
     }

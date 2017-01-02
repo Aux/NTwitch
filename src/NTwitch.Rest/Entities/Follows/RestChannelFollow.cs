@@ -1,9 +1,12 @@
-﻿namespace NTwitch.Rest
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+namespace NTwitch.Rest
 {
     public class RestChannelFollow : RestFollow, IChannelFollow
     {
-        public IChannel Channel { get; }
+        public IChannel Channel { get; internal set; }
 
-        internal RestChannelFollow(TwitchRestClient client, ulong id) : base(client, id) { }
+        internal RestChannelFollow(ITwitchClient client) : base(client) { }
     }
 }

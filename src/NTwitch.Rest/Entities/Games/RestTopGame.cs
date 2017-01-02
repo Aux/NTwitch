@@ -1,14 +1,24 @@
-﻿namespace NTwitch.Rest
+﻿
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+namespace NTwitch.Rest
 {
-    public class RestTopGame : RestEntity, ITopGame
+    public class RestTopGame : IEntity, ITopGame
     {
-        public int Channels { get; }
-        public RestGame Game { get; }
-        public int Viewers { get; }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public int Channels { get; internal set; }
+        public RestGame Game { get; internal set; }
+        public int Viewers { get; internal set; }
 
-        public RestTopGame(TwitchRestClient client, ulong id) : base(client, id) { }
+        internal RestTopGame(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
-        //IGame
+        ITwitchClient IEntity.Client
+            => Client;
         IGame ITopGame.Game
             => Game;
     }

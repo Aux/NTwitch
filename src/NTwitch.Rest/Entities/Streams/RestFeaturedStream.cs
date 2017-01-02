@@ -1,18 +1,27 @@
-﻿namespace NTwitch.Rest
-{
-    public class RestFeaturedStream : RestEntity, IFeaturedStream
-    {
-        public string ImageUrl { get; }
-        public bool IsScheduled { get; }
-        public bool IsSponsored { get; }
-        public int Priority { get; }
-        public RestStream Stream { get; }
-        public string Text { get; }
-        public string Title { get; }
-        
-        public RestFeaturedStream(TwitchRestClient client, ulong id) : base(client, id) { }
+﻿using System.Runtime.CompilerServices;
 
-        //IFeaturedStream
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+namespace NTwitch.Rest
+{
+    public class RestFeaturedStream : IEntity, IFeaturedStream
+    {
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string ImageUrl { get; internal set; }
+        public bool IsScheduled { get; internal set; }
+        public bool IsSponsored { get; internal set; }
+        public int Priority { get; internal set; }
+        public RestStream Stream { get; internal set; }
+        public string Text { get; internal set; }
+        public string Title { get; internal set; }
+
+        internal RestFeaturedStream(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
+
+        ITwitchClient IEntity.Client
+            => Client;
         IStream IFeaturedStream.Stream
             => Stream;
     }

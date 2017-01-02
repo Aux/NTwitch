@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
 namespace NTwitch.Rest
 {
-    public class RestPost : RestEntity, IPost
+    public class RestPost : IEntity, IPost
     {
-        public string Body { get; }
-        public IEnumerable<RestPostComment> Comments { get; }
-        public DateTime CreatedAt { get; }
-        public IEnumerable<RestPostEmote> Emotes { get; }
-        public bool IsDeleted { get; }
-        public RestPostPermissions Permissions { get; }
-        public IEnumerable<RestPostReaction> Reactions { get; }
-        public RestUser User { get; }
-        
-        public RestPost(TwitchRestClient client, ulong id) : base(client, id) { }
+        public TwitchRestClient Client { get; }
+        public ulong Id { get; internal set; }
+        public string Body { get; internal set; }
+        public IEnumerable<RestPostComment> Comments { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
+        public IEnumerable<RestPostEmote> Emotes { get; internal set; }
+        public bool IsDeleted { get; internal set; }
+        public RestPostPermissions Permissions { get; internal set; }
+        public IEnumerable<RestPostReaction> Reactions { get; internal set; }
+        public RestUser User { get; internal set; }
+
+        internal RestPost(ITwitchClient client)
+        {
+            Client = client as TwitchRestClient;
+        }
 
         public Task<RestPostComment> CreateCommentAsync(string content)
         {
@@ -50,6 +56,8 @@ namespace NTwitch.Rest
 
         //IPost
 
+        ITwitchClient IEntity.Client
+            => Client;
         IEnumerable<IPostComment> IPost.Comments
             => Comments;
         IEnumerable<IPostEmote> IPost.Emotes
