@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
     public partial class TwitchPubsubClient : ITwitchClient
     {
@@ -13,6 +13,16 @@ namespace NTwitch.WebSocket
         public TwitchPubsubClient(TwitchPubsubConfig config)
         {
             SocketUrl = config.SocketUrl;
+        }
+
+        public Task<ISelfUser> GetCurrentUserAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ISelfChannel> GetCurrentChannelAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public Task<IChannel> GetChannelAsync(ulong id)
@@ -80,9 +90,19 @@ namespace NTwitch.WebSocket
             throw new NotImplementedException();
         }
 
+        public Task<IUser> GetUserAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         // ITwitchClient
         public ConnectionState ConnectionState { get; } = ConnectionState.Disconnected;
-
+        
         public Task LoginAsync(string clientid, string token = null)
         {
             throw new NotImplementedException();
@@ -98,6 +118,10 @@ namespace NTwitch.WebSocket
             throw new NotImplementedException();
         }
 
+        async Task<ISelfUser> ITwitchClient.GetCurrentUserAsync()
+            => await GetCurrentUserAsync();
+        async Task<ISelfChannel> ITwitchClient.GetCurrentChannelAsync()
+            => await GetCurrentChannelAsync();
         async Task<IChannel> ITwitchClient.GetChannelAsync(ulong id)
             => await GetChannelAsync(id);
         async Task<IEnumerable<ITopGame>> ITwitchClient.GetTopGamesAsync(TwitchPageOptions options)
@@ -124,5 +148,9 @@ namespace NTwitch.WebSocket
             => await GetTeamAsync(name);
         async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
             => await GetUserAsync(id);
+        async Task<IUser> ITwitchClient.GetUserAsync(string name)
+            => await GetUserAsync(name);
+        async Task<IEnumerable<IVideo>> ITwitchClient.GetTopVideosAsync(string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
+            => await GetTopVideosAsync(game, period, type, options);
     }
 }

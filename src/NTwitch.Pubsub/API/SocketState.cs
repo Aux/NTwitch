@@ -2,9 +2,9 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    public class PubsubState : IDisposable
+    public class SocketState : IDisposable
     {
         public int BufferSize { get; set; }
         public byte[] Buffer { get; set; }

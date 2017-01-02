@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    internal class PubsubApiClient : IDisposable
+    internal class SocketApiClient : IDisposable
     {
         private LogManager _log;
         private SocketState _state;
