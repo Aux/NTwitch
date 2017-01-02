@@ -9,7 +9,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Rest", "src\NTwitch
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.xproj", "{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Pubsub", "src\NTwitch.WebSocket\NTwitch.Pubsub.xproj", "{97D240ED-383D-49C9-A75C-F18A4514422C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.xproj", "{97D240ED-383D-49C9-A75C-F18A4514422C}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.xproj", "{C0E9A312-D4FF-4630-96FB-518C58C4CEE7}"
 EndProject
