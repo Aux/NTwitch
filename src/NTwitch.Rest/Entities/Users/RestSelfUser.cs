@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -9,18 +10,31 @@ namespace NTwitch.Rest
     public class RestSelfUser : IEntity, ISelfUser
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("_id")]
         public ulong Id { get; internal set; }
+        [JsonProperty("bio")]
         public string Bio { get; internal set; }
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("display_name")]
         public string DisplayName { get; internal set; }
+        [JsonProperty("email")]
         public string Email { get; internal set; }
+        [JsonProperty("partnered")]
         public bool IsPartnered { get; internal set; }
+        [JsonProperty("twitter_connected")]
         public bool IsTwitterConnected { get; internal set; }
+        [JsonProperty("email_verified")]
         public bool IsVerified { get; internal set; }
+        [JsonProperty("logo")]
         public string LogoUrl { get; internal set; }
+        [JsonProperty("name")]
         public string Name { get; internal set; }
+        [JsonProperty("notifications")]
         public TwitchNotifications Notifications { get; internal set; }
+        [JsonProperty("type")]
         public string Type { get; internal set; }
+        [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
 
         internal RestSelfUser(ITwitchClient client)

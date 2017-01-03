@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -8,7 +9,9 @@ namespace NTwitch.Rest
 {
     public class RestSelfChannel : RestChannel, ISelfChannel
     {
+        [JsonProperty("email")]
         public string Email { get; internal set; }
+        [JsonProperty("stream_key")]
         public string StreamKey { get; internal set; }
 
         internal RestSelfChannel(ITwitchClient client) : base(client) { }
