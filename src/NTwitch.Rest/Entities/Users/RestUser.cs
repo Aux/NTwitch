@@ -1,21 +1,30 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+
 namespace NTwitch.Rest
 {
     public class RestUser : IEntity, IUser
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("_id")]
         public ulong Id { get; internal set; }
+        [JsonProperty("bio")]
         public string Bio { get; internal set; }
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("display_name")]
         public string DisplayName { get; internal set; }
+        [JsonProperty("logo")]
         public string LogoUrl { get; internal set; }
+        [JsonProperty("name")]
         public string Name { get; internal set; }
+        [JsonProperty("type")]
         public string Type { get; internal set; }
+        [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
 
         internal RestUser(ITwitchClient client)

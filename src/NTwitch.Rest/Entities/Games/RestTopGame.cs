@@ -1,7 +1,7 @@
 ﻿
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+
 namespace NTwitch.Rest
 {
     public class RestTopGame : IEntity, ITopGame

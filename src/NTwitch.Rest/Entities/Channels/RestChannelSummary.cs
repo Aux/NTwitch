@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+
 namespace NTwitch.Rest
 {
     public class RestChannelSummary : IEntity, IChannelSummary

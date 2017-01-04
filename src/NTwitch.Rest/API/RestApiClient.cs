@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    internal class RestApiClient : IDisposable
+    public class RestApiClient : IDisposable
     {
         private LogManager _log;
         private HttpClient _http;
@@ -28,7 +28,7 @@ namespace NTwitch.Rest
                 var http = new HttpClient();
 
                 http.BaseAddress = new Uri(_baseurl);
-                http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v2+json");
+                http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
                 http.DefaultRequestHeaders.Add("Client-ID", _clientid);
 
                 if (string.IsNullOrWhiteSpace(_token))
@@ -50,7 +50,7 @@ namespace NTwitch.Rest
             return request;
         }
 
-        internal async Task SendAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
+        public async Task SendAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
         {
             var start = DateTime.UtcNow;
             var request = BuildRequest(method, endpoint, options, payload);
@@ -61,7 +61,7 @@ namespace NTwitch.Rest
             await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
         }
 
-        internal async Task<T> SendAsync<T>(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
+        public async Task<T> SendAsync<T>(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
         {
             var start = DateTime.UtcNow;
             var request = BuildRequest(method, endpoint, options, payload);
@@ -73,6 +73,21 @@ namespace NTwitch.Rest
             double total = (DateTime.UtcNow - start).TotalMilliseconds;
             await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
             return JsonConvert.DeserializeObject<T>(content);
+        }
+
+        public async Task<string> GetJsonAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
+        {
+            var start = DateTime.UtcNow;
+            var request = BuildRequest(method, endpoint, options, payload);
+            var response = await _http.SendAsync(request);
+            
+            response.EnsureSuccessStatusCode();
+            string content = await response.Content.ReadAsStringAsync();
+
+            double total = (DateTime.UtcNow - start).TotalMilliseconds;
+            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
+            await _log.DebugAsync("RestApiClient", content);
+            return content;
         }
 
         internal async Task<TwitchValidation> LoginAsync(string token)

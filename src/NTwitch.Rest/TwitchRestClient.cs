@@ -8,6 +8,9 @@ namespace NTwitch.Rest
     {
         private RestApiClient _rest;
         private LogManager _log;
+        public RestApiClient ApiClient
+            => _rest;
+
         public string BaseUrl { get; }
 
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
@@ -22,20 +25,14 @@ namespace NTwitch.Rest
         private async Task OnLogReceived(LogMessage msg)
             => await _logEvent.InvokeAsync(msg);
 
-        public Task<RestSelfUser> GetCurrentUserAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestSelfUser> GetCurrentUserAsync()
+            => await ClientHelper.GetCurrentUserAsync(this);
 
-        public Task<RestSelfChannel> GetCurrentChannelAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestSelfChannel> GetCurrentChannelAsync()
+            => await ClientHelper.GetCurrentChannelAsync(this);
 
-        public Task<RestChannel> GetChannelAsync(ulong id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestChannel> GetChannelAsync(ulong id)
+            => await ClientHelper.GetChannelAsync(this, id);
 
         public Task<IEnumerable<RestTopGame>> GetTopGamesAsync(TwitchPageOptions options = null)
         {
@@ -92,15 +89,11 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<RestUser> GetUserAsync(ulong id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestUser> GetUserAsync(ulong id)
+            => await ClientHelper.GetUserAsync(this, id);
 
-        public Task<RestUser> GetUserAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestUser> GetUserAsync(string name)
+            => await ClientHelper.GetUserAsync(this, name);
 
         public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
         {

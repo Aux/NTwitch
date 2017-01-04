@@ -1,6 +1,5 @@
 ﻿using NTwitch.Rest;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Test
@@ -14,25 +13,20 @@ namespace NTwitch.Test
 
         public async Task Start()
         {
-            await Task.Delay(1);
-            //string clientid = "";
+            string clientid = "";
 
-            //_client = new TwitchRestClient(new TwitchRestConfig()
-            //{
-            //    LogLevel = LogLevel.Debug
-            //});
+            _client = new TwitchRestClient(new TwitchRestConfig()
+            {
+                LogLevel = LogLevel.Debug
+            });
 
-            //_client.Log += (l) => Task.Run(() =>
-            //{
-            //    Console.WriteLine(l);
-            //});
+            _client.Log += (l) => Task.Run(() =>
+            {
+                Console.WriteLine(l);
+            });
 
-            //await _client.LoginAsync(clientid);
-
-            //var top = await _client.GetTopGamesAsync();
-
-            //foreach (var g in top.Games)
-            //    Console.WriteLine($"{g.Game.Name}\n{g.Channels}c\t{g.Viewers}v");
+            await _client.LoginAsync(clientid);
+            var user = await _client.GetUserAsync("AuxesisTV");
             
             Console.ReadKey();
         }

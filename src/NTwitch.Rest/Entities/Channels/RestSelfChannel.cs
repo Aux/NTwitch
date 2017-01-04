@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("NTwitch.Pubsub")]
+
 namespace NTwitch.Rest
 {
     public class RestSelfChannel : RestChannel, ISelfChannel
