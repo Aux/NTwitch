@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
 {
-    internal class SocketApiClient : IDisposable
+    public class SocketApiClient : IDisposable
     {
         private LogManager _log;
         private SocketState _state;
@@ -15,6 +18,44 @@ namespace NTwitch.Pubsub
             _log = manager;
             _baseurl = baseurl;
             _port = port;
+        }
+
+        private readonly AsyncEvent<Func<LogMessage, Task>> _messageReceivedEvent = new AsyncEvent<Func<LogMessage, Task>>();
+        public event Func<LogMessage, Task> MessageReceived
+        {
+            add { _messageReceivedEvent.Add(value); }
+            remove { _messageReceivedEvent.Remove(value); }
+        }
+
+        public async Task SendAsync(string json)
+        {
+
+        }
+
+        public Task SendHeartbeatAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReconnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task LoginAsync()
+        {
+            await _state.ConnectAsync(_baseurl, _port);
+            await _state.PingAsync();
+        }
+
+        public Task ConnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DisconnectAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()
