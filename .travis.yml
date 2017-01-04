@@ -14,8 +14,10 @@ deploy:
 #    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
 branches:
   only:
-  - master
+#  - master
   - dev
 script:
   - dotnet restore
-  - dotnet build */**/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch.Core/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch.Rest/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+#  - dotnet build */**/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
