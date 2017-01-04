@@ -6,7 +6,7 @@ namespace NTwitch.Pubsub
 {
     public partial class TwitchPubsubClient : ITwitchClient
     {
-        private SocketApiClient SocketClient { get; }
+        public SocketApiClient SocketClient { get; }
         public string SocketUrl { get; }
 
         public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
