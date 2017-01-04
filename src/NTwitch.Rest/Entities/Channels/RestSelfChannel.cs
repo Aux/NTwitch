@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
 
 namespace NTwitch.Rest
 {
@@ -14,7 +12,14 @@ namespace NTwitch.Rest
         [JsonProperty("stream_key")]
         public string StreamKey { get; internal set; }
 
-        internal RestSelfChannel(ITwitchClient client) : base(client) { }
+        internal RestSelfChannel(TwitchRestClient client) : base(client) { }
+
+        public static new RestSelfChannel Create(TwitchRestClient client, string json)
+        {
+            var channel = new RestSelfChannel(client);
+            JsonConvert.PopulateObject(json, channel);
+            return channel;
+        }
 
         public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
         {

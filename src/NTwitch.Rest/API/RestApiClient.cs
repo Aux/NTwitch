@@ -60,21 +60,7 @@ namespace NTwitch.Rest
             double total = (DateTime.UtcNow - start).TotalMilliseconds;
             await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
         }
-
-        public async Task<T> SendAsync<T>(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
-        {
-            var start = DateTime.UtcNow;
-            var request = BuildRequest(method, endpoint, options, payload);
-            var response = await _http.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-            string content = await response.Content.ReadAsStringAsync();
-            
-            double total = (DateTime.UtcNow - start).TotalMilliseconds;
-            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
-            return JsonConvert.DeserializeObject<T>(content);
-        }
-
+        
         public async Task<string> GetJsonAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
         {
             var start = DateTime.UtcNow;
@@ -86,18 +72,14 @@ namespace NTwitch.Rest
 
             double total = (DateTime.UtcNow - start).TotalMilliseconds;
             await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
-            await _log.DebugAsync("RestApiClient", content);
             return content;
         }
 
         internal async Task<TwitchValidation> LoginAsync(string token)
         {
-            var validation = await SendAsync<TwitchValidation>("POST", "oauth2/token");
-
-            if (!validation.IsValid)
-                throw new HttpRequestException("Token is not valid.");
-            else
-                return validation;
+            _token = token;
+            await Task.Delay(1);
+            return null;
         }
 
         public void Dispose()

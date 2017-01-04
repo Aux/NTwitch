@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
 
 namespace NTwitch.Rest
 {
@@ -27,11 +25,18 @@ namespace NTwitch.Rest
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
 
-        internal RestUser(ITwitchClient client)
+        internal RestUser(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
+        public static RestUser Create(TwitchRestClient client, string json)
+        {
+            var user = new RestUser(client);
+            JsonConvert.PopulateObject(json, user);
+            return user;
+        }
+        
         public Task<RestBlockedUser> BlockAsync()
         {
             throw new NotImplementedException();

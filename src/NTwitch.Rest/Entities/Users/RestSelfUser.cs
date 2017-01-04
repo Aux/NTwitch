@@ -37,9 +37,16 @@ namespace NTwitch.Rest
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
 
-        internal RestSelfUser(ITwitchClient client)
+        internal RestSelfUser(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
+        }
+
+        public static RestSelfUser Create(TwitchRestClient client, string json)
+        {
+            var user = new RestSelfUser(client);
+            JsonConvert.PopulateObject(json, user);
+            return user;
         }
 
         public Task<RestBlockedUser> BlockAsync()

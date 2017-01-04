@@ -1,5 +1,7 @@
 ﻿using NTwitch.Rest;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Test
@@ -26,7 +28,11 @@ namespace NTwitch.Test
             });
 
             await _client.LoginAsync(clientid);
-            var user = await _client.GetUserAsync("AuxesisTV");
+            var user = await _client.GetUserAsync(123);
+
+            var properties = user.GetType().GetTypeInfo().GetProperties();
+            foreach (var p in properties)
+                Console.WriteLine(p.GetValue(user));
             
             Console.ReadKey();
         }

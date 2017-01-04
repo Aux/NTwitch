@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
 
 namespace NTwitch.Rest
 {
@@ -47,9 +45,16 @@ namespace NTwitch.Rest
         [JsonProperty("views")]
         public int ViewCount { get; internal set; }
 
-        internal RestChannel(ITwitchClient client)
+        internal RestChannel(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
+        }
+
+        public static RestChannel Create(TwitchRestClient client, string json)
+        {
+            var channel = new RestChannel(client);
+            JsonConvert.PopulateObject(json, channel);
+            return channel;
         }
 
         public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, TwitchPageOptions options = null)

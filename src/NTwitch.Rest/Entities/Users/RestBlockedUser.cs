@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
+using System;
 
 namespace NTwitch.Rest
 {
@@ -11,9 +10,16 @@ namespace NTwitch.Rest
         public DateTime UpdatedAt { get; internal set; }
         public RestUser User { get; internal set; }
 
-        internal RestBlockedUser(ITwitchClient client)
+        internal RestBlockedUser(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
+        }
+
+        public static RestBlockedUser Create(TwitchRestClient client, string json)
+        {
+            var user = new RestBlockedUser(client);
+            JsonConvert.PopulateObject(json, user);
+            return user;
         }
 
         ITwitchClient IEntity.Client

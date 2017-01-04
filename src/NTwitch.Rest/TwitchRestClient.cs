@@ -92,8 +92,10 @@ namespace NTwitch.Rest
         public async Task<RestUser> GetUserAsync(ulong id)
             => await ClientHelper.GetUserAsync(this, id);
 
-        public async Task<RestUser> GetUserAsync(string name)
-            => await ClientHelper.GetUserAsync(this, name);
+        public Task<IEnumerable<RestUser>> FindUsersAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
         {
@@ -149,8 +151,8 @@ namespace NTwitch.Rest
             => await GetTeamAsync(name);
         async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
             => await GetUserAsync(id);
-        async Task<IUser> ITwitchClient.GetUserAsync(string name)
-            => await GetUserAsync(name);
+        async Task<IEnumerable<IUser>> ITwitchClient.FindUsersAsync(string name)
+            => await FindUsersAsync(name);
         async Task<IEnumerable<IVideo>> ITwitchClient.GetTopVideosAsync(string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
             => await GetTopVideosAsync(game, period, type, options);
     }

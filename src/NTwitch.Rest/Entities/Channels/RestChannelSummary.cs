@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Runtime.CompilerServices;
-
 
 namespace NTwitch.Rest
 {
@@ -14,9 +12,16 @@ namespace NTwitch.Rest
         [JsonProperty("name")]
         public string Name { get; internal set; }
 
-        internal RestChannelSummary(ITwitchClient client)
+        internal RestChannelSummary(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
+        }
+
+        public static RestChannelSummary Create(TwitchRestClient client, string json)
+        {
+            var channel = new RestChannelSummary(client);
+            JsonConvert.PopulateObject(json, channel);
+            return channel;
         }
 
         ITwitchClient IEntity.Client

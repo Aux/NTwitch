@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubChannel : RestChannel
+    public class PubsubChannel
     {
-        public new TwitchPubsubClient Client { get; }
-
-        internal PubsubChannel(ITwitchClient client) : base(client)
-        {
-            Client = client as TwitchPubsubClient;
-        }
+        public TwitchPubsubClient Client { get; }
+        
     }
 }

@@ -22,7 +22,7 @@ namespace NTwitch
         Task<IEnumerable<ITeam>> GetTeamAsync(string name);
         Task<ISelfUser> GetCurrentUserAsync();
         Task<IUser> GetUserAsync(ulong userid);
-        Task<IUser> GetUserAsync(string name);
+        Task<IEnumerable<IUser>> FindUsersAsync(string name);
         Task<IEnumerable<IVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null);
     }
 }

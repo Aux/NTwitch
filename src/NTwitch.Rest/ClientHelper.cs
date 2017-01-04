@@ -1,49 +1,31 @@
-﻿using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System;
+﻿using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        public static async Task<RestSelfUser> GetCurrentUserAsync(ITwitchClient client)
+        public static async Task<RestSelfUser> GetCurrentUserAsync(TwitchRestClient client)
         {
-            var user = new RestSelfUser(client);
-            var json = await user.Client.ApiClient.GetJsonAsync("GET", "/user");
-            JsonConvert.PopulateObject(json, user);
-            return user;
+            var json = await client.ApiClient.GetJsonAsync("GET", "user");
+            return RestSelfUser.Create(client, json);
         }
 
-        public static async Task<RestSelfChannel> GetCurrentChannelAsync(ITwitchClient client)
+        public static async Task<RestSelfChannel> GetCurrentChannelAsync(TwitchRestClient client)
         {
-            var channel = new RestSelfChannel(client);
-            var json = await channel.Client.ApiClient.GetJsonAsync("GET", "/channels");
-            JsonConvert.PopulateObject(json, channel);
-            return channel;
+            var json = await client.ApiClient.GetJsonAsync("GET", "channels");
+            return RestSelfChannel.Create(client, json);
         }
 
-        public static async Task<RestChannel> GetChannelAsync(ITwitchClient client, ulong id)
+        public static async Task<RestChannel> GetChannelAsync(TwitchRestClient client, ulong id)
         {
-            var channel = new RestChannel(client);
-            var json = await channel.Client.ApiClient.GetJsonAsync("GET", "/channels/" + id);
-            JsonConvert.PopulateObject(json, channel);
-            return channel;
+            var json = await client.ApiClient.GetJsonAsync("GET", "channels/" + id);
+            return RestChannel.Create(client, json);
         }
 
-        public static async Task<RestUser> GetUserAsync(ITwitchClient client, ulong id)
+        public static async Task<RestUser> GetUserAsync(TwitchRestClient client, ulong id)
         {
-            var user = new RestUser(client);
-            var json = await user.Client.ApiClient.GetJsonAsync("GET", "/users/" + id);
-            JsonConvert.PopulateObject(json, user);
-            return user;
-        }
-
-        public static async Task<RestUser> GetUserAsync(ITwitchClient client, string name)
-        {
-            var user = new RestUser(client);
-            var json = await user.Client.ApiClient.GetJsonAsync("GET", "/users?login=" + name);
-            JsonConvert.PopulateObject(json, user);
-            return user;
+            var json = await client.ApiClient.GetJsonAsync("GET", "users/" + id);
+            return RestUser.Create(client, json);
         }
     }
 }
