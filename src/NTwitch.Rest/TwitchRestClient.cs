@@ -44,10 +44,8 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, TwitchPageOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestChannel>> FindChannelsAsync(string query, TwitchPageOptions options = null)
+            => await ClientHelper.FindChannelsAsync(this, query, options);
 
         public Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool islive = true)
         {
@@ -92,10 +90,8 @@ namespace NTwitch.Rest
         public async Task<RestUser> GetUserAsync(ulong id)
             => await ClientHelper.GetUserAsync(this, id);
 
-        public Task<IEnumerable<RestUser>> FindUsersAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestUser>> FindUsersAsync(string name)
+            => await ClientHelper.FindUsersAsync(this, name);
 
         public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
         {

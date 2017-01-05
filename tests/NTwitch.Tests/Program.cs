@@ -28,11 +28,12 @@ namespace NTwitch.Test
             });
 
             await _client.LoginAsync(clientid);
-            var user = await _client.GetUserAsync(123);
+            var channels = await _client.FindChannelsAsync("Overwatch");
+            Console.WriteLine(channels.Count());
 
-            var properties = user.GetType().GetTypeInfo().GetProperties();
-            foreach (var p in properties)
-                Console.WriteLine(p.GetValue(user));
+            //var properties = channel.GetType().GetTypeInfo().GetProperties();
+            //foreach (var p in properties)
+            //    Console.WriteLine(p.GetValue(channel));
             
             Console.ReadKey();
         }

@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -38,10 +40,13 @@ namespace NTwitch.Rest
             }
         }
 
-        private HttpRequestMessage BuildRequest(string method, string endpoint, TwitchPageOptions options, object payload)
+        private HttpRequestMessage BuildRequest(string method, string endpoint, object payload, Dictionary<string, string> parameters)
         {
             EnsureHttpClientCreated();
-            endpoint += options?.ToString();
+            if (parameters != null)
+                endpoint += ParseQuery(parameters);
+            var builder = new UriBuilder(endpoint);
+            
             var request = new HttpRequestMessage(new HttpMethod(method), endpoint);
 
             if (payload != null)
@@ -50,10 +55,10 @@ namespace NTwitch.Rest
             return request;
         }
 
-        public async Task SendAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
+        public async Task SendAsync(string method, string endpoint, object payload = null, Dictionary<string, string> parameters = null)
         {
             var start = DateTime.UtcNow;
-            var request = BuildRequest(method, endpoint, options, payload);
+            var request = BuildRequest(method, endpoint, payload, parameters);
             var response = await _http.SendAsync(request);
             
             response.EnsureSuccessStatusCode();
@@ -61,10 +66,10 @@ namespace NTwitch.Rest
             await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
         }
         
-        public async Task<string> GetJsonAsync(string method, string endpoint, TwitchPageOptions options = null, object payload = null)
+        public async Task<string> GetJsonAsync(string method, string endpoint, object payload = null, Dictionary<string, string> parameters = null)
         {
             var start = DateTime.UtcNow;
-            var request = BuildRequest(method, endpoint, options, payload);
+            var request = BuildRequest(method, endpoint, payload, parameters);
             var response = await _http.SendAsync(request);
             
             response.EnsureSuccessStatusCode();
@@ -80,6 +85,23 @@ namespace NTwitch.Rest
             _token = token;
             await Task.Delay(1);
             return null;
+        }
+
+        internal string ParseQuery(Dictionary<string, string> parameters)
+        {
+            var builder = new StringBuilder();
+            foreach (var p in parameters)
+            {
+                string name = p.Key.ToLower();
+                string value = p.Value;
+                
+                if (builder.Length < 1)
+                    builder.AppendFormat("?{0}={1}", name, value);
+                else
+                    builder.AppendFormat("&{0}={1}", name, value);
+            }
+
+            return builder.ToString();
         }
 
         public void Dispose()
