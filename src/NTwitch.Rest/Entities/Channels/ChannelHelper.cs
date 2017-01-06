@@ -51,12 +51,17 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
+        internal static Task<RestSelfChannel> ResetStreamKeyAsync(RestSelfChannel restSelfChannel)
+        {
+            throw new NotImplementedException();
+        }
+
         public static Task<RestUserSubscription> GetSubscriberAsync(RestSelfChannel channel, ulong userid)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<Task> StartCommercialAsync(RestSelfChannel channel, int duration)
+        public static Task StartCommercialAsync(RestSelfChannel channel, int duration)
         {
             throw new NotImplementedException();
         }
@@ -87,6 +92,11 @@ namespace NTwitch.Rest
         }
 
         public static Task<RestChannelFollow> UnfollowAsync(RestChannel channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task<IEnumerable<RestEmote>> GetEmotesAsync(RestChannel channel)
         {
             throw new NotImplementedException();
         }

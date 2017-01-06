@@ -45,7 +45,6 @@ namespace NTwitch.Pubsub
         public async Task LoginAsync()
         {
             await _state.ConnectAsync(_baseurl, _port);
-            await _state.PingAsync();
         }
 
         public Task ConnectAsync()
