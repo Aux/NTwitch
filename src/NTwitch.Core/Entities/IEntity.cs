@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace NTwitch
+﻿namespace NTwitch
 {
     public interface IEntity
     {
