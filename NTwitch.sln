@@ -7,8 +7,6 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Core", "src\NTwitch
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Rest", "src\NTwitch.Rest\NTwitch.Rest.xproj", "{218BC111-FC6F-4EFE-ACC1-26B96D66C263}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.xproj", "{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.xproj", "{97D240ED-383D-49C9-A75C-F18A4514422C}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.xproj", "{C0E9A312-D4FF-4630-96FB-518C58C4CEE7}"
@@ -29,10 +27,6 @@ Global
 		{218BC111-FC6F-4EFE-ACC1-26B96D66C263}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{218BC111-FC6F-4EFE-ACC1-26B96D66C263}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{218BC111-FC6F-4EFE-ACC1-26B96D66C263}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4654C3C-DBF6-425A-8E7F-491C9980D2B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97D240ED-383D-49C9-A75C-F18A4514422C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97D240ED-383D-49C9-A75C-F18A4514422C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97D240ED-383D-49C9-A75C-F18A4514422C}.Release|Any CPU.ActiveCfg = Release|Any CPU
