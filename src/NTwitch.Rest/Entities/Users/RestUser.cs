@@ -30,9 +30,9 @@ namespace NTwitch.Rest
             Client = client;
         }
 
-        public static RestUser Create(TwitchRestClient client, string json)
+        public static RestUser Create(BaseTwitchClient client, string json)
         {
-            var user = new RestUser(client);
+            var user = new RestUser(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, user);
             return user;
         }

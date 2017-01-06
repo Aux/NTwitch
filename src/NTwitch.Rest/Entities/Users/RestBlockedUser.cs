@@ -15,9 +15,9 @@ namespace NTwitch.Rest
             Client = client;
         }
 
-        public static RestBlockedUser Create(TwitchRestClient client, string json)
+        public static RestBlockedUser Create(BaseTwitchClient client, string json)
         {
-            var user = new RestBlockedUser(client);
+            var user = new RestBlockedUser(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, user);
             return user;
         }

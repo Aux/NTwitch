@@ -14,9 +14,9 @@ namespace NTwitch.Rest
 
         internal RestSelfChannel(TwitchRestClient client) : base(client) { }
 
-        public static new RestSelfChannel Create(TwitchRestClient client, string json)
+        public static new RestSelfChannel Create(BaseTwitchClient client, string json)
         {
-            var channel = new RestSelfChannel(client);
+            var channel = new RestSelfChannel(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }

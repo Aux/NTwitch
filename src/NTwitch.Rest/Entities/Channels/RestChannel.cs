@@ -50,9 +50,9 @@ namespace NTwitch.Rest
             Client = client;
         }
 
-        public static RestChannel Create(TwitchRestClient client, string json)
+        public static RestChannel Create(BaseTwitchClient client, string json)
         {
-            var channel = new RestChannel(client);
+            var channel = new RestChannel(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }
