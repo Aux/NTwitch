@@ -1,18 +1,19 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
+using System;
 
 namespace NTwitch.Rest
 {
     public class RestSubscription : IEntity, ISubscription
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public DateTime CreatedAt { get; internal set; }
 
-        internal RestSubscription(ITwitchClient client)
+        internal RestSubscription(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
         ITwitchClient IEntity.Client

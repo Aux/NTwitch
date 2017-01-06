@@ -57,65 +57,41 @@ namespace NTwitch.Rest
             return channel;
         }
 
-        public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, TwitchPageOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, TwitchPageOptions options = null)
+            => await ChannelHelper.GetPostsAsync(this, comments, options);
 
-        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestPost> GetPostAsync(ulong id, int comments = 5)
+            => await ChannelHelper.GetPostAsync(this, id, comments);
 
-        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
+            => await ChannelHelper.GetFollowersAsync(this, direction, options);
 
-        public Task<IEnumerable<RestTeam>> GetTeamsAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestTeam>> GetTeamsAsync()
+            => await ChannelHelper.GetTeamsAsync(this);
 
-        public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
+            => await ChannelHelper.GetVideosAsync(this, language, sort, type, options);
 
-        public Task<IEnumerable<RestBadge>> GetBadgesAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestBadge>> GetBadgesAsync()
+            => await ChannelHelper.GetBadgesAsync(this);
 
-        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
+            => await ChannelHelper.GetEmoteSetAsync(this);
 
-        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
+            => await ChannelHelper.GetEmoteSetAsync(this, setid);
 
-        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestEmote>> GetEmotesAsync()
+            => await ChannelHelper.GetEmotesAsync(this);
 
-        public Task<RestStream> GetStreamAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestStream> GetStreamAsync()
+            => await ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
 
-        public Task<RestChannelFollow> FollowAsync(bool notify = false)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestChannelFollow> FollowAsync(bool notify = false)
+            => await ChannelHelper.FollowAsync(this, notify);
 
-        public Task<RestChannelFollow> UnfollowAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestChannelFollow> UnfollowAsync()
+            => await ChannelHelper.UnfollowAsync(this);
 
         //IChannel
         ITwitchClient IEntity.Client

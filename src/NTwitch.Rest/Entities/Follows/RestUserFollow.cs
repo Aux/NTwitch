@@ -1,12 +1,12 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
 
 namespace NTwitch.Rest
 {
     public class RestUserFollow : RestFollow, IUserFollow
     {
+        [JsonProperty("")]
         public IUser User { get; internal set; }
 
-        internal RestUserFollow(ITwitchClient client) : base(client) { }
+        internal RestUserFollow(TwitchRestClient client) : base(client) { }
     }
 }

@@ -1,37 +1,40 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
 
 namespace NTwitch.Rest
 {
     public class RestPostComment : IEntity, IPostComment
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public string Body { get; internal set; }
+        [JsonProperty("")]
         public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("")]
         public IEnumerable<IEmote> Emotes { get; internal set; }
+        [JsonProperty("")]
         public bool IsDeleted { get; internal set; }
+        [JsonProperty("")]
         public IPostPermissions Permissions { get; internal set; }
+        [JsonProperty("")]
         public IEnumerable<IPostReaction> Reactions { get; internal set; }
+        [JsonProperty("")]
         public IUser User { get; internal set; }
 
-        internal RestPostComment(ITwitchClient client)
+        internal RestPostComment(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
-        public Task CreateReactionAsync(ulong emoteid)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task CreateReactionAsync(ulong emoteid)
+            => await PostHelper.CreateReactionAsync(this, emoteid);
 
-        public Task DeleteReactionAsync(ulong emoteid)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteReactionAsync(ulong emoteid)
+            => await PostHelper.DeleteReactionAsync(this, emoteid);
 
         //IPostComment
         ITwitchClient IEntity.Client

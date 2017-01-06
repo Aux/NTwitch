@@ -1,19 +1,22 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
 
 namespace NTwitch.Rest
 {
     public class RestPostEmote : IEntity, IPostEmote
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public int End { get; internal set; }
+        [JsonProperty("")]
         public ulong SetId { get; internal set; }
+        [JsonProperty("")]
         public int Start { get; internal set; }
 
-        internal RestPostEmote(ITwitchClient client)
+        internal RestPostEmote(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
         ITwitchClient IEntity.Client

@@ -1,19 +1,21 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
+using System;
 
 namespace NTwitch.Rest
 {
     public class RestFollow : IEntity, IFollow
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("")]
         public bool IsNotificationEnabled { get; internal set; }
 
-        internal RestFollow(ITwitchClient client)
+        internal RestFollow(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
         ITwitchClient IEntity.Client

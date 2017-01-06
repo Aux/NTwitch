@@ -14,54 +14,41 @@ namespace NTwitch.Rest
 
         internal RestSelfChannel(TwitchRestClient client) : base(client) { }
 
-        public static new RestSelfChannel Create(BaseTwitchClient client, string json)
+        internal static new RestSelfChannel Create(BaseTwitchClient client, string json)
         {
             var channel = new RestSelfChannel(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }
 
-        public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
+        internal RestSelfChannel Update()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public Task<RestPost> DeletePostAsync(ulong postid)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
+            => await ChannelHelper.CreatePostAsync(this, args);
 
-        public Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestPost> DeletePostAsync(ulong postid)
+            => await ChannelHelper.DeletePostAsync(this, postid);
 
-        public Task<IEnumerable<RestUser>> GetEditorsAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
+            => await ChannelHelper.ModifyAsync(this, args);
 
-        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestUser>> GetEditorsAsync()
+            => await ChannelHelper.GetEditorsAsynC(this);
 
-        public Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
+            => await ChannelHelper.GetSubscribersAsync(this, direction, options);
 
-        public Task<RestSelfChannel> ResetStreamKeyAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
+            => await ChannelHelper.GetSubscriberAsync(this, userid);
 
-        //ISelfChannel
+        public async Task<RestSelfChannel> ResetStreamKeyAsync()
+            => await ChannelHelper.ResetStreamKeyAsync(this);
 
-        public Task StartCommercialAsync(int duration = 30)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task StartCommercialAsync(int duration = 30)
+            => await ChannelHelper.StartCommercialAsync(this, duration);
 
         ITwitchClient IEntity.Client
             => Client;

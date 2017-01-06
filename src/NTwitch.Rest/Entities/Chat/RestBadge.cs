@@ -1,20 +1,24 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
 
 namespace NTwitch.Rest
 {
     public class RestBadge : IEntity, IBadge
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public string AlphaUrl { get; internal set; }
+        [JsonProperty("")]
         public string ImageUrl { get; internal set; }
+        [JsonProperty("")]
         public string Name { get; internal set; }
+        [JsonProperty("")]
         public string SvgUrl { get; internal set; }
 
-        internal RestBadge(ITwitchClient client)
+        internal RestBadge(TwitchRestClient client)
         {
-            Client = client as TwitchRestClient;
+            Client = client;
         }
 
         ITwitchClient IEntity.Client

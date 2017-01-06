@@ -1,12 +1,15 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿using Newtonsoft.Json;
 
 namespace NTwitch.Rest
 {
     public class RestChannelFollow : RestFollow, IChannelFollow
     {
-        public IChannel Channel { get; internal set; }
+        [JsonProperty("")]
+        public RestChannel Channel { get; internal set; }
 
-        internal RestChannelFollow(ITwitchClient client) : base(client) { }
+        internal RestChannelFollow(TwitchRestClient client) : base(client) { }
+
+        IChannel IChannelFollow.Channel
+            => Channel;
     }
 }

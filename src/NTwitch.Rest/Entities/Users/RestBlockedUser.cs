@@ -6,8 +6,11 @@ namespace NTwitch.Rest
     public class RestBlockedUser : IEntity, IBlockedUser
     {
         public TwitchRestClient Client { get; }
+        [JsonProperty("")]
         public ulong Id { get; internal set; }
+        [JsonProperty("")]
         public DateTime UpdatedAt { get; internal set; }
+        [JsonProperty("")]
         public RestUser User { get; internal set; }
 
         internal RestBlockedUser(TwitchRestClient client)
