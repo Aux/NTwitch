@@ -40,7 +40,7 @@ namespace NTwitch.Rest
             }
         }
 
-        private HttpRequestMessage BuildRequest(string method, string endpoint, object payload, Dictionary<string, string> parameters)
+        private HttpRequestMessage BuildRequest(string method, string endpoint, Dictionary<string, string> parameters, object payload)
         {
             EnsureHttpClientCreated();
             if (parameters != null)
@@ -55,28 +55,28 @@ namespace NTwitch.Rest
             return request;
         }
 
-        public async Task SendAsync(string method, string endpoint, object payload = null, Dictionary<string, string> parameters = null)
+        public async Task SendAsync(string method, string endpoint, Dictionary<string, string> parameters = null, object payload = null)
         {
             var start = DateTime.UtcNow;
-            var request = BuildRequest(method, endpoint, payload, parameters);
+            var request = BuildRequest(method, endpoint, parameters, payload);
             var response = await _http.SendAsync(request);
             
             response.EnsureSuccessStatusCode();
             double total = (DateTime.UtcNow - start).TotalMilliseconds;
-            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
+            await _log.DebugAsync("Rest", endpoint + " " + total.ToString() + "ms");
         }
         
-        public async Task<string> GetJsonAsync(string method, string endpoint, object payload = null, Dictionary<string, string> parameters = null)
+        public async Task<string> GetJsonAsync(string method, string endpoint, Dictionary<string, string> parameters = null, object payload = null)
         {
             var start = DateTime.UtcNow;
-            var request = BuildRequest(method, endpoint, payload, parameters);
+            var request = BuildRequest(method, endpoint, parameters, payload);
             var response = await _http.SendAsync(request);
             
             response.EnsureSuccessStatusCode();
             string content = await response.Content.ReadAsStringAsync();
 
             double total = (DateTime.UtcNow - start).TotalMilliseconds;
-            await _log.DebugAsync("RestApiClient", request.RequestUri.ToString() + " " + total.ToString() + "ms");
+            await _log.DebugAsync("Rest", endpoint + " " + total.ToString() + "ms");
             return content;
         }
 
@@ -94,7 +94,10 @@ namespace NTwitch.Rest
             {
                 string name = p.Key.ToLower();
                 string value = p.Value;
-                
+
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
                 if (builder.Length < 1)
                     builder.AppendFormat("?{0}={1}", name, value);
                 else

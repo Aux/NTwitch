@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NTwitch
 {
@@ -9,24 +6,20 @@ namespace NTwitch
     {
         public int Limit { get; set; }
         public int Page { get; set; }
+        public int Offset
+            => (Limit * Page) - Limit;
 
         public TwitchPageOptions(int limit = 10, int page = 1)
         {
-            Limit = limit;
-            Page = page;
-        }
+            if (limit < 1 || limit > 100)
+                throw new ArgumentOutOfRangeException("Limit must be a number between 1 and 100.");
+            else
+                Limit = limit;
 
-        public override string ToString()
-        {
-            if (Limit < 1 || Limit > 100)
-                throw new ArgumentOutOfRangeException("RequestOptions.Limit must be a number between 1 and 100.");
-
-            if (Page < 1)
-                throw new ArgumentOutOfRangeException("RequestOptions.Page must be a number greater than 0.");
-
-            int offset = (Limit * Page) - Limit;
-
-            return "?limit=" + Limit + "&offset=" + offset;
+            if (page < 1)
+                throw new ArgumentOutOfRangeException("Page must be a number greater than 0.");
+            else
+                Page = page;
         }
     }
 }

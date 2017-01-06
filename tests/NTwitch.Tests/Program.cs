@@ -1,7 +1,6 @@
 ﻿using NTwitch.Rest;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Test
@@ -28,7 +27,7 @@ namespace NTwitch.Test
             });
 
             await _client.LoginAsync(clientid);
-            var channels = await _client.FindChannelsAsync("Overwatch");
+            var channels = await _client.FindChannelsAsync("Overwatch", new TwitchPageOptions(50));
             Console.WriteLine(channels.Count());
 
             //var properties = channel.GetType().GetTypeInfo().GetProperties();
