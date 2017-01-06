@@ -155,7 +155,7 @@ namespace NTwitch.Chat
             => await GetStreamSummaryAsync(game);
         async Task<IEnumerable<ITeamSummary>> ITwitchClient.GetTeamsAsync(TwitchPageOptions options)
             => await GetTeamsAsync(options);
-        async Task<IEnumerable<ITeam>> ITwitchClient.GetTeamAsync(string name)
+        async Task<IEnumerable<ITeam>> ITwitchClient.FindTeamsAsync(string name)
             => await GetTeamAsync(name);
         async Task<IUser> ITwitchClient.GetUserAsync(ulong id)
             => await GetUserAsync(id);
