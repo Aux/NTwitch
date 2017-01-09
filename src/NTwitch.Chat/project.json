@@ -1,0 +1,45 @@
+{
+    "version": "0.0.1-*",
+    "description": "A .Net Core implementation of the https://twitch.tv/ version 5 api.",
+    "authors": [ "Auxesis" ],
+
+    "packOptions": {
+        "tags": [ "twitch", "twitchtv" ],
+        "licenseUrl": "http://opensource.org/licenses/MIT",
+        "projectUrl": "https://github.com/Aux/NTwitch",
+        "repository": {
+            "type": "git",
+            "url": "git://github.com/Aux/NTwitch"
+        }
+    },
+
+    "configurations": {
+        "Release": {
+            "buildOptions": {
+                "define": [ "RELEASE" ],
+                "nowarn": [ "CS1573", "CS1591" ],
+                "optimize": true,
+                "warningsAsErrors": true,
+                "xmlDoc": true
+            }
+        }
+    },
+
+    "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "NTwitch.Core": "0.0.1-*",
+        "NTwitch.Rest": "0.0.1-*"
+    },
+
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
+    },
+
+    "scripts": {
+        "postcompile": [
+            "dotnet pack --no-build --configuration %compile:Configuration%"
+        ]
+    }
+}
