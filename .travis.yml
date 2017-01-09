@@ -1,4 +1,10 @@
 language: csharp
+git:
+  depth: 1
+branches:
+  only:
+  - master
+  - dev
 matrix:
   include:
   - os: linux
@@ -7,17 +13,15 @@ matrix:
     mono: none
     dotnet: 1.0.0-preview2-003121
     env: DOTNETCORE=1
-deploy:
-  provider: script
-  skip_cleanup: true
-#  script:
-#    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
-branches:
-  only:
-#  - master
-  - dev
 script:
   - dotnet restore
-  - dotnet build src/NTwitch.Core/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
-  - dotnet build src/NTwitch.Rest/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
-#  - dotnet build */**/project.json --configuration Release --version-suffix $TRAVIS_BRANCH$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch.Core/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch.Rest/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+#  - "$TRAVIS_BRANCH" == "master" && dotnet build */**/project.json --configuration Release
+#  - "$TRAVIS_BRANCH" == "dev" && dotnet build */**/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+#deploy:
+#  provider: script
+#  skip_cleanup: true
+#  script:
+#    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
