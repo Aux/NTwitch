@@ -9,7 +9,12 @@ NTwitch is a fully async-compatible implementation of TwitchTV's version 5 api. 
 | Pre-Release | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.Core.svg)](https://github.com/Aux/NTwitch/branch/dev) | [![Build Status](https://travis-ci.org/Aux/NTwitch.svg?branch=dev)](https://travis-ci.org/Aux/NTwitch) |
 
 ## Builds
-Release and pre-release builds can be found on Nuget as [NTwitch](https://www.nuget.org/packages/NTwitch/).
+Release and pre-release builds can be found on Nuget under [NTwitch](https://www.nuget.org/packages/NTwitch/).
+
+- [NTwitch](https://www.nuget.org/packages/NTwitch/)
+- [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
+- NTwitch.Pubsub
+- NTwitch.Chat
 
 ## Documentation
 Documentation for released NTwitch features will be available at https://ntwitch.auxesis.tv/. To view the source and submit issues for the docs visit [the repo](https://github.com/Aux/NTwitch-docs).
