@@ -10,19 +10,19 @@ namespace NTwitch.Rest
     {
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseTwitchClient client)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "user");
+            var json = await client.ApiClient.GetJsonAsync("GET", "user").ConfigureAwait(false);
             return RestSelfUser.Create(client, json);
         }
 
         public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseTwitchClient client)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "channels");
+            var json = await client.ApiClient.GetJsonAsync("GET", "channels").ConfigureAwait(false);
             return RestSelfChannel.Create(client, json);
         }
 
         public static async Task<RestChannel> GetChannelAsync(BaseTwitchClient client, ulong id)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "channels/" + id);
+            var json = await client.ApiClient.GetJsonAsync("GET", "channels/" + id).ConfigureAwait(false);
             return RestChannel.Create(client, json);
         }
         
@@ -34,14 +34,14 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "games/top", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "games/top", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("games"));
             return items.Select(x => RestTopGame.Create(client, json));
         }
 
         public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseTwitchClient client)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "ingests");
+            var json = await client.ApiClient.GetJsonAsync("GET", "ingests").ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("ingests"));
             return items.Select(x => RestIngest.Create(client, x));
         }
@@ -55,7 +55,7 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "search/channels", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "search/channels", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("channels"));
             return items.Select(x => RestChannel.Create(client, x));
         }
@@ -68,7 +68,7 @@ namespace NTwitch.Rest
                 { "live", islive ? "true" : "false" },
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "search/games", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "search/games", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("games"));
             return items.Select(x => RestGame.Create(client, x));
         }
@@ -80,7 +80,7 @@ namespace NTwitch.Rest
                 { "stream_type", Enum.GetName(typeof(StreamType), type).ToLower() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "streams/" + id);
+            var json = await client.ApiClient.GetJsonAsync("GET", "streams/" + id).ConfigureAwait(false);
             return RestStream.Create(client, json);
         }
 
@@ -94,7 +94,7 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "search/streams", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "search/streams", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("streams"));
             return items.Select(x => RestStream.Create(client, x));
         }
@@ -111,7 +111,7 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "streams", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "streams", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("streams"));
             return items.Select(x => RestStream.Create(client, x));
         }
@@ -124,7 +124,7 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "streams/featured", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "streams/featured", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("streams"));
             return items.Select(x => RestFeaturedStream.Create(client, x));
         }
@@ -136,7 +136,7 @@ namespace NTwitch.Rest
                 { "game", game }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "streams/summary", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "streams/summary", parameters).ConfigureAwait(false);
             return RestStreamSummary.Create(client, json);
         }
 
@@ -148,20 +148,20 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "teams", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "teams", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("teams"));
             return items.Select(x => RestTeamSummary.Create(client, x));
         }
 
         public static async Task<RestTeam> GetTeamAsync(BaseTwitchClient client, string name)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "teams/" + name);
+            var json = await client.ApiClient.GetJsonAsync("GET", "teams/" + name).ConfigureAwait(false);
             return RestTeam.Create(client, json);
         }
 
         public static async Task<RestUser> GetUserAsync(BaseTwitchClient client, ulong id)
         {
-            var json = await client.ApiClient.GetJsonAsync("GET", "users/" + id);
+            var json = await client.ApiClient.GetJsonAsync("GET", "users/" + id).ConfigureAwait(false);
             return RestUser.Create(client, json);
         }
 
@@ -172,7 +172,7 @@ namespace NTwitch.Rest
                 { "login", login },
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "users", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "users", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("users"));
             return items.Select(x => RestUser.Create(client, x));
         }
@@ -188,7 +188,7 @@ namespace NTwitch.Rest
                 { "offset", options?.Offset.ToString() }
             };
 
-            var json = await client.ApiClient.GetJsonAsync("GET", "videos/top", parameters);
+            var json = await client.ApiClient.GetJsonAsync("GET", "videos/top", parameters).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("vods"));
             return items.Select(x => RestVideo.Create(client, x));
         }
