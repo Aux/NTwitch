@@ -7,6 +7,10 @@ namespace NTwitch.Chat
 {
     public class ChatUserMessage : ChatMessage
     {
+        public ChatUserMessage(TwitchChatClient client) : base(client)
+        {
+        }
+
         public ChatChannel Channel { get; private set; }
         public ChatUser User { get; private set; }
     }

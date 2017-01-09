@@ -1,4 +1,4 @@
-﻿using NTwitch.Rest;
+﻿using NTwitch.Chat;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +10,13 @@ namespace NTwitch.Test
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchRestClient _client;
+        private TwitchChatClient _client;
 
         public async Task Start()
         {
-            string clientid = "";
+            string token = "p9bjos5h9jr63xnq87w4intq8lcepg";
 
-            _client = new TwitchRestClient(new TwitchRestConfig()
+            _client = new TwitchChatClient(new TwitchChatConfig()
             {
                 LogLevel = LogLevel.Debug
             });
@@ -26,15 +26,18 @@ namespace NTwitch.Test
                 Console.WriteLine(l);
             });
 
-            await _client.LoginAsync(clientid);
-            var channels = await _client.FindChannelsAsync("Overwatch", new TwitchPageOptions(50));
-            Console.WriteLine(channels.Count());
+            await _client.ConnectAsync();
+            await _client.LoginAsync("auxesistv", token);
+            await _client.JoinChannelAsync("gamesdonequick");
 
-            //var properties = channel.GetType().GetTypeInfo().GetProperties();
-            //foreach (var p in properties)
-            //    Console.WriteLine(p.GetValue(channel));
-            
+            _client.MessageReceived += OnMessageReceived;
             Console.ReadKey();
+        }
+
+        private Task OnMessageReceived(ChatMessage msg)
+        {
+            Console.WriteLine($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
+            return Task.CompletedTask;
         }
     }
 }

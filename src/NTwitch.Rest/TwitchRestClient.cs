@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -6,14 +7,25 @@ namespace NTwitch.Rest
     /// <summary> A Rest-only twitch client. </summary>
     public partial class TwitchRestClient : BaseTwitchClient, ITwitchClient
     {
+        public RestApiClient ApiClient => _rest;
+
+        private RestApiClient _rest;
+        private string _apiurl;
+        
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
         public TwitchRestClient(TwitchRestConfig config) : base(config)
         {
-            _log.LogReceived += OnLogReceived;
+            _apiurl = config.ApiUrl;
         }
 
-        private Task OnLogReceived(LogMessage msg)
-            => _logEvent.InvokeAsync(msg);
+        public async Task LoginAsync(string clientid, string token = null)
+        {
+            if (string.IsNullOrWhiteSpace(clientid))
+                throw new ArgumentNullException("clientid");
+
+            _rest = new RestApiClient(_log, _apiurl, clientid, token);
+            await _log.DebugAsync("Rest", "Api client created successfully");
+        }
 
         public Task<RestSelfUser> GetCurrentUserAsync()
             => ClientHelper.GetCurrentUserAsync(this);

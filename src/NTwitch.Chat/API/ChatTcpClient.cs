@@ -10,12 +10,10 @@ namespace NTwitch.Chat.API
     public class ChatTcpClient : IDisposable
     {
         private LogManager _log;
-        private MessageParser _parser;
         private TcpClient _tcp;
         private NetworkStream _stream;
         private StreamWriter _writer;
         private CancellationTokenSource _cancelTokenSource;
-        private CancellationToken _cancelToken;
         private Task _task;
         private string _host;
         private int _port;
@@ -23,6 +21,13 @@ namespace NTwitch.Chat.API
         private string _username;
         private bool _disposed;
         private bool _isdisposing;
+
+        private readonly AsyncEvent<Func<string, Task>> _messageReceived = new AsyncEvent<Func<string, Task>>();
+        internal event Func<string, Task> MessageReceived
+        {
+            add { _messageReceived.Add(value); }
+            remove { _messageReceived.Remove(value); }
+        }
 
         public ChatTcpClient(LogManager log, string url, int port)
         {
@@ -40,10 +45,10 @@ namespace NTwitch.Chat.API
             _writer = new StreamWriter(_stream)
             {
                 AutoFlush = true,
-                NewLine = "\r\n"
+                NewLine = "\n"
             };
 
-            await StartAsync(_cancelToken);
+            await StartAsync(_cancelTokenSource);
         }
 
         public async Task LoginAsync(string username, string token)
@@ -53,27 +58,29 @@ namespace NTwitch.Chat.API
 
             _token = token;
             _username = username;
+            _cancelTokenSource = new CancellationTokenSource();
 
-            await SendAsync("PASS " + token);
+            await SendAsync("PASS oauth:" + token);
             await SendAsync("NICK " + username);
+            await StartAsync(_cancelTokenSource);
+            await SendAsync("CAP REQ :twitch.tv/tags");
         }
         
         public async Task SendAsync(string message)
         {
-            await _log.InfoAsync("Chat", "<- " + message);
+            await _log.InfoAsync("Chat", message);
             await _writer.WriteLineAsync(message);
         }
 
-        public async Task StartAsync(CancellationToken cancelToken)
+        private async Task StartAsync(CancellationTokenSource cancelToken)
         {
-            _parser = new MessageParser(_log, this);
             _task = RunAsync(cancelToken);
         }
-
-        public async Task RunAsync(CancellationToken cancelToken)
+        
+        private async Task RunAsync(CancellationTokenSource cancelTokenSource)
         {
-            var closeTask = Task.Delay(-1, cancelToken);
-            while (!cancelToken.IsCancellationRequested)
+            var closeTask = Task.Delay(-1, cancelTokenSource.Token);
+            while (!cancelTokenSource.IsCancellationRequested)
             {
                 var data = new byte[_tcp.ReceiveBufferSize];
                 var receiveTask = _stream.ReadAsync(data, 0, _tcp.ReceiveBufferSize);
@@ -82,38 +89,16 @@ namespace NTwitch.Chat.API
                     break;
 
                 var result = receiveTask.Result;
-                string message = Encoding.ASCII.GetString(data, 0, result);
-                await _parser.Parse(message);
-            }
-        }
-
-        public async Task StopAsync()
-        {
-            try { _cancelTokenSource.Cancel(false); } catch { }
-
-            if (!_isdisposing)
-                await (_task ?? Task.Delay(0)).ConfigureAwait(false);
-
-            if (_tcp != null)
-            {
-                try { _tcp.Client.Shutdown(new SocketShutdown()); } catch { }
-                _tcp = null;
+                string message = Encoding.UTF8.GetString(data, 0, result);
+                if (!string.IsNullOrWhiteSpace(message))
+                    await _messageReceived.InvokeAsync(message);
             }
         }
 
         public void Dispose()
         {
-            Dispose(true);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                    StopAsync().GetAwaiter().GetResult();
-                _disposed = true;
-            }
+            _tcp.Dispose();
+            _tcp = null;
         }
     }
 }

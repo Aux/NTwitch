@@ -6,7 +6,7 @@
 
     "dependencies": {
         "Microsoft.NETCore.App": "1.1.0",
-        "NTwitch.Rest": "0.0.1-*"
+        "NTwitch.Chat": "0.0.1-*"
     },
 
     "runtimes": {

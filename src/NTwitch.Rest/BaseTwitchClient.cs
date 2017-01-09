@@ -9,34 +9,23 @@ namespace NTwitch.Rest
 {
     public abstract class BaseTwitchClient : ITwitchClient
     {
-        public RestApiClient ApiClient
-            => _rest;
-        
-        internal RestApiClient _rest;
         internal LogManager _log;
-        private string _baseurl;
+
+        private readonly AsyncEvent<Func<LogMessage, Task>> _logEvent = new AsyncEvent<Func<LogMessage, Task>>();
+        public event Func<LogMessage, Task> Log
+        {
+            add { _logEvent.Add(value); }
+            remove { _logEvent.Remove(value); }
+        }
 
         internal BaseTwitchClient(TwitchRestConfig config)
         {
             _log = new LogManager(config.LogLevel);
-            _baseurl = config.BaseUrl;
+            _log.LogReceived += OnLogReceived;
         }
 
-        public async Task LoginAsync(string clientid, string token = null)
-        {
-            if (string.IsNullOrWhiteSpace(clientid))
-                throw new ArgumentNullException("clientid");
-
-            _rest = new RestApiClient(_log, _baseurl, clientid, token);
-            await _log.DebugAsync("Rest", "Api client created successfully");
-
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                await _log.InfoAsync("Rest", "Validating token");
-                await _rest.LoginAsync(token);
-                await _log.InfoAsync("Rest", "Token validated");
-            }
-        }
+        private Task OnLogReceived(LogMessage msg)
+            => _logEvent.InvokeAsync(msg);
 
         // ITwitchClient
         Task<ISelfUser> ITwitchClient.GetCurrentUserAsync()

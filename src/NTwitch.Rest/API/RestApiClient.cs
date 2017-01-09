@@ -79,14 +79,7 @@ namespace NTwitch.Rest
             await _log.DebugAsync("Rest", endpoint + " " + total.ToString() + "ms");
             return content;
         }
-
-        internal async Task<TwitchValidation> LoginAsync(string token)
-        {
-            _token = token;
-            await Task.Delay(1);
-            return null;
-        }
-
+        
         internal string ParseQuery(Dictionary<string, string> parameters)
         {
             var builder = new StringBuilder();

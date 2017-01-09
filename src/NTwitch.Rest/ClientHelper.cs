@@ -8,25 +8,25 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        public static async Task<RestSelfUser> GetCurrentUserAsync(BaseTwitchClient client)
+        public static async Task<RestSelfUser> GetCurrentUserAsync(TwitchRestClient client)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "user").ConfigureAwait(false);
             return RestSelfUser.Create(client, json);
         }
 
-        public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseTwitchClient client)
+        public static async Task<RestSelfChannel> GetCurrentChannelAsync(TwitchRestClient client)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "channels").ConfigureAwait(false);
             return RestSelfChannel.Create(client, json);
         }
 
-        public static async Task<RestChannel> GetChannelAsync(BaseTwitchClient client, ulong id)
+        public static async Task<RestChannel> GetChannelAsync(TwitchRestClient client, ulong id)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "channels/" + id).ConfigureAwait(false);
             return RestChannel.Create(client, json);
         }
         
-        public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseTwitchClient client, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(TwitchRestClient client, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -39,14 +39,14 @@ namespace NTwitch.Rest
             return items.Select(x => RestTopGame.Create(client, json));
         }
 
-        public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseTwitchClient client)
+        public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(TwitchRestClient client)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "ingests").ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("ingests"));
             return items.Select(x => RestIngest.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestChannel>> FindChannelsAsync(BaseTwitchClient client, string query, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestChannel>> FindChannelsAsync(TwitchRestClient client, string query, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -60,7 +60,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestChannel.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestGame>> FindGamesAsync(BaseTwitchClient client, string query, bool islive)
+        public static async Task<IEnumerable<RestGame>> FindGamesAsync(TwitchRestClient client, string query, bool islive)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -73,7 +73,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestGame.Create(client, x));
         }
 
-        public static async Task<RestStream> GetStreamAsync(BaseTwitchClient client, ulong id, StreamType type)
+        public static async Task<RestStream> GetStreamAsync(TwitchRestClient client, ulong id, StreamType type)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -84,7 +84,7 @@ namespace NTwitch.Rest
             return RestStream.Create(client, json);
         }
 
-        public static async Task<IEnumerable<RestStream>> FindStreamsAsync(BaseTwitchClient client, string query, bool hls, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestStream>> FindStreamsAsync(TwitchRestClient client, string query, bool hls, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -99,7 +99,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestStream.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseTwitchClient client, string game, ulong[] channelids, string language, StreamType type, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(TwitchRestClient client, string game, ulong[] channelids, string language, StreamType type, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -116,7 +116,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestStream.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestFeaturedStream>> GetFeaturedStreamsAsync(BaseTwitchClient client, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestFeaturedStream>> GetFeaturedStreamsAsync(TwitchRestClient client, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -129,7 +129,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestFeaturedStream.Create(client, x));
         }
 
-        public static async Task<RestStreamSummary> GetStreamSummaryAsync(BaseTwitchClient client, string game)
+        public static async Task<RestStreamSummary> GetStreamSummaryAsync(TwitchRestClient client, string game)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -140,7 +140,7 @@ namespace NTwitch.Rest
             return RestStreamSummary.Create(client, json);
         }
 
-        public static async Task<IEnumerable<RestTeamSummary>> GetTeamsAsync(BaseTwitchClient client, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestTeamSummary>> GetTeamsAsync(TwitchRestClient client, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -153,19 +153,19 @@ namespace NTwitch.Rest
             return items.Select(x => RestTeamSummary.Create(client, x));
         }
 
-        public static async Task<RestTeam> GetTeamAsync(BaseTwitchClient client, string name)
+        public static async Task<RestTeam> GetTeamAsync(TwitchRestClient client, string name)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "teams/" + name).ConfigureAwait(false);
             return RestTeam.Create(client, json);
         }
 
-        public static async Task<RestUser> GetUserAsync(BaseTwitchClient client, ulong id)
+        public static async Task<RestUser> GetUserAsync(TwitchRestClient client, ulong id)
         {
             var json = await client.ApiClient.GetJsonAsync("GET", "users/" + id).ConfigureAwait(false);
             return RestUser.Create(client, json);
         }
 
-        public static async Task<IEnumerable<RestUser>> FindUsersAsync(BaseTwitchClient client, string login)
+        public static async Task<IEnumerable<RestUser>> FindUsersAsync(TwitchRestClient client, string login)
         {
             var parameters = new Dictionary<string, string>()
             {
@@ -177,7 +177,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestUser.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestVideo>> GetTopVideosAsync(BaseTwitchClient client, string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
+        public static async Task<IEnumerable<RestVideo>> GetTopVideosAsync(TwitchRestClient client, string game, VideoPeriod period, BroadcastType type, TwitchPageOptions options)
         {
             var parameters = new Dictionary<string, string>()
             {
