@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Core", "src\NTwitch.Core\NTwitch.Core.xproj", "{39057A64-A18A-4559-B0CB-9384B364671B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Core", "src\NTwitch.Core\NTwitch.Core.csproj", "{39057A64-A18A-4559-B0CB-9384B364671B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Rest", "src\NTwitch.Rest\NTwitch.Rest.xproj", "{218BC111-FC6F-4EFE-ACC1-26B96D66C263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Rest", "src\NTwitch.Rest\NTwitch.Rest.csproj", "{218BC111-FC6F-4EFE-ACC1-26B96D66C263}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.xproj", "{97D240ED-383D-49C9-A75C-F18A4514422C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{97D240ED-383D-49C9-A75C-F18A4514422C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.xproj", "{C0E9A312-D4FF-4630-96FB-518C58C4CEE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.csproj", "{C0E9A312-D4FF-4630-96FB-518C58C4CEE7}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch", "src\NTwitch\NTwitch.xproj", "{DFA68BD7-172B-4450-94EA-688378349960}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch", "src\NTwitch\NTwitch.csproj", "{DFA68BD7-172B-4450-94EA-688378349960}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.xproj", "{B927A40B-11D2-4CD3-933D-6BBB5EFC2D31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{B927A40B-11D2-4CD3-933D-6BBB5EFC2D31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
