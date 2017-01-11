@@ -1,5 +1,4 @@
 ﻿using NTwitch.Rest;
-using System;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
@@ -9,32 +8,38 @@ namespace NTwitch.Chat
         public ChatClient Client => _chat;
 
         private ChatClient _chat;
+        private LogManager _log;
         private string _host;
+        private int _port;
 
         public TwitchChatClient() : this(new TwitchChatConfig()) { }
         public TwitchChatClient(TwitchChatConfig config)
         {
             _host = config.ChatUrl;
-
-            var user = new ChatUser(this);
-
-            user.
+            _log = new LogManager(config.LogLevel);
         }
         
-        public Task LoginAsync()
+        public async Task LoginAsync(string username, string token, string clientid)
         {
-            LoginInternalAsync("");
-            throw new NotImplementedException();
+            await LoginInternalAsync("");
+            await LoginAsync(username, token);
         }
 
-        public override Task ConnectAsync()
+        public async Task LoginAsync(string username, string token)
         {
-            throw new NotImplementedException();
+            await _chat.LoginAsync(username, token);
         }
 
-        public override Task DisconnectAsync()
+        public async Task ConnectAsync()
         {
-            throw new NotImplementedException();
+            _chat = new ChatClient(_log, _host, _port);
+            _chat.MessageReceived += ChatParser.MessageReceived;
+            await _chat.ConnectAsync();
+        }
+
+        public void DisconnectAsync()
+        {
+            _chat.Dispose();
         }
     }
 }

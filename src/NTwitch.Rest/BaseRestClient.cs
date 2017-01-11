@@ -8,18 +8,17 @@ namespace NTwitch.Rest
         internal RestClient ApiClient => _rest;
 
         private RestClient _rest;
-
-        internal Task LoginInternalAsync(string clientid)
+        
+        internal async Task LoginInternalAsync(string clientid)
         {
             _rest = new RestClient();
-
-            throw new NotImplementedException();
+            await _rest.LoginAsync(clientid);
         }
-        
-        public virtual Task ConnectAsync()
-            => throw new NotSupportedException();
-        public virtual Task DisconnectAsync()
-            => throw new NotSupportedException();
+
+        Task ITwitchClient.ConnectAsync()
+            => Task.CompletedTask;
+        Task ITwitchClient.DisconnectAsync()
+            => Task.CompletedTask;
         Task ITwitchClient.LoginAsync()
             => Task.CompletedTask;
     }

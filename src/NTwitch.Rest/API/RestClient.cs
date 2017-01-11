@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
@@ -21,7 +22,12 @@ namespace NTwitch.Rest
                 _disposed = true;
             }
         }
-        
+
+        internal Task LoginAsync(string clientid)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
             Dispose(true);
