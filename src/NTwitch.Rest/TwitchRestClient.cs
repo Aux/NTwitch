@@ -4,9 +4,8 @@ namespace NTwitch.Rest
 {
     public partial class TwitchRestClient : BaseRestClient, ITwitchClient
     {
-        public RestClient Client => _rest;
+        public RestClient Client => ApiClient;
 
-        private RestClient _rest;
         private string _host;
         
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
