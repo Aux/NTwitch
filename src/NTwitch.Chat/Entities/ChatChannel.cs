@@ -10,10 +10,10 @@ namespace NTwitch.Chat
 
         public ChatChannel(TwitchChatClient client) : base(client) { }
 
-        public static ChatChannel Create(BaseRestClient client, string tcf)
+        public static ChatChannel Create(BaseRestClient client, string msg)
         {
             var channel = new ChatChannel(client as TwitchChatClient);
-            TcfConvert.PopulateObject(tcf, channel);
+            ChatParser.PopulateObject(msg, channel);
             return channel;
         }
 

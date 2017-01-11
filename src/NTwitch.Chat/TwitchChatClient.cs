@@ -15,13 +15,15 @@ namespace NTwitch.Chat
         public TwitchChatClient(TwitchChatConfig config)
         {
             _host = config.ChatUrl;
+
+            var user = new ChatUser(this);
+
+            user.
         }
         
         public Task LoginAsync()
         {
             LoginInternalAsync("");
-
-
             throw new NotImplementedException();
         }
 

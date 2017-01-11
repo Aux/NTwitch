@@ -16,10 +16,10 @@ namespace NTwitch.Chat
 
         public ChatUser(TwitchChatClient client) : base(client) { }
 
-        public static ChatUser Create(BaseRestClient client, string tcf)
+        public static ChatUser Create(BaseRestClient client, string msg)
         {
             var user = new ChatUser(client as TwitchChatClient);
-            TcfConvert.PopulateObject(tcf, user);
+            ChatParser.PopulateObject(msg, user);
             return user;
         }
 
