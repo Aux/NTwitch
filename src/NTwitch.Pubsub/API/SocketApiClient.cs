@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
@@ -8,17 +10,15 @@ namespace NTwitch.Pubsub
     public class SocketApiClient : IDisposable
     {
         private LogManager _log;
-        private SocketState _state;
-        private string _baseurl;
-        private string _token;
+        private TcpClient _tcp;
+        private NetworkStream _stream;
+        private StreamWriter _writer;
+        private CancellationTokenSource _cancelTokenSource;
+        private Task _task;
+        private string _host;
         private int _port;
-
-        public SocketApiClient(LogManager manager, string baseurl, int port = 11000)
-        {
-            _log = manager;
-            _baseurl = baseurl;
-            _port = port;
-        }
+        private string _token;
+        private bool _disposed;
 
         private readonly AsyncEvent<Func<LogMessage, Task>> _messageReceivedEvent = new AsyncEvent<Func<LogMessage, Task>>();
         public event Func<LogMessage, Task> MessageReceived
@@ -27,39 +27,32 @@ namespace NTwitch.Pubsub
             remove { _messageReceivedEvent.Remove(value); }
         }
 
-        public async Task SendAsync(string json)
+        public SocketApiClient(LogManager manager, string host, int port = 11000)
         {
-
+            _log = manager;
+            _host = host;
+            _port = port;
         }
 
-        public Task SendHeartbeatAsync()
+        protected virtual void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
-        }
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
 
-        public Task ReconnectAsync()
-        {
-            throw new NotImplementedException();
-        }
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
 
-        public async Task LoginAsync()
-        {
-            await _state.ConnectAsync(_baseurl, _port);
+                _disposed = true;
+            }
         }
-
-        public Task ConnectAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DisconnectAsync()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void Dispose()
         {
-            _state.Dispose();
+            Dispose(true);
         }
     }
 }

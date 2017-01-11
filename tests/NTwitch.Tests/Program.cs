@@ -14,7 +14,7 @@ namespace NTwitch.Test
 
         public async Task Start()
         {
-            string token = "p9bjos5h9jr63xnq87w4intq8lcepg";
+            string token = "";
 
             _client = new TwitchChatClient(new TwitchChatConfig()
             {

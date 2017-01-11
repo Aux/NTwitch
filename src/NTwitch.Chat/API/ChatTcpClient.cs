@@ -20,7 +20,6 @@ namespace NTwitch.Chat.API
         private string _token;
         private string _username;
         private bool _disposed;
-        private bool _isdisposing;
 
         private readonly AsyncEvent<Func<string, Task>> _messageReceived = new AsyncEvent<Func<string, Task>>();
         internal event Func<string, Task> MessageReceived
@@ -95,10 +94,25 @@ namespace NTwitch.Chat.API
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                _disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            _tcp.Dispose();
-            _tcp = null;
+            Dispose(true);
         }
     }
 }
