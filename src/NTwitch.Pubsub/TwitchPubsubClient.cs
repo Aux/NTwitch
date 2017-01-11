@@ -4,22 +4,31 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
 {
-    public partial class TwitchPubsubClient : BaseTwitchClient, ITwitchClient
+    public partial class TwitchPubsubClient : BaseRestClient, ITwitchClient
     {
-        public ConnectionState ConnectionState { get; } = ConnectionState.Disconnected;
-        public SocketApiClient SocketClient { get; }
+        public PubsubClient Client => _pubsub;
+
+        private PubsubClient _pubsub;
+        private string _host;
 
         public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
-        public TwitchPubsubClient(TwitchPubsubConfig config) : base(config)
+        public TwitchPubsubClient(TwitchPubsubConfig config)
         {
-            
+            _host = config.PubsubUrl;
         }
-        
-        public Task ConnectAsync()
+
+        public Task LoginAsync()
+        {
+            LoginInternalAsync("");
+            throw new NotImplementedException();
+        }
+
+        public override Task ConnectAsync()
         {
             throw new NotImplementedException();
         }
-                public Task DisconnectAsync()
+
+        public override Task DisconnectAsync()
         {
             throw new NotImplementedException();
         }

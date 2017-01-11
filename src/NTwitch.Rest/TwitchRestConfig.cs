@@ -2,7 +2,7 @@
 {
     public class TwitchRestConfig
     {
-        public string ApiUrl { get; set; } = "https://api.twitch.tv/kraken/";
-        public LogLevel LogLevel { get; set; } = LogLevel.Error;
+        public string RestUrl { get; set; }
+        public LogLevel LogLevel { get; set; } = LogLevel.Info;
     }
 }
