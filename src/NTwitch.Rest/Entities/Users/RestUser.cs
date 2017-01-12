@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestUser : BaseUser
+    public class RestUser : UserBase
     {
         [JsonProperty("bio")]
         public string Bio { get; internal set; }
@@ -22,7 +22,7 @@ namespace NTwitch.Rest
 
         internal RestUser(TwitchRestClient client) : base(client) { }
 
-        public static RestUser Create(BaseRestClient client, string json)
+        internal static RestUser Create(BaseRestClient client, string json)
         {
             var user = new RestUser(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, user);

@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class BaseChannel
+    public class ChannelBase
     {
         internal BaseRestClient Client { get; }
-        [JsonProperty("_id")]
+        [JsonProperty("_id"), ChatProperty("room-id")]
         public ulong Id { get; internal set; }
 
-        public BaseChannel(BaseRestClient client)
+        internal ChannelBase(BaseRestClient client)
         {
             Client = client;
         }

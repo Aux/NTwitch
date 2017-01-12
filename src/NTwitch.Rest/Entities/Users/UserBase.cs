@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class BaseUser
+    public class UserBase
     {
         internal BaseRestClient Client { get; }
         [JsonProperty("_id")]
         public ulong Id { get; internal set; }
 
-        public BaseUser(BaseRestClient client)
+        internal UserBase(BaseRestClient client)
         {
             Client = client;
         }

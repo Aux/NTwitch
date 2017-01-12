@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestChannel : BaseChannel
+    public class RestChannel : ChannelBase
     {
         [JsonProperty("broadcaster_language")]
         public string BroadcasterLanguage { get; internal set; }
