@@ -3,14 +3,12 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestChannel : ChannelBase
+    public class RestChannel : RestChannelSummary
     {
         [JsonProperty("broadcaster_language")]
         public string BroadcasterLanguage { get; internal set; }
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
-        [JsonProperty("display_name")]
-        public string DisplayName { get; internal set; }
         [JsonProperty("followers")]
         public int FollowerCount { get; internal set; }
         [JsonProperty("game")]
@@ -40,7 +38,7 @@ namespace NTwitch.Rest
 
         public RestChannel(TwitchRestClient client) : base(client) { }
         
-        public static RestChannel Create(BaseRestClient client, string json)
+        public static new RestChannel Create(BaseRestClient client, string json)
         {
             var channel = new RestChannel(client as TwitchRestClient);
             JsonConvert.PopulateObject(json, channel);
