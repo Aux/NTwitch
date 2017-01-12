@@ -6,9 +6,6 @@ namespace NTwitch.Chat
 {
     public class ChatChannel : ChannelBase
     {
-        [ChatValueBetween("PRIVMSG #", " ")]
-        public string Name { get; private set; }
-
         public ChatChannel(TwitchChatClient client) : base(client) { }
 
         public static ChatChannel Create(BaseRestClient client, string msg)

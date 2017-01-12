@@ -9,6 +9,8 @@ namespace NTwitch.Rest
         internal BaseRestClient Client { get; }
         [JsonProperty("_id"), ChatProperty("room-id")]
         public ulong Id { get; internal set; }
+        [JsonProperty("name"), ChatValueBetween("PRIVMSG #", " ")]
+        public string Name { get; internal set; }
 
         internal ChannelBase(BaseRestClient client)
         {
@@ -50,5 +52,11 @@ namespace NTwitch.Rest
 
         public async Task<RestChannelFollow> UnfollowAsync()
             => await ChannelHelper.UnfollowAsync(this);
+
+        public async Task<RestClip> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false)
+            => await ChannelHelper.GetTopClipsAsync(this, game, period, istrending);
+
+        public async Task<RestClip> GetClipAsync(string id)
+            => await ChannelHelper.GetClipAsync(this, id);
     }
 }

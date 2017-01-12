@@ -21,8 +21,6 @@ namespace NTwitch.Rest
         public string LogoUrl { get; internal set; }
         [JsonProperty("mature")]
         public bool IsMature { get; internal set; }
-        [JsonProperty("name")]
-        public string Name { get; internal set; }
         [JsonProperty("partner")]
         public bool IsPartner { get; internal set; }
         [JsonProperty("profile_banner")]
