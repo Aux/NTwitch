@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public class ChatChannel : BaseChannel
+    public class ChatChannel : ChannelBase
     {
+        [ChatValueBetween("PRIVMSG #", " ")]
         public string Name { get; private set; }
 
         public ChatChannel(TwitchChatClient client) : base(client) { }
