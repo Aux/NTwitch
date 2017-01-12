@@ -12,23 +12,22 @@ namespace NTwitch.Pubsub
         private string _host;
 
         public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
-        public TwitchPubsubClient(TwitchPubsubConfig config)
+        public TwitchPubsubClient(TwitchPubsubConfig config) : base(config)
         {
             _host = config.PubsubUrl;
         }
 
-        public Task LoginAsync()
+        public async Task LoginAsync(string clientid, string token = null)
         {
-            LoginInternalAsync("");
+            await LoginInternalAsync(clientid, token);
+        }
+
+        public Task ConnectAsync()
+        {
             throw new NotImplementedException();
         }
 
-        public override Task ConnectAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task DisconnectAsync()
+        public Task DisconnectAsync()
         {
             throw new NotImplementedException();
         }

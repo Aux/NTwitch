@@ -5,16 +5,11 @@ namespace NTwitch.Rest
     public partial class TwitchRestClient : BaseRestClient, ITwitchClient
     {
         public RestClient Client => ApiClient;
-
-        private string _host;
         
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
-        public TwitchRestClient(TwitchRestConfig config)
-        {
-            _host = config.RestUrl;
-        }
+        public TwitchRestClient(TwitchRestConfig config) : base(config) { }
 
-        public Task LoginAsync(string clientid)
-            => LoginInternalAsync(clientid);
+        public Task LoginAsync(string clientid, string token = null)
+            => LoginInternalAsync(clientid, token);
     }
 }

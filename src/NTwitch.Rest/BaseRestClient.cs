@@ -6,13 +6,21 @@ namespace NTwitch.Rest
     public class BaseRestClient : ITwitchClient
     {
         internal RestClient ApiClient => _rest;
+        internal LogManager Logger => _log;
 
+        private LogManager _log;
         private RestClient _rest;
+        private string _resthost;
         
-        internal async Task LoginInternalAsync(string clientid)
+        public BaseRestClient(TwitchRestConfig config)
         {
-            _rest = new RestClient();
-            await _rest.LoginAsync(clientid);
+            _log = new LogManager(config.LogLevel);
+        }
+
+        internal Task LoginInternalAsync(string clientid, string token)
+        {
+            _rest = new RestClient(_log, _resthost, clientid, token);
+            return Task.CompletedTask;
         }
 
         Task ITwitchClient.ConnectAsync()

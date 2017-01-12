@@ -8,20 +8,18 @@ namespace NTwitch.Chat
         public ChatClient Client => _chat;
 
         private ChatClient _chat;
-        private LogManager _log;
         private string _host;
         private int _port;
 
         public TwitchChatClient() : this(new TwitchChatConfig()) { }
-        public TwitchChatClient(TwitchChatConfig config)
+        public TwitchChatClient(TwitchChatConfig config) : base(config)
         {
             _host = config.ChatUrl;
-            _log = new LogManager(config.LogLevel);
         }
         
         public async Task LoginAsync(string username, string token, string clientid)
         {
-            await LoginInternalAsync("");
+            await LoginInternalAsync(clientid, token);
             await LoginAsync(username, token);
         }
 
@@ -32,7 +30,7 @@ namespace NTwitch.Chat
 
         public async Task ConnectAsync()
         {
-            _chat = new ChatClient(_log, _host, _port);
+            _chat = new ChatClient(Logger, _host, _port);
             _chat.MessageReceived += ChatParser.MessageReceived;
             await _chat.ConnectAsync();
         }
