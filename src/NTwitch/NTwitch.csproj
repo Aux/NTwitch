@@ -9,24 +9,23 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/Aux/NTwitch</RepositoryUrl>
     <TargetFramework>netstandard1.6</TargetFramework>
-	<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
-  
   <ItemGroup>
     <Compile Include="**\*.cs" />
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="NETStandard.Library" Version="1.6.1" />
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Chat\NTwitch.Chat.csproj" />
+    <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
+    <ProjectReference Include="..\NTwitch.Pubsub\NTwitch.Pubsub.csproj" />
+    <ProjectReference Include="..\NTwitch.Rest\NTwitch.Rest.csproj" />
   </ItemGroup>
-  
   <Target Name="PostcompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
     <Exec Command="dotnet pack --no-build --configuration $(Configuration)" />
   </Target>
