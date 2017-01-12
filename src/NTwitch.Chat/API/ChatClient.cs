@@ -37,6 +37,12 @@ namespace NTwitch.Chat
             _port = port;
         }
 
+        public async Task SendAsync(string message)
+        {
+            await _log.DebugAsync("Chat", message);
+            await _writer.WriteLineAsync(message);
+        }
+
         internal async Task ConnectAsync()
         {
             _client = new TcpClient();
@@ -66,10 +72,20 @@ namespace NTwitch.Chat
             await SendAsync("CAP REQ :twitch.tv/tags");
         }
 
-        public async Task SendAsync(string message)
+        public async Task DisconnectAsync(bool disposing = false)
         {
-            await _log.DebugAsync("Chat", message);
-            await _writer.WriteLineAsync(message);
+            try { _cancelTokenSource.Cancel(false); } catch { }
+
+            if (!disposing)
+                await (_task ?? Task.Delay(0)).ConfigureAwait(false);
+
+            if (_client != null && _client.Connected)
+            {
+                _cancelTokenSource.Cancel(false);
+
+                try { _client.Dispose(); } catch { }
+                _client = null;
+            }
         }
 
         public async Task StartAsync(CancellationTokenSource cancelTokenSource)
@@ -95,24 +111,13 @@ namespace NTwitch.Chat
                 await _messageReceivedEvent.InvokeAsync(msg);
             }
         }
-
-        public Task StopAsync(CancellationTokenSource cancelTokenSource)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
-                {
-                    _client.Dispose();
-                    _client = null;
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                    DisconnectAsync(true).GetAwaiter().GetResult();
 
                 _disposed = true;
             }
