@@ -28,11 +28,10 @@ namespace NTwitch.Chat
             ChatParser.PopulateObject(msg, user);
             return user;
         }
-
-        public Task BanAsync(string channel, int? duration = null)
-            => throw new NotImplementedException();
-
+        
         public Task BanAsync(ChatChannel channel, int? duration = null)
+            => BanAsync(channel.Name, duration);
+        public Task BanAsync(string channelName, int? duration = null)
             => throw new NotImplementedException();
     }
 }

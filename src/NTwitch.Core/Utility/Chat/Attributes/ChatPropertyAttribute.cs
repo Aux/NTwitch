@@ -7,7 +7,7 @@ namespace NTwitch
     {
         public string Name;
 
-        public ChatPropertyAttribute(string name)
+        public ChatPropertyAttribute(string name = null)
         {
             Name = name;
         }
