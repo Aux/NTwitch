@@ -18,12 +18,6 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="TwitchChatClient.Events.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TwitchChatClient.Events.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="NETStandard.Library" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
