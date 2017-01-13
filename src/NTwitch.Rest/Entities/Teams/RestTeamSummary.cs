@@ -22,11 +22,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public DateTime UpdatedAt { get; private set; }
 
-        public RestTeamSummary(TwitchRestClient client) : base(client) { }
+        public RestTeamSummary(BaseRestClient client) : base(client) { }
 
         public static RestTeamSummary Create(BaseRestClient client, string json)
         {
-            var team = new RestTeamSummary(client as TwitchRestClient);
+            var team = new RestTeamSummary(client);
             JsonConvert.PopulateObject(json, team);
             return team;
         }

@@ -8,11 +8,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public IEnumerable<RestEmote> Emotes { get; internal set; }
 
-        public RestEmoteSet(TwitchRestClient client) : base(client) { }
+        public RestEmoteSet(BaseRestClient client) : base(client) { }
 
         public static RestEmoteSet Create(BaseRestClient client, string json)
         {
-            var emote = new RestEmoteSet(client as TwitchRestClient);
+            var emote = new RestEmoteSet(client);
             JsonConvert.PopulateObject(json, emote);
             return emote;
         }

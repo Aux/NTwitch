@@ -47,14 +47,14 @@ namespace NTwitch.Rest
         public Task<RestStream> GetStreamAsync()
             => ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
 
-        public Task<RestChannelFollow> FollowAsync(bool notify = false)
+        public Task FollowAsync(bool notify = false)
             => ChannelHelper.FollowAsync(this, notify);
 
-        public Task<RestChannelFollow> UnfollowAsync()
+        public Task UnfollowAsync()
             => ChannelHelper.UnfollowAsync(this);
 
-        public Task<RestClip> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false)
-            => ChannelHelper.GetTopClipsAsync(this, game, period, istrending);
+        public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false, PageOptions options = null)
+            => ChannelHelper.GetTopClipsAsync(this, game, period, istrending, options);
 
         public Task<RestClip> GetClipAsync(string id)
             => ChannelHelper.GetClipAsync(this, id);

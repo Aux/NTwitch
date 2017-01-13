@@ -5,7 +5,7 @@ namespace NTwitch.Rest
 {
     public class RestBlockedUser
     {
-        public TwitchRestClient Client { get; }
+        public BaseRestClient Client { get; }
         [JsonProperty("")]
         public ulong Id { get; private set; }
         [JsonProperty("")]
@@ -13,14 +13,14 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public RestUser User { get; private set; }
 
-        internal RestBlockedUser(TwitchRestClient client)
+        internal RestBlockedUser(BaseRestClient client)
         {
             Client = client;
         }
 
         internal static RestBlockedUser Create(BaseRestClient client, string json)
         {
-            var user = new RestBlockedUser(client as TwitchRestClient);
+            var user = new RestBlockedUser(client);
             JsonConvert.PopulateObject(json, user);
             return user;
         }

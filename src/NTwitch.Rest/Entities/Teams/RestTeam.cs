@@ -8,11 +8,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public IEnumerable<RestUser> Users { get; private set; }
 
-        public RestTeam(TwitchRestClient client) : base(client) { }
+        public RestTeam(BaseRestClient client) : base(client) { }
 
         public static new RestTeam Create(BaseRestClient client, string json)
         {
-            var team = new RestTeam(client as TwitchRestClient);
+            var team = new RestTeam(client);
             JsonConvert.PopulateObject(json, team);
             return team;
         }

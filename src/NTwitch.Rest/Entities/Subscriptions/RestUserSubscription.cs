@@ -7,11 +7,11 @@ namespace NTwitch.Rest
         [JsonProperty("user")]
         public RestUser User { get; private set; }
 
-        public RestUserSubscription(TwitchRestClient client) : base(client) { }
+        public RestUserSubscription(BaseRestClient client) : base(client) { }
 
-        public static new RestUserSubscription Create(TwitchRestClient client, string json)
+        public static new RestUserSubscription Create(BaseRestClient client, string json)
         {
-            var sub = new RestUserSubscription(client as TwitchRestClient);
+            var sub = new RestUserSubscription(client);
             JsonConvert.PopulateObject(json, sub);
             return sub;
         }

@@ -15,11 +15,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public int Popularity { get; private set; }
 
-        public RestGame(TwitchRestClient client) : base(client) { }
+        public RestGame(BaseRestClient client) : base(client) { }
 
         public static RestGame Create(BaseRestClient client, string json)
         {
-            var game = new RestGame(client as TwitchRestClient);
+            var game = new RestGame(client);
             JsonConvert.PopulateObject(json, game);
             return game;
         }

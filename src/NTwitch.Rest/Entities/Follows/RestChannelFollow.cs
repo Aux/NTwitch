@@ -7,11 +7,11 @@ namespace NTwitch.Rest
         [JsonProperty("channel")]
         public RestChannel Channel { get; private set; }
 
-        public RestChannelFollow(TwitchRestClient client) : base(client) { }
+        public RestChannelFollow(BaseRestClient client) : base(client) { }
 
         public static new RestChannelFollow Create(TwitchRestClient client, string json)
         {
-            var follow = new RestChannelFollow(client as TwitchRestClient);
+            var follow = new RestChannelFollow(client);
             JsonConvert.PopulateObject(json, follow);
             return follow;
         }

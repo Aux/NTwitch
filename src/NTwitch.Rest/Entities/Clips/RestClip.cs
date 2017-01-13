@@ -30,11 +30,11 @@ namespace NTwitch.Rest
         [JsonProperty("vod")]
         public RestVideo Vod { get; private set; }
 
-        internal RestClip(TwitchRestClient client) : base(client) { }
+        internal RestClip(BaseRestClient client) : base(client) { }
 
         internal static RestClip Create(BaseRestClient client, string json)
         {
-            var clip = new RestClip(client as TwitchRestClient);
+            var clip = new RestClip(client);
             JsonConvert.PopulateObject(json, clip);
             return clip;
         }

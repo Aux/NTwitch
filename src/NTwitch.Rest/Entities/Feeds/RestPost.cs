@@ -23,11 +23,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public RestUser User { get; internal set; }
 
-        internal RestPost(TwitchRestClient client) : base(client) { }
+        internal RestPost(BaseRestClient client) : base(client) { }
 
         internal static RestPost Create(BaseRestClient client, string json)
         {
-            var post = new RestPost(client as TwitchRestClient);
+            var post = new RestPost(client);
             JsonConvert.PopulateObject(json, post);
             return post;
         }

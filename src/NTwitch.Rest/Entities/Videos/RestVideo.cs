@@ -40,11 +40,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public int Views { get; private set; }
         
-        internal RestVideo(TwitchRestClient client) : base(client) { }
+        internal RestVideo(BaseRestClient client) : base(client) { }
 
         internal static RestVideo Create(BaseRestClient client, string json)
         {
-            var video = new RestVideo(client as TwitchRestClient);
+            var video = new RestVideo(client);
             JsonConvert.PopulateObject(json, video);
             return video;
         }

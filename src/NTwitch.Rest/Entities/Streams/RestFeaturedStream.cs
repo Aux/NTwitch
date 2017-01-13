@@ -19,11 +19,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public string Title { get; private set; }
 
-        public RestFeaturedStream(TwitchRestClient client) : base(client) { }
+        public RestFeaturedStream(BaseRestClient client) : base(client) { }
 
         public static RestFeaturedStream Create(BaseRestClient client, string json)
         {
-            var stream = new RestFeaturedStream(client as TwitchRestClient);
+            var stream = new RestFeaturedStream(client);
             JsonConvert.PopulateObject(json, stream);
             return stream;
         }

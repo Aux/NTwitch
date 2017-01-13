@@ -13,11 +13,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public int Width { get; private set; }
 
-        public RestEmoteImage(TwitchRestClient client) : base(client) { }
+        public RestEmoteImage(BaseRestClient client) : base(client) { }
 
         public static RestEmoteImage Create(BaseRestClient client, string json)
         {
-            var emote = new RestEmoteImage(client as TwitchRestClient);
+            var emote = new RestEmoteImage(client);
             JsonConvert.PopulateObject(json, emote);
             return emote;
         }

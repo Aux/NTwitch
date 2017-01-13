@@ -11,11 +11,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public int Viewers { get; internal set; }
 
-        public RestTopGame(TwitchRestClient client) : base(client) { }
+        public RestTopGame(BaseRestClient client) : base(client) { }
 
         public static RestTopGame Create(BaseRestClient client, string json)
         {
-            var game = new RestTopGame(client as TwitchRestClient);
+            var game = new RestTopGame(client);
             JsonConvert.PopulateObject(json, game);
             return game;
         }

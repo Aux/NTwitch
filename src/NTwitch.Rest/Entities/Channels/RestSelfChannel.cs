@@ -12,11 +12,11 @@ namespace NTwitch.Rest
         [JsonProperty("stream_key")]
         public string StreamKey { get; internal set; }
 
-        public RestSelfChannel(TwitchRestClient client) : base(client) { }
+        public RestSelfChannel(BaseRestClient client) : base(client) { }
 
         public static new RestSelfChannel Create(BaseRestClient client, string json)
         {
-            var channel = new RestSelfChannel(client as TwitchRestClient);
+            var channel = new RestSelfChannel(client);
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }

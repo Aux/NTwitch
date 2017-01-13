@@ -13,11 +13,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public string UrlTemplate { get; private set; }
 
-        internal RestIngest(TwitchRestClient client) : base(client) { }
+        internal RestIngest(BaseRestClient client) : base(client) { }
 
         internal static RestIngest Create(BaseRestClient client, string json)
         {
-            var ingest = new RestIngest(client as TwitchRestClient);
+            var ingest = new RestIngest(client);
             JsonConvert.PopulateObject(json, ingest);
             return ingest;
         }

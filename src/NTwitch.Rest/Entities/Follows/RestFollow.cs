@@ -8,11 +8,11 @@ namespace NTwitch.Rest
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
 
-        internal RestFollow(TwitchRestClient client) : base(client) { }
+        internal RestFollow(BaseRestClient client) : base(client) { }
 
-        internal static RestFollow Create(TwitchRestClient client, string json)
+        internal static RestFollow Create(BaseRestClient client, string json)
         {
-            var follow = new RestFollow(client as TwitchRestClient);
+            var follow = new RestFollow(client);
             JsonConvert.PopulateObject(json, follow);
             return follow;
         }

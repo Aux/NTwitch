@@ -36,11 +36,11 @@ namespace NTwitch.Rest
         [JsonProperty("views")]
         public int ViewCount { get; internal set; }
 
-        public RestChannel(TwitchRestClient client) : base(client) { }
+        public RestChannel(BaseRestClient client) : base(client) { }
         
         public static new RestChannel Create(BaseRestClient client, string json)
         {
-            var channel = new RestChannel(client as TwitchRestClient);
+            var channel = new RestChannel(client);
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }

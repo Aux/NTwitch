@@ -30,11 +30,11 @@ namespace NTwitch.Rest
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; private set; }
 
-        internal RestSelfUser(TwitchRestClient client) : base(client) { }
+        internal RestSelfUser(BaseRestClient client) : base(client) { }
 
         internal static RestSelfUser Create(BaseRestClient client, string json)
         {
-            var user = new RestSelfUser(client as TwitchRestClient);
+            var user = new RestSelfUser(client);
             JsonConvert.PopulateObject(json, user);
             return user;
         }

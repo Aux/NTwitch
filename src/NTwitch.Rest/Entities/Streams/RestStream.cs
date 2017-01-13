@@ -24,11 +24,11 @@ namespace NTwitch.Rest
         [JsonProperty("")]
         public int Viewers { get; private set; }
 
-        public RestStream(TwitchRestClient client) : base(client) { }
+        public RestStream(BaseRestClient client) : base(client) { }
 
         public static RestStream Create(BaseRestClient client, string json)
         {
-            var stream = new RestStream(client as TwitchRestClient);
+            var stream = new RestStream(client);
             JsonConvert.PopulateObject(json, stream);
             return stream;
         }

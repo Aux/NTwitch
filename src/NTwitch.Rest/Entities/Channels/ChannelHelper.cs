@@ -51,7 +51,17 @@ namespace NTwitch.Rest
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("clips"));
             return items.Select(x => RestClip.Create(channel.Client, x));
         }
-        
+
+        public static Task UnfollowAsync(ChannelBase channel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task FollowAsync(ChannelBase channel, bool notify)
+        {
+            throw new NotImplementedException();
+        }
+
         public static async Task<RestPost> GetPostAsync(ChannelBase channel, ulong id, int comments)
         {
             var request = new RequestOptions();
@@ -70,7 +80,7 @@ namespace NTwitch.Rest
 
             string json = await channel.Client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/followers", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
-            return items.Select(x => RestUserSubscription.Create(channel.Client, x));
+            return items.Select(x => RestUserFollow.Create(channel.Client, x));
         }
 
         public static Task<IEnumerable<RestEmote>> GetEmotesAsync(ChannelBase channel)
