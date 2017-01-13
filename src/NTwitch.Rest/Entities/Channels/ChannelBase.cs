@@ -17,46 +17,46 @@ namespace NTwitch.Rest
             Client = client;
         }
 
-        public async Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, TwitchPageOptions options = null)
-            => await ChannelHelper.GetPostsAsync(this, comments, options);
+        public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, PageOptions options = null)
+            => ChannelHelper.GetPostsAsync(this, comments, options);
 
-        public async Task<RestPost> GetPostAsync(ulong id, int comments = 5)
-            => await ChannelHelper.GetPostAsync(this, id, comments);
+        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
+            => ChannelHelper.GetPostAsync(this, id, comments);
 
-        public async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
-            => await ChannelHelper.GetFollowersAsync(this, direction, options);
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
+            => ChannelHelper.GetFollowersAsync(this, direction, options);
 
-        public async Task<IEnumerable<RestTeam>> GetTeamsAsync()
-            => await ChannelHelper.GetTeamsAsync(this);
+        public Task<IEnumerable<RestTeam>> GetTeamsAsync()
+            => ChannelHelper.GetTeamsAsync(this);
 
-        public async Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, TwitchPageOptions options = null)
-            => await ChannelHelper.GetVideosAsync(this, language, sort, type, options);
+        public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
+            => ChannelHelper.GetVideosAsync(this, language, sort, type, options);
 
-        public async Task<IEnumerable<RestBadge>> GetBadgesAsync()
-            => await ChannelHelper.GetBadgesAsync(this);
+        public Task<IEnumerable<RestBadges>> GetBadgesAsync()
+            => ChannelHelper.GetBadgesAsync(this);
 
-        public async Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
-            => await ChannelHelper.GetEmoteSetAsync(this);
+        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
+            => ChannelHelper.GetEmoteSetAsync(this);
 
-        public async Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
-            => await ChannelHelper.GetEmoteSetAsync(this, setid);
+        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
+            => ChannelHelper.GetEmoteSetAsync(this, setid);
 
-        public async Task<IEnumerable<RestEmote>> GetEmotesAsync()
-            => await ChannelHelper.GetEmotesAsync(this);
+        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
+            => ChannelHelper.GetEmotesAsync(this);
 
-        public async Task<RestStream> GetStreamAsync()
-            => await ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
+        public Task<RestStream> GetStreamAsync()
+            => ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
 
-        public async Task<RestChannelFollow> FollowAsync(bool notify = false)
-            => await ChannelHelper.FollowAsync(this, notify);
+        public Task<RestChannelFollow> FollowAsync(bool notify = false)
+            => ChannelHelper.FollowAsync(this, notify);
 
-        public async Task<RestChannelFollow> UnfollowAsync()
-            => await ChannelHelper.UnfollowAsync(this);
+        public Task<RestChannelFollow> UnfollowAsync()
+            => ChannelHelper.UnfollowAsync(this);
 
-        public async Task<RestClip> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false)
-            => await ChannelHelper.GetTopClipsAsync(this, game, period, istrending);
+        public Task<RestClip> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false)
+            => ChannelHelper.GetTopClipsAsync(this, game, period, istrending);
 
-        public async Task<RestClip> GetClipAsync(string id)
-            => await ChannelHelper.GetClipAsync(this, id);
+        public Task<RestClip> GetClipAsync(string id)
+            => ChannelHelper.GetClipAsync(this, id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -20,28 +21,28 @@ namespace NTwitch.Rest
             return channel;
         }
 
-        public async Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
-            => await ChannelHelper.CreatePostAsync(this, args);
+        public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
+            => ChannelHelper.CreatePostAsync(this, args);
 
-        public async Task<RestPost> DeletePostAsync(ulong postid)
-            => await ChannelHelper.DeletePostAsync(this, postid);
+        public Task<RestPost> DeletePostAsync(ulong postid)
+            => ChannelHelper.DeletePostAsync(this, postid);
 
-        public async Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
-            => await ChannelHelper.ModifyAsync(this, args);
+        public Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
+            => ChannelHelper.ModifyAsync(this, args);
 
-        public async Task<IEnumerable<RestUser>> GetEditorsAsync()
-            => await ChannelHelper.GetEditorsAsynC(this);
+        public Task<IEnumerable<RestUser>> GetEditorsAsync()
+            => ChannelHelper.GetEditorsAsynC(this);
 
-        public async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
-            => await ChannelHelper.GetSubscribersAsync(this, direction, options);
+        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
+            => ChannelHelper.GetSubscribersAsync(this, direction, options);
 
-        public async Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
-            => await ChannelHelper.GetSubscriberAsync(this, userid);
+        public Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
+            => ChannelHelper.GetSubscriberAsync(this, userid);
 
-        public async Task<RestSelfChannel> ResetStreamKeyAsync()
-            => await ChannelHelper.ResetStreamKeyAsync(this);
+        public Task<RestSelfChannel> ResetStreamKeyAsync()
+            => ChannelHelper.ResetStreamKeyAsync(this);
 
-        public async Task StartCommercialAsync(int duration = 30)
-            => await ChannelHelper.StartCommercialAsync(this, duration);
+        public Task StartCommercialAsync(int duration = 30)
+            => ChannelHelper.StartCommercialAsync(this, duration);
     }
 }
