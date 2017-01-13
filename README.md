@@ -19,6 +19,10 @@ Release and pre-release builds can be found on Nuget under [NTwitch](https://www
 ## Documentation
 Documentation for released NTwitch features will be available at https://ntwitch.auxesis.tv/. To view the source and submit issues for the docs visit [the repo](https://github.com/Aux/NTwitch-docs).
 
+##### Examples
+- [Chat](https://github.com/Aux/NTwitch-Examples/ChatExample)
+- [Pubsub](https://github.com/Aux/NTwitch-Examples/PubsubExample)
+
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
 
