@@ -2,14 +2,14 @@
 
 namespace NTwitch.Rest
 {
-    public class TwitchPageOptions
+    public class PageOptions
     {
         public int Limit { get; set; }
         public int Page { get; set; }
         public int Offset
             => (Limit * Page) - Limit;
 
-        public TwitchPageOptions(int limit = 10, int page = 1)
+        public PageOptions(int limit = 10, int page = 1)
         {
             if (limit < 1 || limit > 100)
                 throw new ArgumentOutOfRangeException("Limit must be a number between 1 and 100.");
