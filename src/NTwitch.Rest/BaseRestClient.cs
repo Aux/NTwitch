@@ -68,8 +68,8 @@ namespace NTwitch.Rest
         public Task<RestUser> GetUserAsync(ulong id)
             => ClientHelper.GetUserAsync(this, id);
 
-        public Task<IEnumerable<RestUser>> FindUsersAsync(string name)
-            => ClientHelper.FindUsersAsync(this, name);
+        public Task<RestUser> FindUserAsync(string name)
+            => ClientHelper.FindUserAsync(this, name);
 
         public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
             => ClientHelper.GetTopVideosAsync(this, game, period, type, options);

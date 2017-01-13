@@ -82,13 +82,13 @@ namespace NTwitch.Rest
             return request;
         }
 
-        internal Task<string> ParseQuery(Dictionary<string, string> parameters)
+        internal Task<string> ParseQuery(Dictionary<string, object> parameters)
         {
             var builder = new StringBuilder();
             foreach (var p in parameters)
             {
                 string name = p.Key.ToLower();
-                string value = p.Value;
+                string value = p.Value.ToString();
 
                 if (string.IsNullOrWhiteSpace(value))
                     continue;
