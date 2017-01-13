@@ -22,7 +22,7 @@ namespace NTwitch.Rest
         public Task<RestChannelFollow> GetFollowAsync(ulong userid)
             => throw new NotImplementedException();
 
-        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, SortDirection direction = SortDirection.Descending, TwitchPageOptions options = null)
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, SortDirection direction = SortDirection.Descending, PageOptions options = null)
             => throw new NotImplementedException();
 
         public Task<RestBlockedUser> UnblockAsync()
