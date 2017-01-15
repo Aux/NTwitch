@@ -9,7 +9,7 @@ namespace NTwitch.Rest
 
         public RestChannelFollow(BaseRestClient client) : base(client) { }
 
-        public static new RestChannelFollow Create(TwitchRestClient client, string json)
+        public static new RestChannelFollow Create(BaseRestClient client, string json)
         {
             var follow = new RestChannelFollow(client);
             JsonConvert.PopulateObject(json, follow);
