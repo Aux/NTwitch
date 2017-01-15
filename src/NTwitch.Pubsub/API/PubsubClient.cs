@@ -17,6 +17,7 @@ namespace NTwitch.Pubsub
 
         public PubsubClient(LogManager log, string host)
         {
+            _log = log;
             _host = host;
         }
 

@@ -48,11 +48,9 @@ namespace NTwitch.Rest
         {
             if (_client == null)
             {
-                var http = new HttpClient()
-                {
-                    BaseAddress = new Uri(_host)
-                };
+                var http = new HttpClient();
 
+                http.BaseAddress = new Uri(_host);
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v" + options.ApiVersion + "+json");
                 http.DefaultRequestHeaders.Add("Client-ID", _clientid);
 
