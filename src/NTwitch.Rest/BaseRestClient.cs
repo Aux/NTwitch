@@ -15,6 +15,7 @@ namespace NTwitch.Rest
         public BaseRestClient(TwitchRestConfig config)
         {
             _log = new LogManager(config.LogLevel);
+            _resthost = config.RestUrl;
         }
 
         internal Task LoginInternalAsync(string clientid, string token)
