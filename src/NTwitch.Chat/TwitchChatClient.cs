@@ -16,25 +16,21 @@ namespace NTwitch.Chat
         public TwitchChatClient(TwitchChatConfig config) : base(config)
         {
             _host = config.ChatUrl;
-            _parser = new ChatParser(this);
-
-            _chat.MessageReceived += _parser.OnMessageReceived;
+            _port = config.ChatPort;
         }
         
-        public async Task LoginAsync(string username, string token, string clientid)
+        public async Task LoginAsync(string username, string token, string clientid = null)
         {
-            await LoginInternalAsync(clientid, token);
-            await LoginAsync(username, token);
-        }
+            if (clientid != null)
+                await LoginInternalAsync(clientid, token);
 
-        public async Task LoginAsync(string username, string token)
-        {
             await _chat.LoginAsync(username, token);
         }
 
         public async Task ConnectAsync()
         {
             _chat = new ChatClient(Logger, _host, _port);
+            _parser = new ChatParser(this);
             await _chat.ConnectAsync();
         }
 
@@ -42,5 +38,10 @@ namespace NTwitch.Chat
         {
             _chat.Dispose();
         }
+
+        public Task JoinAsync(string channelName)
+            => _chat.SendAsync("JOIN #" + channelName);
+
+        
     }
 }
