@@ -11,7 +11,7 @@ namespace NTwitch.Chat
         public static ChatSubscription Create(BaseRestClient client, string msg)
         {
             var sub = new ChatSubscription(client as TwitchChatClient);
-            ChatParser.PopulateObject(msg, sub);
+            ChatParser.PopulateObject(msg, sub, client);
             return sub;
         }
     }
