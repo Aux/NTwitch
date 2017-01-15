@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NTwitch.Rest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,9 +8,9 @@ namespace NTwitch.Chat
 {
     internal partial class ChatParser
     {
-        public static void PopulateObject(string msg, object obj)
+        public static void PopulateObject(string msg, object obj, BaseRestClient client)
         {
-            var split = msg.Split(' ');
+            var split = msg.Split(new[] { ' ' }, 2);
             string data = split[0];
             string content = split[1];
 
@@ -19,8 +20,16 @@ namespace NTwitch.Chat
             {
                 var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
 
-                string name = attr.Name + "=";
-                string value = GetValueBetween(data, name, ";");
+                object value;
+                if (attr.Name == null)
+                {
+                    value = Activator.CreateInstance(p.GetType(), new[] { client });
+                    PopulateObject(msg, value, client);
+                } else
+                {
+                    string name = attr.Name + "=";
+                    value = GetValueBetween(data, name, ";");
+                }
 
                 if (value != null)
                     p.SetValue(obj, value);
@@ -41,7 +50,7 @@ namespace NTwitch.Chat
 
         public static string GetValueBetween(string data, string start, string end)
         {
-            int valueStart = data.IndexOf(start);
+            int valueStart = data.IndexOf(start) + start.Count();
             if (valueStart < 0)
                 return null;
 

@@ -10,6 +10,7 @@ namespace NTwitch.Chat
         public ChatParser(TwitchChatClient client)
         {
             _client = client;
+            _client.Client.MessageReceived += OnMessageReceived;
         }
 
         public async Task OnMessageReceived(string msg)
@@ -19,13 +20,12 @@ namespace NTwitch.Chat
                 await HandlePing(msg).ConfigureAwait(false);
                 return;
             }
-            
-            string content = msg.Split(' ')[1];
 
-            int startIndex = content.IndexOf(":tmi.twitch.tv ");
+            string content = msg.Split(new[] { ' ' }, 2)[1];
+            int startIndex = content.IndexOf("twitch.tv ") + 10; // 10 chars for `twitch.tv `
             if (startIndex < 0)
             {
-                startIndex = content.IndexOf(":jtv ");
+                startIndex = content.IndexOf(".jtv ") + 5; // 5 chars for `.jtv `
                 if (startIndex < 0)
                     throw new InvalidOperationException();
             }
@@ -61,7 +61,8 @@ namespace NTwitch.Chat
                 case "GLOBALUSERSTATE":
                     await HandleGlobalUserState(msg).ConfigureAwait(false); break;
                 default:
-                    throw new NotSupportedException("The message type `" + type + "` is not supported at this time.");
+                    Console.WriteLine("Unsupported type: " + type); break;
+                    //throw new NotSupportedException("The message type `" + type + "` is not supported at this time.");
             }
         }
 
@@ -72,7 +73,8 @@ namespace NTwitch.Chat
 
         public async Task HandleJoin(string msg)
         {
-            await Task.Delay(1);
+            await _client._joinedChannelEvent.InvokeAsync();
+            Console.WriteLine(msg.Trim());
         }
 
         public async Task HandlePart(string msg)
@@ -122,7 +124,9 @@ namespace NTwitch.Chat
 
         public async Task HandlePrivMsg(string msg)
         {
-            await Task.Delay(1);
+            var message = new ChatMessage(_client);
+            PopulateObject(msg, message, _client);
+            await _client._messageReceivedEvent.InvokeAsync(message);
         }
 
         public async Task HandleGlobalUserState(string msg)
