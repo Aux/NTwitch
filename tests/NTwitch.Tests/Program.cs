@@ -1,7 +1,7 @@
 ﻿using NTwitch;
 using NTwitch.Chat;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 class Program
 {
@@ -21,12 +21,15 @@ class Program
 
         await _client.ConnectAsync();
         await _client.LoginAsync("datdoggo", "");
+        
+        await _client.JoinAsync("wraxu");
+        
         await Task.Delay(-1);
     }
 
-    private Task OnMessageReceived(string arg)
+    private Task OnMessageReceived(ChatMessage msg)
     {
-        Console.WriteLine(arg);
+        Console.WriteLine($"#{msg.Channel.Name} {msg.User.DisplayName}: {msg.Content}");
         return Task.CompletedTask;
     }
 }
