@@ -25,7 +25,7 @@ namespace NTwitch.Chat
             int startIndex = content.IndexOf("twitch.tv ") + 10; // 10 chars for `twitch.tv `
             if (startIndex < 0)
             {
-                startIndex = content.IndexOf(".jtv ") + 5; // 5 chars for `.jtv `
+                startIndex = content.IndexOf("jtv ") + 5; // 5 chars for `.jtv `
                 if (startIndex < 0)
                     throw new InvalidOperationException();
             }
@@ -73,23 +73,29 @@ namespace NTwitch.Chat
 
         public async Task HandleJoin(string msg)
         {
-            await _client._joinedChannelEvent.InvokeAsync();
-            Console.WriteLine(msg.Trim());
+            var channel = new ChatChannel(_client);
+            PopulateObject(msg, channel, _client);
+            await _client._joinedChannelEvent.InvokeAsync(channel);
         }
 
         public async Task HandlePart(string msg)
         {
-            await Task.Delay(1);
+            var channel = new ChatChannel(_client);
+            PopulateObject(msg, channel, _client);
+            await _client._leftChannelEvent.InvokeAsync(channel);
         }
 
         public async Task HandleMode(string msg)
         {
-            await Task.Delay(1);
+            await _client._userUpdatedEvent.InvokeAsync();
         }
 
         public async Task HandleNotice(string msg)
         {
-            await Task.Delay(1);
+            if (msg.Contains("Login authentication failed"))
+                throw new UnauthorizedAccessException("Login authentication failed");
+
+            await _client._noticeReceivedEvent.InvokeAsync();
         }
 
         public async Task HandleHostTarget(string msg)

@@ -42,6 +42,8 @@ namespace NTwitch.Chat
         public Task JoinAsync(string channelName)
             => _chat.SendAsync("JOIN #" + channelName);
 
-        
+        public Task LeaveAsync(string channelName)
+            => _chat.SendAsync("PART #" + channelName);
+
     }
 }

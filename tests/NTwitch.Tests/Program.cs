@@ -18,12 +18,13 @@ class Program
         });
 
         _client.MessageReceived += OnMessageReceived;
+        _client.JoinedChannel += OnJoinedChannel;
 
         await _client.ConnectAsync();
         await _client.LoginAsync("datdoggo", "");
         
         await _client.JoinAsync("wraxu");
-        
+
         await Task.Delay(-1);
     }
 
@@ -32,4 +33,11 @@ class Program
         Console.WriteLine($"#{msg.Channel.Name} {msg.User.DisplayName}: {msg.Content}");
         return Task.CompletedTask;
     }
+
+    private Task OnJoinedChannel(ChatChannel channel)
+    {
+        Console.WriteLine($"Joined #{channel.Name} :)");
+        return Task.CompletedTask;
+    }
+
 }

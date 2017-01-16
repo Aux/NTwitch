@@ -33,15 +33,15 @@ namespace NTwitch.Chat
             remove { _noticeReceivedEvent.Remove(value); }
         }
 
-        internal readonly AsyncEvent<Func<Task>> _joinedChannelEvent = new AsyncEvent<Func<Task>>();
-        public event Func<Task> JoinedChannel
+        internal readonly AsyncEvent<Func<ChatChannel, Task>> _joinedChannelEvent = new AsyncEvent<Func<ChatChannel, Task>>();
+        public event Func<ChatChannel, Task> JoinedChannel
         {
             add { _joinedChannelEvent.Add(value); }
             remove { _joinedChannelEvent.Remove(value); }
         }
 
-        internal readonly AsyncEvent<Func<Task>> _leftChannelEvent = new AsyncEvent<Func<Task>>();
-        public event Func<Task> LeftChannel
+        internal readonly AsyncEvent<Func<ChatChannel, Task>> _leftChannelEvent = new AsyncEvent<Func<ChatChannel, Task>>();
+        public event Func<ChatChannel, Task> LeftChannel
         {
             add { _leftChannelEvent.Add(value); }
             remove { _leftChannelEvent.Remove(value); }
