@@ -1,20 +1,19 @@
 ﻿using NTwitch.Rest;
-using System;
-using System.Collections.Generic;
 
 namespace NTwitch.Chat
 {
     public class ChatMessage : MessageBase
     {
         [ChatProperty("id")]
-        public string Id { get; private set; }
+        public string Id { get; internal set; }
         [ChatProperty("emotes")]
-        public string Emotes { get; private set; }
+        public string Emotes { get; internal set; }
         [ChatProperty]
-        public ChatChannel Channel { get; private set; }
+        public ChatChannel Channel { get; internal set; }
         [ChatProperty]
-        public ChatUser User { get; private set; }
-        public string Content { get; private set; }
+        public ChatUser User { get; internal set; }
+        [ChatValueBetween(" :", null)]
+        public string Content { get; internal set; }
 
         internal ChatMessage(TwitchChatClient client) : base(client) { }
 

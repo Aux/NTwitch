@@ -8,17 +8,17 @@ namespace NTwitch.Chat
     public class ChatUser : UserBase
     {
         [ChatProperty("badges")]
-        public IEnumerable<string> Badges { get; private set; }
+        public string Badges { get; internal set; }
         [ChatProperty("color")]
-        public string Color { get; private set; }
+        public string Color { get; internal set; }
         [ChatProperty("display-name")]
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; internal set; }
         [ChatProperty("mod")]
-        public bool IsModerator { get; private set; }
+        public bool IsModerator { get; internal set; }
         [ChatProperty("subscriber")]
-        public bool IsSubscriber { get; private set; }
+        public bool IsSubscriber { get; internal set; }
         [ChatProperty("turbo")]
-        public bool IsTurbo { get; private set; }
+        public bool IsTurbo { get; internal set; }
 
         public ChatUser(TwitchChatClient client) : base(client) { }
 

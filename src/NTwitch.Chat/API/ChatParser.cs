@@ -33,7 +33,7 @@ namespace NTwitch.Chat
             int endIndex = content.Substring(startIndex).IndexOf(' ');
 
             string type = content.Substring(startIndex, endIndex);
-
+            
             switch (type)
             {
                 case "JOIN":
@@ -61,7 +61,7 @@ namespace NTwitch.Chat
                 case "GLOBALUSERSTATE":
                     await HandleGlobalUserState(msg).ConfigureAwait(false); break;
                 default:
-                    Console.WriteLine("Unsupported type: " + type); break;
+                    Console.WriteLine(msg); break;
                     //throw new NotSupportedException("The message type `" + type + "` is not supported at this time.");
             }
         }
