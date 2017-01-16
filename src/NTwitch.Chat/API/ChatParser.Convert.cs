@@ -10,53 +10,47 @@ namespace NTwitch.Chat
     {
         public static void PopulateObject(string msg, object obj, BaseRestClient client)
         {
-            try
+            var split = msg.Split(new[] { ' ' }, 2);
+            string data = split[0];
+            string content = split[1];
+
+            var properties = GetProperties<ChatPropertyAttribute>(obj);
+
+            foreach (var p in properties)
             {
-                var split = msg.Split(new[] { ' ' }, 2);
-                string data = split[0];
-                string content = split[1];
+                var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
 
-                var properties = GetProperties<ChatPropertyAttribute>(obj);
-
-                foreach (var p in properties)
+                object value;
+                if (attr.Name == null)
                 {
-                    var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
+                    value = Activator.CreateInstance(p.PropertyType, new[] { client });
+                    PopulateObject(msg, value, client);
+                }
+                else
+                {
+                    string name = attr.Name + "=";
+                    string result = GetValueBetween(data, name, ";");
 
-                    object value;
-                    if (attr.Name == null)
-                    {
-                        value = Activator.CreateInstance(p.PropertyType, new[] { client });
-                        PopulateObject(msg, value, client);
-                    }
+                    if (p.PropertyType == typeof(bool))
+                        value = result == "1";
                     else
-                    {
-                        string name = attr.Name + "=";
-                        string result = GetValueBetween(data, name, ";");
-
-                        if (p.PropertyType == typeof(bool))
-                            value = result == "1";
-                        else
-                            value = Convert.ChangeType(result, p.PropertyType);
-                    }
-
-                    if (value != null)
-                        p.SetValue(obj, value);
+                        value = Convert.ChangeType(result, p.PropertyType);
                 }
 
-                var betweens = GetProperties<ChatValueBetweenAttribute>(obj);
+                if (value != null)
+                    p.SetValue(obj, value);
+            }
 
-                foreach (var b in betweens)
-                {
-                    var attr = b.GetCustomAttribute<ChatValueBetweenAttribute>();
+            var betweens = GetProperties<ChatValueBetweenAttribute>(obj);
 
-                    string value = GetValueBetween(content, attr.FromValue, attr.ToValue);
-
-                    if (value != null)
-                        b.SetValue(obj, value);
-                }
-            } catch (Exception ex)
+            foreach (var b in betweens)
             {
-                Console.WriteLine(ex);
+                var attr = b.GetCustomAttribute<ChatValueBetweenAttribute>();
+
+                string value = GetValueBetween(content, attr.FromValue, attr.ToValue);
+
+                if (value != null)
+                    b.SetValue(obj, value);
             }
         }
 
