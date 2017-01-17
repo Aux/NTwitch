@@ -18,6 +18,7 @@ script:
   - dotnet build src/NTwitch/NTwitch.csproj --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
   - dotnet build src/NTwitch.Core/NTwitch.Core.csproj --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
   - dotnet build src/NTwitch.Rest/NTwitch.Rest.csproj --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+  - dotnet build src/NTwitch.Chat/NTwitch.Chat.csproj --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 #  - "$TRAVIS_BRANCH" == "master" && dotnet build */**/project.json --configuration Release
 #  - "$TRAVIS_BRANCH" == "dev" && dotnet build */**/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 #deploy:

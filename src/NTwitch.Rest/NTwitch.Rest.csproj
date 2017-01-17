@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <AssemblyName>NTwitch.Rest</AssemblyName>
+	<AssemblyInformationalVersion>0.0.3</AssemblyInformationalVersion>
+	<AssemblyFileVersion>0.0.3</AssemblyFileVersion>
+	<AssemblyVersion>0.0.3</AssemblyVersion>
     <Authors>Auxesis</Authors>
     <Description>A .Net Core implementation of the https://twitch.tv/ rest api.</Description>
     <PackageTags>twitch;twitchtv;rest</PackageTags>
