@@ -75,5 +75,11 @@ namespace NTwitch.Chat
             var type = obj.GetType().GetTypeInfo();
             return type.GetProperties().Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(T)));
         }
+
+        public static string GetContent(string msg)
+        {
+            string content = msg.Split(new[] { ' ' }, 2)[1];
+            return GetValueBetween(content, " :" , null);
+        }
     }
 }

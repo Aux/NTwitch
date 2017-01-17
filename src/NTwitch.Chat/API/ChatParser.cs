@@ -15,9 +15,16 @@ namespace NTwitch.Chat
 
         public async Task OnMessageReceived(string msg)
         {
+            var msgs = msg.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var m in msgs)
+                await ParseAsync(m);
+        }
+
+        public async Task ParseAsync(string msg)
+        {
             if (msg == "PING :tmi.twitch.tv")
             {
-                await HandlePing(msg).ConfigureAwait(false);
+                await HandlePingAsync(msg).ConfigureAwait(false);
                 return;
             }
 
@@ -27,7 +34,10 @@ namespace NTwitch.Chat
             {
                 startIndex = content.IndexOf("jtv ") + 5; // 5 chars for `.jtv `
                 if (startIndex < 0)
-                    throw new InvalidOperationException();
+                {
+                    await _client.Logger.ErrorAsync("Chat", new InvalidOperationException(msg));
+                    return;
+                }
             }
 
             int endIndex = content.Substring(startIndex).IndexOf(' ');
@@ -37,60 +47,59 @@ namespace NTwitch.Chat
             switch (type)
             {
                 case "JOIN":
-                    await HandleJoin(msg).ConfigureAwait(false); break;
+                    await HandleJoinAsync(msg).ConfigureAwait(false); break;
                 case "PART":
-                    await HandlePart(msg).ConfigureAwait(false); break;
+                    await HandlePartAsync(msg).ConfigureAwait(false); break;
                 case "MODE":
-                    await HandleMode(msg).ConfigureAwait(false); break;
+                    await HandleModeAsync(msg).ConfigureAwait(false); break;
                 case "NOTICE":
-                    await HandleNotice(msg).ConfigureAwait(false); break;
+                    await HandleNoticeAsync(msg).ConfigureAwait(false); break;
                 case "PRIVMSG":
-                    await HandlePrivMsg(msg).ConfigureAwait(false); break;
+                    await HandlePrivMsgAsync(msg).ConfigureAwait(false); break;
                 case "CLEARCHAT":
-                    await HandleClearChat(msg).ConfigureAwait(false); break;
+                    await HandleClearChatAsync(msg).ConfigureAwait(false); break;
                 case "USERSTATE":
-                    await HandleUserState(msg).ConfigureAwait(false); break;
+                    await HandleUserStateAsync(msg).ConfigureAwait(false); break;
                 case "RECONNECT":
-                    await HandleReconnect(msg).ConfigureAwait(false); break;
+                    await HandleReconnectAsync(msg).ConfigureAwait(false); break;
                 case "ROOMSTATE":
-                    await HandleRoomState(msg).ConfigureAwait(false); break;
+                    await HandleRoomStateAsync(msg).ConfigureAwait(false); break;
                 case "USERNOTICE":
-                    await HandleUserNotice(msg).ConfigureAwait(false); break;
+                    await HandleUserNoticeAsync(msg).ConfigureAwait(false); break;
                 case "HOSTTARGET":
-                    await HandleHostTarget(msg).ConfigureAwait(false); break;
+                    await HandleHostTargetAsync(msg).ConfigureAwait(false); break;
                 case "GLOBALUSERSTATE":
-                    await HandleGlobalUserState(msg).ConfigureAwait(false); break;
+                    await HandleGlobalUserStateAsync(msg).ConfigureAwait(false); break;
                 default:
-                    Console.WriteLine(msg); break;
-                    //throw new NotSupportedException("The message type `" + type + "` is not supported at this time.");
+                    await _client.Logger.ErrorAsync(type, new NotSupportedException(msg)); break;
             }
         }
 
-        public async Task HandlePing(string msg)
+        public async Task HandlePingAsync(string msg)
         {
             await _client.Client.SendAsync("PONG :tmi.twitch.tv");
         }
 
-        public async Task HandleJoin(string msg)
+        public async Task HandleJoinAsync(string msg)
         {
             var channel = new ChatChannel(_client);
             PopulateObject(msg, channel, _client);
             await _client._joinedChannelEvent.InvokeAsync(channel);
         }
 
-        public async Task HandlePart(string msg)
+        public async Task HandlePartAsync(string msg)
         {
             var channel = new ChatChannel(_client);
             PopulateObject(msg, channel, _client);
             await _client._leftChannelEvent.InvokeAsync(channel);
         }
 
-        public async Task HandleMode(string msg)
+        public async Task HandleModeAsync(string msg)
         {
             await _client._userUpdatedEvent.InvokeAsync();
         }
 
-        public async Task HandleNotice(string msg)
+        public async Task HandleNoticeAsync(string msg)
         {
             if (msg.Contains("Login authentication failed"))
                 throw new UnauthorizedAccessException("Login authentication failed");
@@ -98,44 +107,44 @@ namespace NTwitch.Chat
             await _client._noticeReceivedEvent.InvokeAsync();
         }
 
-        public async Task HandleHostTarget(string msg)
+        public async Task HandleHostTargetAsync(string msg)
         {
             await Task.Delay(1);
         }
 
-        public async Task HandleClearChat(string msg)
+        public async Task HandleClearChatAsync(string msg)
         {
             await Task.Delay(1);
         }
 
-        public async Task HandleUserState(string msg)
+        public async Task HandleUserStateAsync(string msg)
         {
             await Task.Delay(1);
         }
 
-        public async Task HandleReconnect(string msg)
+        public async Task HandleReconnectAsync(string msg)
         {
             await Task.Delay(1);
         }
 
-        public async Task HandleRoomState(string msg)
+        public async Task HandleRoomStateAsync(string msg)
         {
             await Task.Delay(1);
         }
         
-        public async Task HandleUserNotice(string msg)
+        public async Task HandleUserNoticeAsync(string msg)
         {
             await Task.Delay(1);
         }
 
-        public async Task HandlePrivMsg(string msg)
+        public async Task HandlePrivMsgAsync(string msg)
         {
             var message = new ChatMessage(_client);
             PopulateObject(msg, message, _client);
             await _client._messageReceivedEvent.InvokeAsync(message);
         }
 
-        public async Task HandleGlobalUserState(string msg)
+        public async Task HandleGlobalUserStateAsync(string msg)
         {
             await Task.Delay(1);
         }

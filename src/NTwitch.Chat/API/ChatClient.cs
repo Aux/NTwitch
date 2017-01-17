@@ -39,8 +39,8 @@ namespace NTwitch.Chat
 
         public async Task SendAsync(string message)
         {
-            await _log.DebugAsync("Chat", message);
-            await _writer.WriteLineAsync(message);
+            await _log.DebugAsync("Chat", message).ConfigureAwait(false);
+            await _writer.WriteLineAsync(message).ConfigureAwait(false);
         }
 
         internal async Task ConnectAsync()
@@ -57,12 +57,13 @@ namespace NTwitch.Chat
 
             _cancelTokenSource = new CancellationTokenSource();
             await StartAsync(_cancelTokenSource);
+            await _log.InfoAsync("Chat", "Connected").ConfigureAwait(false);
         }
 
         internal async Task LoginAsync(string username, string token)
         {
             if (!_client.Connected)
-                throw new InvalidOperationException("You must connect before logging in.");
+                await _log.ErrorAsync("Login", new InvalidOperationException("You must connect before logging in.")).ConfigureAwait(false);
 
             _token = token;
             _username = username;
@@ -71,6 +72,7 @@ namespace NTwitch.Chat
             await SendAsync("NICK " + username);
             await SendAsync("CAP REQ :twitch.tv/tags");
             await SendAsync("CAP REQ :twitch.tv/membership");
+            await _log.InfoAsync("Chat", "Logged in").ConfigureAwait(false);
         }
 
         public async Task DisconnectAsync(bool disposing = false)
@@ -109,7 +111,7 @@ namespace NTwitch.Chat
 
                 var result = receiveTask.Result;
                 string msg = Encoding.ASCII.GetString(buffer, 0, result);
-                await _messageReceivedEvent.InvokeAsync(msg);
+                await _messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
             }
         }
         

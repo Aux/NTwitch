@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -11,13 +12,25 @@ namespace NTwitch.Rest
         private LogManager _log;
         private RestClient _rest;
         private string _resthost;
-        
-        public BaseRestClient(TwitchRestConfig config)
+
+        internal readonly AsyncEvent<Func<LogMessage, Task>> _logEvent = new AsyncEvent<Func<LogMessage, Task>>();
+        public event Func<LogMessage, Task> Log
         {
-            _log = new LogManager(config.LogLevel);
-            _resthost = config.RestUrl;
+            add { _logEvent.Add(value); }
+            remove { _logEvent.Remove(value); }
         }
 
+        public BaseRestClient(TwitchRestConfig config)
+        {
+            _resthost = config.RestUrl;
+
+            _log = new LogManager(config.LogLevel);
+            _log.LogReceived += OnLogReceived;
+        }
+
+        private Task OnLogReceived(LogMessage msg)
+            => _logEvent.InvokeAsync(msg);
+        
         internal Task LoginInternalAsync(string clientid, string token)
         {
             _rest = new RestClient(_log, _resthost, clientid, token);
