@@ -19,11 +19,9 @@ namespace NTwitch.Chat
             _port = config.ChatPort;
         }
         
-        public async Task LoginAsync(string username, string token, string clientid = null)
+        public async Task LoginAsync(string username, string token)
         {
-            if (clientid != null)
-                await LoginInternalAsync(clientid, token);
-
+            await LoginInternalAsync(TokenType.OAuth, token);
             await _chat.LoginAsync(username, token);
         }
 

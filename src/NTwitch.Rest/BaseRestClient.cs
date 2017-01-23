@@ -6,11 +6,14 @@ namespace NTwitch.Rest
 {
     public class BaseRestClient : ITwitchClient
     {
+        public TokenInfo Token => _tokeninfo;
+
         internal RestClient ApiClient => _rest;
         internal LogManager Logger => _log;
 
         private LogManager _log;
         private RestClient _rest;
+        private TokenInfo _tokeninfo;
         private string _resthost;
 
         internal readonly AsyncEvent<Func<LogMessage, Task>> _logEvent = new AsyncEvent<Func<LogMessage, Task>>();
@@ -31,10 +34,10 @@ namespace NTwitch.Rest
         private Task OnLogReceived(LogMessage msg)
             => _logEvent.InvokeAsync(msg);
         
-        internal Task LoginInternalAsync(string clientid, string token)
+        internal async Task LoginInternalAsync(TokenType type, string token)
         {
-            _rest = new RestClient(_log, _resthost, clientid, token);
-            return Task.CompletedTask;
+            _rest = new RestClient(_log, _resthost);
+            _tokeninfo = await _rest.LoginAsync(type, token);
         }
 
         public Task<RestSelfUser> GetCurrentUserAsync()

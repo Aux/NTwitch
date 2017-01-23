@@ -13,19 +13,40 @@ namespace NTwitch.Rest
         private LogManager _log;
         private HttpClient _client;
 
+        private TokenType _tokenType;
         private string _host;
-        private string _clientid;
         private string _token;
         private bool _disposed;
 
-        internal RestClient(LogManager log, string host, string clientid, string token)
+        internal RestClient(LogManager log, string host)
         {
             _log = log;
             _host = host;
-            _clientid = clientid;
-            _token = token;
         }
         
+        public async Task<TokenInfo> LoginAsync(TokenType type, string token)
+        {
+            _tokenType = type;
+            _token = token;
+
+            if (type == TokenType.ClientId)
+                return null;
+            
+            if (type == TokenType.OAuth)
+            {
+                if (token == null)
+                    return null;
+
+                string json = await SendAsync("GET", "");
+
+                var info = TokenInfo.Create(json);
+                if (info.IsValid)
+                    return info;
+            }
+
+            throw new InvalidOperationException("Token is not valid.");
+        }
+
         public async Task<string> SendAsync(string method, string endpoint, RequestOptions options = null)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -52,9 +73,10 @@ namespace NTwitch.Rest
 
                 http.BaseAddress = new Uri(_host);
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v" + options.ApiVersion + "+json");
-                http.DefaultRequestHeaders.Add("Client-ID", _clientid);
 
-                if (!string.IsNullOrWhiteSpace(_token))
+                if (_tokenType == TokenType.ClientId)
+                    http.DefaultRequestHeaders.Add("Client-ID", _token);
+                if (_tokenType == TokenType.OAuth)
                     http.DefaultRequestHeaders.Add("Authorization", "OAuth " + _token);
 
                 _client = http;

@@ -1,6 +1,7 @@
 ﻿using NTwitch;
-using NTwitch.Chat;
+using NTwitch.Rest;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 class Program
@@ -8,25 +9,24 @@ class Program
     static void Main(string[] args)
         => new Program().StartAsync().GetAwaiter().GetResult();
 
-    private TwitchChatClient _client;
+    private TwitchRestClient _client;
 
     public async Task StartAsync()
     {
-        _client = new TwitchChatClient(new TwitchChatConfig()
+        _client = new TwitchRestClient(new TwitchRestConfig()
         {
             LogLevel = LogLevel.Debug
         });
 
         _client.Log += OnLog;
-        _client.MessageReceived += OnMessageReceived;
-        _client.JoinedChannel += OnJoinedChannel;
+        
+        await _client.LoginAsync(TokenType.OAuth, "");
+        var user = _client.Token;
 
-        await _client.ConnectAsync();
-        await _client.LoginAsync("datdoggo", "");
-
-        await Task.Delay(1000);
-        await _client.JoinAsync("timthetatman");
-
+        var properties = user.GetType().GetTypeInfo();
+        foreach (var p in properties.GetProperties())
+            Console.WriteLine($"{p.Name}: {p.GetValue(user)}");
+        
         await Task.Delay(-1);
     }
 
@@ -35,17 +35,4 @@ class Program
         Console.WriteLine($"[{msg.Level}] {msg.Source}: {msg.Message}");
         return Task.CompletedTask;
     }
-
-    private Task OnMessageReceived(ChatMessage msg)
-    {
-        Console.WriteLine($"#{msg.Channel.Name} {msg.User.DisplayName}: {msg.Content}");
-        return Task.CompletedTask;
-    }
-
-    private Task OnJoinedChannel(ChatChannel channel)
-    {
-        Console.WriteLine($"Joined #{channel.Name} :)");
-        return Task.CompletedTask;
-    }
-
 }

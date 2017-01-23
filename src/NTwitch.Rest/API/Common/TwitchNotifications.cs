@@ -4,9 +4,9 @@ namespace NTwitch.Rest
 {
     public class TwitchNotifications
     {
-        [JsonProperty("")]
+        [JsonProperty("email")]
         public bool IsEmailEnabled { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("push")]
         public bool IsPushEnabled { get; internal set; }
     }
 }
