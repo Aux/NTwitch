@@ -10,7 +10,7 @@ namespace NTwitch.Rest
     {
         public override bool CanConvert(Type objectType)
         {
-            return true;
+            return false;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -24,7 +24,7 @@ namespace NTwitch.Rest
             var properties = objectType.GetTypeInfo().GetProperties().Where(x => x.CanRead && x.CanWrite);
             foreach (var p in properties)
             {
-                var jproperty = p.GetCustomAttributes(true).OfType<JsonPropertyAttribute>().FirstOrDefault();
+                var jproperty = p.GetCustomAttributes<JsonPropertyAttribute>(true).FirstOrDefault();
 
                 if (jproperty == null)
                     continue;

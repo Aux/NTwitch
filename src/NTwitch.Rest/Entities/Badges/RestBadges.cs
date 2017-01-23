@@ -21,8 +21,7 @@ namespace NTwitch.Rest
 
         internal static RestBadges Create(string json)
         {
-            var badges = new RestBadges();
-            JsonConvert.PopulateObject(json, badges);
+            var badges = JsonConvert.DeserializeObject<RestBadges>(json);
             return badges;
         }
     }
