@@ -8,12 +8,12 @@ namespace NTwitch
         string DisplayName { get; }
 
         /// <summary> Block this user. </summary>
-        Task BlockAsync();
+        Task<IBlockedUser> BlockAsync();
         /// <summary> Unblock this user. </summary>
-        Task UnblockAsync();
+        Task<IBlockedUser> UnblockAsync();
         /// <summary> Check if this user is following the specified channel. </summary>
         Task<bool> IsFollowingAsync(ulong channelId);
         /// <summary> Get the channels this user is following. </summary>
-        Task GetFollowsAsync();
+        Task<IChannelFollow> GetFollowsAsync();
     }
 }
