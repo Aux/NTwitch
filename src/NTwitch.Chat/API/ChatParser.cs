@@ -21,9 +21,22 @@ namespace NTwitch.Chat
                 object value;
                 if (attr.Name == null)
                 {
-                    var method = typeof(ChatParser).GetRuntimeMethod("ParseAsync", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
-                    var generic = method.MakeGenericMethod(p.PropertyType);
-                    value = generic.Invoke(null, new object[] { msg, client });
+                    switch (attr.Type)
+                    {
+                        case PropertyType.Content:
+                            value = msg.Parameters.Last();
+                            break;
+                        case PropertyType.ChannelName:
+                            value = msg.Parameters.First();
+                            break;
+                        case PropertyType.Complex:
+                            var method = typeof(ChatParser).GetRuntimeMethod("ParseAsync", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
+                            var generic = method.MakeGenericMethod(p.PropertyType);
+                            value = generic.Invoke(null, new object[] { msg, client });
+                            break;
+                        default:
+                            throw new FormatException("Property type is not valid for the given context.");
+                    }
                 }
                 else
                 {

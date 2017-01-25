@@ -16,7 +16,7 @@ namespace NTwitch.Chat
 
         public async Task OnMessageReceived(string msg)
         {
-            var msgs = msg.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var msgs = msg.Trim().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var m in msgs)
                 await HandleAsync(m);
         }
@@ -27,12 +27,13 @@ namespace NTwitch.Chat
             try
             {
                 msg = TwitchMessage.Parse(message);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 await _client.Logger.ErrorAsync("Parser", ex);
                 return;
             }
-            
+
             switch (msg.Command)
             {
                 case "PING":
@@ -61,12 +62,19 @@ namespace NTwitch.Chat
                     await HandleHostTargetAsync(msg); break;
                 case "GLOBALUSERSTATE":
                     await HandleGlobalUserStateAsync(msg); break;
+                default:
+                    await HandleUnknownAsync(msg); break;
             }
+        }
+
+        public async Task HandleUnknownAsync(TwitchMessage message)
+        {
+            await _client.Logger.DebugAsync("Unknown Status", message.Command);
         }
 
         public async Task HandlePingAsync(TwitchMessage message)
         {
-            await _client.Client.SendAsync("PONG :tmi.twitch.tv").ConfigureAwait(false);
+            await _client.Client.SendAsync("PONG :tmi.twitch.tv");
         }
 
         public async Task HandleJoinAsync(TwitchMessage message)
@@ -113,7 +121,7 @@ namespace NTwitch.Chat
         {
             await Task.Delay(1);
         }
-        
+
         public async Task HandleUserNoticeAsync(TwitchMessage message)
         {
             await Task.Delay(1);
@@ -122,7 +130,7 @@ namespace NTwitch.Chat
         public async Task HandlePrivMsgAsync(TwitchMessage message)
         {
             var msg = await ChatParser.ParseAsync<ChatMessage>(message, _client);
-            await _client._messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
+            await _client._messageReceivedEvent.InvokeAsync(msg);
         }
 
         public async Task HandleGlobalUserStateAsync(TwitchMessage message)

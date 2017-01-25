@@ -39,8 +39,11 @@ namespace NTwitch.Chat
 
         public async Task SendAsync(string message)
         {
-            await _log.DebugAsync("Chat", message).ConfigureAwait(false);
-            await _writer.WriteLineAsync(message).ConfigureAwait(false);
+            if (!_client.Connected)
+                throw new InvalidOperationException("Client is not connected.");
+
+            await _log.DebugAsync("Chat", message);
+            await _writer.WriteLineAsync(message);
         }
 
         internal async Task ConnectAsync()
@@ -57,13 +60,13 @@ namespace NTwitch.Chat
 
             _cancelTokenSource = new CancellationTokenSource();
             await StartAsync(_cancelTokenSource);
-            await _log.InfoAsync("Chat", "Connected").ConfigureAwait(false);
+            await _log.InfoAsync("Chat", "Connected");
         }
 
         internal async Task LoginAsync(string username, string token)
         {
             if (!_client.Connected)
-                await _log.ErrorAsync("Login", new InvalidOperationException("You must connect before logging in.")).ConfigureAwait(false);
+                await _log.ErrorAsync("Login", new InvalidOperationException("You must connect before logging in."));
 
             _token = token;
             _username = username;
@@ -72,7 +75,7 @@ namespace NTwitch.Chat
             await SendAsync("NICK " + username);
             await SendAsync("CAP REQ :twitch.tv/tags");
             await SendAsync("CAP REQ :twitch.tv/membership");
-            await _log.InfoAsync("Chat", "Logged in").ConfigureAwait(false);
+            await _log.InfoAsync("Chat", "Logged in");
         }
 
         public async Task DisconnectAsync(bool disposing = false)
@@ -80,7 +83,7 @@ namespace NTwitch.Chat
             try { _cancelTokenSource.Cancel(false); } catch { }
 
             if (!disposing)
-                await (_task ?? Task.Delay(0)).ConfigureAwait(false);
+                await (_task ?? Task.Delay(0));
 
             if (_client != null && _client.Connected)
             {
@@ -105,13 +108,13 @@ namespace NTwitch.Chat
                 var buffer = new byte[_client.ReceiveBufferSize];
                 var receiveTask = _stream.ReadAsync(buffer, 0, _client.ReceiveBufferSize);
 
-                var task = await Task.WhenAny(closeTask, receiveTask).ConfigureAwait(false);
+                var task = await Task.WhenAny(closeTask, receiveTask);
                 if (task == closeTask)
                     break;
 
                 var result = receiveTask.Result;
                 string msg = Encoding.ASCII.GetString(buffer, 0, result);
-                await _messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
+                await _messageReceivedEvent.InvokeAsync(msg);
             }
         }
         

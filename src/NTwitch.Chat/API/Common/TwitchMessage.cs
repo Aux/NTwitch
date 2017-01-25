@@ -68,6 +68,7 @@ namespace NTwitch.Chat
                 string cmdPart = input.Substring(pos, next - pos);
                 msg.Command = cmdPart;
 
+                pos = next + 1;
                 while (pos < input.Length)
                 {
                     if (input[pos] == ':')
@@ -91,5 +92,8 @@ namespace NTwitch.Chat
             
             return msg;
         }
+
+        public override string ToString()
+            => $"{Command} {string.Join(" ", Parameters)}";
     }
 }

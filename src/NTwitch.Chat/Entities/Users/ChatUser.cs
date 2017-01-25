@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public class ChatUser : UserBase
+    public class ChatUser : ChatEntity, IUser
     {
         [ChatProperty("badges")]
         public string Badges { get; internal set; }
@@ -19,12 +19,23 @@ namespace NTwitch.Chat
         public bool IsSubscriber { get; internal set; }
         [ChatProperty("turbo")]
         public bool IsTurbo { get; internal set; }
-
+        
         public ChatUser(TwitchChatClient client) : base(client) { }
         
         public Task BanAsync(ChatChannel channel, int? duration = null)
             => BanAsync(channel.Name, duration);
         public Task BanAsync(string channelName, int? duration = null)
+            => throw new NotImplementedException();
+
+        // IUser
+
+        Task<IBlockedUser> IUser.BlockAsync()
+            => throw new NotImplementedException();
+        Task<IBlockedUser> IUser.UnblockAsync()
+            => throw new NotImplementedException();
+        Task<bool> IUser.IsFollowingAsync(ulong channelId)
+            => throw new NotImplementedException();
+        Task<IChannelFollow> IUser.GetFollowsAsync()
             => throw new NotImplementedException();
     }
 }

@@ -1,20 +1,21 @@
-﻿using NTwitch.Rest;
+﻿using System;
 
 namespace NTwitch.Chat
 {
-    public class ChatMessage : MessageBase
+    public class ChatMessage : ChatEntity, IMessage
     {
+        public DateTime UtcTimestamp { get; } = DateTime.UtcNow;
         [ChatProperty("id")]
-        public string Id { get; internal set; }
+        public new string Id { get; internal set; }
         [ChatProperty("emotes")]
         public string Emotes { get; internal set; }
-        [ChatProperty]
+        [ChatProperty(PropertyType.Complex)]
         public ChatChannel Channel { get; internal set; }
-        [ChatProperty]
+        [ChatProperty(PropertyType.Complex)]
         public ChatUser User { get; internal set; }
-        [ChatValueBetween(" :", null)]
+        [ChatProperty(PropertyType.Content)]
         public string Content { get; internal set; }
-
+        
         internal ChatMessage(TwitchChatClient client) : base(client) { }
     }
 }

@@ -23,7 +23,7 @@ class Program
 
         await _client.ConnectAsync();
         await _client.LoginAsync("datdoggo", "");
-        await _client.JoinAsync("iddqdow");
+        await _client.JoinAsync("ster");
         
         await Task.Delay(-1);
     }
