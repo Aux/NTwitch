@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace NTwitch.Rest
+namespace NTwitch
 {
     public class TwitchConverter : JsonConverter
     {

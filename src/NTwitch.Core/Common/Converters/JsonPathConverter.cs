@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace NTwitch.Rest
+namespace NTwitch
 {
     public class JsonPathConverter : JsonConverter
     {

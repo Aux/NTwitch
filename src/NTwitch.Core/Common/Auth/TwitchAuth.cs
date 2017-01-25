@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NTwitch.Rest
+namespace NTwitch
 {
     public class TwitchAuth
     {

@@ -1,4 +1,4 @@
-﻿namespace NTwitch.Rest
+﻿namespace NTwitch
 {
     public enum BroadcastType
     {

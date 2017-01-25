@@ -65,7 +65,7 @@ namespace NTwitch.Chat
                 msg.Command = cmdPart;
             } else
             {
-                string cmdPart = input.Substring(pos, next - pos - 1);
+                string cmdPart = input.Substring(pos, next - pos);
                 msg.Command = cmdPart;
 
                 while (pos < input.Length)

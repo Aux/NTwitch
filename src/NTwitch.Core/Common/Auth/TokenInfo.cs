@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NTwitch.Rest
+namespace NTwitch
 {
     [JsonConverter(typeof(JsonPathConverter))]
     public class TokenInfo

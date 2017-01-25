@@ -16,12 +16,5 @@ namespace NTwitch.Chat
         public string Content { get; internal set; }
 
         internal ChatMessage(TwitchChatClient client) : base(client) { }
-
-        internal static ChatMessage Create(BaseRestClient client, string msg)
-        {
-            var message = new ChatMessage(client as TwitchChatClient);
-            ChatHandler.PopulateObject(msg, message, client);
-            return message;
-        }
     }
 }

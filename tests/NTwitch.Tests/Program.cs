@@ -1,5 +1,5 @@
 ﻿using NTwitch;
-using NTwitch.Rest;
+using NTwitch.Chat;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -9,25 +9,29 @@ class Program
     static void Main(string[] args)
         => new Program().StartAsync().GetAwaiter().GetResult();
 
-    private TwitchRestClient _client;
+    private TwitchChatClient _client;
 
     public async Task StartAsync()
     {
-        _client = new TwitchRestClient(new TwitchRestConfig()
+        _client = new TwitchChatClient(new TwitchChatConfig()
         {
             LogLevel = LogLevel.Debug
         });
 
         _client.Log += OnLog;
-        
-        await _client.LoginAsync(TokenType.OAuth, "");
-        var user = _client.Token;
+        _client.MessageReceived += OnMessageReceived;
 
-        var properties = user.GetType().GetTypeInfo();
-        foreach (var p in properties.GetProperties())
-            Console.WriteLine($"{p.Name}: {p.GetValue(user)}");
+        await _client.ConnectAsync();
+        await _client.LoginAsync("datdoggo", "");
+        await _client.JoinAsync("iddqdow");
         
         await Task.Delay(-1);
+    }
+
+    private Task OnMessageReceived(ChatMessage msg)
+    {
+        Console.WriteLine($"[{msg?.Channel?.Name}] {msg?.User?.DisplayName}: {msg?.Id}");
+        return Task.CompletedTask;
     }
 
     private Task OnLog(LogMessage msg)

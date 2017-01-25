@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NTwitch.Rest
+namespace NTwitch
 {
     public class PageOptions
     {

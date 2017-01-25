@@ -21,13 +21,6 @@ namespace NTwitch.Chat
         public bool IsTurbo { get; internal set; }
 
         public ChatUser(TwitchChatClient client) : base(client) { }
-
-        public static ChatUser Create(BaseRestClient client, string msg)
-        {
-            var user = new ChatUser(client as TwitchChatClient);
-            ChatHandler.PopulateObject(msg, user, client);
-            return user;
-        }
         
         public Task BanAsync(ChatChannel channel, int? duration = null)
             => BanAsync(channel.Name, duration);
