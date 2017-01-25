@@ -9,7 +9,7 @@ namespace NTwitch.Chat
         public static new ChatSelfUser Create(BaseRestClient client, string msg)
         {
             var user = new ChatSelfUser(client as TwitchChatClient);
-            ChatParser.PopulateObject(msg, user, client);
+            ChatHandler.PopulateObject(msg, user, client);
             return user;
         }
     }

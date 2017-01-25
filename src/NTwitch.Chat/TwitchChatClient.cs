@@ -8,7 +8,7 @@ namespace NTwitch.Chat
         public ChatClient Client => _chat;
 
         private ChatClient _chat;
-        private ChatParser _parser;
+        private ChatHandler _parser;
         private string _host;
         private int _port;
 
@@ -28,7 +28,7 @@ namespace NTwitch.Chat
         public async Task ConnectAsync()
         {
             _chat = new ChatClient(Logger, _host, _port);
-            _parser = new ChatParser(this);
+            _parser = new ChatHandler(this);
             await _chat.ConnectAsync();
         }
 

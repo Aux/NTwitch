@@ -1,152 +1,50 @@
-﻿using System;
+﻿using NTwitch.Rest;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
     internal partial class ChatParser
     {
-        private TwitchChatClient _client;
-
-        public ChatParser(TwitchChatClient client)
+        public static Task<T> ParseAsync<T>(TwitchMessage msg, BaseRestClient client)
         {
-            _client = client;
-            _client.Client.MessageReceived += OnMessageReceived;
-        }
+            var obj = Activator.CreateInstance(typeof(T), client);
+            var properties = GetProperties<ChatPropertyAttribute>(obj);
 
-        public async Task OnMessageReceived(string msg)
-        {
-            var msgs = msg.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var m in msgs)
-                await ParseAsync(m);
-        }
-
-        public async Task ParseAsync(string msg)
-        {
-            if (msg == "PING :tmi.twitch.tv")
+            foreach (var p in properties)
             {
-                await HandlePingAsync(msg).ConfigureAwait(false);
-                return;
-            }
+                var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
 
-            string content = msg.Split(new[] { ' ' }, 2)[1];
-            int startIndex = content.IndexOf("twitch.tv ") + 10; // 10 chars for `twitch.tv `
-            if (startIndex < 0)
-            {
-                startIndex = content.IndexOf("jtv ") + 5; // 5 chars for `.jtv `
-                if (startIndex < 0)
+                object value;
+                if (attr.Name == null)
                 {
-                    await _client.Logger.ErrorAsync("Chat", new InvalidOperationException(msg));
-                    return;
+                    var method = typeof(ChatParser).GetRuntimeMethod("ParseAsync", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
+                    var generic = method.MakeGenericMethod(p.PropertyType);
+                    value = generic.Invoke(null, new object[] { msg, client });
                 }
+                else
+                {
+                    string result;
+                    if (!msg.Tags.TryGetValue(attr.Name, out result))
+                        throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
+
+                    value = Convert.ChangeType(result, p.PropertyType);
+                }
+
+                if (value != null)
+                    p.SetValue(obj, value);
             }
 
-            int endIndex = content.Substring(startIndex).IndexOf(' ');
-
-            string type = content.Substring(startIndex, endIndex);
-            
-            switch (type)
-            {
-                case "JOIN":
-                    await HandleJoinAsync(msg).ConfigureAwait(false); break;
-                case "PART":
-                    await HandlePartAsync(msg).ConfigureAwait(false); break;
-                case "MODE":
-                    await HandleModeAsync(msg).ConfigureAwait(false); break;
-                case "NOTICE":
-                    await HandleNoticeAsync(msg).ConfigureAwait(false); break;
-                case "PRIVMSG":
-                    await HandlePrivMsgAsync(msg).ConfigureAwait(false); break;
-                case "CLEARCHAT":
-                    await HandleClearChatAsync(msg).ConfigureAwait(false); break;
-                case "USERSTATE":
-                    await HandleUserStateAsync(msg).ConfigureAwait(false); break;
-                case "RECONNECT":
-                    await HandleReconnectAsync(msg).ConfigureAwait(false); break;
-                case "ROOMSTATE":
-                    await HandleRoomStateAsync(msg).ConfigureAwait(false); break;
-                case "USERNOTICE":
-                    await HandleUserNoticeAsync(msg).ConfigureAwait(false); break;
-                case "HOSTTARGET":
-                    await HandleHostTargetAsync(msg).ConfigureAwait(false); break;
-                case "GLOBALUSERSTATE":
-                    await HandleGlobalUserStateAsync(msg).ConfigureAwait(false); break;
-                default:
-                    await _client.Logger.ErrorAsync(type, new NotSupportedException(msg)); break;
-            }
-        }
-
-        public async Task HandlePingAsync(string msg)
-        {
-            await _client.Client.SendAsync("PONG :tmi.twitch.tv");
-        }
-
-        public async Task HandleJoinAsync(string msg)
-        {
-            var channel = new ChatChannel(_client);
-            PopulateObject(msg, channel, _client);
-            await _client._joinedChannelEvent.InvokeAsync(channel);
-        }
-
-        public async Task HandlePartAsync(string msg)
-        {
-            var channel = new ChatChannel(_client);
-            PopulateObject(msg, channel, _client);
-            await _client._leftChannelEvent.InvokeAsync(channel);
-        }
-
-        public async Task HandleModeAsync(string msg)
-        {
-            await _client._userUpdatedEvent.InvokeAsync();
-        }
-
-        public async Task HandleNoticeAsync(string msg)
-        {
-            if (msg.Contains("Login authentication failed"))
-                throw new UnauthorizedAccessException("Login authentication failed");
-
-            await _client._noticeReceivedEvent.InvokeAsync();
-        }
-
-        public async Task HandleHostTargetAsync(string msg)
-        {
-            await Task.Delay(1);
-        }
-
-        public async Task HandleClearChatAsync(string msg)
-        {
-            await Task.Delay(1);
-        }
-
-        public async Task HandleUserStateAsync(string msg)
-        {
-            await Task.Delay(1);
-        }
-
-        public async Task HandleReconnectAsync(string msg)
-        {
-            await Task.Delay(1);
-        }
-
-        public async Task HandleRoomStateAsync(string msg)
-        {
-            await Task.Delay(1);
+            return Task.FromResult((T)obj);
         }
         
-        public async Task HandleUserNoticeAsync(string msg)
+        public static IEnumerable<PropertyInfo> GetProperties<T>(object obj) where T : Attribute
         {
-            await Task.Delay(1);
-        }
-
-        public async Task HandlePrivMsgAsync(string msg)
-        {
-            var message = new ChatMessage(_client);
-            PopulateObject(msg, message, _client);
-            await _client._messageReceivedEvent.InvokeAsync(message);
-        }
-
-        public async Task HandleGlobalUserStateAsync(string msg)
-        {
-            await Task.Delay(1);
+            var type = obj.GetType().GetTypeInfo();
+            return type.GetProperties().Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(T)));
         }
     }
 }

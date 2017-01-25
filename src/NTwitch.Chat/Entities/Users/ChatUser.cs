@@ -25,7 +25,7 @@ namespace NTwitch.Chat
         public static ChatUser Create(BaseRestClient client, string msg)
         {
             var user = new ChatUser(client as TwitchChatClient);
-            ChatParser.PopulateObject(msg, user, client);
+            ChatHandler.PopulateObject(msg, user, client);
             return user;
         }
         

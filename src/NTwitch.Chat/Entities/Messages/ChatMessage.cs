@@ -20,7 +20,7 @@ namespace NTwitch.Chat
         internal static ChatMessage Create(BaseRestClient client, string msg)
         {
             var message = new ChatMessage(client as TwitchChatClient);
-            ChatParser.PopulateObject(msg, message, client);
+            ChatHandler.PopulateObject(msg, message, client);
             return message;
         }
     }
