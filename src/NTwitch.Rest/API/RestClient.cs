@@ -73,6 +73,7 @@ namespace NTwitch.Rest
 
                 http.BaseAddress = new Uri(_host);
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v" + options.ApiVersion + "+json");
+                http.DefaultRequestHeaders.Add("User-Agent", TwitchConfig.UserAgent);
 
                 if (_tokenType == TokenType.ClientId)
                     http.DefaultRequestHeaders.Add("Client-ID", _token);
