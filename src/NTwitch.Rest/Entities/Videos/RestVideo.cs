@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : VideoBase
+    public class RestVideo : RestEntity
     {
         [JsonProperty("")]
         public ulong BroadcastId { get; private set; }

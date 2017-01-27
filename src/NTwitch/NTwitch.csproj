@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <AssemblyName>NTwitch</AssemblyName>
-	<AssemblyInformationalVersion>0.0.3</AssemblyInformationalVersion>
-	<AssemblyFileVersion>0.0.3</AssemblyFileVersion>
-	<AssemblyVersion>0.0.3</AssemblyVersion>
+	<AssemblyVersion>0.0.3.0</AssemblyVersion>
     <Authors>Auxesis</Authors>
     <Description>A .Net Core implementation of the https://twitch.tv/ api.</Description>
     <PackageTags>twitch;twitchtv;dot;net;core</PackageTags>

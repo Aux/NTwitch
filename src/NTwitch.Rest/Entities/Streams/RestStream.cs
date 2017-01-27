@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestStream : StreamBase
+    public class RestStream : RestEntity
     {
         [JsonProperty("")]
         public double AverageFps { get; private set; }

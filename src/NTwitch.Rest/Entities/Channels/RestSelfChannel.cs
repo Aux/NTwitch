@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestSelfChannel : RestChannel
+    public class RestSelfChannel : RestChannel, ISelfChannel
     {
         [JsonProperty("email")]
         public string Email { get; internal set; }
@@ -21,28 +21,48 @@ namespace NTwitch.Rest
             return channel;
         }
 
+        // Posts
         public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
-            => ChannelHelper.CreatePostAsync(this, args);
-
+            => ChannelHelper.CreatePostAsync(this, Client, args);
         public Task<RestPost> DeletePostAsync(ulong postid)
-            => ChannelHelper.DeletePostAsync(this, postid);
+            => ChannelHelper.DeletePostAsync(this, Client, postid);
 
-        public Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
-            => ChannelHelper.ModifyAsync(this, args);
-
+        //Users
         public Task<IEnumerable<RestUser>> GetEditorsAsync()
-            => ChannelHelper.GetEditorsAsynC(this);
-
+            => ChannelHelper.GetEditorsAsync(this, Client);
+        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync()
+            => GetSubscribersAsync();
         public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
-            => ChannelHelper.GetSubscribersAsync(this, direction, options);
-
+            => ChannelHelper.GetSubscribersAsync(this, Client, direction, options);
         public Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
-            => ChannelHelper.GetSubscriberAsync(this, userid);
+            => ChannelHelper.GetSubscriberAsync(this, Client, userid);
 
+        // SelfChannel
+        public Task<RestSelfChannel> ModifyAsync(Action<ModifyChannelParams> args)
+            => ChannelHelper.ModifyAsync(this, Client, args);
         public Task<RestSelfChannel> ResetStreamKeyAsync()
-            => ChannelHelper.ResetStreamKeyAsync(this);
-
+            => ChannelHelper.ResetStreamKeyAsync(this, Client);
+        public Task StartCommercialAsync()
+            => StartCommercialAsync();
         public Task StartCommercialAsync(int duration = 30)
-            => ChannelHelper.StartCommercialAsync(this, duration);
+            => ChannelHelper.StartCommercialAsync(this, Client, duration);
+        
+        // ISelfChannel
+        Task ISelfChannel.ModifyAsync()
+            => ModifyAsync(null);
+        Task ISelfChannel.CreatePostAsync()
+            => CreatePostAsync(null);
+        Task ISelfChannel.DeletePostAsync(ulong postId)
+            => DeletePostAsync(postId);
+        Task ISelfChannel.ResetStreamKeyAsync()
+            => ResetStreamKeyAsync();
+        Task ISelfChannel.StartCommercialAsync(int duration)
+            => StartCommercialAsync(duration);
+        Task ISelfChannel.GetEditorsAsync()
+            => GetEditorsAsync();
+        Task ISelfChannel.GetSubscribersAsync()
+            => GetSubscribersAsync();
+        Task ISelfChannel.GetSubscriberAsync(ulong userId)
+            => GetSubscriberAsync(userId);
     }
 }

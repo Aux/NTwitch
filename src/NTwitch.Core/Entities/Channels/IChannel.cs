@@ -32,7 +32,7 @@ namespace NTwitch
         /// <summary> Get the stream object for this channel, if online. </summary>
         Task GetStreamAsync();
         /// <summary> Get a collection of the top rated clips for this channel. </summary>
-        Task GetTopClipsAsync();
+        Task GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false, PageOptions options = null);
         /// <summary> Get a specific clip for this channel. </summary>
         Task GetClipAsync(string clipId);
     }

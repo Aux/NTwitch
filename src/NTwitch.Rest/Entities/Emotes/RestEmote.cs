@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest
 {
-    public class RestEmote : EmoteBase
+    public class RestEmote : RestEntity
     {
         [JsonProperty("")]
         public IEnumerable<RestEmoteImage> Images { get; private set; }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NTwitch
 {
@@ -14,6 +15,6 @@ namespace NTwitch
         /// <summary> Check if this user is following the specified channel. </summary>
         Task<bool> IsFollowingAsync(ulong channelId);
         /// <summary> Get the channels this user is following. </summary>
-        Task<IChannelFollow> GetFollowsAsync();
+        Task<IEnumerable<IChannelFollow>> GetFollowsAsync();
     }
 }

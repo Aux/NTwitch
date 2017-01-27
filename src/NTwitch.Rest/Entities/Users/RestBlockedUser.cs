@@ -3,20 +3,14 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestBlockedUser
+    public class RestBlockedUser : RestEntity, IBlockedUser
     {
-        public BaseRestClient Client { get; }
         [JsonProperty("")]
-        public ulong Id { get; private set; }
+        public DateTime UpdatedAt { get; internal set; }
         [JsonProperty("")]
-        public DateTime UpdatedAt { get; private set; }
-        [JsonProperty("")]
-        public RestUser User { get; private set; }
+        public RestUser User { get; internal set; }
 
-        internal RestBlockedUser(BaseRestClient client)
-        {
-            Client = client;
-        }
+        internal RestBlockedUser(BaseRestClient client) : base(client) { }
 
         internal static RestBlockedUser Create(BaseRestClient client, string json)
         {
@@ -24,5 +18,8 @@ namespace NTwitch.Rest
             JsonConvert.PopulateObject(json, user);
             return user;
         }
+
+        IUser IBlockedUser.User
+            => User;
     }
 }

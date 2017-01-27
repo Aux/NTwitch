@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestChannel : RestChannelSummary
+    public class RestChannel : RestChannelSummary, IChannel
     {
         [JsonProperty("broadcaster_language")]
         public string BroadcasterLanguage { get; internal set; }
@@ -35,7 +37,7 @@ namespace NTwitch.Rest
         public string VideoBannerUrl { get; internal set; }
         [JsonProperty("views")]
         public int ViewCount { get; internal set; }
-
+        
         public RestChannel(BaseRestClient client) : base(client) { }
         
         public static new RestChannel Create(BaseRestClient client, string json)
@@ -44,5 +46,85 @@ namespace NTwitch.Rest
             JsonConvert.PopulateObject(json, channel);
             return channel;
         }
+
+        // Teams
+        public Task<IEnumerable<RestTeam>> GetTeamsAsync()
+            => ChannelHelper.GetTeamsAsync(this, Client);
+
+        // Posts
+        public Task<IEnumerable<RestPost>> GetPostsAsync()
+            => GetPostsAsync();
+        public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, PageOptions options = null)
+            => ChannelHelper.GetPostsAsync(this, Client, comments, options);
+        public Task<RestPost> GetPostAsync(ulong id)
+            => GetPostAsync(id);
+        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
+            => ChannelHelper.GetPostAsync(this, Client, id, comments);
+
+        // Chat
+        public Task<IEnumerable<RestBadges>> GetBadgesAsync()
+            => ChannelHelper.GetBadgesAsync(this, Client);
+        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
+            => ChannelHelper.GetEmoteSetAsync(this, Client);
+        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
+            => ChannelHelper.GetEmoteSetAsync(this, Client, setid);
+        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
+            => ChannelHelper.GetEmotesAsync(this, Client);
+
+        // Users
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync()
+            => GetFollowersAsync();
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
+            => ChannelHelper.GetFollowersAsync(this, Client, direction, options);
+        public Task FollowAsync()
+            => FollowAsync();
+        public Task FollowAsync(bool notify = false)
+            => ChannelHelper.FollowAsync(this, Client, notify);
+        public Task UnfollowAsync()
+            => ChannelHelper.UnfollowAsync(this, Client);
+
+        // Videos
+        public Task<RestStream> GetStreamAsync()
+            => ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
+        public Task<IEnumerable<RestVideo>> GetVideosAsync()
+            => GetVideosAsync();
+        public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
+            => ChannelHelper.GetVideosAsync(this, Client, language, sort, type, options);
+        public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game)
+            => GetTopClipsAsync(game);
+        public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false, PageOptions options = null)
+            => ChannelHelper.GetTopClipsAsync(this, Client, game, period, istrending, options);
+        public Task<RestClip> GetClipAsync(string id)
+            => ChannelHelper.GetClipAsync(this, Client, id);
+        
+        // IChannel
+        Task IChannel.FollowAsync(bool notify)
+            => FollowAsync(notify);
+        Task IChannel.UnfollowAsync()
+            => UnfollowAsync();
+        Task IChannel.GetPostsAsync()
+            => GetPostsAsync();
+        Task IChannel.GetPostAsync()
+            => GetPostsAsync();
+        Task IChannel.GetFollowersAsync()
+            => GetFollowersAsync();
+        Task IChannel.GetTeamsAsync()
+            => GetTeamsAsync();
+        Task IChannel.GetVideosAsync()
+            => GetVideosAsync();
+        Task IChannel.GetBadgesAsync()
+            => GetBadgesAsync();
+        Task IChannel.GetEmoteSetsAsync()
+            => GetEmoteSetsAsync();
+        Task IChannel.GetEmoteSetAsync(ulong setId)
+            => GetEmoteSetAsync(setId);
+        Task IChannel.GetEmotesASync()
+            => GetEmotesAsync();
+        Task IChannel.GetStreamAsync()
+            => GetStreamAsync();
+        Task IChannel.GetTopClipsAsync(string game, VideoPeriod period, bool istrending, PageOptions options)
+            => GetTopClipsAsync(game, period, istrending, options);
+        Task IChannel.GetClipAsync(string clipId)
+            => GetClipAsync(clipId);
     }
 }

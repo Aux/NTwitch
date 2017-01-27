@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestTeamSummary : TeamBase
+    public class RestTeamSummary : RestEntity
     {
         [JsonProperty("")]
         public string Background { get; private set; }

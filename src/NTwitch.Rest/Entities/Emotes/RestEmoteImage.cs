@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestEmoteImage : EmoteBase
+    public class RestEmoteImage : RestEntity
     {
         [JsonProperty("")]
         public int Height { get; private set; }

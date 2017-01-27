@@ -2,10 +2,12 @@
 
 namespace NTwitch.Rest
 {
-    public class RestChannelSummary : ChannelBase
+    public class RestChannelSummary : RestEntity
     {
+        [JsonProperty("name")]
+        public string Name { get; internal set; }
         [JsonProperty("display_name")]
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; internal set; }
 
         public RestChannelSummary(BaseRestClient client) : base(client) { }
 

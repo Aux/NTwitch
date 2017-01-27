@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <AssemblyName>NTwitch.Pubsub</AssemblyName>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
     <Authors>Auxesis</Authors>
     <Description>A .Net Core implementation of the https://twitch.tv/ api.</Description>
     <PackageTags>twitch;twitchtv;pubsub;events;socket;websocket</PackageTags>

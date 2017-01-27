@@ -8,25 +8,25 @@ namespace NTwitch.Rest
 {
     internal static class ChannelHelper
     {
-        public static async Task<IEnumerable<RestPost>> GetPostsAsync(ChannelBase channel, int comments, PageOptions options)
+        public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int comments, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("posts"));
-            return items.Select(x => RestPost.Create(channel.Client, x));
+            return items.Select(x => RestPost.Create(client, x));
         }
 
-        public static async Task<RestClip> GetClipAsync(ChannelBase channel, string id)
+        public static async Task<RestClip> GetClipAsync(IChannel channel, BaseRestClient client, string id)
         {
-            var json = await channel.Client.ApiClient.SendAsync("GET", "clips/" + channel.Name + "/" + id).ConfigureAwait(false);
-            return RestClip.Create(channel.Client, json);
+            var json = await client.ApiClient.SendAsync("GET", "clips/" + channel.Name + "/" + id).ConfigureAwait(false);
+            return RestClip.Create(client, json);
         }
 
-        public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(ChannelBase channel, string game, VideoPeriod period, bool istrending, PageOptions options)
+        public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(IChannel channel, BaseRestClient client, string game, VideoPeriod period, bool istrending, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("channel", channel.Name);
@@ -36,79 +36,79 @@ namespace NTwitch.Rest
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "clips/top", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", "clips/top", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("clips"));
-            return items.Select(x => RestClip.Create(channel.Client, x));
+            return items.Select(x => RestClip.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestClip>> GetFollowedClipsAsync(ChannelBase channel, bool istrending = false, int limit = 10)
+        public static async Task<IEnumerable<RestClip>> GetFollowedClipsAsync(IChannel channel, BaseRestClient client, bool istrending = false, int limit = 10)
         {
             var request = new RequestOptions();
             request.Parameters.Add("trending", istrending);
             request.Parameters.Add("limit", limit);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "clips/followed", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", "clips/followed", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("clips"));
-            return items.Select(x => RestClip.Create(channel.Client, x));
+            return items.Select(x => RestClip.Create(client, x));
         }
 
-        public static Task UnfollowAsync(ChannelBase channel)
+        public static Task UnfollowAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        public static Task FollowAsync(ChannelBase channel, bool notify)
+        public static Task FollowAsync(IChannel channel, BaseRestClient client, bool notify)
         {
             throw new NotImplementedException();
         }
 
-        public static async Task<RestPost> GetPostAsync(ChannelBase channel, ulong id, int comments)
+        public static async Task<RestPost> GetPostAsync(IChannel channel, BaseRestClient client, ulong id, int comments)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts/" + id, request).ConfigureAwait(false);
-            return RestPost.Create(channel.Client, json);
+            string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts/" + id, request).ConfigureAwait(false);
+            return RestPost.Create(client, json);
         }
         
-        public static async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(ChannelBase channel, SortDirection direction, PageOptions options)
+        public static async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(IChannel channel, BaseRestClient client, SortDirection direction, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("direction", Enum.GetName(typeof(SortDirection), direction).ToLower());
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/followers", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/followers", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
-            return items.Select(x => RestUserFollow.Create(channel.Client, x));
+            return items.Select(x => RestUserFollow.Create(client, x));
         }
 
-        public static Task<IEnumerable<RestEmote>> GetEmotesAsync(ChannelBase channel)
+        public static Task<IEnumerable<RestEmote>> GetEmotesAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IEnumerable<RestTeam>> GetTeamsAsync(ChannelBase channel)
+        public static Task<IEnumerable<RestTeam>> GetTeamsAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<RestEmoteSet> GetEmoteSetAsync(ChannelBase channel, ulong setid)
+        public static Task<RestEmoteSet> GetEmoteSetAsync(IChannel channel, BaseRestClient client, ulong setid)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IEnumerable<RestVideo>> GetVideosAsync(ChannelBase channel, string language, SortMode sort, BroadcastType type, PageOptions options)
+        public static Task<IEnumerable<RestVideo>> GetVideosAsync(IChannel channel, BaseRestClient client, string language, SortMode sort, BroadcastType type, PageOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IEnumerable<RestEmoteSet>> GetEmoteSetAsync(ChannelBase channel)
+        public static Task<IEnumerable<RestEmoteSet>> GetEmoteSetAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IEnumerable<RestBadges>> GetBadgesAsync(ChannelBase channel)
+        public static Task<IEnumerable<RestBadges>> GetBadgesAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
@@ -117,50 +117,50 @@ namespace NTwitch.Rest
         // SelfChannel
         //
 
-        public static Task<RestPost> CreatePostAsync(RestSelfChannel channel, Action<CreatePostParams> args)
+        public static Task<RestPost> CreatePostAsync(ISelfChannel channel, BaseRestClient client, Action<CreatePostParams> args)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<RestPost> DeletePostAsync(RestSelfChannel channel, ulong postid)
+        public static Task<RestPost> DeletePostAsync(ISelfChannel channel, BaseRestClient client, ulong postid)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IEnumerable<RestUser>> GetEditorsAsynC(RestSelfChannel channel)
+        public static Task<IEnumerable<RestUser>> GetEditorsAsync(ISelfChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        public static async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(RestSelfChannel channel, SortDirection direction, PageOptions options)
+        public static async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(ISelfChannel channel, BaseRestClient client, SortDirection direction, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("direction", Enum.GetName(typeof(SortDirection), direction).ToLower());
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
-            string json = await channel.Client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("subscriptions"));
-            return items.Select(x => RestUserSubscription.Create(channel.Client, x));
+            return items.Select(x => RestUserSubscription.Create(client, x));
         }
 
-        public static async Task<RestUserSubscription> GetSubscriberAsync(RestSelfChannel channel, ulong userid)
+        public static async Task<RestUserSubscription> GetSubscriberAsync(ISelfChannel channel, BaseRestClient client, ulong userid)
         {
-            string json = await channel.Client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions/" + userid).ConfigureAwait(false);
-            return RestUserSubscription.Create(channel.Client, json);
+            string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions/" + userid).ConfigureAwait(false);
+            return RestUserSubscription.Create(client, json);
         }
 
-        public static Task StartCommercialAsync(RestSelfChannel restSelfChannel, int duration)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Task<RestSelfChannel> ResetStreamKeyAsync(RestSelfChannel channel)
+        public static Task StartCommercialAsync(ISelfChannel channel, BaseRestClient client, int duration)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<RestSelfChannel> ModifyAsync(RestSelfChannel channel, Action<ModifyChannelParams> args)
+        public static Task<RestSelfChannel> ResetStreamKeyAsync(ISelfChannel channel, BaseRestClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task<RestSelfChannel> ModifyAsync(ISelfChannel channel, BaseRestClient client, Action<ModifyChannelParams> args)
         {
             throw new NotImplementedException();
         }

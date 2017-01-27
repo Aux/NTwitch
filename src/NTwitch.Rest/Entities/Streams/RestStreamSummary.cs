@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestStreamSummary : StreamBase
+    public class RestStreamSummary : RestEntity
     {
         [JsonProperty("channels")]
         public int Channels { get; private set; }

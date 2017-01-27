@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestSubscription : SubscriptionBase
+    public class RestSubscription : RestEntity
     {
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
