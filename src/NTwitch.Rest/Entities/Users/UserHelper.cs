@@ -26,12 +26,12 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        internal static Task<RestBlockedUser> BlockAsync(RestUserSummary restUserSummary, BaseRestClient client)
+        internal static Task<RestBlockedUser> BlockAsync(IUser user, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        internal static Task<bool> IsFollowingAsync(RestUserSummary restUserSummary, BaseRestClient client, ulong channelId)
+        internal static Task<bool> IsFollowingAsync(IUser user, BaseRestClient client, ulong channelId)
         {
             throw new NotImplementedException();
         }
@@ -41,12 +41,12 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        internal static Task<RestBlockedUser> UnblockAsync(RestUserSummary restUserSummary, BaseRestClient client)
+        internal static Task<RestBlockedUser> UnblockAsync(IUser user, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
 
-        internal static Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(RestUserSummary restUserSummary, BaseRestClient client, SortMode mode, SortDirection direction, PageOptions options)
+        internal static Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(IUser user, BaseRestClient client, SortMode mode, SortDirection direction, PageOptions options)
         {
             throw new NotImplementedException();
         }

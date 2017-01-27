@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NTwitch.Rest;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
@@ -10,13 +12,64 @@ namespace NTwitch.Chat
 
         public ChatChannel(TwitchChatClient client) : base(client) { }
         
+        // Chat
         public Task JoinAsync()
             => throw new NotImplementedException();
         public Task LeaveAsync()
             => throw new NotImplementedException();
 
-        // IChannel
+        // Rest
+        // Teams
+        public Task<IEnumerable<RestTeam>> GetTeamsAsync()
+            => ChannelHelper.GetTeamsAsync(this, Client);
 
+        // Posts
+        public Task<IEnumerable<RestPost>> GetPostsAsync()
+            => GetPostsAsync();
+        public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, PageOptions options = null)
+            => ChannelHelper.GetPostsAsync(this, Client, comments, options);
+        public Task<RestPost> GetPostAsync(ulong id)
+            => GetPostAsync(id);
+        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
+            => ChannelHelper.GetPostAsync(this, Client, id, comments);
+
+        // Chat
+        public Task<IEnumerable<RestBadges>> GetBadgesAsync()
+            => ChannelHelper.GetBadgesAsync(this, Client);
+        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
+            => ChannelHelper.GetEmoteSetAsync(this, Client);
+        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
+            => ChannelHelper.GetEmoteSetAsync(this, Client, setid);
+        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
+            => ChannelHelper.GetEmotesAsync(this, Client);
+
+        // Users
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync()
+            => GetFollowersAsync();
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
+            => ChannelHelper.GetFollowersAsync(this, Client, direction, options);
+        public Task FollowAsync()
+            => FollowAsync();
+        public Task FollowAsync(bool notify = false)
+            => ChannelHelper.FollowAsync(this, Client, notify);
+        public Task UnfollowAsync()
+            => ChannelHelper.UnfollowAsync(this, Client);
+
+        // Videos
+        public Task<RestStream> GetStreamAsync()
+            => ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
+        public Task<IEnumerable<RestVideo>> GetVideosAsync()
+            => GetVideosAsync();
+        public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
+            => ChannelHelper.GetVideosAsync(this, Client, language, sort, type, options);
+        public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game)
+            => GetTopClipsAsync(game);
+        public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false, PageOptions options = null)
+            => ChannelHelper.GetTopClipsAsync(this, Client, game, period, istrending, options);
+        public Task<RestClip> GetClipAsync(string id)
+            => ChannelHelper.GetClipAsync(this, Client, id);
+        
+        // IChannel
         Task IChannel.FollowAsync(bool notify)
             => throw new NotImplementedException();
         Task IChannel.GetBadgesAsync()
@@ -39,7 +92,7 @@ namespace NTwitch.Chat
             => throw new NotImplementedException();
         Task IChannel.GetTeamsAsync()
             => throw new NotImplementedException();
-        Task IChannel.GetTopClipsAsync()
+        Task IChannel.GetTopClipsAsync(string game, VideoPeriod period, bool istrending, PageOptions options)
             => throw new NotImplementedException();
         Task IChannel.GetVideosAsync()
             => throw new NotImplementedException();
