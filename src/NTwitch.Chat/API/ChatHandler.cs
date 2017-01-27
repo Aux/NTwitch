@@ -129,7 +129,7 @@ namespace NTwitch.Chat
 
         public async Task HandlePrivMsgAsync(TwitchMessage message)
         {
-            var msg = await ChatParser.ParseAsync<ChatMessage>(message, _client);
+            var msg = ChatParser.Parse<ChatMessage>(message, _client);
             await _client._messageReceivedEvent.InvokeAsync(msg);
         }
 

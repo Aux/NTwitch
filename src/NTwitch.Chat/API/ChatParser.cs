@@ -9,55 +9,70 @@ namespace NTwitch.Chat
 {
     internal partial class ChatParser
     {
-        public static Task<T> ParseAsync<T>(TwitchMessage msg, BaseRestClient client)
+        public static T Parse<T>(TwitchMessage msg, BaseRestClient client)
         {
-            var obj = Activator.CreateInstance(typeof(T), client);
+            var obj = CreateInstance<T>(new[] { client });
             var properties = GetProperties<ChatPropertyAttribute>(obj);
-
-            foreach (var p in properties)
+            
+            try
             {
-                var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
-
-                object value;
-                if (attr.Name == null)
+                foreach (var p in properties)
                 {
-                    switch (attr.Type)
+                    var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
+
+                    object value;
+                    if (attr.Name == null)
                     {
-                        case PropertyType.Content:
-                            value = msg.Parameters.Last();
-                            break;
-                        case PropertyType.ChannelName:
-                            value = msg.Parameters.First();
-                            break;
-                        case PropertyType.Complex:
-                            var method = typeof(ChatParser).GetRuntimeMethod("ParseAsync", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
-                            var generic = method.MakeGenericMethod(p.PropertyType);
-                            value = generic.Invoke(null, new object[] { msg, client });
-                            break;
-                        default:
-                            throw new FormatException("Property type is not valid for the given context.");
+                        switch (attr.Type)
+                        {
+                            case PropertyType.Content:
+                                value = msg.Parameters.Last();
+                                break;
+                            case PropertyType.ChannelName:
+                                value = msg.Parameters.First();
+                                break;
+                            case PropertyType.Complex:
+                                var method = typeof(ChatParser).GetRuntimeMethod("Parse", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
+                                var generic = method.MakeGenericMethod(p.PropertyType);
+                                value = generic.Invoke(null, new object[] { msg, client });
+                                break;
+                            default:
+                                throw new FormatException("Property type is not valid for the given context.");
+                        }
                     }
-                }
-                else
-                {
-                    string result;
-                    if (!msg.Tags.TryGetValue(attr.Name, out result))
-                        throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
+                    else
+                    {
+                        string result;
+                        if (!msg.Tags.TryGetValue(attr.Name, out result))
+                            throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
 
-                    value = Convert.ChangeType(result, p.PropertyType);
-                }
+                        if (p.PropertyType == typeof(bool))
+                            value = result == "1" ? true : false;
+                        else
+                            value = Convert.ChangeType(result, p.PropertyType);
+                    }
 
-                if (value != null)
-                    p.SetValue(obj, value);
+                    if (value != null)
+                        p.SetValue(obj, value);
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
-
-            return Task.FromResult((T)obj);
+            return obj;
         }
         
         public static IEnumerable<PropertyInfo> GetProperties<T>(object obj) where T : Attribute
         {
             var type = obj.GetType().GetTypeInfo();
             return type.GetProperties().Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(T)));
+        }
+
+        public static T CreateInstance<T>(params object[] parameters)
+        {
+            var constructor = typeof(T).GetTypeInfo().DeclaredConstructors.First();
+            var obj = constructor.Invoke(parameters);
+            return (T)obj;
         }
     }
 }
