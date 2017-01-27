@@ -74,7 +74,6 @@ namespace NTwitch.Chat
             await SendAsync("PASS oauth:" + token);
             await SendAsync("NICK " + username);
             await SendAsync("CAP REQ :twitch.tv/tags");
-            await SendAsync("CAP REQ :twitch.tv/membership");
             await _log.InfoAsync("Chat", "Logged in");
         }
 

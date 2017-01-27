@@ -50,7 +50,7 @@ namespace NTwitch.Rest
         {
             string json = await client.ApiClient.SendAsync("GET", "ingests");
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("ingests"));
-            return items.Select(x => RestIngest.Create(client, x));
+            return items.Select(x => JsonConvert.DeserializeObject<RestIngest>(json));
         }
 
         public static async Task<IEnumerable<RestGame>> FindGamesAsync(BaseRestClient client, string query, bool islive)

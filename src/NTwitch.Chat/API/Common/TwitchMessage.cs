@@ -71,7 +71,7 @@ namespace NTwitch.Chat
                 pos = next + 1;
                 while (pos < input.Length)
                 {
-                    if (input[pos] == ':')
+                    if (input[pos] == ':' || next < 0)
                     {
                         string contentPart = input.Substring(pos + 1);
                         msg.Parameters.Add(contentPart);
