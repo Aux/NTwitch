@@ -12,6 +12,7 @@ namespace NTwitch.Chat
     {
         private TcpClient _client;
         private LogManager _log;
+        private Ratelimiter _limiter;
         private NetworkStream _stream;
         private StreamWriter _writer;
         private CancellationTokenSource _cancelTokenSource;
@@ -30,8 +31,9 @@ namespace NTwitch.Chat
             remove { _messageReceivedEvent.Remove(value); }
         }
 
-        internal ChatClient(LogManager log, string host, int port)
+        internal ChatClient(LogManager log, string host, int port, bool modOnly)
         {
+            _limiter = new Ratelimiter(modOnly);
             _log = log;
             _host = host;
             _port = port;
@@ -41,9 +43,19 @@ namespace NTwitch.Chat
         {
             if (!_client.Connected)
                 throw new InvalidOperationException("Client is not connected.");
-
-            await _log.DebugAsync("Chat", message);
+            
             await _writer.WriteLineAsync(message);
+            await _log.DebugAsync("Chat", message);
+            //var task = _writer.WriteLineAsync(message);
+
+            //try
+            //{
+            //    await _limiter.TrySendAsync(task);
+            //    await _log.DebugAsync("Chat", message);
+            //} catch (Exception ex)
+            //{
+            //    await _log.ErrorAsync("Chat", ex);
+            //}
         }
 
         internal async Task ConnectAsync()
@@ -74,6 +86,8 @@ namespace NTwitch.Chat
             await SendAsync("PASS oauth:" + token);
             await SendAsync("NICK " + username);
             await SendAsync("CAP REQ :twitch.tv/tags");
+            await SendAsync("CAP REQ :twitch.tv/membership");
+            await SendAsync("CAP REQ :twitch.tv/commands");
             await _log.InfoAsync("Chat", "Logged in");
         }
 

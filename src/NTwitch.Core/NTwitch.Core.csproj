@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
+    <VersionPrefix>0.0.3</VersionPrefix>
+    <TargetFrameworks>netstandard1.6</TargetFrameworks>
     <AssemblyName>NTwitch.Core</AssemblyName>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
     <Authors>Auxesis</Authors>
-    <Description>A .Net Core implementation of the https://twitch.tv/ api.</Description>
-    <PackageTags>twitch;twitchtv</PackageTags>
+    <Description>A .Net Core implementation of the Twitch API.</Description>
+    <PackageTags>twitch;twitch.net;ntwitch;api;library;dot;net;core</PackageTags>
     <PackageProjectUrl>https://github.com/Aux/NTwitch</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/Aux/NTwitch</RepositoryUrl>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>NTwitch</RootNamespace>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
   
   <PropertyGroup Label="Configuration">

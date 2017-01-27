@@ -13,13 +13,15 @@ namespace NTwitch.Chat
         public string Color { get; internal set; }
         [ChatProperty("display-name")]
         public string DisplayName { get; internal set; }
+        [ChatProperty("user-type")]
+        public string Type { get; internal set; }
         [ChatProperty("mod")]
         public bool IsModerator { get; internal set; }
         [ChatProperty("subscriber")]
         public bool IsSubscriber { get; internal set; }
         [ChatProperty("turbo")]
         public bool IsTurbo { get; internal set; }
-        
+
         public ChatUser(TwitchChatClient client) : base(client) { }
         
         // Users

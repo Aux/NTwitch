@@ -11,12 +11,14 @@ namespace NTwitch.Chat
         private ChatHandler _parser;
         private string _host;
         private int _port;
+        private bool _modOnly;
 
         public TwitchChatClient() : this(new TwitchChatConfig()) { }
         public TwitchChatClient(TwitchChatConfig config) : base(config)
         {
             _host = config.ChatUrl;
             _port = config.ChatPort;
+            _modOnly = config.CanSpeakWithoutModerator;
         }
         
         public async Task LoginAsync(string username, string token)
@@ -27,7 +29,7 @@ namespace NTwitch.Chat
 
         public async Task ConnectAsync()
         {
-            _chat = new ChatClient(Logger, _host, _port);
+            _chat = new ChatClient(Logger, _host, _port, _modOnly);
             _parser = new ChatHandler(this);
             await _chat.ConnectAsync();
         }

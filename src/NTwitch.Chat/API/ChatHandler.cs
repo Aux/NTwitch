@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -69,7 +70,7 @@ namespace NTwitch.Chat
 
         public async Task HandleUnknownAsync(TwitchMessage message)
         {
-            await _client.Logger.DebugAsync("Unknown Status", message.Command);
+            await _client.Logger.DebugAsync("Unknown Status", $"{message.Command} {message.Parameters.Last()}");
         }
 
         public async Task HandlePingAsync(TwitchMessage message)
