@@ -60,17 +60,7 @@ namespace NTwitch.Rest
             => GetPostAsync(id);
         public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
             => ChannelHelper.GetPostAsync(this, Client, id, comments);
-
-        // Chat
-        public Task<IEnumerable<RestBadges>> GetBadgesAsync()
-            => ChannelHelper.GetBadgesAsync(this, Client);
-        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
-            => ChannelHelper.GetEmoteSetAsync(this, Client);
-        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
-            => ChannelHelper.GetEmoteSetAsync(this, Client, setid);
-        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
-            => ChannelHelper.GetEmotesAsync(this, Client);
-
+        
         // Users
         public Task<IEnumerable<RestUserFollow>> GetFollowersAsync()
             => GetFollowersAsync();
@@ -112,14 +102,6 @@ namespace NTwitch.Rest
             => GetTeamsAsync();
         Task IChannel.GetVideosAsync()
             => GetVideosAsync();
-        Task IChannel.GetBadgesAsync()
-            => GetBadgesAsync();
-        Task IChannel.GetEmoteSetsAsync()
-            => GetEmoteSetsAsync();
-        Task IChannel.GetEmoteSetAsync(ulong setId)
-            => GetEmoteSetAsync(setId);
-        Task IChannel.GetEmotesASync()
-            => GetEmotesAsync();
         Task IChannel.GetStreamAsync()
             => GetStreamAsync();
         Task IChannel.GetTopClipsAsync(string game, VideoPeriod period, bool istrending, PageOptions options)

@@ -12,8 +12,6 @@ namespace NTwitch
         Task<bool> IsSubscribedAsync(ulong channelId);
         /// <summary> Get a collection of users this user has blocked. </summary>
         Task GetBlockedUsersAsync();
-        /// <summary> Get a collection of all emotes this user has access to. </summary>
-        Task GetEmotesAsync();
         /// <summary> Get a collection of streams this user is following. </summary>
         Task GetFollowedStreamsAsync();
         /// <summary> Get a collection of videos from channels this user is following. </summary>

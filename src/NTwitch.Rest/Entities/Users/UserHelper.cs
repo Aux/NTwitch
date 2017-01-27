@@ -10,12 +10,7 @@ namespace NTwitch.Rest
         {
             throw new NotImplementedException();
         }
-
-        public static Task<IEnumerable<RestEmoteSet>> GetEmotesAsync(ISelfUser user, BaseRestClient client)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public static Task<RestChannelFollow> FollowAsync(ISelfUser user, BaseRestClient client, ulong channelid, bool notify)
         {
             throw new NotImplementedException();

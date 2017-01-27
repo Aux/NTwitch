@@ -82,33 +82,13 @@ namespace NTwitch.Rest
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
             return items.Select(x => RestUserFollow.Create(client, x));
         }
-
-        public static Task<IEnumerable<RestEmote>> GetEmotesAsync(IChannel channel, BaseRestClient client)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public static Task<IEnumerable<RestTeam>> GetTeamsAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }
-
-        public static Task<RestEmoteSet> GetEmoteSetAsync(IChannel channel, BaseRestClient client, ulong setid)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public static Task<IEnumerable<RestVideo>> GetVideosAsync(IChannel channel, BaseRestClient client, string language, SortMode sort, BroadcastType type, PageOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Task<IEnumerable<RestEmoteSet>> GetEmoteSetAsync(IChannel channel, BaseRestClient client)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Task<IEnumerable<RestBadges>> GetBadgesAsync(IChannel channel, BaseRestClient client)
         {
             throw new NotImplementedException();
         }

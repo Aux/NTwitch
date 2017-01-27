@@ -32,17 +32,7 @@ namespace NTwitch.Chat
             => GetPostAsync(id);
         public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
             => ChannelHelper.GetPostAsync(this, Client, id, comments);
-
-        // Chat
-        public Task<IEnumerable<RestBadges>> GetBadgesAsync()
-            => ChannelHelper.GetBadgesAsync(this, Client);
-        public Task<IEnumerable<RestEmoteSet>> GetEmoteSetsAsync()
-            => ChannelHelper.GetEmoteSetAsync(this, Client);
-        public Task<RestEmoteSet> GetEmoteSetAsync(ulong setid)
-            => ChannelHelper.GetEmoteSetAsync(this, Client, setid);
-        public Task<IEnumerable<RestEmote>> GetEmotesAsync()
-            => ChannelHelper.GetEmotesAsync(this, Client);
-
+        
         // Users
         public Task<IEnumerable<RestUserFollow>> GetFollowersAsync()
             => GetFollowersAsync();
@@ -72,15 +62,7 @@ namespace NTwitch.Chat
         // IChannel
         Task IChannel.FollowAsync(bool notify)
             => throw new NotImplementedException();
-        Task IChannel.GetBadgesAsync()
-            => throw new NotImplementedException();
         Task IChannel.GetClipAsync(string clipId)
-            => throw new NotImplementedException();
-        Task IChannel.GetEmotesASync()
-            => throw new NotImplementedException();
-        Task IChannel.GetEmoteSetAsync(ulong setId)
-            => throw new NotImplementedException();
-        Task IChannel.GetEmoteSetsAsync()
             => throw new NotImplementedException();
         Task IChannel.GetFollowersAsync()
             => throw new NotImplementedException();

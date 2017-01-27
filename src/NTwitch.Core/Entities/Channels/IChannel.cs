@@ -21,14 +21,6 @@ namespace NTwitch
         Task GetTeamsAsync();
         /// <summary> Get a collection of videos for this channel. </summary>
         Task GetVideosAsync();
-        /// <summary> Get a collection of chat badges for this channel. </summary>
-        Task GetBadgesAsync();
-        /// <summary> Get a collection of emote sets for this channel. </summary>
-        Task GetEmoteSetsAsync();
-        /// <summary> Get a specific emote set for this channel. </summary>
-        Task GetEmoteSetAsync(ulong setId);
-        /// <summary> Get a collection of emotes for this channel. </summary>
-        Task GetEmotesASync();
         /// <summary> Get the stream object for this channel, if online. </summary>
         Task GetStreamAsync();
         /// <summary> Get a collection of the top rated clips for this channel. </summary>

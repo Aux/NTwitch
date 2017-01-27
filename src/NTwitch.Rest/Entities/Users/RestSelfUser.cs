@@ -25,11 +25,7 @@ namespace NTwitch.Rest
             JsonConvert.PopulateObject(json, user);
             return user;
         }
-
-        // Chat
-        public Task<IEnumerable<RestEmoteSet>> GetEmotesAsync()
-            => UserHelper.GetEmotesAsync(this, Client);
-
+        
         // Videos
         public Task<IEnumerable<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.All, PageOptions options = null)
             => UserHelper.GetFollowedStreamsAsync(this, Client, type, options);
@@ -57,8 +53,6 @@ namespace NTwitch.Rest
             => IsSubscribedAsync(channelId);
         Task ISelfUser.GetBlockedUsersAsync()
             => GetBlockedUsersAsync();
-        Task ISelfUser.GetEmotesAsync()
-            => GetEmotesAsync();
         Task ISelfUser.GetFollowedStreamsAsync()
             => GetFollowedStreamsAsync();
         Task ISelfUser.GetFollowedVideosAsync()
