@@ -13,52 +13,47 @@ namespace NTwitch.Chat
         {
             var obj = CreateInstance<T>(new[] { client });
             var properties = GetProperties<ChatPropertyAttribute>(obj);
-            
-            try
+
+            foreach (var p in properties)
             {
-                foreach (var p in properties)
+                var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
+
+                object value;
+                if (attr.Name == null)
                 {
-                    var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
-
-                    object value;
-                    if (attr.Name == null)
+                    switch (attr.Type)
                     {
-                        switch (attr.Type)
-                        {
-                            case PropertyType.Content:
-                                value = msg.Parameters.Last();
-                                break;
-                            case PropertyType.ChannelName:
-                                value = msg.Parameters.First();
-                                break;
-                            case PropertyType.Complex:
-                                var method = typeof(ChatParser).GetRuntimeMethod("Parse", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
-                                var generic = method.MakeGenericMethod(p.PropertyType);
-                                value = generic.Invoke(null, new object[] { msg, client });
-                                break;
-                            default:
-                                throw new FormatException("Property type is not valid for the given context.");
-                        }
+                        case PropertyType.Content:
+                            value = msg.Parameters.Last();
+                            break;
+                        case PropertyType.ChannelName:
+                            value = msg.Parameters.First().Substring(1);
+                            break;
+                        case PropertyType.Complex:
+                            var method = typeof(ChatParser).GetRuntimeMethod("Parse", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
+                            var generic = method.MakeGenericMethod(p.PropertyType);
+                            value = generic.Invoke(null, new object[] { msg, client });
+                            break;
+                        default:
+                            throw new FormatException("Property type is not valid for the given context.");
                     }
-                    else
-                    {
-                        string result;
-                        if (!msg.Tags.TryGetValue(attr.Name, out result))
-                            throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
-
-                        if (p.PropertyType == typeof(bool))
-                            value = result == "1" ? true : false;
-                        else
-                            value = Convert.ChangeType(result, p.PropertyType);
-                    }
-
-                    if (value != null)
-                        p.SetValue(obj, value);
                 }
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex);
+                else
+                {
+                    string result;
+                    if (!msg.Tags.TryGetValue(attr.Name, out result))
+                        throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
+
+                    if (p.PropertyType == typeof(bool))
+                        value = result == "1" ? true : false;
+                    else
+                        value = Convert.ChangeType(result, p.PropertyType);
+                }
+
+                if (value != null)
+                    p.SetValue(obj, value);
             }
+
             return obj;
         }
         
