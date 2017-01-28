@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
@@ -13,7 +12,7 @@ namespace NTwitch.Chat
         {
             var obj = CreateInstance<T>(new[] { client });
             var properties = GetProperties<ChatPropertyAttribute>(obj);
-
+            
             foreach (var p in properties)
             {
                 var attr = p.GetCustomAttribute<ChatPropertyAttribute>();
@@ -42,7 +41,7 @@ namespace NTwitch.Chat
                 {
                     string result;
                     if (!msg.Tags.TryGetValue(attr.Name, out result))
-                        throw new ArgumentOutOfRangeException("The tag " + attr.Name + " was not found.");
+                        continue;
 
                     if (p.PropertyType == typeof(bool))
                         value = result == "1" ? true : false;
@@ -56,7 +55,7 @@ namespace NTwitch.Chat
 
             return obj;
         }
-        
+
         public static IEnumerable<PropertyInfo> GetProperties<T>(object obj) where T : Attribute
         {
             var type = obj.GetType().GetTypeInfo();

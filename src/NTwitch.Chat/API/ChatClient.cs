@@ -45,7 +45,6 @@ namespace NTwitch.Chat
                 throw new InvalidOperationException("Client is not connected.");
             
             await _writer.WriteLineAsync(message);
-            await _log.DebugAsync("Chat", message);
             //var task = _writer.WriteLineAsync(message);
 
             //try

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
@@ -70,7 +69,7 @@ namespace NTwitch.Chat
 
         public async Task HandleUnknownAsync(TwitchMessage message)
         {
-            await _client.Logger.DebugAsync("Unknown Status", $"{message.Command} {message.Parameters.Last()}");
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandlePingAsync(TwitchMessage message)
@@ -80,52 +79,52 @@ namespace NTwitch.Chat
 
         public async Task HandleJoinAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandlePartAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleModeAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleNoticeAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleHostTargetAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleClearChatAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleUserStateAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleReconnectAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleRoomStateAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandleUserNoticeAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
 
         public async Task HandlePrivMsgAsync(TwitchMessage message)
@@ -136,7 +135,7 @@ namespace NTwitch.Chat
 
         public async Task HandleGlobalUserStateAsync(TwitchMessage message)
         {
-            await Task.Delay(1);
+            await _client.Logger.DebugAsync(message.Command, message.Parameters.Last());
         }
     }
 }
