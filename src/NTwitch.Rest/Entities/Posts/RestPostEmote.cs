@@ -2,13 +2,15 @@
 
 namespace NTwitch.Rest
 {
-    public class RestPostEmote
+    public class RestPostEmote : RestEntity
     {
-        [JsonProperty("")]
-        public int End { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("start")]
+        public int StartIndex { get; internal set; }
+        [JsonProperty("end")]
+        public int EndIndex { get; internal set; }
+        [JsonProperty("set")]
         public ulong SetId { get; internal set; }
-        [JsonProperty("")]
-        public int Start { get; internal set; }
+
+        public RestPostEmote(BaseRestClient client) : base(client) { }
     }
 }

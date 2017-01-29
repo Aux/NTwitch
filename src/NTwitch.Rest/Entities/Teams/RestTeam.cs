@@ -5,7 +5,7 @@ namespace NTwitch.Rest
 {
     public class RestTeam : RestTeamSummary
     {
-        [JsonProperty("")]
+        [JsonProperty("users")]
         public IEnumerable<RestUser> Users { get; private set; }
 
         public RestTeam(BaseRestClient client) : base(client) { }

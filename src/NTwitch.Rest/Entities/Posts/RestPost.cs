@@ -7,21 +7,21 @@ namespace NTwitch.Rest
 {
     public class RestPost : RestEntity
     {
-        [JsonProperty("")]
+        [JsonProperty("body")]
         public string Body { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("comments")]
         public IEnumerable<RestPostComment> Comments { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("emotes")]
         public IEnumerable<RestPostEmote> Emotes { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("deleted")]
         public bool IsDeleted { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("permissions")]
         public RestPostPermissions Permissions { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("reactions")]
         public IEnumerable<RestPostReaction> Reactions { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("user")]
         public RestUser User { get; internal set; }
 
         internal RestPost(BaseRestClient client) : base(client) { }

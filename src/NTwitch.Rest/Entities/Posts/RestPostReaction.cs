@@ -4,13 +4,11 @@ namespace NTwitch.Rest
 {
     public class RestPostReaction
     {
-        [JsonProperty("")]
+        [JsonProperty("count")]
         public int Count { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("emote")]
         public string EmoteName { get; internal set; }
-        [JsonProperty("")]
-        public string Name { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("user_ids")]
         public ulong[] UserIds { get; internal set; }
     }
 }

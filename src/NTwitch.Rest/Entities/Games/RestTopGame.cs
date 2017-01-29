@@ -4,11 +4,11 @@ namespace NTwitch.Rest
 {
     public class RestTopGame : RestEntity
     {
-        [JsonProperty("")]
+        [JsonProperty("channels")]
         public int Channels { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("game")]
         public RestGame Game { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("viewers")]
         public int Viewers { get; internal set; }
 
         public RestTopGame(BaseRestClient client) : base(client) { }

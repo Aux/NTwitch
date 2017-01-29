@@ -5,9 +5,9 @@ namespace NTwitch.Rest
 {
     public class RestBlockedUser : RestEntity, IBlockedUser
     {
-        [JsonProperty("")]
+        [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
-        [JsonProperty("")]
+        [JsonProperty("user")]
         public RestUser User { get; internal set; }
 
         internal RestBlockedUser(BaseRestClient client) : base(client) { }

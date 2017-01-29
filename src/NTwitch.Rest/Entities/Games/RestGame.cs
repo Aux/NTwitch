@@ -4,15 +4,15 @@ namespace NTwitch.Rest
 {
     public class RestGame : RestEntity
     {
-        [JsonProperty("")]
+        [JsonProperty("box")]
         public TwitchImage Box { get; private set; }
-        [JsonProperty("")]
-        public ulong GiantbombId { get; private set; }
-        [JsonProperty("")]
+        [JsonProperty("giantbomb_id")]
+        public uint GiantbombId { get; private set; }
+        [JsonProperty("logo")]
         public TwitchImage Logo { get; private set; }
-        [JsonProperty("")]
+        [JsonProperty("name")]
         public string Name { get; private set; }
-        [JsonProperty("")]
+        [JsonProperty("popularity")]
         public int Popularity { get; private set; }
 
         public RestGame(BaseRestClient client) : base(client) { }
