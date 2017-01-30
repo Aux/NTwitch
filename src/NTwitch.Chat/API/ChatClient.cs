@@ -126,7 +126,7 @@ namespace NTwitch.Chat
 
                 var result = receiveTask.Result;
                 string msg = Encoding.ASCII.GetString(buffer, 0, result);
-                await _messageReceivedEvent.InvokeAsync(msg);
+                await _messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
             }
         }
         
