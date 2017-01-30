@@ -62,7 +62,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static async Task<RestPost> GetPostAsync(IChannel channel, BaseRestClient client, ulong id, int comments)
+        public static async Task<RestPost> GetPostAsync(IChannel channel, BaseRestClient client, uint id, int comments)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);
@@ -71,10 +71,10 @@ namespace NTwitch.Rest
             return RestPost.Create(client, json);
         }
         
-        public static async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(IChannel channel, BaseRestClient client, SortDirection direction, PageOptions options)
+        public static async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(IChannel channel, BaseRestClient client, bool ascending, PageOptions options)
         {
             var request = new RequestOptions();
-            request.Parameters.Add("direction", Enum.GetName(typeof(SortDirection), direction).ToLower());
+            request.Parameters.Add("direction", ascending ? "asc" : "desc");
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
@@ -102,7 +102,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static Task<RestPost> DeletePostAsync(ISelfChannel channel, BaseRestClient client, ulong postid)
+        public static Task<RestPost> DeletePostAsync(ISelfChannel channel, BaseRestClient client, uint postid)
         {
             throw new NotImplementedException();
         }
@@ -112,10 +112,10 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(ISelfChannel channel, BaseRestClient client, SortDirection direction, PageOptions options)
+        public static async Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(ISelfChannel channel, BaseRestClient client, bool ascending, PageOptions options)
         {
             var request = new RequestOptions();
-            request.Parameters.Add("direction", Enum.GetName(typeof(SortDirection), direction).ToLower());
+            request.Parameters.Add("direction", ascending ? "asc" : "desc");
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
@@ -124,7 +124,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestUserSubscription.Create(client, x));
         }
 
-        public static async Task<RestUserSubscription> GetSubscriberAsync(ISelfChannel channel, BaseRestClient client, ulong userid)
+        public static async Task<RestUserSubscription> GetSubscriberAsync(ISelfChannel channel, BaseRestClient client, uint userid)
         {
             string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions/" + userid).ConfigureAwait(false);
             return RestUserSubscription.Create(client, json);

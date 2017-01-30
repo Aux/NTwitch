@@ -8,12 +8,12 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, ulong id, StreamType type)
+        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, uint id, StreamType type)
         {
             var request = new RequestOptions();
-            request.Parameters.Add("stream_type", Enum.GetName(typeof(StreamType), type).ToLower());
+            request.Parameters.Add("stream_type", type.ToString().ToLower());
             
-            string json = await client.ApiClient.SendAsync("GET", "streams/" + id, request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", $"streams/{id}", request).ConfigureAwait(false);
             return RestStream.Create(client, json);
         }
 
@@ -29,9 +29,9 @@ namespace NTwitch.Rest
             return RestSelfChannel.Create(client, json);
         }
 
-        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong id)
+        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, uint id)
         {
-            var json = await client.ApiClient.SendAsync("GET", "channels/" + id).ConfigureAwait(false);
+            var json = await client.ApiClient.SendAsync("GET", $"channels/{id}").ConfigureAwait(false);
             return RestChannel.Create(client, json);
         }
 
@@ -93,8 +93,8 @@ namespace NTwitch.Rest
         {
             var request = new RequestOptions();
             request.Parameters.Add("game", game);
-            request.Parameters.Add("period", Enum.GetName(typeof(VideoPeriod), period).ToLower());
-            request.Parameters.Add("broadcast_type", Enum.GetName(typeof(BroadcastType), type).ToLower());
+            request.Parameters.Add("period", period.ToString().ToLower());
+            request.Parameters.Add("broadcast_type", type.ToString().ToLower());
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
@@ -113,13 +113,13 @@ namespace NTwitch.Rest
             return RestUser.Create(client, items.FirstOrDefault());
         }
 
-        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseRestClient client, string game, ulong[] channelids, string language, StreamType type, PageOptions options)
+        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseRestClient client, string game, uint[] channelids, string language, StreamType type, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("game", game);
             request.Parameters.Add("channel", string.Join(",", channelids));
             request.Parameters.Add("language", language);
-            request.Parameters.Add("type", Enum.GetName(typeof(StreamType), type).ToLower());
+            request.Parameters.Add("type", type.ToString().ToLower());
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
@@ -150,15 +150,15 @@ namespace NTwitch.Rest
             return items.Select(x => RestTeamSummary.Create(client, x));
         }
 
-        public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
+        public static async Task<RestUser> GetUserAsync(BaseRestClient client, uint id)
         {
-            string json = await client.ApiClient.SendAsync("GET", "user/" + id);
+            string json = await client.ApiClient.SendAsync("GET", $"user/{id}");
             return RestUser.Create(client, json);
         }
 
         public static async Task<RestTeam> GetTeamAsync(BaseRestClient client, string name)
         {
-            string json = await client.ApiClient.SendAsync("GET", "teams/" + name);
+            string json = await client.ApiClient.SendAsync("GET", $"teams/{name}");
             return RestTeam.Create(client, json);
         }
 
