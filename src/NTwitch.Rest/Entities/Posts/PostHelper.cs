@@ -11,7 +11,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static Task CreateReactionAsync(RestPost post, BaseRestClient client, ulong emoteid)
+        public static Task CreateReactionAsync(RestPost post, BaseRestClient client, uint emoteid)
         {
             throw new NotImplementedException();
         }
@@ -21,12 +21,12 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static Task DeleteCommentAsync(RestPost post, BaseRestClient client, ulong commentid)
+        public static Task DeleteCommentAsync(RestPost post, BaseRestClient client, uint commentid)
         {
             throw new NotImplementedException();
         }
 
-        public static Task DeleteReactionAsync(RestPost post, BaseRestClient client, ulong emoteid)
+        public static Task DeleteReactionAsync(RestPost post, BaseRestClient client, uint emoteid)
         {
             throw new NotImplementedException();
         }

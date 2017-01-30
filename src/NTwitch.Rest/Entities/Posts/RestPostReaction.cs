@@ -9,6 +9,6 @@ namespace NTwitch.Rest
         [JsonProperty("emote")]
         public string EmoteName { get; internal set; }
         [JsonProperty("user_ids")]
-        public ulong[] UserIds { get; internal set; }
+        public uint[] UserIds { get; internal set; }
     }
 }

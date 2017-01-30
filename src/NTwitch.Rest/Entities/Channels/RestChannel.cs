@@ -53,21 +53,21 @@ namespace NTwitch.Rest
 
         // Posts
         public Task<IEnumerable<RestPost>> GetPostsAsync()
-            => GetPostsAsync();
+            => GetPostsAsync(5);
         public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, PageOptions options = null)
             => ChannelHelper.GetPostsAsync(this, Client, comments, options);
-        public Task<RestPost> GetPostAsync(ulong id)
-            => GetPostAsync(id);
-        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
+        public Task<RestPost> GetPostAsync(uint id)
+            => GetPostAsync(id, 5);
+        public Task<RestPost> GetPostAsync(uint id, int comments = 5)
             => ChannelHelper.GetPostAsync(this, Client, id, comments);
         
         // Users
         public Task<IEnumerable<RestUserFollow>> GetFollowersAsync()
-            => GetFollowersAsync();
-        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
-            => ChannelHelper.GetFollowersAsync(this, Client, direction, options);
+            => GetFollowersAsync(false);
+        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(bool ascending = false, PageOptions options = null)
+            => ChannelHelper.GetFollowersAsync(this, Client, ascending, options);
         public Task FollowAsync()
-            => FollowAsync();
+            => FollowAsync(false);
         public Task FollowAsync(bool notify = false)
             => ChannelHelper.FollowAsync(this, Client, notify);
         public Task UnfollowAsync()
@@ -77,7 +77,7 @@ namespace NTwitch.Rest
         public Task<RestStream> GetStreamAsync()
             => ClientHelper.GetStreamAsync(Client, Id, StreamType.All);
         public Task<IEnumerable<RestVideo>> GetVideosAsync()
-            => GetVideosAsync();
+            => GetVideosAsync(null);
         public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
             => ChannelHelper.GetVideosAsync(this, Client, language, sort, type, options);
         public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game)

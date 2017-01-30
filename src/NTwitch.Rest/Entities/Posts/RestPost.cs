@@ -35,14 +35,16 @@ namespace NTwitch.Rest
         
         public Task<RestPostComment> CreateCommentAsync(string content)
             => PostHelper.CreateCommentAsync(this, Client, content);
-        public Task CreateReactionAsync(ulong emoteid)
+        public Task CreateReactionAsync(uint emoteid)
             => PostHelper.CreateReactionAsync(this, Client, emoteid);
         public Task DeleteAsync()
             => PostHelper.DeleteAsync(this, Client);
-        public Task DeleteCommentAsync(ulong commentid)
+        public Task DeleteCommentAsync(uint commentid)
             => PostHelper.DeleteCommentAsync(this, Client, commentid);
-        public Task DeleteReactionAsync(ulong emoteid)
+        public Task DeleteReactionAsync(uint emoteid)
             => PostHelper.DeleteReactionAsync(this, Client, emoteid);
+        public Task<IEnumerable<RestPostComment>> GetCommentsAsync()
+            => GetCommentsAsync(null);
         public Task<IEnumerable<RestPostComment>> GetCommentsAsync(PageOptions options = null)
             => PostHelper.GetCommentsAsync(this, Client, options);
     }

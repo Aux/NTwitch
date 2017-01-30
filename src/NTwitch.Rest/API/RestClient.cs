@@ -109,7 +109,7 @@ namespace NTwitch.Rest
             foreach (var p in parameters)
             {
                 string name = p.Key.ToLower();
-                string value = p.Value.ToString();
+                string value = p.Value?.ToString();
 
                 if (string.IsNullOrWhiteSpace(value))
                     continue;

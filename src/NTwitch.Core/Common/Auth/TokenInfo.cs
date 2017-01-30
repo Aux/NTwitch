@@ -8,7 +8,7 @@ namespace NTwitch
         [JsonProperty("token.valid")]
         public bool IsValid { get; internal set; }
         [JsonProperty("token.user_id")]
-        public ulong UserId { get; internal set; }
+        public uint UserId { get; internal set; }
         [JsonProperty("token.user_name")]
         public string Username { get; internal set; }
         [JsonProperty("token.client_id")]

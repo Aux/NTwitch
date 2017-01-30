@@ -24,17 +24,17 @@ namespace NTwitch.Rest
         // Posts
         public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
             => ChannelHelper.CreatePostAsync(this, Client, args);
-        public Task<RestPost> DeletePostAsync(ulong postid)
+        public Task<RestPost> DeletePostAsync(uint postid)
             => ChannelHelper.DeletePostAsync(this, Client, postid);
 
         //Users
         public Task<IEnumerable<RestUser>> GetEditorsAsync()
             => ChannelHelper.GetEditorsAsync(this, Client);
         public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync()
-            => GetSubscribersAsync();
-        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(SortDirection direction = SortDirection.Descending, PageOptions options = null)
-            => ChannelHelper.GetSubscribersAsync(this, Client, direction, options);
-        public Task<RestUserSubscription> GetSubscriberAsync(ulong userid)
+            => GetSubscribersAsync(false);
+        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, PageOptions options = null)
+            => ChannelHelper.GetSubscribersAsync(this, Client, ascending, options);
+        public Task<RestUserSubscription> GetSubscriberAsync(uint userid)
             => ChannelHelper.GetSubscriberAsync(this, Client, userid);
 
         // SelfChannel
@@ -43,7 +43,7 @@ namespace NTwitch.Rest
         public Task<RestSelfChannel> ResetStreamKeyAsync()
             => ChannelHelper.ResetStreamKeyAsync(this, Client);
         public Task StartCommercialAsync()
-            => StartCommercialAsync();
+            => StartCommercialAsync(30);
         public Task StartCommercialAsync(int duration = 30)
             => ChannelHelper.StartCommercialAsync(this, Client, duration);
         
@@ -52,7 +52,7 @@ namespace NTwitch.Rest
             => ModifyAsync(null);
         Task ISelfChannel.CreatePostAsync()
             => CreatePostAsync(null);
-        Task ISelfChannel.DeletePostAsync(ulong postId)
+        Task ISelfChannel.DeletePostAsync(uint postId)
             => DeletePostAsync(postId);
         Task ISelfChannel.ResetStreamKeyAsync()
             => ResetStreamKeyAsync();
@@ -62,7 +62,7 @@ namespace NTwitch.Rest
             => GetEditorsAsync();
         Task ISelfChannel.GetSubscribersAsync()
             => GetSubscribersAsync();
-        Task ISelfChannel.GetSubscriberAsync(ulong userId)
+        Task ISelfChannel.GetSubscriberAsync(uint userId)
             => GetSubscriberAsync(userId);
     }
 }

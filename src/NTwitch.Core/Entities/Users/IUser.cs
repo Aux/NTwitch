@@ -13,7 +13,7 @@ namespace NTwitch
         /// <summary> Unblock this user. </summary>
         Task<IBlockedUser> UnblockAsync();
         /// <summary> Check if this user is following the specified channel. </summary>
-        Task<bool> IsFollowingAsync(ulong channelId);
+        Task<IChannelFollow> GetFollowAsync(uint channelId);
         /// <summary> Get the channels this user is following. </summary>
         Task<IEnumerable<IChannelFollow>> GetFollowsAsync();
     }

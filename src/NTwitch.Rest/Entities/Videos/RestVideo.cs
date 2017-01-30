@@ -7,7 +7,7 @@ namespace NTwitch.Rest
     public class RestVideo : RestEntity
     {
         [JsonProperty("broadcast_id")]
-        public ulong BroadcastId { get; internal set; }
+        public uint BroadcastId { get; internal set; }
         [JsonProperty("broadcast_type")]
         public BroadcastType Type { get; internal set; }
         [JsonProperty("channel")]

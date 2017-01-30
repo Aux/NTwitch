@@ -9,7 +9,7 @@ namespace NTwitch.Rest
         [JsonProperty("end")]
         public int EndIndex { get; internal set; }
         [JsonProperty("set")]
-        public ulong SetId { get; internal set; }
+        public uint SetId { get; internal set; }
 
         public RestPostEmote(BaseRestClient client) : base(client) { }
     }
