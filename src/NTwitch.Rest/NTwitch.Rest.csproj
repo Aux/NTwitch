@@ -1,4 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup Label="Configuration">
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
   <PropertyGroup>
     <VersionPrefix>0.0.3</VersionPrefix>
     <TargetFrameworks>netstandard1.6</TargetFrameworks>

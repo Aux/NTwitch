@@ -3,39 +3,45 @@ using NTwitch.Chat;
 using System;
 using System.Threading.Tasks;
 
-class Program
+namespace NTwitch.Tests
 {
-    static void Main(string[] args)
-        => new Program().StartAsync().GetAwaiter().GetResult();
-
-    private TwitchChatClient _client;
-
-    public async Task StartAsync()
+    class Program
     {
-        _client = new TwitchChatClient(new TwitchChatConfig()
+        static void Main(string[] args)
+            => new Program().StartAsync().GetAwaiter().GetResult();
+
+        private TwitchChatClient _client;
+
+        public async Task StartAsync()
         {
-            LogLevel = LogLevel.Debug
-        });
+            _client = new TwitchChatClient(new TwitchChatConfig()
+            {
+                LogLevel = LogLevel.Debug
+            });
 
-        _client.Log += OnLog;
-        _client.MessageReceived += OnMessageReceived;
+            _client.Log += OnLog;
+            _client.MessageReceived += OnMessageReceived;
 
-        await _client.ConnectAsync();
-        await _client.LoginAsync("datdoggo", "");
-        await _client.JoinAsync("theonemanny");
-        
-        await Task.Delay(-1);
-    }
+            await _client.ConnectAsync();
+            await _client.LoginAsync("datdoggo", "");
+            await _client.JoinAsync("auxesistv");
 
-    private Task OnMessageReceived(ChatMessage msg)
-    {
-        Console.WriteLine($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
-        return Task.CompletedTask;
-    }
+            var handler = new CommandHandler();
+            await handler.InitializeAsync(_client);
 
-    private Task OnLog(LogMessage msg)
-    {
-        Console.WriteLine($"[{msg.Level}] {msg.Source}: {msg.Message}");
-        return Task.CompletedTask;
+            await Task.Delay(-1);
+        }
+
+        private Task OnMessageReceived(ChatMessage msg)
+        {
+            Console.WriteLine($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
+            return Task.CompletedTask;
+        }
+
+        private Task OnLog(LogMessage msg)
+        {
+            Console.WriteLine($"[{msg.Level}] {msg.Source}: {msg.Message}");
+            return Task.CompletedTask;
+        }
     }
 }

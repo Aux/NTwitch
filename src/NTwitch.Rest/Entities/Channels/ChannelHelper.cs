@@ -78,7 +78,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
-            string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/followers", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", $"channels/{channel.Id}/followers", request).ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
             return items.Select(x => RestUserFollow.Create(client, x));
         }

@@ -17,6 +17,8 @@ namespace NTwitch.Chat
             => throw new NotImplementedException();
         public Task LeaveAsync()
             => throw new NotImplementedException();
+        public Task SendMessageAsync(string content)
+            => Client.Client.SendAsync($"PRIVMSG #{Name} :{content}");
 
         // Teams
         public Task<IEnumerable<RestTeam>> GetTeamsAsync()
