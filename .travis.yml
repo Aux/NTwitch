@@ -1,4 +1,5 @@
 language: csharp
+solution: NTwitch.sln
 git:
   depth: 1
 branches:
@@ -11,7 +12,7 @@ matrix:
     dist: trusty
     sudo: required
     mono: none
-    dotnet: 1.0.0-preview2-003131
+    dotnet: 1.0.0-preview3-004056
     env: DOTNETCORE=1
 script:
   - dotnet restore
