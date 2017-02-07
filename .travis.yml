@@ -23,6 +23,7 @@ script:
   - dotnet build src/NTwitch.Pubsub/NTwitch.Pubsub.csproj --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 #  - "$TRAVIS_BRANCH" == "master" && dotnet build */**/project.json --configuration Release
 #  - "$TRAVIS_BRANCH" == "dev" && dotnet build */**/project.json --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+
 #deploy:
 #  provider: script
 #  skip_cleanup: true
