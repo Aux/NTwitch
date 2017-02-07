@@ -1,4 +1,5 @@
-version: 0.0.5branches:
+version: 0.0.5
+branches:
   only:
   - master
   - dev
