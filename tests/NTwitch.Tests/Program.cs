@@ -1,6 +1,8 @@
-﻿using NTwitch;
-using NTwitch.Chat;
+﻿using Newtonsoft.Json;
+using NTwitch;
+using NTwitch.Rest;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -10,33 +12,53 @@ namespace NTwitch.Tests
         static void Main(string[] args)
             => new Program().StartAsync().GetAwaiter().GetResult();
 
-        private TwitchChatClient _client;
+        private TwitchRestClient _client;
 
         public async Task StartAsync()
         {
-            _client = new TwitchChatClient(new TwitchChatConfig()
+            _client = new TwitchRestClient(new TwitchRestConfig()
             {
                 LogLevel = LogLevel.Debug
             });
 
             _client.Log += OnLog;
-            _client.MessageReceived += OnMessageReceived;
+            
+            await _client.LoginAsync(TokenType.OAuth, "");
+            var obj = await _client.FindGamesAsync("overwatch", true);
 
-            await _client.ConnectAsync();
-            await _client.LoginAsync("datdoggo", "");
-            await _client.JoinAsync("auxesistv");
-
-            var handler = new CommandHandler();
-            await handler.InitializeAsync(_client);
+            string output = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            Console.WriteLine(output);
 
             await Task.Delay(-1);
         }
 
-        private Task OnMessageReceived(ChatMessage msg)
-        {
-            Console.WriteLine($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
-            return Task.CompletedTask;
-        }
+        //private TwitchChatClient _client;
+
+        //public async Task StartAsync()
+        //{
+        //    _client = new TwitchChatClient(new TwitchChatConfig()
+        //    {
+        //        LogLevel = LogLevel.Debug
+        //    });
+
+        //    _client.Log += OnLog;
+        //    _client.MessageReceived += OnMessageReceived;
+
+        //    await _client.ConnectAsync();
+        //    await _client.LoginAsync("datdoggo", "");
+        //    await _client.JoinAsync("auxesistv");
+
+        //    var handler = new CommandHandler();
+        //    await handler.InitializeAsync(_client);
+
+        //    await Task.Delay(-1);
+        //}
+
+        //private Task OnMessageReceived(ChatMessage msg)
+        //{
+        //    Console.WriteLine($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
+        //    return Task.CompletedTask;
+        //}
 
         private Task OnLog(LogMessage msg)
         {

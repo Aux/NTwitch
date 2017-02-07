@@ -25,7 +25,7 @@ namespace NTwitch
                 return null;
 
             var obj = JObject.Load(reader);
-
+            
             var list = new List<string>();
             foreach (var item in obj[_name])
                 list.Add(JsonConvert.SerializeObject(item));

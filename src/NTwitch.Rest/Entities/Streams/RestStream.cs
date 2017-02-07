@@ -3,26 +3,27 @@ using System;
 
 namespace NTwitch.Rest
 {
+    [JsonConverter(typeof(JsonPathConverter))]
     public class RestStream : RestEntity
     {
-        [JsonProperty("game")]
-        public string GameName { get; private set; }
-        [JsonProperty("viewers")]
-        public int ViewerTotal { get; private set; }
-        [JsonProperty("video_height")]
-        public int VideoHeight { get; private set; }
-        [JsonProperty("average_fps")]
-        public double AverageFps { get; private set; }
-        [JsonProperty("delay")]
-        public int Delay { get; private set; }
-        [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; private set; }
-        [JsonProperty("is_playlist")]
-        public bool IsPlaylist { get; private set; }
-        [JsonProperty("preview")]
-        public TwitchImage Preview { get; private set; }
-        [JsonProperty("channel")]
-        public RestChannel Channel { get; private set; }
+        [JsonProperty("stream.game")]
+        public string GameName { get; internal set; }
+        [JsonProperty("stream.viewers")]
+        public int ViewerTotal { get; internal set; }
+        [JsonProperty("stream.video_height")]
+        public int VideoHeight { get; internal set; }
+        [JsonProperty("stream.average_fps")]
+        public double AverageFps { get; internal set; }
+        [JsonProperty("stream.delay")]
+        public int Delay { get; internal set; }
+        [JsonProperty("stream.created_at")]
+        public DateTime CreatedAt { get; internal set; }
+        [JsonProperty("stream.is_playlist")]
+        public bool IsPlaylist { get; internal set; }
+        [JsonProperty("stream.preview")]
+        public TwitchImage Preview { get; internal set; }
+        [JsonProperty("stream.channel")]
+        public RestChannel Channel { get; internal set; }
 
         public RestStream(BaseRestClient client) : base(client) { }
 

@@ -58,7 +58,7 @@ namespace NTwitch.Rest
             => ClientHelper.FindChannelsAsync(this, query, options);
         public Task<IEnumerable<RestGame>> FindGamesAsync(string query)
             => FindGamesAsync(query, true);
-        public Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool islive = true)
+        public Task<IEnumerable<RestGame>> FindGamesAsync(string query, bool? islive = null)
             => ClientHelper.FindGamesAsync(this, query, islive);
         public Task<RestStream> GetStreamAsync(uint id)
             => GetStreamAsync(id, StreamType.All);

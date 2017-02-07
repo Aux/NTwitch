@@ -8,6 +8,8 @@ namespace NTwitch
 {
     public class JsonPathConverter : JsonConverter
     {
+        public override bool CanWrite { get { return false; } }
+
         public override bool CanConvert(Type objectType)
         {
             return false;

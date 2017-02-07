@@ -8,7 +8,7 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, uint id, StreamType type)
+        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, uint id, StreamType? type)           // Object doesn't fill
         {
             var request = new RequestOptions();
             request.Parameters.Add("stream_type", type.ToString().ToLower());
@@ -17,49 +17,50 @@ namespace NTwitch.Rest
             return RestStream.Create(client, json);
         }
 
-        public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)
+        public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)                               // Checked
         {
             string json = await client.ApiClient.SendAsync("GET", "user").ConfigureAwait(false);
             return RestSelfUser.Create(client, json);
         }
 
-        public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)
+        public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)                         // Checked
         {
-            var json = await client.ApiClient.SendAsync("GET", "channels").ConfigureAwait(false);
+            var json = await client.ApiClient.SendAsync("GET", "channel").ConfigureAwait(false);
             return RestSelfChannel.Create(client, json);
         }
 
-        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, uint id)
+        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, uint id)                           // Checked
         {
             var json = await client.ApiClient.SendAsync("GET", $"channels/{id}").ConfigureAwait(false);
             return RestChannel.Create(client, json);
         }
 
-        public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseRestClient client, PageOptions options)
+        public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseRestClient client, PageOptions options) // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("limit", options?.Limit);
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "games/top", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("games"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("top"));
             return items.Select(x => RestTopGame.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)
+        public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)                        // Object doesn't fill
         {
             string json = await client.ApiClient.SendAsync("GET", "ingests");
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("ingests"));
             return items.Select(x => JsonConvert.DeserializeObject<RestIngest>(json));
         }
 
-        public static async Task<IEnumerable<RestGame>> FindGamesAsync(BaseRestClient client, string query, bool islive)
+        public static async Task<IEnumerable<RestGame>> FindGamesAsync(BaseRestClient client, string query, bool? islive)   // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("query", query);
-            request.Parameters.Add("live", islive);
+            if (islive != null)
+                request.Parameters.Add("live", islive);
 
-            string json = await client.ApiClient.SendAsync("GET", "search/games");
+            string json = await client.ApiClient.SendAsync("GET", "search/games", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("games"));
             return items.Select(x => RestGame.Create(client, x));
         }

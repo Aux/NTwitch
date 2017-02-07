@@ -59,7 +59,7 @@ namespace NTwitch.Rest
             response.EnsureSuccessStatusCode();
             string content = await response.Content.ReadAsStringAsync();
 
-            await _log.DebugAsync("Rest", endpoint + " " + stopwatch.ElapsedMilliseconds + " ms");
+            await _log.DebugAsync("Rest", $"{method} /{endpoint} {stopwatch.ElapsedMilliseconds} ms");
             stopwatch.Stop();
 
             return content;

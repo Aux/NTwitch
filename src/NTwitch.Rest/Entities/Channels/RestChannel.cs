@@ -20,14 +20,14 @@ namespace NTwitch.Rest
         [JsonProperty("logo")]
         public string LogoUrl { get; internal set; }
         [JsonProperty("mature")]
-        public bool IsMature { get; internal set; }
+        public bool? IsMature { get; internal set; }
         [JsonProperty("partner")]
         public bool IsPartner { get; internal set; }
         [JsonProperty("profile_banner")]
         public string ProfileBannerUrl { get; internal set; }
         [JsonProperty("profile_banner_background_color")]
         public string ProfileBackgroundColor { get; internal set; }
-        [JsonProperty("Status")]
+        [JsonProperty("status")]
         public string Status { get; internal set; }
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
