@@ -6,20 +6,19 @@ namespace NTwitch.Pubsub
 {
     public partial class TwitchPubsubClient : BaseRestClient, ITwitchClient
     {
-        public PubsubClient Client => _pubsub;
-
-        private PubsubClient _pubsub;
+        private SocketClient _socket;
         private string _host;
-
-        public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
+        
+        public TwitchPubsubClient() : base(new TwitchPubsubConfig()) { }
         public TwitchPubsubClient(TwitchPubsubConfig config) : base(config)
         {
             _host = config.PubsubUrl;
         }
 
-        public async Task LoginAsync(string clientid, string token = null)
+        public async Task LoginAsync(TokenType type, string token)
         {
-            await LoginInternalAsync(clientid, token);
+            await LoginInternalAsync(type, token);
+            _socket = new SocketClient(_host, token);
         }
 
         public Task ConnectAsync()

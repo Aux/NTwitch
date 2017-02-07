@@ -44,6 +44,5 @@ namespace NTwitch.Chat
 
         public Task LeaveAsync(string channelName)
             => _chat.SendAsync("PART #" + channelName);
-
     }
 }
