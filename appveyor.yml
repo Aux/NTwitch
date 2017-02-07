@@ -1,4 +1,4 @@
-version: 0.0.5
+version: 0.0.5-beta-{build}
 branches:
   only:
   - master
@@ -10,9 +10,9 @@ clone_depth: 1
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
-  assembly_version: '{version}-beta-{build}'
-  assembly_file_version: '{version}-beta-{build}'
-  assembly_informational_version: '{version}-beta-{build}'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
 before_build:
 - cmd: dotnet restore
 build:
