@@ -7,13 +7,19 @@ title: "Sitemap"
   "description": "{{ site.description }}",
   "homepage", "{{ site.url }}",
   "updated_at", "{{ site.time }}",
-  "pages": [{% for page in site.pages %}
+  "collections": [{% for collection in site.collections %}
     {
-	  "category": "{{ page.category }}",
-      "title": "{{ page.title }}",
-      "url": "{{ page.url }}",
-	  "path": "{{ page.path }}",
-	  "content": "{{ page.excerpt }}"
+      "name": "{{ collection.label }}",
+      "path": "{{ collection.directory }}",
+      "pages": [{% for page in site.pages %}
+		{
+          "category": "{{ page.category }}",
+          "title": "{{ page.title }}",
+          "url": "{{ page.url }}",
+          "path": "{{ page.path }}",
+          "content": "{{ page.content }}"
+        }{% if forloop.last == false %},{% endif %}
+    {% endfor %}  ]
     }{% if forloop.last == false %},{% endif %}
 {% endfor %}  ]
 }
