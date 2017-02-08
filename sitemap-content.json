@@ -16,7 +16,8 @@ title: "Sitemap"
           "category": "{{ page.category }}",
           "title": "{{ page.title }}",
           "url": "{{ page.url }}",
-          "path": "{{ page.path }}"
+          "path": "{{ page.path }}",
+          "content": "{{ page.content }}"
         }{% if forloop.last == false %},{% endif %}{% endfor %}]
     }{% if forloop.last == false %},{% endif %}{% endfor %}]
 }
