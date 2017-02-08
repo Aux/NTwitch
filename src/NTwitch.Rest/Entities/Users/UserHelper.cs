@@ -33,7 +33,7 @@ namespace NTwitch.Rest
 
         // ISelfUser
 
-        internal static async Task<RestBlockedUser> BlockAsync(IUser user, BaseRestClient client, uint userId)
+        internal static async Task<IBlockedUser> BlockAsync(IUser user, BaseRestClient client, uint userId)
         {
             var request = new RequestOptions();
 

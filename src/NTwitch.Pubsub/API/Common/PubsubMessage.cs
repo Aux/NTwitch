@@ -2,11 +2,11 @@
 
 namespace NTwitch.Pubsub
 {
-    internal class PubsubMessage
+    internal class PubsubMessage<T>
     {
         [JsonProperty("type")]
         public string Type { get; set; }
         [JsonProperty("data")]
-        public PubsubMessageData Data { get; set; }
+        public PubsubMessageData<T> Data { get; set; }
     }
 }
