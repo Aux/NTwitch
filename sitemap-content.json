@@ -1,18 +1,18 @@
 ---
 layout: null
-title: "Sitemap"
+title: "Sitemap with page content"
 ---
 {
   "title": "{{ site.title }}",
   "description": "{{ site.description }}",
-  "homepage", "{{ site.url }}",
-  "updated_at", "{{ site.time }}",
+  "url": "{{ site.url }}",
+  "updated_at": "{{ site.time }}",
   "collections": [{% for collection in site.collections %}
     {
       "name": "{{ collection.label }}",
       "path": "{{ collection.directory }}",
-      "pages": [{% for page in collection %}
-		{
+      "pages": [{% for page in site.{{ collection }} %}
+        {
           "category": "{{ page.category }}",
           "title": "{{ page.title }}",
           "url": "{{ page.url }}",
