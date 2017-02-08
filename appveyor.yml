@@ -4,7 +4,6 @@ branches:
   - master
   - dev
 skip_tags: true
-image: Visual Studio 2017 RC
 configuration: Release
 clone_depth: 1
 assembly_info:
