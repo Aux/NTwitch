@@ -2,20 +2,18 @@
 layout: null
 title: "Sitemap"
 ---
--- Site --
-Time: {{ site.time }}
-Title {{ site.title }}
-Url: {{ site.url }}
-Description: {{ site.description }}
-
--- Pages --{% for page in site.pages %}
-Title: {{ page.title }}
-Url: {{ page.url }}
-Date: {{ page.date }}
-Id: {{ page.id }}
-Categories: {{ page.categories }}
-Tags: {{ page.tags }}
-Path: {{ page.path }}
-Content: {{ page.content }}
-
-{% endfor %}
+{
+  "title": "{{ site.title }}",
+  "description": "{{ site.description }}",
+  "homepage", "{{ site.url }}",
+  "updated_at", "{{ site.time }}",
+  "pages": [{% for page in site.pages %}
+    {
+	  "category": "{{ page.category }}",
+      "title": "{{ page.title }}",
+      "url": "{{ page.url }}",
+	  "path": "{{ page.path }}",
+	  "content": "{{ page.excerpt }}"
+    }{% if forloop.last == false %},{% endif %}
+{% endfor %}  ]
+}
