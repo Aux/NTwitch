@@ -14,10 +14,10 @@ Release and pre-release builds can be found on Nuget under [NTwitch](https://www
 - [NTwitch](https://www.nuget.org/packages/NTwitch/)
 - [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
 - [NTwitch.Chat](https://www.nuget.org/packages/NTwitch.Chat/)
-- NTwitch.Pubsub
+- [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.PubSub/)
 
 ## Documentation
-Documentation for released NTwitch features will be available at https://ntwitch.auxesis.tv/. To view the source and submit issues for the docs visit [the repo](https://github.com/Aux/NTwitch-docs).
+Documentation for released NTwitch features will be available at https://aux.github.io/NTwitch/ (once I write it). The source for the docs site is available on the [gh-pages branch](https://github.com/Aux/NTwitch/tree/gh-pages).
 
 ##### Examples
 - [Chat](https://github.com/Aux/NTwitch-Examples/ChatExample)
