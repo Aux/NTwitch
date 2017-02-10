@@ -3,6 +3,6 @@
     public interface IEntity
     {
         ITwitchClient Client { get; }
-        uint Id { get; }
+        ulong Id { get; }
     }
 }
