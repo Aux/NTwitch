@@ -23,7 +23,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestChannelFollow.Create(client, x));
         }
 
-        internal static async Task<RestChannelFollow> GetFollowAsync(IUser user, BaseRestClient client, uint channelId)
+        internal static async Task<RestChannelFollow> GetFollowAsync(IUser user, BaseRestClient client, ulong channelId)
         {
             var request = new RequestOptions();
 
@@ -33,7 +33,7 @@ namespace NTwitch.Rest
 
         // ISelfUser
 
-        internal static async Task<IBlockedUser> BlockAsync(IUser user, BaseRestClient client, uint userId)
+        internal static async Task<RestBlockedUser> BlockAsync(IUser user, BaseRestClient client, ulong userId)
         {
             var request = new RequestOptions();
 
@@ -41,7 +41,7 @@ namespace NTwitch.Rest
             return RestBlockedUser.Create(client, json);
         }
 
-        internal static async Task UnblockAsync(IUser user, BaseRestClient client, uint userId)
+        internal static async Task UnblockAsync(IUser user, BaseRestClient client, ulong userId)
         {
             var request = new RequestOptions();
 
@@ -59,7 +59,7 @@ namespace NTwitch.Rest
             return items.Select(x => RestBlockedUser.Create(client, x));
         }
 
-        public static async Task<RestChannelFollow> FollowAsync(ISelfUser user, BaseRestClient client, uint channelId, bool notify)
+        public static async Task<RestChannelFollow> FollowAsync(ISelfUser user, BaseRestClient client, ulong channelId, bool notify)
         {
             var request = new RequestOptions();
             request.Parameters.Add("notifications", notify);
@@ -73,7 +73,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static async Task<RestChannelSubscription> GetSubscriptionAsync(ISelfUser user, BaseRestClient client, uint channelId)
+        public static async Task<RestChannelSubscription> GetSubscriptionAsync(ISelfUser user, BaseRestClient client, ulong channelId)
         {
             var request = new RequestOptions();
 
@@ -81,7 +81,7 @@ namespace NTwitch.Rest
             return RestChannelSubscription.Create(client, json);
         }
 
-        public static async Task UnfollowAsync(ISelfUser user, BaseRestClient client, uint channelId)
+        public static async Task UnfollowAsync(ISelfUser user, BaseRestClient client, ulong channelId)
         {
             var request = new RequestOptions();
 

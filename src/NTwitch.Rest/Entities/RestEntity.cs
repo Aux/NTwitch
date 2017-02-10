@@ -7,7 +7,7 @@ namespace NTwitch.Rest
         [JsonIgnore]
         internal BaseRestClient Client { get; }
         [JsonProperty("_id")]
-        public uint Id { get; internal set; }
+        public ulong Id { get; internal set; }
 
         internal RestEntity(BaseRestClient client)
         {

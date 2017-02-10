@@ -1,13 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿// RestVideo can't be an entity because for whatever reason twitch puts a v at the beginning of video ids :)
+
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : RestEntity
+    public class RestVideo// : RestEntity
     {
+        [JsonIgnore]
+        internal BaseRestClient Client { get; }
+        [JsonProperty("_id")]
+        public string Id { get; internal set; }
         [JsonProperty("broadcast_id")]
-        public uint BroadcastId { get; internal set; }
+        public ulong BroadcastId { get; internal set; }
         [JsonProperty("broadcast_type")]
         public BroadcastType Type { get; internal set; }
         [JsonProperty("channel")]
@@ -31,7 +37,7 @@ namespace NTwitch.Rest
         [JsonProperty("status")]
         public string Status { get; internal set; }
         [JsonProperty("tag_list")]
-        public IEnumerable<string> Tags { get; internal set; }
+        public string Tags { get; internal set; }
         [JsonProperty("title")]
         public string Title { get; internal set; }
         [JsonProperty("url")]
@@ -41,8 +47,11 @@ namespace NTwitch.Rest
         [JsonProperty("views")]
         public int ViewTotal { get; internal set; }
         
-        internal RestVideo(BaseRestClient client) : base(client) { }
-
+        internal RestVideo(BaseRestClient client)
+        {
+            Client = client;
+        }
+        
         internal static RestVideo Create(BaseRestClient client, string json)
         {
             var video = new RestVideo(client);

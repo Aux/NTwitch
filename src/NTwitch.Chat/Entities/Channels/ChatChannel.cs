@@ -29,9 +29,9 @@ namespace NTwitch.Chat
             => GetPostsAsync(5);
         public Task<IEnumerable<RestPost>> GetPostsAsync(int comments = 5, PageOptions options = null)
             => ChannelHelper.GetPostsAsync(this, Client, comments, options);
-        public Task<RestPost> GetPostAsync(uint id)
+        public Task<RestPost> GetPostAsync(ulong id)
             => GetPostAsync(id, 5);
-        public Task<RestPost> GetPostAsync(uint id, int comments = 5)
+        public Task<RestPost> GetPostAsync(ulong id, int comments = 5)
             => ChannelHelper.GetPostAsync(this, Client, id, comments);
 
         // Users

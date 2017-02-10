@@ -8,7 +8,7 @@ namespace NTwitch.Pubsub
     public class PubsubUser : PubsubEntity, IUser
     {
         [JsonProperty("id")]
-        public uint Id { get; internal set; }
+        public ulong Id { get; internal set; }
         [JsonProperty("login")]
         public string Name { get; internal set; }
         [JsonProperty("display_name")]

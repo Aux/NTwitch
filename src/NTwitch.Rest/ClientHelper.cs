@@ -8,10 +8,11 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, uint id, StreamType? type)           // Object doesn't fill
+        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, ulong id, StreamType? type)           // Object doesn't fill
         {
             var request = new RequestOptions();
-            request.Parameters.Add("stream_type", type.ToString().ToLower());
+            if (type != null)
+                request.Parameters.Add("stream_type", type.ToString().ToLower());
             
             string json = await client.ApiClient.SendAsync("GET", $"streams/{id}", request).ConfigureAwait(false);
             return RestStream.Create(client, json);
@@ -29,7 +30,7 @@ namespace NTwitch.Rest
             return RestSelfChannel.Create(client, json);
         }
 
-        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, uint id)                           // Checked
+        public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong id)                           // Checked
         {
             var json = await client.ApiClient.SendAsync("GET", $"channels/{id}").ConfigureAwait(false);
             return RestChannel.Create(client, json);
@@ -38,8 +39,11 @@ namespace NTwitch.Rest
         public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseRestClient client, PageOptions options) // Checked
         {
             var request = new RequestOptions();
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "games/top", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("top"));
@@ -65,64 +69,82 @@ namespace NTwitch.Rest
             return items.Select(x => RestGame.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestChannel>> FindChannelsAsync(BaseRestClient client, string query, PageOptions options)
+        public static async Task<IEnumerable<RestChannel>> FindChannelsAsync(BaseRestClient client, string query, PageOptions options)  // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("query", query);
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "search/channels", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("games"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("channels"));
             return items.Select(x => RestChannel.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestStream>> FindStreamsAsync(BaseRestClient client, string query, bool hls, PageOptions options)
+        public static async Task<IEnumerable<RestStream>> FindStreamsAsync(BaseRestClient client, string query, bool? hls, PageOptions options)  // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("query", query);
-            request.Parameters.Add("hls", hls);
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (hls != null)
+                request.Parameters.Add("hls", hls);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "search/streams", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("streams"));
             return items.Select(x => RestStream.Create(client, x));
         }
 
-        public static async Task<IEnumerable<RestVideo>> GetTopVideosAsync(BaseRestClient client, string game, VideoPeriod period, BroadcastType type, PageOptions options)
+        public static async Task<IEnumerable<RestVideo>> GetTopVideosAsync(BaseRestClient client, string game, VideoPeriod? period, BroadcastType? type, PageOptions options) // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("game", game);
-            request.Parameters.Add("period", period.ToString().ToLower());
-            request.Parameters.Add("broadcast_type", type.ToString().ToLower());
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (period != null)
+                request.Parameters.Add("period", period.ToString().ToLower());
+            if (type != null)
+                request.Parameters.Add("broadcast_type", type.ToString().ToLower());
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "videos/top", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("vods"));
             return items.Select(x => RestVideo.Create(client, x));
         }
 
-        public static async Task<RestUser> FindUserAsync(BaseRestClient client, string name)
+        public static async Task<RestUser> FindUserAsync(BaseRestClient client, string name)        // Checked
         {
             var request = new RequestOptions();
             request.Parameters.Add("login", name);
 
-            string json = await client.ApiClient.SendAsync("GET", "videos/top", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("vods"));
+            string json = await client.ApiClient.SendAsync("GET", "users", request);
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("users"));
             return RestUser.Create(client, items.FirstOrDefault());
         }
 
-        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseRestClient client, string game, uint[] channelids, string language, StreamType type, PageOptions options)
+        public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseRestClient client, string game, uint[] channelids, string language, StreamType? type, PageOptions options)    // Doesn't populate
         {
             var request = new RequestOptions();
             request.Parameters.Add("game", game);
-            request.Parameters.Add("channel", string.Join(",", channelids));
-            request.Parameters.Add("language", language);
+            if (channelids != null)
+                request.Parameters.Add("channel", string.Join(",", channelids));
+            if (language != null)
+                request.Parameters.Add("language", language);
+            if (type != null)
             request.Parameters.Add("type", type.ToString().ToLower());
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "streams", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("streams"));
@@ -132,8 +154,11 @@ namespace NTwitch.Rest
         public static async Task<IEnumerable<RestFeaturedStream>> GetFeaturedStreamsAsync(BaseRestClient client, PageOptions options)
         {
             var request = new RequestOptions();
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "streams/featured", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("streams"));
@@ -143,15 +168,18 @@ namespace NTwitch.Rest
         public static async Task<IEnumerable<RestTeamSummary>> GetTeamsAsync(BaseRestClient client, PageOptions options)
         {
             var request = new RequestOptions();
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "teams", request);
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("teams"));
             return items.Select(x => RestTeamSummary.Create(client, x));
         }
 
-        public static async Task<RestUser> GetUserAsync(BaseRestClient client, uint id)
+        public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
         {
             string json = await client.ApiClient.SendAsync("GET", $"user/{id}");
             return RestUser.Create(client, json);

@@ -6,7 +6,7 @@ namespace NTwitch.Chat
     {
         internal TwitchChatClient Client { get; }
         [ChatProperty("room-id")]
-        public uint Id { get; internal set; }
+        public ulong Id { get; internal set; }
 
         internal ChatEntity(BaseRestClient client)
         {

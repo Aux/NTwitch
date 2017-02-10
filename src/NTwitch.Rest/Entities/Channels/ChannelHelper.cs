@@ -62,7 +62,7 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static async Task<RestPost> GetPostAsync(IChannel channel, BaseRestClient client, uint id, int comments)
+        public static async Task<RestPost> GetPostAsync(IChannel channel, BaseRestClient client, ulong id, int comments)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);

@@ -44,7 +44,7 @@ namespace NTwitch.Chat
 
         // IUser
         Task<IBlockedUser> IUser.BlockAsync() => null;
-        Task<IBlockedUser> IUser.UnblockAsync() => null;
+        Task IUser.UnblockAsync() => null;
         Task<IChannelFollow> IUser.GetFollowAsync(uint channelId) => null;
         Task<IEnumerable<IChannelFollow>> IUser.GetFollowsAsync() => null;
     }
