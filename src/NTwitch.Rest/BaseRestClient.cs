@@ -144,6 +144,19 @@ namespace NTwitch.Rest
         public Task<IEnumerable<RestVideo>> GetTopVideosAsync(string game = null, VideoPeriod period = VideoPeriod.Week, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
             => ClientHelper.GetTopVideosAsync(this, game, period, type, options);
 
+        /// <summary> Create a new community with the specified parameters. </summary>
+        /// <returns> The string id of the community you created. </returns>
+        public Task<string> CreateCommunityAsync(Action<CreateCommunityParams> action)
+            => throw new NotImplementedException();
+
+        /// <summary>  </summary>
+        public Task<IEnumerable<RestCommunity>> GetTopCommunitiesAsync()
+            => GetTopCommunitiesAsync(null);
+
+        /// <summary>  </summary>
+        public Task<IEnumerable<RestCommunity>> GetTopCommunitiesAsync(PageOptions options = null)
+            => throw new NotImplementedException();
+
         Task ITwitchClient.ConnectAsync()
             => Task.CompletedTask;
         Task ITwitchClient.DisconnectAsync()

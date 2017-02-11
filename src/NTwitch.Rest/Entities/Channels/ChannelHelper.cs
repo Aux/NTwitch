@@ -24,12 +24,20 @@ namespace NTwitch.Rest
             return items.Select(x => RestPost.Create(client, x));
         }
 
+        //
+        ////  Issue #10
+        ////  Needs jsonconverter logic for passing client to custom constructor.
+        //
         public static async Task<RestClip> GetClipAsync(IChannel channel, BaseRestClient client, string id)
         {
             var json = await client.ApiClient.SendAsync("GET", "clips/" + channel.Name + "/" + id).ConfigureAwait(false);
             return RestClip.Create(client, json);
         }
 
+        //
+        ////  Issue #10
+        ////  Needs jsonconverter logic for passing client to custom constructor.
+        //
         public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(IChannel channel, BaseRestClient client, string game, VideoPeriod period, bool istrending, PageOptions options)
         {
             var request = new RequestOptions();
@@ -45,6 +53,10 @@ namespace NTwitch.Rest
             return items.Select(x => RestClip.Create(client, x));
         }
 
+        //
+        ////  Issue #10
+        ////  Needs jsonconverter logic for passing client to custom constructor.
+        //
         public static async Task<IEnumerable<RestClip>> GetFollowedClipsAsync(IChannel channel, BaseRestClient client, bool istrending = false, int limit = 10)
         {
             var request = new RequestOptions();
