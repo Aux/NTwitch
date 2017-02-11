@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface IChannelFollow : IEntity, IFollow
+    public interface IChannelFollow : IEntity<ulong>, IFollow
     {
         IChannel Channel { get; }
     }

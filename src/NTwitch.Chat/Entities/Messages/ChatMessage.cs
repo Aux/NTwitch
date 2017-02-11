@@ -2,11 +2,9 @@
 
 namespace NTwitch.Chat
 {
-    public class ChatMessage : ChatEntity, IMessage
+    public class ChatMessage : ChatEntity<string>, IMessage
     {
         public DateTime UtcTimestamp { get; } = DateTime.UtcNow;
-        [ChatProperty("id")]
-        public new string Id { get; internal set; }
         [ChatProperty("emotes")]
         public string Emotes { get; internal set; }
         [ChatProperty("bits")]

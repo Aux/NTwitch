@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubUser : PubsubEntity, IUser
+    public class PubsubUser : PubsubEntity<ulong>, IUser
     {
         [JsonProperty("id")]
         public ulong Id { get; internal set; }

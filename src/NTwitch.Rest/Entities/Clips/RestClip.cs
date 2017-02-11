@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestClip : RestEntity
+    public class RestClip : RestEntity<ulong>
     {
         [JsonProperty("broadcaster")]
         public RestUserSummary Broadcaster { get; private set; }

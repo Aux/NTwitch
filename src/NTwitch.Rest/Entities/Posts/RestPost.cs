@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestPost : RestEntity
+    public class RestPost : RestEntity<string>
     {
         [JsonProperty("body")]
         public string Body { get; internal set; }

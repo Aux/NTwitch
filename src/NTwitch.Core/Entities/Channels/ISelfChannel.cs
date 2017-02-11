@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface ISelfChannel : IEntity, IChannel
+    public interface ISelfChannel : IEntity<ulong>, IChannel
     {
         /// <summary> Modify a property of this channel. </summary>
         Task ModifyAsync();

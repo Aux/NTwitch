@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubWhisperMessage : PubsubEntity
+    public class PubsubWhisperMessage : PubsubEntity<ulong>
     {
         [JsonProperty("")]
         public string Type { get; internal set; }

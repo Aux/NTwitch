@@ -1,8 +1,8 @@
 ﻿namespace NTwitch
 {
-    public interface IEntity
+    public interface IEntity<T>
     {
         ITwitchClient Client { get; }
-        ulong Id { get; }
+        T Id { get; }
     }
 }

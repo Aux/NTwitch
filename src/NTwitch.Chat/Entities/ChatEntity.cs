@@ -2,18 +2,18 @@
 
 namespace NTwitch.Chat
 {
-    public class ChatEntity : IEntity
+    public class ChatEntity<T> : IEntity<T>
     {
         internal TwitchChatClient Client { get; }
         [ChatProperty("room-id")]
-        public ulong Id { get; internal set; }
+        public T Id { get; internal set; }
 
         internal ChatEntity(BaseRestClient client)
         {
             Client = client as TwitchChatClient;
         }
 
-        ITwitchClient IEntity.Client
+        ITwitchClient IEntity<T>.Client
             => Client;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface IMessage : IEntity
+    public interface IMessage : IEntity<string>
     {
         DateTime UtcTimestamp { get; }
     }

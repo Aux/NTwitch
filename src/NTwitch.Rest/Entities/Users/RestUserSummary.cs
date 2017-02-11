@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestUserSummary : RestEntity, IUser
+    public class RestUserSummary : RestEntity<ulong>, IUser
     {
         [JsonProperty("logo")]
         public string LogoUrl { get; private set; }

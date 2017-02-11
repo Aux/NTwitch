@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public class ChatChannel : ChatEntity, IChannel
+    public class ChatChannel : ChatEntity<ulong>, IChannel
     {
         [ChatProperty(PropertyType.ChannelName)]
         public string Name { get; internal set; }

@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface IUserSubscription : IEntity, ISubscription
+    public interface IUserSubscription : IEntity<ulong>, ISubscription
     {
         IUser User { get; }
     }

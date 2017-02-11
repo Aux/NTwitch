@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestIngest : RestEntity
+    public class RestIngest : RestEntity<ulong>
     {
         [JsonProperty("availability")]
         public double Availability { get; internal set; }

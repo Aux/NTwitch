@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestFeaturedStream : RestEntity
+    public class RestFeaturedStream : RestEntity<ulong>
     {
         [JsonProperty("image")]
         public string ImageUrl { get; private set; }

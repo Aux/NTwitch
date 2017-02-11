@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestPostEmote : RestEntity
+    public class RestPostEmote : RestEntity<ulong>
     {
         [JsonProperty("start")]
         public int StartIndex { get; internal set; }

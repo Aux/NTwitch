@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface ISelfUser : IEntity, IUser
+    public interface ISelfUser : IEntity<ulong>, IUser
     {
         /// <summary> Follow the specified channel. </summary>
         Task FollowAsync(uint channelId, bool notify = false);

@@ -8,7 +8,11 @@ namespace NTwitch.Rest
 {
     internal static class ChannelHelper
     {
-        public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int comments, PageOptions options)
+        //
+        ////  Issue #10
+        ////  Needs jsonconverter logic for passing client to custom constructor.
+        //
+        public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int? comments, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);

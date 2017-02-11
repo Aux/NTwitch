@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestTopGame : RestEntity
+    public class RestTopGame : RestEntity<ulong>
     {
         [JsonProperty("channels")]
         public int ChannelTotal { get; internal set; }

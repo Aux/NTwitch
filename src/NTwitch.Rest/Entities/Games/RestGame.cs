@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestGame : RestEntity
+    public class RestGame : RestEntity<ulong>
     {
         [JsonProperty("box")]
         public TwitchImage Box { get; private set; }

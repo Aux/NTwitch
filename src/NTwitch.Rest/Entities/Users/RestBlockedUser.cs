@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest
 {
-    public class RestBlockedUser : RestEntity, IBlockedUser
+    public class RestBlockedUser : RestEntity<ulong>, IBlockedUser
     {
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }

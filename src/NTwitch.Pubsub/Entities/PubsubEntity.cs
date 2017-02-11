@@ -2,7 +2,7 @@
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubEntity : IEntity
+    public class PubsubEntity<T> : IEntity<T>
     {
         internal TwitchPubsubClient Client { get; }
 
@@ -11,9 +11,9 @@ namespace NTwitch.Pubsub
             Client = client;
         }
 
-        ITwitchClient IEntity.Client
+        ITwitchClient IEntity<T>.Client
             => Client;
-        uint IEntity.Id 
+        T IEntity<T>.Id 
             => throw new NotSupportedException();
     }
 }

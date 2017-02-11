@@ -3,12 +3,12 @@ using System;
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubBitsMessage : PubsubEntity
+    public class PubsubBitsMessage : PubsubEntity<ulong>
     {
         [JsonProperty("time")]
         public DateTime Timestamp { get; internal set; }
         [JsonProperty("user_id")]
-        public uint UserId { get; internal set; }
+        public ulong UserId { get; internal set; }
         [JsonProperty("user_name")]
         public string UserName { get; internal set; }
         [JsonProperty("channel_id")]

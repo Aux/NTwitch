@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public class ChatUser : ChatEntity, IUser
+    public class ChatUser : ChatEntity<ulong>, IUser
     {
         [ChatProperty("badges")]
         public string Badges { get; internal set; }

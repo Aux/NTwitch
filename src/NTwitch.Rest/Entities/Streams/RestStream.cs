@@ -4,7 +4,7 @@ using System;
 namespace NTwitch.Rest
 {
     [JsonConverter(typeof(JsonPathConverter))]
-    public class RestStream : RestEntity
+    public class RestStream : RestEntity<ulong>
     {
         [JsonProperty("stream.game")]
         public string GameName { get; internal set; }

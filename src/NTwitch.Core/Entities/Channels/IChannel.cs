@@ -2,7 +2,7 @@
 
 namespace NTwitch
 {
-    public interface IChannel : IEntity
+    public interface IChannel : IEntity<ulong>
     {
         /// <summary> The name of this channel. </summary>
         string Name { get; }

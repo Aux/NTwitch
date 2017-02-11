@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest
 {
-    public class RestPostComment
+    public class RestPostComment : RestEntity<string>
     {
-        [JsonProperty("id")]
-        public string Id { get; internal set; }
         [JsonProperty("body")]
         public string Body { get; internal set; }
         [JsonProperty("created_at")]
@@ -22,5 +20,14 @@ namespace NTwitch.Rest
         public IEnumerable<RestPostReaction> Reactions { get; internal set; }
         [JsonProperty("user")]
         public RestUser User { get; internal set; }
+
+        internal RestPostComment(BaseRestClient client) : base(client) { }
+
+        internal static RestPostComment Create(BaseRestClient client, string json)
+        {
+            var comment = new RestPostComment(client);
+            JsonConvert.PopulateObject(json, comment);
+            return comment;
+        }
     }
 }
