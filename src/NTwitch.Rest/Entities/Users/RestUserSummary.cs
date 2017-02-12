@@ -6,12 +6,12 @@ namespace NTwitch.Rest
 {
     public class RestUserSummary : RestEntity<ulong>, IUser
     {
-        [JsonProperty("logo")]
-        public string LogoUrl { get; private set; }
-        [JsonProperty("name")]
-        public string Name { get; private set; }
-        [JsonProperty("display_name")]
-        public string DisplayName { get; private set; }
+        [TwitchJsonProperty("logo")]
+        public string LogoUrl { get; internal set; }
+        [TwitchJsonProperty("name")]
+        public string Name { get; internal set; }
+        [TwitchJsonProperty("display_name")]
+        public string DisplayName { get; internal set; }
         
         internal RestUserSummary(BaseRestClient client) : base(client) { }
 

@@ -19,7 +19,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("sortby", mode.GetJsonValue());
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/follows/channels", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("follows"));
             return items.Select(x => RestChannelFollow.Create(client, x));
         }
 
@@ -55,7 +55,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/blocks", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("blocks"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("blocks"));
             return items.Select(x => RestBlockedUser.Create(client, x));
         }
 

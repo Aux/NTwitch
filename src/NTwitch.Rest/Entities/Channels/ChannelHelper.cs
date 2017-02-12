@@ -20,7 +20,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("posts"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("posts"));
             return items.Select(x => RestPost.Create(client, x));
         }
 
@@ -49,7 +49,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "clips/top", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("clips"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("clips"));
             return items.Select(x => RestClip.Create(client, x));
         }
 
@@ -64,7 +64,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("limit", limit);
 
             string json = await client.ApiClient.SendAsync("GET", "clips/followed", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("clips"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("clips"));
             return items.Select(x => RestClip.Create(client, x));
         }
 
@@ -95,7 +95,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", $"channels/{channel.Id}/followers", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("follows"));
             return items.Select(x => RestUserFollow.Create(client, x));
         }
         
@@ -136,7 +136,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("subscriptions"));
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("subscriptions"));
             return items.Select(x => RestUserSubscription.Create(client, x));
         }
 

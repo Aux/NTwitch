@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using NTwitch;
 using NTwitch.Rest;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -24,14 +22,14 @@ namespace NTwitch.Tests
             _client.Log += OnLog;
             
             await _client.LoginAsync(TokenType.OAuth, "");
-            var obj = await _client.FindGamesAsync("overwatch", true);
+            var obj = await _client.GetStreamAsync(26485145);
 
             string output = JsonConvert.SerializeObject(obj, Formatting.Indented);
             Console.WriteLine(output);
 
             await Task.Delay(-1);
         }
-
+        
         //private TwitchChatClient _client;
 
         //public async Task StartAsync()

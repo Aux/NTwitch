@@ -7,7 +7,7 @@ namespace NTwitch.Rest
     {
         [JsonIgnore]
         internal BaseRestClient Client { get; }
-        [JsonProperty("_id")]
+        [TwitchJsonProperty("_id")]
         public T Id { get; internal set; }
 
         internal RestEntity(BaseRestClient client)

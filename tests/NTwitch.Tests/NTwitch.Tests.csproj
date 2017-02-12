@@ -8,6 +8,14 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Modules\**" />
+    <EmbeddedResource Remove="Modules\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="CommandHandler.cs" />
+    <Compile Remove="TwitchCommandContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>

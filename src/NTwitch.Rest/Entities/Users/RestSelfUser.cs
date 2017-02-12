@@ -6,15 +6,15 @@ namespace NTwitch.Rest
 {
     public class RestSelfUser : RestUser, ISelfUser
     {
-        [JsonProperty("email")]
+        [TwitchJsonProperty("email")]
         public string Email { get; private set; }
-        [JsonProperty("partnered")]
+        [TwitchJsonProperty("partnered")]
         public bool IsPartnered { get; private set; }
-        [JsonProperty("twitter_connected")]
+        [TwitchJsonProperty("twitter_connected")]
         public bool IsTwitterConnected { get; private set; }
-        [JsonProperty("email_verified")]
+        [TwitchJsonProperty("email_verified")]
         public bool IsVerified { get; private set; }
-        [JsonProperty("notifications")]
+        [TwitchJsonProperty("notifications")]
         public TwitchNotifications Notifications { get; private set; }
 
         internal RestSelfUser(BaseRestClient client) : base(client) { }
