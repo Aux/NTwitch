@@ -7,35 +7,35 @@ namespace NTwitch.Rest
 {
     public class RestChannel : RestChannelSummary, IChannel
     {
-        [TwitchJsonProperty("broadcaster_language")]
+        [JsonProperty("broadcaster_language")]
         public string BroadcasterLanguage { get; internal set; }
-        [TwitchJsonProperty("created_at")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
-        [TwitchJsonProperty("followers")]
+        [JsonProperty("followers")]
         public int FollowerCount { get; internal set; }
-        [TwitchJsonProperty("game")]
+        [JsonProperty("game")]
         public string Game { get; internal set; }
-        [TwitchJsonProperty("language")]
+        [JsonProperty("language")]
         public string Language { get; internal set; }
-        [TwitchJsonProperty("logo")]
+        [JsonProperty("logo")]
         public string LogoUrl { get; internal set; }
-        [TwitchJsonProperty("mature")]
+        [JsonProperty("mature")]
         public bool? IsMature { get; internal set; }
-        [TwitchJsonProperty("partner")]
+        [JsonProperty("partner")]
         public bool IsPartner { get; internal set; }
-        [TwitchJsonProperty("profile_banner")]
+        [JsonProperty("profile_banner")]
         public string ProfileBannerUrl { get; internal set; }
-        [TwitchJsonProperty("profile_banner_background_color")]
+        [JsonProperty("profile_banner_background_color")]
         public string ProfileBackgroundColor { get; internal set; }
-        [TwitchJsonProperty("status")]
+        [JsonProperty("status")]
         public string Status { get; internal set; }
-        [TwitchJsonProperty("updated_at")]
+        [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
-        [TwitchJsonProperty("url")]
+        [JsonProperty("url")]
         public string Url { get; internal set; }
-        [TwitchJsonProperty("video_banner")]
+        [JsonProperty("video_banner")]
         public string VideoBannerUrl { get; internal set; }
-        [TwitchJsonProperty("views")]
+        [JsonProperty("views")]
         public int ViewCount { get; internal set; }
         
         public RestChannel(BaseRestClient client) : base(client) { }

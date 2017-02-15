@@ -5,13 +5,13 @@ namespace NTwitch.Rest
 {
     public class RestUser : RestUserSummary
     {
-        [TwitchJsonProperty("bio")]
+        [JsonProperty("bio")]
         public string Bio { get; internal set; }
-        [TwitchJsonProperty("created_at")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
-        [TwitchJsonProperty("type")]
+        [JsonProperty("type")]
         public string Type { get; internal set; }
-        [TwitchJsonProperty("updated_at")]
+        [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; internal set; }
 
         internal RestUser(BaseRestClient client) : base(client) { }

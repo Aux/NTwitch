@@ -17,34 +17,27 @@ namespace NTwitch.Rest
             var request = new RequestOptions();
             if (type != null)
                 request.Parameters.Add("stream_type", type.ToString().ToLower());
-
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new TwitchConverter(client, "stream"));
             
             string json = await client.ApiClient.SendAsync("GET", $"streams/{id}", request).ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<RestStream>(json, settings);
+            return JsonConvert.DeserializeObject<RestStream>(json, new TwitchConverter(client, "stream"));
         }
 
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)
         {
             string json = await client.ApiClient.SendAsync("GET", "user").ConfigureAwait(false);
-
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new TwitchConverter(client));
-
-            return JsonConvert.DeserializeObject<RestSelfUser>(json, settings);
+            return JsonConvert.DeserializeObject<RestSelfUser>(json, new TwitchConverter(client));
         }
 
         public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)
         {
             var json = await client.ApiClient.SendAsync("GET", "channel").ConfigureAwait(false);
-            return RestSelfChannel.Create(client, json);
+            return JsonConvert.DeserializeObject<RestSelfChannel>(json, new TwitchConverter(client));
         }
 
         public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong id)
         {
             var json = await client.ApiClient.SendAsync("GET", $"channels/{id}").ConfigureAwait(false);
-            return RestChannel.Create(client, json);
+            return JsonConvert.DeserializeObject<RestChannel>(json, new TwitchConverter(client));
         }
 
         public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseRestClient client, PageOptions options)
@@ -57,8 +50,7 @@ namespace NTwitch.Rest
             }
 
             string json = await client.ApiClient.SendAsync("GET", "games/top", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter("top"));
-            return items.Select(x => RestTopGame.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestTopGame>>(json, new TwitchConverter(client));
         }
 
         //
@@ -215,7 +207,7 @@ namespace NTwitch.Rest
         public static async Task<RestTeam> GetTeamAsync(BaseRestClient client, string name)
         {
             string json = await client.ApiClient.SendAsync("GET", $"teams/{name}");
-            return RestTeam.Create(client, json);
+            return JsonConvert.DeserializeObject<RestTeam>(json, new TwitchConverter(client));
         }
 
         public static async Task<RestStreamSummary> GetStreamSummaryAsync(BaseRestClient client, string game)

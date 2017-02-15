@@ -3,11 +3,11 @@
 namespace NTwitch
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class TwitchJsonPropertyAttribute : Attribute
+    public class JsonPropertyAliasAttribute : Attribute
     {
         public string[] Aliases { get; }
         
-        public TwitchJsonPropertyAttribute(params string[] aliases)
+        public JsonPropertyAliasAttribute(params string[] aliases)
         {
             Aliases = aliases;
         }

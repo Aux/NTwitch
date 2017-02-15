@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -19,8 +21,14 @@ namespace NTwitch.Rest
 
         public override bool CanConvert(Type objectType)
         {
-            var interfaces = objectType.GetTypeInfo().GetInterfaces().Where(x => x.IsConstructedGenericType);
+            Type selectedType;
+            if (objectType == typeof(IEnumerable<>))
+                selectedType = objectType.GetTypeInfo().GetGenericArguments().First();
+            else
+                selectedType = objectType;
 
+            var interfaces = objectType.GetTypeInfo().GetInterfaces().Where(x => x.IsConstructedGenericType);
+            
             if (interfaces.Any(x => x.GetGenericTypeDefinition() == typeof(IEntity<>)))
                 return true;
             else
@@ -37,19 +45,34 @@ namespace NTwitch.Rest
 
             foreach (var p in properties)
             {
-                var jProperty = p.GetCustomAttribute<TwitchJsonPropertyAttribute>();
-                string path = string.Join(".", jProperty.Aliases);
+                var jProperty = p.GetCustomAttribute<JsonPropertyAttribute>();
+                var jAlias = p.GetCustomAttribute<JsonPropertyAliasAttribute>();
 
-                if (_sub != null)
-                    path = _sub + "." + path;
+                var names = new List<string>();
+                names.Add(jProperty.PropertyName);
+                if (jAlias != null)
+                    names.AddRange(jAlias.Aliases);
 
-                var token = obj.SelectToken(path);
+                JToken token = null;
+                string path = null;
+                foreach (var name in names)
+                {
+                    path = _sub != null ? _sub + "." + name : name;
+                    token = obj.SelectToken(path);
+
+                    if (token != null)
+                        break;
+                }
 
                 object propertyObject;
                 if (CanConvert(p.PropertyType))
                 {
                     propertyObject = ReflectionHelper.CreateInstance(p.PropertyType, _client);
-                } else
+                    
+                    string json = JsonConvert.SerializeObject(token);
+                    JsonConvert.PopulateObject(json, propertyObject);
+                }
+                else
                 {
                     propertyObject = token.ToObject(p.PropertyType, serializer);
                 }
@@ -59,7 +82,7 @@ namespace NTwitch.Rest
 
             return targetObj;
         }
-
+        
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

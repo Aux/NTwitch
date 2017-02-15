@@ -22,7 +22,7 @@ namespace NTwitch.Tests
             _client.Log += OnLog;
             
             await _client.LoginAsync(TokenType.OAuth, "");
-            var obj = await _client.GetStreamAsync(26485145);
+            var obj = await _client.GetTeamAsync("staff");
 
             string output = JsonConvert.SerializeObject(obj, Formatting.Indented);
             Console.WriteLine(output);

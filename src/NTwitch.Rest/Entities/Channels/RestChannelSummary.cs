@@ -4,9 +4,9 @@ namespace NTwitch.Rest
 {
     public class RestChannelSummary : RestEntity<ulong>
     {
-        [TwitchJsonProperty("name")]
+        [JsonProperty("name")]
         public string Name { get; internal set; }
-        [TwitchJsonProperty("display_name")]
+        [JsonProperty("display_name")]
         public string DisplayName { get; internal set; }
 
         public RestChannelSummary(BaseRestClient client) : base(client) { }

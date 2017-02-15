@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace NTwitch.Rest
 {
@@ -7,7 +6,7 @@ namespace NTwitch.Rest
     {
         [JsonIgnore]
         internal BaseRestClient Client { get; }
-        [TwitchJsonProperty("_id")]
+        [JsonProperty("_id"), JsonPropertyAlias("id", "user_id")]
         public T Id { get; internal set; }
 
         internal RestEntity(BaseRestClient client)
