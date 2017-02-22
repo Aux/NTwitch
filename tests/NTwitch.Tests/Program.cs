@@ -23,9 +23,9 @@ namespace NTwitch.Tests
 
             await _client.ConnectAsync();
 
-            await _client.SubscribeAsync(new PubsubTopic("video-playback.42481140"), x =>
+            await _client.SubscribeAsync(new PubsubTopic("video-playback", 42481140), x =>
             {
-                Console.WriteLine(x);
+                Console.WriteLine(x.Data.Topic);
                 return Task.CompletedTask;
             });
 
