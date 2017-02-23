@@ -21,7 +21,7 @@ namespace NTwitch.Tests
 
             _client.Log += OnLog;
             
-            await _client.LoginAsync(TokenType.OAuth, "");
+            await _client.LoginAsync(TokenType.OAuth, "w4e5j2y599l0s3oqbnksj4x8z16bd1");
             var obj = await _client.GetTeamAsync("staff");
 
             string output = JsonConvert.SerializeObject(obj, Formatting.Indented);

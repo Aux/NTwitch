@@ -21,12 +21,6 @@ namespace NTwitch.Rest
 
         public override bool CanConvert(Type objectType)
         {
-            Type selectedType;
-            if (objectType == typeof(IEnumerable<>))
-                selectedType = objectType.GetTypeInfo().GetGenericArguments().First();
-            else
-                selectedType = objectType;
-
             var interfaces = objectType.GetTypeInfo().GetInterfaces().Where(x => x.IsConstructedGenericType);
             
             if (interfaces.Any(x => x.GetGenericTypeDefinition() == typeof(IEntity<>)))
@@ -71,6 +65,23 @@ namespace NTwitch.Rest
                     
                     string json = JsonConvert.SerializeObject(token);
                     JsonConvert.PopulateObject(json, propertyObject);
+                }
+                else if (token.Type == JTokenType.Array && CanConvert(p.PropertyType.GetTypeInfo().GenericTypeArguments.First()))
+                {
+                    var genericType = p.PropertyType.GetTypeInfo().GenericTypeArguments.First();
+                    var array = token as JArray;
+                    var list = Activator.CreateInstance(typeof(List<>).MakeGenericType(genericType));
+
+                    foreach (var item in array)
+                    {
+                        var itemObject = ReflectionHelper.CreateInstance(genericType, _client);
+
+                        string json = JsonConvert.SerializeObject(token);
+                        JsonConvert.PopulateObject(item.ToString(), itemObject);
+                        list.GetType().GetTypeInfo().GetMethod("Add").Invoke(list, new[] { itemObject });
+                    }
+
+                    propertyObject = list;
                 }
                 else
                 {
