@@ -21,8 +21,8 @@ namespace NTwitch.Tests
 
             _client.Log += OnLog;
             
-            await _client.LoginAsync(TokenType.OAuth, "w4e5j2y599l0s3oqbnksj4x8z16bd1");
-            var obj = await _client.GetTeamAsync("staff");
+            await _client.LoginAsync(TokenType.OAuth, "");
+            var obj = await _client.FindStreamsAsync("overwatch");
 
             string output = JsonConvert.SerializeObject(obj, Formatting.Indented);
             Console.WriteLine(output);

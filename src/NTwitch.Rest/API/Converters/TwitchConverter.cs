@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -75,8 +74,7 @@ namespace NTwitch.Rest
                     foreach (var item in array)
                     {
                         var itemObject = ReflectionHelper.CreateInstance(genericType, _client);
-
-                        string json = JsonConvert.SerializeObject(token);
+                        
                         JsonConvert.PopulateObject(item.ToString(), itemObject);
                         list.GetType().GetTypeInfo().GetMethod("Add").Invoke(list, new[] { itemObject });
                     }
@@ -93,10 +91,8 @@ namespace NTwitch.Rest
 
             return targetObj;
         }
-        
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
+            => throw new NotImplementedException();
     }
 }
