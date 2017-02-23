@@ -19,8 +19,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("sortby", mode.GetJsonValue());
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/follows/channels", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("follows"));
-            return items.Select(x => RestChannelFollow.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestChannelFollow>>(json, new TwitchCollectionConverter(client, "follows"));
         }
 
         internal static async Task<RestChannelFollow> GetFollowAsync(IUser user, BaseRestClient client, ulong channelId)
@@ -28,7 +27,7 @@ namespace NTwitch.Rest
             var request = new RequestOptions();
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/follows/channels/{channelId}", request).ConfigureAwait(false);
-            return RestChannelFollow.Create(client, json);
+            return JsonConvert.DeserializeObject<RestChannelFollow>(json, new TwitchEntityConverter(client));
         }
 
         // ISelfUser
@@ -38,7 +37,7 @@ namespace NTwitch.Rest
             var request = new RequestOptions();
 
             string json = await client.ApiClient.SendAsync("PUT", $"users/{user.Id}/blocks/{userId}", request).ConfigureAwait(false);
-            return RestBlockedUser.Create(client, json);
+            return JsonConvert.DeserializeObject<RestBlockedUser>(json, new TwitchEntityConverter(client));
         }
 
         internal static async Task UnblockAsync(IUser user, BaseRestClient client, ulong userId)
@@ -55,8 +54,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/blocks", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchConverter("blocks"));
-            return items.Select(x => RestBlockedUser.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestBlockedUser>>(json, new TwitchCollectionConverter(client, "blocks"));
         }
 
         public static async Task<RestChannelFollow> FollowAsync(ISelfUser user, BaseRestClient client, ulong channelId, bool notify)
@@ -65,7 +63,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("notifications", notify);
 
             string json = await client.ApiClient.SendAsync("PUT", $"users/{user.Id}/follows/channels/{channelId}", request).ConfigureAwait(false);
-            return RestChannelFollow.Create(client, json);
+            return JsonConvert.DeserializeObject<RestChannelFollow>(json, new TwitchEntityConverter(client));
         }
 
         public static Task<IEnumerable<RestStream>> GetFollowedStreamsAsync(ISelfUser user, BaseRestClient client, StreamType type, PageOptions options)
@@ -78,7 +76,7 @@ namespace NTwitch.Rest
             var request = new RequestOptions();
 
             string json = await client.ApiClient.SendAsync("GET", $"users/{user.Id}/subscriptions/{channelId}", request).ConfigureAwait(false);
-            return RestChannelSubscription.Create(client, json);
+            return JsonConvert.DeserializeObject<RestChannelSubscription>(json, new TwitchEntityConverter(client));
         }
 
         public static async Task UnfollowAsync(ISelfUser user, BaseRestClient client, ulong channelId)

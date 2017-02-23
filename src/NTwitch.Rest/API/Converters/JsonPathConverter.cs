@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace NTwitch
+namespace NTwitch.Rest
 {
     public class JsonPathConverter : JsonConverter
     {
@@ -30,7 +30,7 @@ namespace NTwitch
 
                 if (jproperty == null)
                     continue;
-                
+
                 var token = obj.SelectToken(jproperty.PropertyName);
 
                 if (token != null && token.Type != JTokenType.Null)

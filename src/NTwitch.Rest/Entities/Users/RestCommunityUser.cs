@@ -18,7 +18,7 @@ namespace NTwitch.Rest
         [JsonProperty("start_timestamp")]
         public DateTime BannedAt { get; set; }
         
-        internal RestCommunityUser(BaseRestClient client) : base(client) { }
+        internal RestCommunityUser(BaseRestClient client) /*: base(client)*/ { }
 
         internal static RestCommunityUser Create(BaseRestClient client, string json)
         {

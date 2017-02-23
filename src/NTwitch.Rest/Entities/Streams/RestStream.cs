@@ -3,26 +3,25 @@ using System;
 
 namespace NTwitch.Rest
 {
-    [JsonConverter(typeof(JsonPathConverter))]
     public class RestStream : RestEntity<ulong>
     {
-        [JsonProperty("stream.game")]
+        [JsonProperty("game")]
         public string GameName { get; internal set; }
-        [JsonProperty("stream.viewers")]
+        [JsonProperty("viewers")]
         public int ViewerTotal { get; internal set; }
-        [JsonProperty("stream.video_height")]
+        [JsonProperty("video_height")]
         public int VideoHeight { get; internal set; }
-        [JsonProperty("stream.average_fps")]
+        [JsonProperty("average_fps")]
         public double AverageFps { get; internal set; }
-        [JsonProperty("stream.delay")]
+        [JsonProperty("delay")]
         public int Delay { get; internal set; }
-        [JsonProperty("stream.created_at")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
-        [JsonProperty("stream.is_playlist")]
+        [JsonProperty("is_playlist")]
         public bool IsPlaylist { get; internal set; }
-        [JsonProperty("stream.preview")]
+        [JsonProperty("preview")]
         public TwitchImage Preview { get; internal set; }
-        [JsonProperty("stream.channel")]
+        [JsonProperty("channel")]
         public RestChannel Channel { get; internal set; }
 
         public RestStream(BaseRestClient client) : base(client) { }

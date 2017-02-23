@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NTwitch
+namespace NTwitch.Rest
 {
     [JsonConverter(typeof(JsonPathConverter))]
     public class TokenInfo
@@ -15,7 +15,7 @@ namespace NTwitch
         public string ClientId { get; internal set; }
         [JsonProperty("token.authorization")]
         public TwitchAuth Authorization { get; internal set; }
-        
+
         internal static TokenInfo Create(string json)
         {
             var token = JsonConvert.DeserializeObject<TokenInfo>(json);

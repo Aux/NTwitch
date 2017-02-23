@@ -7,11 +7,11 @@ namespace NTwitch.Rest
     public class RestUserSummary : RestEntity<ulong>, IUser
     {
         [JsonProperty("logo")]
-        public string LogoUrl { get; private set; }
+        public string LogoUrl { get; internal set; }
         [JsonProperty("name")]
-        public string Name { get; private set; }
+        public string Name { get; internal set; }
         [JsonProperty("display_name")]
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; internal set; }
         
         internal RestUserSummary(BaseRestClient client) : base(client) { }
 
