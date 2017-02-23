@@ -19,9 +19,7 @@ namespace NTwitch.Tests
             });
 
             _client.Log += OnLog;
-          
-            await _client.ConnectAsync();
-
+            
             await _client.SubscribeAsync(new PubsubTopic("video-playback", 42481140), x =>
             {
                 Console.WriteLine(x.Data.Topic);

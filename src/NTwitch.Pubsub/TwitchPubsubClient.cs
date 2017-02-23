@@ -8,7 +8,7 @@ namespace NTwitch.Pubsub
 {
     public partial class TwitchPubsubClient : BaseRestClient, ITwitchClient
     {
-        private SocketClient _socket;
+        private SocketClient _socket = null;
         private ConcurrentDictionary<string, Func<PubsubMessage, Task>> _subscriptions;
         private string _token = null;
         private string _host;
@@ -46,6 +46,9 @@ namespace NTwitch.Pubsub
 
         public async Task SubscribeAsync(PubsubTopic topic, Func<PubsubMessage, Task> action)
         {
+            if (_socket == null)
+                await ConnectAsync();
+
             await _socket.SendAsync("LISTEN", topic.ToString());
 
             if (!_subscriptions.TryAdd(topic.ToString(), action))
@@ -54,6 +57,9 @@ namespace NTwitch.Pubsub
 
         public async Task UnsubscribeAsync(PubsubTopic topic)
         {
+            if (_socket == null)
+                throw new InvalidOperationException("The client is not connected.");
+
             await _socket.SendAsync("UNLISTEN", topic.ToString());
 
             if (!_subscriptions.TryRemove(topic.ToString(), out Func<PubsubMessage, Task> value))
