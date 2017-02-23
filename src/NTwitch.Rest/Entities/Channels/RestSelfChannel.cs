@@ -13,14 +13,7 @@ namespace NTwitch.Rest
         public string StreamKey { get; internal set; }
 
         public RestSelfChannel(BaseRestClient client) : base(client) { }
-
-        public static new RestSelfChannel Create(BaseRestClient client, string json)
-        {
-            var channel = new RestSelfChannel(client);
-            JsonConvert.PopulateObject(json, channel);
-            return channel;
-        }
-
+        
         // Posts
         public Task<RestPost> CreatePostAsync(Action<CreatePostParams> args)
             => ChannelHelper.CreatePostAsync(this, Client, args);

@@ -19,12 +19,5 @@ namespace NTwitch.Rest
         public DateTime BannedAt { get; set; }
         
         internal RestCommunityUser(BaseRestClient client) /*: base(client)*/ { }
-
-        internal static RestCommunityUser Create(BaseRestClient client, string json)
-        {
-            var user = new RestCommunityUser(client);
-            JsonConvert.PopulateObject(json, user);
-            return user;
-        }
     }
 }

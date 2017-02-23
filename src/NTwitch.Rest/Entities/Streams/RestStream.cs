@@ -25,12 +25,5 @@ namespace NTwitch.Rest
         public RestChannel Channel { get; internal set; }
 
         public RestStream(BaseRestClient client) : base(client) { }
-
-        public static RestStream Create(BaseRestClient client, string json)
-        {
-            var stream = new RestStream(client);
-            JsonConvert.PopulateObject(json, stream);
-            return stream;
-        }
     }
 }

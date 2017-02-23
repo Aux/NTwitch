@@ -22,12 +22,5 @@ namespace NTwitch.Rest
         public RestUser User { get; internal set; }
 
         internal RestPostComment(BaseRestClient client) : base(client) { }
-
-        internal static RestPostComment Create(BaseRestClient client, string json)
-        {
-            var comment = new RestPostComment(client);
-            JsonConvert.PopulateObject(json, comment);
-            return comment;
-        }
     }
 }

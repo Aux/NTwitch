@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace NTwitch.Rest
 {
@@ -42,12 +41,5 @@ namespace NTwitch.Rest
         public int ViewTotal { get; internal set; }
         
         internal RestVideo(BaseRestClient client) : base(client) { }
-        
-        internal static RestVideo Create(BaseRestClient client, string json)
-        {
-            var video = new RestVideo(client);
-            JsonConvert.PopulateObject(json, video);
-            return video;
-        }
     }
 }

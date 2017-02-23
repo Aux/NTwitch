@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using NTwitch.Pubsub;
+﻿using NTwitch.Pubsub;
 using System;
 using System.Threading.Tasks;
 

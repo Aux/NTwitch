@@ -12,12 +12,5 @@ namespace NTwitch.Rest
         public int ViewerTotal { get; internal set; }
 
         public RestTopGame(BaseRestClient client) : base(client) { }
-
-        public static RestTopGame Create(BaseRestClient client, string json)
-        {
-            var game = new RestTopGame(client);
-            JsonConvert.PopulateObject(json, game);
-            return game;
-        }
     }
 }

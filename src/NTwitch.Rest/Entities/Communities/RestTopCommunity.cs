@@ -14,12 +14,5 @@ namespace NTwitch.Rest
         public uint ViewerTotal { get; internal set; }
 
         internal RestTopCommunity(BaseRestClient client) : base(client) { }
-
-        internal static RestTopCommunity Create(BaseRestClient client, string json)
-        {
-            var community = new RestTopCommunity(client);
-            JsonConvert.PopulateObject(json, community);
-            return community;
-        }
     }
 }

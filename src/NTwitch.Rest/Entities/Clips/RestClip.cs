@@ -31,12 +31,5 @@ namespace NTwitch.Rest
         public RestVideo Vod { get; private set; }
 
         internal RestClip(BaseRestClient client) : base(client) { }
-
-        internal static RestClip Create(BaseRestClient client, string json)
-        {
-            var clip = new RestClip(client);
-            JsonConvert.PopulateObject(json, clip);
-            return clip;
-        }
     }
 }

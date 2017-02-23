@@ -28,14 +28,7 @@ namespace NTwitch.Rest
         public string Summary { get; internal set; }
 
         internal RestCommunity(BaseRestClient client) : base(client) { }
-
-        internal static RestCommunity Create(BaseRestClient client, string json)
-        {
-            var community = new RestCommunity(client);
-            JsonConvert.PopulateObject(json, community);
-            return community;
-        }
-
+        
         public Task ModifyAsync(Action<ModifyCommunityParams> action)
             => throw new NotImplementedException();
 

@@ -18,14 +18,7 @@ namespace NTwitch.Rest
         public TwitchNotifications Notifications { get; private set; }
 
         internal RestSelfUser(BaseRestClient client) : base(client) { }
-
-        internal static new RestSelfUser Create(BaseRestClient client, string json)
-        {
-            var user = new RestSelfUser(client);
-            JsonConvert.PopulateObject(json, user);
-            return user;
-        }
-
+        
         // Videos
         public Task<IEnumerable<RestStream>> GetFollowedStreamsAsync()
             => GetFollowedStreamsAsync(StreamType.All);

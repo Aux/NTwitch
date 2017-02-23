@@ -20,12 +20,5 @@ namespace NTwitch.Rest
         public string Title { get; private set; }
 
         public RestFeaturedStream(BaseRestClient client) : base(client) { }
-
-        public static RestFeaturedStream Create(BaseRestClient client, string json)
-        {
-            var stream = new RestFeaturedStream(client);
-            JsonConvert.PopulateObject(json, stream);
-            return stream;
-        }
     }
 }

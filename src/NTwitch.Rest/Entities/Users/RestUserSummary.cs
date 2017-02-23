@@ -14,14 +14,7 @@ namespace NTwitch.Rest
         public string DisplayName { get; internal set; }
         
         internal RestUserSummary(BaseRestClient client) : base(client) { }
-
-        internal static RestUserSummary Create(BaseRestClient client, string json)
-        {
-            var user = new RestUserSummary(client);
-            JsonConvert.PopulateObject(json, user);
-            return user;
-        }
-
+        
         // Users
         public Task<RestBlockedUser> BlockAsync()
             => UserHelper.BlockAsync(this, Client, Id);

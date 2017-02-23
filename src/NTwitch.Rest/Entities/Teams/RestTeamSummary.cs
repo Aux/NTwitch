@@ -23,12 +23,5 @@ namespace NTwitch.Rest
         public DateTime UpdatedAt { get; private set; }
 
         public RestTeamSummary(BaseRestClient client) : base(client) { }
-
-        public static RestTeamSummary Create(BaseRestClient client, string json)
-        {
-            var team = new RestTeamSummary(client);
-            JsonConvert.PopulateObject(json, team);
-            return team;
-        }
     }
 }
