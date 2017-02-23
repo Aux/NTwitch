@@ -13,21 +13,25 @@ namespace NTwitch.Rest
         private BaseRestClient _client;
         private string _path;
 
-        public TwitchCollectionConverter(BaseRestClient client = null, string path = null)
+        public TwitchCollectionConverter(BaseRestClient client = null, string path = null, TwitchEntityConverter converter = null)
         {
             _client = client;
             _path = path;
+
+            if (converter != null)
+                _converter = converter;
+            else
+                _converter = new TwitchEntityConverter(_client);
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType.GetType() == typeof(IEnumerable<>) 
-                && _converter.CanConvert(objectType.GetTypeInfo().GenericTypeArguments.First());
+            var genericType = objectType.GetTypeInfo().GenericTypeArguments.First();
+            return _converter.CanConvert(genericType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            _converter = new TwitchEntityConverter(_client);
             var objectTypeInfo = objectType.GetTypeInfo();
             var obj = JObject.Load(reader);
             var token = obj.SelectToken(_path);

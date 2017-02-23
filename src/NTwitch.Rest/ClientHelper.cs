@@ -26,13 +26,13 @@ namespace NTwitch.Rest
         public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)
         {
             var json = await client.ApiClient.SendAsync("GET", "channel").ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<RestSelfChannel>(json, new TwitchConverter(client));
+            return JsonConvert.DeserializeObject<RestSelfChannel>(json, new TwitchEntityConverter(client));
         }
 
         public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong id)
         {
             var json = await client.ApiClient.SendAsync("GET", $"channels/{id}").ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<RestChannel>(json, new TwitchConverter(client));
+            return JsonConvert.DeserializeObject<RestChannel>(json, new TwitchEntityConverter(client));
         }
 
         public static async Task<IEnumerable<RestTopGame>> GetTopGamesAsync(BaseRestClient client, PageOptions options)
@@ -55,8 +55,7 @@ namespace NTwitch.Rest
         public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
             string json = await client.ApiClient.SendAsync("GET", "ingests");
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "ingests"));
-            return items.Select(x => JsonConvert.DeserializeObject<RestIngest>(json));
+            return JsonConvert.DeserializeObject<IEnumerable<RestIngest>>(json, new TwitchCollectionConverter(client, "ingests"));
         }
 
         public static async Task<IEnumerable<RestGame>> FindGamesAsync(BaseRestClient client, string query, bool? islive)
@@ -67,8 +66,7 @@ namespace NTwitch.Rest
                 request.Parameters.Add("live", islive);
 
             string json = await client.ApiClient.SendAsync("GET", "search/games", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "games"));
-            return items.Select(x => RestGame.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestGame>>(json, new TwitchCollectionConverter(client, "games"));
         }
 
         public static async Task<IEnumerable<RestChannel>> FindChannelsAsync(BaseRestClient client, string query, PageOptions options)
@@ -116,8 +114,7 @@ namespace NTwitch.Rest
             }
 
             string json = await client.ApiClient.SendAsync("GET", "videos/top", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "vods"));
-            return items.Select(x => RestVideo.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestVideo>>(json, new TwitchCollectionConverter(client, "vods"));
         }
 
         public static async Task<RestUser> FindUserAsync(BaseRestClient client, string name)
@@ -150,14 +147,9 @@ namespace NTwitch.Rest
             }
 
             string json = await client.ApiClient.SendAsync("GET", "streams", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "streams"));
-            return items.Select(x => RestStream.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestStream>>(json, new TwitchCollectionConverter(client, "streams"));
         }
-
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
+        
         public static async Task<IEnumerable<RestFeaturedStream>> GetFeaturedStreamsAsync(BaseRestClient client, PageOptions options)
         {
             var request = new RequestOptions();
@@ -168,8 +160,7 @@ namespace NTwitch.Rest
             }
 
             string json = await client.ApiClient.SendAsync("GET", "streams/featured", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "featured"));
-            return items.Select(x => RestFeaturedStream.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestFeaturedStream>>(json, new TwitchCollectionConverter(client, "featured"));
         }
 
         public static async Task<IEnumerable<RestTeamSummary>> GetTeamsAsync(BaseRestClient client, PageOptions options)
@@ -182,8 +173,7 @@ namespace NTwitch.Rest
             }
 
             string json = await client.ApiClient.SendAsync("GET", "teams", request);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "teams"));
-            return items.Select(x => RestTeamSummary.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestTeamSummary>>(json, new TwitchCollectionConverter(client, "teams"));
         }
 
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
@@ -191,15 +181,11 @@ namespace NTwitch.Rest
             string json = await client.ApiClient.SendAsync("GET", $"users/{id}");
             return JsonConvert.DeserializeObject<RestUser>(json, new TwitchEntityConverter(client));
         }
-
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
+        
         public static async Task<RestTeam> GetTeamAsync(BaseRestClient client, string name)
         {
             string json = await client.ApiClient.SendAsync("GET", $"teams/{name}");
-            return JsonConvert.DeserializeObject<RestTeam>(json, new TwitchConverter(client));
+            return JsonConvert.DeserializeObject<RestTeam>(json, new TwitchEntityConverter(client));
         }
 
         public static async Task<RestStreamSummary> GetStreamSummaryAsync(BaseRestClient client, string game)
@@ -208,7 +194,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("game", game);
 
             string json = await client.ApiClient.SendAsync("GET", "streams/summary", request);
-            return JsonConvert.DeserializeObject<RestStreamSummary>(json);
+            return JsonConvert.DeserializeObject<RestStreamSummary>(json, new TwitchEntityConverter(client));
         }
     }
 }

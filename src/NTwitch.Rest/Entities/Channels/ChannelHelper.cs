@@ -8,10 +8,6 @@ namespace NTwitch.Rest
 {
     internal static class ChannelHelper
     {
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
         public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int? comments, PageOptions options)
         {
             var request = new RequestOptions();
@@ -20,24 +16,15 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "posts"));
-            return items.Select(x => RestPost.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestPost>>(json, new TwitchCollectionConverter(client, "posts"));
         }
-
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
+        
         public static async Task<RestClip> GetClipAsync(IChannel channel, BaseRestClient client, string id)
         {
             var json = await client.ApiClient.SendAsync("GET", "clips/" + channel.Name + "/" + id).ConfigureAwait(false);
-            return RestClip.Create(client, json);
+            return JsonConvert.DeserializeObject<RestClip>(json, new TwitchEntityConverter(client));
         }
-
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
+        
         public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(IChannel channel, BaseRestClient client, string game, VideoPeriod period, bool istrending, PageOptions options)
         {
             var request = new RequestOptions();
@@ -49,14 +36,9 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "clips/top", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "clips"));
-            return items.Select(x => RestClip.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestClip>>(json, new TwitchCollectionConverter(client, "clips"));
         }
-
-        //
-        ////  Issue #10
-        ////  Needs jsonconverter logic for passing client to custom constructor.
-        //
+        
         public static async Task<IEnumerable<RestClip>> GetFollowedClipsAsync(IChannel channel, BaseRestClient client, bool istrending = false, int limit = 10)
         {
             var request = new RequestOptions();
@@ -64,8 +46,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("limit", limit);
 
             string json = await client.ApiClient.SendAsync("GET", "clips/followed", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "clips"));
-            return items.Select(x => RestClip.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestClip>>(json, new TwitchCollectionConverter(client, "clips"));
         }
 
         public static Task UnfollowAsync(IChannel channel, BaseRestClient client)
@@ -84,7 +65,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("comments", comments);
 
             string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts/" + id, request).ConfigureAwait(false);
-            return RestPost.Create(client, json);
+            return JsonConvert.DeserializeObject<RestPost>(json, new TwitchEntityConverter(client));
         }
         
         public static async Task<IEnumerable<RestUserFollow>> GetFollowersAsync(IChannel channel, BaseRestClient client, bool ascending, PageOptions options)
@@ -95,8 +76,7 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", $"channels/{channel.Id}/followers", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "follows"));
-            return items.Select(x => RestUserFollow.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestUserFollow>>(json, new TwitchCollectionConverter(client, "follows"));
         }
         
         public static Task<IEnumerable<RestTeam>> GetTeamsAsync(IChannel channel, BaseRestClient client)
@@ -136,14 +116,13 @@ namespace NTwitch.Rest
             request.Parameters.Add("offset", options?.Offset);
 
             string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions", request).ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(json, new TwitchCollectionConverter(client, "subscriptions"));
-            return items.Select(x => RestUserSubscription.Create(client, x));
+            return JsonConvert.DeserializeObject<IEnumerable<RestUserSubscription>>(json, new TwitchCollectionConverter(client, "subscriptions"));
         }
 
         public static async Task<RestUserSubscription> GetSubscriberAsync(ISelfChannel channel, BaseRestClient client, uint userid)
         {
             string json = await client.ApiClient.SendAsync("GET", "channels/" + channel.Id + "/subscriptions/" + userid).ConfigureAwait(false);
-            return RestUserSubscription.Create(client, json);
+            return JsonConvert.DeserializeObject<RestUserSubscription>(json, new TwitchEntityConverter(client));
         }
 
         public static Task StartCommercialAsync(ISelfChannel channel, BaseRestClient client, int duration)

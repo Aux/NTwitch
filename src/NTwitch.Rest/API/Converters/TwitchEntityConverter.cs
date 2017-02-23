@@ -27,7 +27,7 @@ namespace NTwitch.Rest
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            _converter = new TwitchCollectionConverter(_client);
+            _converter = new TwitchCollectionConverter(_client, converter: this);
             var objectTypeInfo = objectType.GetTypeInfo();
             var properties = objectTypeInfo.GetProperties().Where(x => x.CanRead && x.CanWrite);
 

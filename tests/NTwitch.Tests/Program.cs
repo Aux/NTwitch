@@ -22,7 +22,7 @@ namespace NTwitch.Tests
             _client.Log += OnLog;
             
             await _client.LoginAsync(TokenType.OAuth, "");
-            var obj = await _client.FindStreamsAsync("overwatch");
+            var obj = await _client.GetIngestsAsync();
 
             string output = JsonConvert.SerializeObject(obj, Formatting.Indented);
             Console.WriteLine(output);
