@@ -47,11 +47,7 @@ namespace NTwitch.Rest
             string json = await client.ApiClient.SendAsync("GET", "games/top", request);
             return JsonConvert.DeserializeObject<IEnumerable<RestTopGame>>(json, new TwitchCollectionConverter(client));
         }
-
-        //
-        ////  Issue #8
-        ////  Properties don't fill as intended.
-        //
+        
         public static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
             string json = await client.ApiClient.SendAsync("GET", "ingests");
@@ -125,11 +121,7 @@ namespace NTwitch.Rest
             string json = await client.ApiClient.SendAsync("GET", "users", request);
             return JsonConvert.DeserializeObject<IEnumerable<RestUser>>(json, new TwitchCollectionConverter(client, "users")).First();
         }
-
-        //
-        ////  Issue #9
-        ////  Properties don't fill as intended.
-        //
+        
         public static async Task<IEnumerable<RestStream>> GetStreamsAsync(BaseRestClient client, string game, uint[] channelids, string language, StreamType? type, PageOptions options)
         {
             var request = new RequestOptions();

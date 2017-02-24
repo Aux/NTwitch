@@ -27,6 +27,10 @@ namespace NTwitch.Rest
         public Task UnblockAsync()
             => UserHelper.UnblockAsync(this, Client, Id);
 
+        // Client
+        public Task<RestStream> GetStreamAsync(StreamType? type = null)
+            => ClientHelper.GetStreamAsync(Client, Id, type);
+
         // IUser
         Task<IBlockedUser> IUser.BlockAsync() => null;
         Task IUser.UnblockAsync() => null;
