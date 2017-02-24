@@ -28,6 +28,9 @@ namespace NTwitch.Chat
                         case PropertyType.ChannelName:
                             value = msg.Parameters.First().Substring(1);
                             break;
+                        case PropertyType.Username:
+                            value = msg.Prefix.Substring(0, msg.Prefix.IndexOf('!'));
+                            break;
                         case PropertyType.Complex:
                             var method = typeof(ChatParser).GetRuntimeMethod("Parse", new[] { typeof(TwitchMessage), typeof(BaseRestClient) });
                             var generic = method.MakeGenericMethod(p.PropertyType);

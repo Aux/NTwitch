@@ -25,6 +25,7 @@ namespace NTwitch.Chat
         Default,
         Complex,
         Content,
-        ChannelName
+        ChannelName,
+        Username
     }
 }
