@@ -20,15 +20,22 @@ namespace NTwitch.Pubsub
 
         public PubsubUser(TwitchPubsubClient client) : base(client) { }
 
-        public Task<IBlockedUser> BlockAsync()
+        // Users
+        public Task<RestBlockedUser> BlockAsync()
             => UserHelper.BlockAsync(this, Client, Id);
-        public Task<IChannelFollow> GetFollowAsync(uint channelId)
+        public Task<RestChannelFollow> GetFollowAsync(uint channelId)
             => UserHelper.GetFollowAsync(this, Client, channelId);
-        public Task<IEnumerable<IChannelFollow>> GetFollowsAsync()
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync()
             => GetFollowsAsync(SortMode.CreatedAt);
-        public Task<IEnumerable<IChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, bool ascending = false, PageOptions options = null)
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode mode = SortMode.CreatedAt, bool ascending = false, PageOptions options = null)
             => UserHelper.GetFollowsAsync(this, Client, mode, ascending, options);
         public Task UnblockAsync()
             => UserHelper.UnblockAsync(this, Client, Id);
+
+        // IUser
+        Task<IBlockedUser> IUser.BlockAsync() => null;
+        Task IUser.UnblockAsync() => null;
+        Task<IChannelFollow> IUser.GetFollowAsync(uint channelId) => null;
+        Task<IEnumerable<IChannelFollow>> IUser.GetFollowsAsync() => null;
     }
 }

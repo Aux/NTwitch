@@ -7,6 +7,8 @@ namespace NTwitch
     {
         /// <summary> The display name of this user. </summary>
         string DisplayName { get; }
+        /// <summary> The name of this user. </summary>
+        string Name { get; }
 
         /// <summary> Block this user. </summary>
         Task<IBlockedUser> BlockAsync();

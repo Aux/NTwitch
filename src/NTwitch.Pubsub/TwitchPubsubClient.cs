@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using NTwitch.Rest;
+﻿using NTwitch.Rest;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -28,13 +27,15 @@ namespace NTwitch.Pubsub
 
         public async Task ConnectAsync()
         {
-            _socket = new SocketClient(_host, _token);
+            _socket = new SocketClient(Logger, _host, _token);
             _socket.EventReceived += OnEventReceivedAsync;
             await _socket.ConnectAsync();
         }
         
-        public Task DisconnectAsync()
-            => _socket.DisconnectAsync();
+        public async Task DisconnectAsync()
+        {
+            await _socket.DisconnectAsync();
+        }
 
         private Task OnEventReceivedAsync(PubsubMessage msg)
         {
@@ -53,6 +54,7 @@ namespace NTwitch.Pubsub
 
             if (!_subscriptions.TryAdd(topic.ToString(), action))
                 throw new Exception("Unable to add listen.");
+            await Logger.DebugAsync("Pubsub", $"Subscribed to {topic.ToString()}").ConfigureAwait(false);
         }
 
         public async Task UnsubscribeAsync(PubsubTopic topic)
@@ -64,6 +66,7 @@ namespace NTwitch.Pubsub
 
             if (!_subscriptions.TryRemove(topic.ToString(), out Func<PubsubMessage, Task> value))
                 throw new Exception("Unable to remove listen.");
+            await Logger.DebugAsync("Pubsub", $"Unsubscribed from {topic.ToString()}").ConfigureAwait(false);
         }
     }
 }

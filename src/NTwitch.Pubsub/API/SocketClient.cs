@@ -37,8 +37,9 @@ namespace NTwitch.Pubsub
             remove { _messageReceivedEvent.Remove(value); }
         }
 
-        public SocketClient(string host, string token = null)
+        public SocketClient(LogManager log, string host, string token = null)
         {
+            _log = log;
             _host = host;
             _token = token;
             _client = new ClientWebSocket();
