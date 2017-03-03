@@ -2,6 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
+    <Version>0.0.7</Version>
+    <Authors>Auxesis</Authors>
+    <AssemblyVersion>0.0.7.0</AssemblyVersion>
+    <FileVersion>0.0.7.0</FileVersion>
+    <Description>An async compatible .net core implementation of the Twitch v5 api.</Description>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Aux/NTwitch</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>twitch,tv,api,dot,net,core,dotnetcore,dotnet,irc,twitchtv,bot,chat,rest,pubsub,socket,tcp</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
