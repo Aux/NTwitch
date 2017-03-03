@@ -27,7 +27,7 @@ Documentation for released NTwitch features will be available at https://aux.git
 To compile NTwitch yourself, you will need either of the following:
 
 ##### Visual Studio
-- [Visual Studio 2015 Update 3](https://www.microsoft.com/net/core#windowsvs2015)
+- [Visual Studio 2017 RC](https://www.visualstudio.com/vs/visual-studio-2017-rc/)
 
 ##### Command Line Tools
 - [.Net Core 1.1 SDK](https://www.microsoft.com/net/download/core)
