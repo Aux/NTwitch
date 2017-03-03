@@ -74,7 +74,7 @@ namespace NTwitch.Rest
         public Task<IEnumerable<RestVideo>> GetVideosAsync(string language = null, SortMode sort = SortMode.CreatedAt, BroadcastType type = BroadcastType.Highlight, PageOptions options = null)
             => ChannelHelper.GetVideosAsync(this, Client, language, sort, type, options);
         public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game)
-            => GetTopClipsAsync(game);
+            => GetTopClipsAsync(game, VideoPeriod.Week);
         public Task<IEnumerable<RestClip>> GetTopClipsAsync(string game, VideoPeriod period = VideoPeriod.Week, bool istrending = false, PageOptions options = null)
             => ChannelHelper.GetTopClipsAsync(this, Client, game, period, istrending, options);
         public Task<RestClip> GetClipAsync(string id)

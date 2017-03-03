@@ -16,8 +16,8 @@ namespace NTwitch.Rest
         public bool IsDeleted { get; internal set; }
         [JsonProperty("permissions")]
         public RestPostPermissions Permissions { get; internal set; }
-        [JsonProperty("reactions")]
-        public IEnumerable<RestPostReaction> Reactions { get; internal set; }
+        //[JsonProperty("reactions")]
+        //public IEnumerable<RestPostReaction> Reactions { get; internal set; }
         [JsonProperty("user")]
         public RestUser User { get; internal set; }
 

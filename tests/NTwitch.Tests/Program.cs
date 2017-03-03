@@ -1,4 +1,5 @@
-﻿using NTwitch.Chat;
+﻿using Newtonsoft.Json;
+using NTwitch.Rest;
 using System;
 using System.Threading.Tasks;
 
@@ -9,22 +10,23 @@ namespace NTwitch.Tests
         static void Main(string[] args)
             => new Program().StartAsync().GetAwaiter().GetResult();
 
-        private TwitchChatClient _client;
+        private TwitchRestClient _client;
 
         public async Task StartAsync()
         {
-            _client = new TwitchChatClient(new TwitchChatConfig()
+            _client = new TwitchRestClient(new TwitchRestConfig()
             {
                 LogLevel = LogLevel.Debug
             });
 
             _client.Log += OnLog;
 
-            await _client.ConnectAsync();
-            await _client.LoginAsync("datdoggo", "");
+            await _client.LoginAsync(TokenType.OAuth, "");
+            var user = await _client.FindUserAsync("theonemanny");
+            var channel = await _client.GetChannelAsync(user.Id);
 
-            await _client.JoinAsync("theonemanny");
-            
+            Console.WriteLine(JsonConvert.SerializeObject(clips, Formatting.Indented));
+
             await Task.Delay(-1);
         }
 

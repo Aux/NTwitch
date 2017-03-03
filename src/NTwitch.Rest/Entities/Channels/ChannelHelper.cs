@@ -8,32 +8,39 @@ namespace NTwitch.Rest
 {
     internal static class ChannelHelper
     {
-        public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int? comments, PageOptions options)
+        public static async Task<IEnumerable<RestPost>> GetPostsAsync(IChannel channel, BaseRestClient client, int comments, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("comments", comments);
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
-            string json = await client.ApiClient.SendAsync("GET", "feed/" + channel.Id + "/posts", request).ConfigureAwait(false);
+            string json = await client.ApiClient.SendAsync("GET", $"feed/{channel.Id}/posts", request);
             return JsonConvert.DeserializeObject<IEnumerable<RestPost>>(json, new TwitchCollectionConverter(client, "posts"));
         }
         
         public static async Task<RestClip> GetClipAsync(IChannel channel, BaseRestClient client, string id)
         {
-            var json = await client.ApiClient.SendAsync("GET", "clips/" + channel.Name + "/" + id).ConfigureAwait(false);
+            var json = await client.ApiClient.SendAsync("GET", $"clips/{channel.Name}/{id}");
             return JsonConvert.DeserializeObject<RestClip>(json, new TwitchEntityConverter(client));
         }
         
-        public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(IChannel channel, BaseRestClient client, string game, VideoPeriod period, bool istrending, PageOptions options)
+        public static async Task<IEnumerable<RestClip>> GetTopClipsAsync(IChannel channel, BaseRestClient client, string game, VideoPeriod? period, bool? istrending, PageOptions options)
         {
             var request = new RequestOptions();
             request.Parameters.Add("channel", channel.Name);
             request.Parameters.Add("game", game);
             request.Parameters.Add("period", Enum.GetName(typeof(VideoPeriod), period).ToLower());
-            request.Parameters.Add("trending", istrending);
-            request.Parameters.Add("limit", options?.Limit);
-            request.Parameters.Add("offset", options?.Offset);
+            if (istrending != null)
+                request.Parameters.Add("trending", istrending);
+            if (options != null)
+            {
+                request.Parameters.Add("limit", options?.Limit);
+                request.Parameters.Add("offset", options?.Offset);
+            }
 
             string json = await client.ApiClient.SendAsync("GET", "clips/top", request).ConfigureAwait(false);
             return JsonConvert.DeserializeObject<IEnumerable<RestClip>>(json, new TwitchCollectionConverter(client, "clips"));

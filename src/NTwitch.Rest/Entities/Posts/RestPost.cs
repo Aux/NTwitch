@@ -9,7 +9,7 @@ namespace NTwitch.Rest
     {
         [JsonProperty("body")]
         public string Body { get; internal set; }
-        [JsonProperty("comments")]
+        [JsonProperty("comments.comments")]
         public IEnumerable<RestPostComment> Comments { get; internal set; }
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; internal set; }
@@ -19,8 +19,8 @@ namespace NTwitch.Rest
         public bool IsDeleted { get; internal set; }
         [JsonProperty("permissions")]
         public RestPostPermissions Permissions { get; internal set; }
-        [JsonProperty("reactions")]
-        public IEnumerable<RestPostReaction> Reactions { get; internal set; }
+        //[JsonProperty("reactions")]
+        //public IEnumerable<RestPostReaction> Reactions { get; internal set; }
         [JsonProperty("user")]
         public RestUser User { get; internal set; }
 
