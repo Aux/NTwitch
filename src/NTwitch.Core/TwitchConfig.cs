@@ -9,7 +9,5 @@ namespace NTwitch
             typeof(TwitchConfig).GetTypeInfo().Assembly.GetName().Version.ToString(3) ??
             "Unknown";
         public static string UserAgent { get; } = $"NTwitch Application (https://github.com/Aux/NTwitch, v{Version})";
-        
-        public LogLevel LogLevel { get; set; } = LogLevel.Info;
     }
 }

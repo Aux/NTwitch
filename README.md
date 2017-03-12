@@ -5,8 +5,8 @@ NTwitch is a fully async-compatible implementation of TwitchTV's version 5 api. 
 
 | Build       | Nuget  | Status  |
 | ----------- |:------:|:-------:|
-| Release     | [![NuGet](https://img.shields.io/nuget/v/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) | [![Travis](https://travis-ci.org/Aux/NTwitch.svg?branch=master)](https://travis-ci.org/Aux/NTwitch)|
-| Pre-Release | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) | [![Travis](https://travis-ci.org/Aux/NTwitch.svg?branch=dev)](https://travis-ci.org/Aux/NTwitch)|
+| Release     | [![NuGet](https://img.shields.io/nuget/v/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) | [![Travis](https://travis-ci.org/Aux/NTwitch.svg?branch=master)](https://travis-ci.org/Aux/NTwitch) [![Appveyor](https://ci.appveyor.com/api/projects/status/0mtk2ayc3b9yxjg1/branch/master?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/master)|
+| Pre-Release | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) | [![Travis](https://travis-ci.org/Aux/NTwitch.svg?branch=dev)](https://travis-ci.org/Aux/NTwitch) [![Appveyor](https://ci.appveyor.com/api/projects/status/0mtk2ayc3b9yxjg1/branch/dev?svg=true)](https://ci.appveyor.com/project/Aux/ntwitch/branch/dev)|
 
 ## Builds
 Release and pre-release builds can be found on Nuget under [NTwitch](https://www.nuget.org/packages/NTwitch/).
@@ -27,7 +27,7 @@ Documentation for released NTwitch features will be available at https://aux.git
 To compile NTwitch yourself, you will need either of the following:
 
 ##### Visual Studio
-- [Visual Studio 2017 RC](https://www.visualstudio.com/vs/visual-studio-2017-rc/)
+- [Visual Studio 2015 Update 3](https://www.microsoft.com/net/core#windowsvs2015)
 
 ##### Command Line Tools
 - [.Net Core 1.1 SDK](https://www.microsoft.com/net/download/core)

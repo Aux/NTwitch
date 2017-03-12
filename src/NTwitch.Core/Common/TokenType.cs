@@ -3,6 +3,6 @@
     public enum TokenType
     {
         ClientId,
-        OAuth
+        Oauth
     }
 }

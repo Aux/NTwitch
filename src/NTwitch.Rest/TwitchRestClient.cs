@@ -1,15 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace NTwitch.Rest
 {
-    public partial class TwitchRestClient : BaseRestClient, ITwitchClient
+    public class TwitchRestClient
     {
-        public RestClient Client => ApiClient;
-        
-        public TwitchRestClient() : this(new TwitchRestConfig()) { }
-        public TwitchRestClient(TwitchRestConfig config) : base(config) { }
-
-        public Task LoginAsync(TokenType type, string token)
-            => LoginInternalAsync(type, token);
     }
 }
