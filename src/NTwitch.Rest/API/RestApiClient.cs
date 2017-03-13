@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
+using NTwitch.Rest.Requests;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class RestApiClient : IApiClient, IDisposable
+    public class RestApiClient : IDisposable
     {
         private RestClient _client;
         
@@ -17,16 +19,11 @@ namespace NTwitch.Rest
             _client = new RestClient(host, type, token);
         }
         
-        public Task LoginAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task SendAsync(RestRequest request)
+        public async Task<RestResponse> SendAsync(RestRequest request)
         {
             var endpoint = string.Format(request.Endpoint, request.GetParameters());
             var message = new HttpRequestMessage(new HttpMethod(request.Method), endpoint);
-            
+
             if (!string.IsNullOrWhiteSpace(request.JsonBody))
             {
                 string content = JsonConvert.SerializeObject(request.JsonBody);
@@ -34,15 +31,44 @@ namespace NTwitch.Rest
             }
 
             var response = await _client.SendAsync(message);
-            if (response.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException($"Request failed with {(int)response.StatusCode}: {response.StatusCode}");
+            return response;
         }
 
-        public Task<T> SendAsync<T>(RestRequest request)
+        #region Authorization
+
+        internal async Task<API.Token> ValidateTokenAsync()
         {
-            throw new NotImplementedException();
+            var response = await SendAsync(new ValidateTokenRequest());
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new AuthenticationException("Token is invalid.");
+            return response.GetBodyAsType<API.PreToken>().Token;
         }
-        
+
+        #endregion
+        #region Users
+
+        internal async Task<API.SelfUser> GetCurrentUserAsync()
+        {
+            try
+            {
+                var response = await SendAsync(new GetCurrentUserRequest());
+                return response.GetBodyAsType<API.SelfUser>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
+        }
+
+        internal async Task<API.User> GetUserAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync(new GetUserRequest(id));
+                return response.GetBodyAsType<API.SelfUser>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
+        }
+
+        #endregion
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)

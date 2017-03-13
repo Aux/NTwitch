@@ -6,7 +6,7 @@ namespace NTwitch
     {
         public string Method { get; }
         public string Endpoint { get; }
-        public Dictionary<string, object> Parameters { get; }
+        public Dictionary<string, object> Parameters { get; } = null;
         public string JsonBody { get; }
 
         public RestRequest(string method, string endpoint)
@@ -29,6 +29,9 @@ namespace NTwitch
 
         public string[] GetParameters()
         {
+            if (Parameters == null)
+                return new[] { "" };
+
             List<string> paramList = new List<string>();
             foreach (var p in Parameters)
                 paramList.Add($"{p.Key}={p.Value}");

@@ -26,8 +26,16 @@ namespace NTwitch.Rest
 
             var reply = await _client.SendAsync(message);
 
-            var stream = await reply.Content.ReadAsStreamAsync();
-            return new RestResponse(reply.StatusCode, stream);
+            try
+            {
+                reply.EnsureSuccessStatusCode();
+            } catch (HttpRequestException ex)
+            {
+                throw new HttpException(reply.StatusCode, ex);
+            }
+            
+            var content = await reply.Content.ReadAsStringAsync();
+            return new RestResponse(reply.StatusCode, content);
         }
 
         private void EnsureClientExists()
@@ -55,7 +63,7 @@ namespace NTwitch.Rest
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    _client.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

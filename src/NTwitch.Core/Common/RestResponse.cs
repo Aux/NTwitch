@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
 using System.Net;
 
 namespace NTwitch
@@ -6,12 +6,15 @@ namespace NTwitch
     public class RestResponse
     {
         public HttpStatusCode StatusCode { get; }
-        public Stream Body { get; }
+        public string Body { get; }
 
-        public RestResponse(HttpStatusCode code, Stream body)
+        public RestResponse(HttpStatusCode code, string body)
         {
             StatusCode = code;
             Body = body;
         }
+
+        public T GetBodyAsType<T>()
+            => JsonConvert.DeserializeObject<T>(Body);
     }
 }
