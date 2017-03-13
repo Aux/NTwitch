@@ -17,7 +17,10 @@ namespace NTwitch.Rest
         {
             _client = new RestClient(config, type, token);
         }
-        
+
+        private Task<RestResponse> SendAsync(string method, string endpoint)
+            => SendAsync(new RestRequest(method, endpoint));
+
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
             var endpoint = string.Format(request.Endpoint, request.GetParameters());
@@ -50,10 +53,10 @@ namespace NTwitch.Rest
         {
             try
             {
-                var response = await SendAsync(new GetCurrentUserRequest());
+                var response = await SendAsync("GET", "user");
                 return response.GetBodyAsType<API.SelfUser>();
             }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
         internal async Task<API.User> GetUserAsync(ulong id)
@@ -64,6 +67,39 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.SelfUser>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
+        }
+
+        internal async Task<API.UserCollection> GetUsersAsync(string[] usernames)
+        {
+            try
+            {
+                var response = await SendAsync(new GetUsersRequest(usernames));
+                return response.GetBodyAsType<API.UserCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 400) { return null; }
+        }
+
+        #endregion
+        #region Channels
+
+        internal async Task<API.Channel> GetChannelAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync(new GetChannelRequest(id));
+                return response.GetBodyAsType<API.Channel>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
+        }
+        
+        internal async Task<API.SelfChannel> GetCurrentChannelAsync()
+        {
+            try
+            {
+                var response = await SendAsync("GET", "channel");
+                return response.GetBodyAsType<API.SelfChannel>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
         #endregion

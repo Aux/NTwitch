@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
@@ -27,5 +28,7 @@ namespace NTwitch.Rest
         // User
         public Task<RestUser> GetUserAsync(ulong id)
             => ClientHelper.GetUserAsync(this, id);
+        public Task<IEnumerable<RestUser>> GetUsersAsync(params string[] usernames)
+            => ClientHelper.GetUsersAsync(this, usernames);
     }
 }

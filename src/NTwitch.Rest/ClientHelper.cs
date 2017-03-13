@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
@@ -6,10 +8,22 @@ namespace NTwitch.Rest
     {
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
         {
-            var model = await client.Client.GetUserAsync(id);
+            var model = await client.RestClient.GetUserAsync(id);
             var user = new RestUser(client, model.Id);
             user.Update(model);
             return user;
+        }
+
+        public static async Task<IEnumerable<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
+        {
+            var model = await client.RestClient.GetUsersAsync(usernames);
+            var users = model.Users.Select(x =>
+            {
+                var user = new RestUser(client, x.Id);
+                user.Update(x);
+                return user;
+            });
+            return users;
         }
     }
 }

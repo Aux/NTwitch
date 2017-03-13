@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Tests", "tests\NTwi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{197F7F74-F562-42F2-8DE3-802353D30D6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{50AF929D-5B95-4686-9D90-30E5B6BECC2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{197F7F74-F562-42F2-8DE3-802353D30D6C}.Release|x64.Build.0 = Release|x64
 		{197F7F74-F562-42F2-8DE3-802353D30D6C}.Release|x86.ActiveCfg = Release|x86
 		{197F7F74-F562-42F2-8DE3-802353D30D6C}.Release|x86.Build.0 = Release|x86
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|x64.ActiveCfg = Debug|x64
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|x64.Build.0 = Debug|x64
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|x86.ActiveCfg = Debug|x86
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Debug|x86.Build.0 = Debug|x86
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|x64.ActiveCfg = Release|x64
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|x64.Build.0 = Release|x64
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|x86.ActiveCfg = Release|x86
+		{50AF929D-5B95-4686-9D90-30E5B6BECC2C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,12 +6,12 @@ namespace NTwitch.Rest
 {
     public class RestUser : RestEntity<ulong>, IUser
     {
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         public string DisplayName { get; private set; }
         public string Name { get; private set; }
         public string Type { get; private set; }
         public string Bio { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
         
         internal RestUser(BaseRestClient client, ulong id) 
             : base(client, id) { }
@@ -25,17 +25,18 @@ namespace NTwitch.Rest
 
         internal virtual void Update(Model model)
         {
+            CreatedAt = model.CreatedAt;
+            UpdatedAt = model.UpdatedAt;
             DisplayName = model.DisplayName;
             Name = model.Name;
             Type = model.Type;
             Bio = model.Bio;
-            CreatedAt = model.CreatedAt;
-            UpdatedAt = model.UpdatedAt;
         }
 
-        public virtual Task UpdateAsync()
+        public virtual async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var entity = await Client.RestClient.GetUserAsync(Id).ConfigureAwait(false);
+            Update(entity);
         }
     }
 }

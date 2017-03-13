@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.SelfUser;
 
 namespace NTwitch.Rest
@@ -32,9 +31,10 @@ namespace NTwitch.Rest
             Notifications.Update(model.Notifications);
         }
 
-        public override Task UpdateAsync()
+        public override async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var entity = await Client.RestClient.GetCurrentUserAsync().ConfigureAwait(false);
+            Update(entity);
         }
     }
 }
