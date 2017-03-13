@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace NTwitch
+namespace NTwitch.Rest
 {
     public class RestResponse
     {

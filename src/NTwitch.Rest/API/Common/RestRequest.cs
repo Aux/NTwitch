@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NTwitch
+namespace NTwitch.Rest
 {
     public class RestRequest
     {

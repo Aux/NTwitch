@@ -11,12 +11,11 @@ namespace NTwitch.Rest
     public class RestApiClient : IDisposable
     {
         private RestClient _client;
-        
         private bool _disposed = false;
 
-        public RestApiClient(string host, TokenType type, string token)
+        public RestApiClient(TwitchRestConfig config, TokenType type, string token)
         {
-            _client = new RestClient(host, type, token);
+            _client = new RestClient(config, type, token);
         }
         
         public async Task<RestResponse> SendAsync(RestRequest request)
@@ -75,12 +74,9 @@ namespace NTwitch.Rest
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    _client.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
+                
                 _disposed = true;
             }
         }

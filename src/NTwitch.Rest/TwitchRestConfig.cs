@@ -2,6 +2,6 @@
 {
     public class TwitchRestConfig : TwitchConfig
     {
-        public string Host { get; set; } = "https://api.twitch.tv/kraken/";
+        public string RestHost { get; set; } = "https://api.twitch.tv/kraken/";
     }
 }

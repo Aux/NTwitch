@@ -13,9 +13,9 @@ namespace NTwitch.Rest
         private string _token;
         private bool _disposed = false;
 
-        public RestClient(string host, TokenType type, string token)
+        public RestClient(TwitchRestConfig config, TokenType type, string token)
         {
-            _host = host;
+            _host = config.RestHost;
             _tokenType = type;
             _token = token;
         }

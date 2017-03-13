@@ -4,23 +4,23 @@ namespace NTwitch.Rest
 {
     public class BaseRestClient
     {
-        public RestApiClient Client => _client;
+        public RestApiClient RestClient => _rest;
         public RestToken Token => _auth;
 
-        internal RestApiClient _client;
+        internal RestApiClient _rest;
 
         private RestToken _auth;
-        private string _host;
+        private TwitchRestConfig _config;
 
         public BaseRestClient(TwitchRestConfig config)
         {
-            _host = config.Host;
+            _config = config;
         }
 
         internal async Task LoginInternalAsync(TokenType type, string token)
         {
-            _client = new RestApiClient(_host, type, token);
-            var auth = await _client.ValidateTokenAsync();
+            _rest = new RestApiClient(_config, type, token);
+            var auth = await _rest.ValidateTokenAsync();
             _auth = RestToken.Create(auth);
         }
 
