@@ -64,7 +64,7 @@ namespace NTwitch.Rest
             try
             {
                 var response = await SendAsync(new GetUserRequest(id));
-                return response.GetBodyAsType<API.SelfUser>();
+                return response.GetBodyAsType<API.User>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
         }

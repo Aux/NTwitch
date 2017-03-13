@@ -4,16 +4,14 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestChannel : RestEntity<ulong>, IChannel
+    public class RestChannel : RestSimpleChannel, IChannel
     {
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
         public string Status { get; private set; }
         public string BroadcasterLanguage { get; private set; }
-        public string DisplayName { get; private set; }
         public string Game { get; private set; }
         public string Language { get; private set; }
-        public string Name { get; private set; }
         public string LogoUrl { get; private set; }
         public string VideoBannerUrl { get; private set; }
         public string ProfileBannerUrl { get; private set; }
@@ -40,10 +38,8 @@ namespace NTwitch.Rest
             UpdatedAt = model.UpdatedAt;
             Status = model.Status;
             BroadcasterLanguage = model.BroadcasterLanguage;
-            DisplayName = model.DisplayName;
             Game = model.Game;
             Language = model.Language;
-            Name = model.Name;
             LogoUrl = model.LogoUrl;
             VideoBannerUrl = model.VideoBannerUrl;
             ProfileBannerUrl = model.ProfileBannerUrl;
@@ -53,9 +49,10 @@ namespace NTwitch.Rest
             IsPartner = model.IsPartner;
             Views = model.Views;
             Followers = model.Followers;
+            base.Update(model);
         }
 
-        public virtual async Task UpdateAsync()
+        public override async Task UpdateAsync()
         {
             var entity = await Client.RestClient.GetChannelAsync(Id).ConfigureAwait(false);
             Update(entity);

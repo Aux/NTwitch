@@ -3,7 +3,7 @@ using System;
 
 namespace NTwitch.Rest.API
 {
-    public class Channel
+    public class Channel : SimpleChannel
     {
         [JsonProperty("mature")]
         public bool IsMature { get; set; }
@@ -11,20 +11,14 @@ namespace NTwitch.Rest.API
         public string Status { get; set; }
         [JsonProperty("broadcaster_language")]
         public string BroadcasterLanguage { get; set; }
-        [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
         [JsonProperty("game")]
         public string Game { get; set; }
         [JsonProperty("language")]
         public string Language { get; set; }
-        [JsonProperty("name")]
-        public string Name { get; set; }
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; set; }
-        [JsonProperty("_id")]
-        public ulong Id { get; set; }
         [JsonProperty("logo")]
         public string LogoUrl { get; set; }
         [JsonProperty("video_banner")]

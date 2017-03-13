@@ -4,12 +4,10 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestUser : RestEntity<ulong>, IUser
+    public class RestUser : RestSimpleUser, IUser
     {
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
-        public string DisplayName { get; private set; }
-        public string Name { get; private set; }
         public string Type { get; private set; }
         public string Bio { get; private set; }
         
@@ -27,13 +25,12 @@ namespace NTwitch.Rest
         {
             CreatedAt = model.CreatedAt;
             UpdatedAt = model.UpdatedAt;
-            DisplayName = model.DisplayName;
-            Name = model.Name;
             Type = model.Type;
             Bio = model.Bio;
+            base.Update(model);
         }
 
-        public virtual async Task UpdateAsync()
+        public override async Task UpdateAsync()
         {
             var entity = await Client.RestClient.GetUserAsync(Id).ConfigureAwait(false);
             Update(entity);
