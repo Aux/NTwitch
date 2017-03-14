@@ -19,7 +19,7 @@ namespace NTwitch.Tests
             var users = await _client.GetUsersAsync("auxesistv", "emongg", "timthetatman");
 
             Console.WriteLine($"Got users: {string.Join(", ", users.Select(x => $"{x.DisplayName} ({x.Id})"))}");
-
+            
             await Task.Delay(-1);
         }
     }

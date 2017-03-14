@@ -11,6 +11,7 @@ namespace NTwitch.Rest
     public class RestApiClient : IDisposable
     {
         private RestClient _client;
+
         private bool _disposed = false;
 
         public RestApiClient(TwitchRestConfig config, TokenType type, string token)
@@ -100,6 +101,29 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.SelfChannel>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        #endregion
+        #region Follows
+
+        internal async Task<API.ChannelFollow> GetFollowAsync(ulong userId, ulong channelId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"users/{userId}/follows/channels/{channelId}");
+                return response.GetBodyAsType<API.ChannelFollow>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        internal async Task<API.FollowCollection<API.ChannelFollow>> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, int limit, int offset)
+        {
+            try
+            {
+                var response = await SendAsync(new GetFollowsRequest(userId, sort, ascending, limit, offset));
+                return response.GetBodyAsType<API.FollowCollection<API.ChannelFollow>>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
         }
 
         #endregion

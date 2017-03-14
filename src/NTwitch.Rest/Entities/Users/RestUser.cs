@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.User;
 
@@ -35,5 +36,10 @@ namespace NTwitch.Rest
             var entity = await Client.RestClient.GetUserAsync(Id).ConfigureAwait(false);
             Update(entity);
         }
+
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, int limit = 25, int offset = 0)
+            => UserHelper.GetFollowsAsync(this, sort, ascending, limit, offset);
+        public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
+            => UserHelper.GetFollowAsync(this, channelId);
     }
 }
