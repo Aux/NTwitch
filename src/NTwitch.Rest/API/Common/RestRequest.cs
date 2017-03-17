@@ -31,15 +31,15 @@ namespace NTwitch.Rest
         public static string GetBodyString(object obj)
             => JsonConvert.SerializeObject(obj);
 
-        public string[] GetParameters()
+        public string GetParameterString()
         {
             if (Parameters == null)
-                return new[] { "" };
+                return "";
 
             List<string> paramList = new List<string>();
             foreach (var p in Parameters)
                 if (p.Value != null) paramList.Add($"{p.Key}={p.Value}");
-            return paramList.ToArray();
+            return $"?{string.Join("&", paramList.ToArray())}";
         }
     }
 }

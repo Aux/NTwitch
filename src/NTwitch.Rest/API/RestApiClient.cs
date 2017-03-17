@@ -24,7 +24,7 @@ namespace NTwitch.Rest
 
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
-            var endpoint = string.Format(request.Endpoint, request.GetParameters());
+            var endpoint = string.Format(request.Endpoint, request.GetParameterString());
             var message = new HttpRequestMessage(new HttpMethod(request.Method), endpoint);
 
             if (!string.IsNullOrWhiteSpace(request.JsonBody))
