@@ -102,6 +102,16 @@ namespace NTwitch.Rest
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
+        
+        internal async Task<API.PreCheer> GetCheersAsync(ulong? id)
+        {
+            try
+            {
+                var response = await SendAsync(new GetCheersRequest(id));
+                return response.GetBodyAsType<API.PreCheer>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
 
         #endregion
         #region Follows

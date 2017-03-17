@@ -25,5 +25,12 @@ namespace NTwitch.Rest
             });
             return users;
         }
+
+        public static async Task<IEnumerable<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
+        {
+            var model = await client.RestClient.GetCheersAsync(channelId);
+            var cheers = model.Actions.Select(x => new RestCheerInfo(client, x));
+            return cheers;
+        }
     }
 }

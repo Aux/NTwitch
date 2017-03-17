@@ -30,5 +30,9 @@ namespace NTwitch.Rest
             => ClientHelper.GetUserAsync(this, id);
         public Task<IEnumerable<RestUser>> GetUsersAsync(params string[] usernames)
             => ClientHelper.GetUsersAsync(this, usernames);
+
+        // Channel
+        public Task<IEnumerable<RestCheerInfo>> GetCheersAsync(ulong channelId)
+            => ClientHelper.GetCheersAsync(this, channelId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.SimpleChannel;
 
@@ -29,5 +30,9 @@ namespace NTwitch.Rest
         {
             throw new NotImplementedException();
         }
+
+        // Cheers
+        public Task<IEnumerable<RestCheerInfo>> GetCheersAsync()
+            => ClientHelper.GetCheersAsync(Client, Id);
     }
 }
