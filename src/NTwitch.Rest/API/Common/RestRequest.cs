@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace NTwitch.Rest
 {
@@ -27,6 +28,9 @@ namespace NTwitch.Rest
             JsonBody = body;
         }
 
+        public static string GetBodyString(object obj)
+            => JsonConvert.SerializeObject(obj);
+
         public string[] GetParameters()
         {
             if (Parameters == null)
@@ -34,7 +38,7 @@ namespace NTwitch.Rest
 
             List<string> paramList = new List<string>();
             foreach (var p in Parameters)
-                paramList.Add($"{p.Key}={p.Value}");
+                if (p.Value != null) paramList.Add($"{p.Key}={p.Value}");
             return paramList.ToArray();
         }
     }

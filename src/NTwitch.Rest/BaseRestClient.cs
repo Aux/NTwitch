@@ -26,12 +26,18 @@ namespace NTwitch.Rest
         }
 
         // User
+        public Task<RestSelfUser> GetCurrentUserAsync()
+            => ClientHelper.GetCurrentUserAsync(this);
         public Task<RestUser> GetUserAsync(ulong id)
             => ClientHelper.GetUserAsync(this, id);
         public Task<IEnumerable<RestUser>> GetUsersAsync(params string[] usernames)
             => ClientHelper.GetUsersAsync(this, usernames);
 
         // Channel
+        public Task<RestSelfChannel> GetCurrentChannelAsync()
+            => ClientHelper.GetCurrentChannelAsync(this);
+        public Task<RestChannel> GetChannelAsync(ulong channelId)
+            => ClientHelper.GetChannelAsync(this, channelId);
         public Task<IEnumerable<RestCheerInfo>> GetCheersAsync(ulong channelId)
             => ClientHelper.GetCheersAsync(this, channelId);
     }

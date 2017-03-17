@@ -87,10 +87,10 @@ namespace NTwitch.Rest
         {
             try
             {
-                var response = await SendAsync(new GetChannelRequest(id));
+                var response = await SendAsync("GET", $"channels/{id}");
                 return response.GetBodyAsType<API.Channel>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
         
         internal async Task<API.SelfChannel> GetCurrentChannelAsync()
@@ -108,6 +108,16 @@ namespace NTwitch.Rest
             try
             {
                 var response = await SendAsync(new GetCheersRequest(id));
+                return response.GetBodyAsType<API.PreCheer>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.PreCheer> ModifyChannelAsync(ulong channelId, ModifyChannelParams changes)
+        {
+            try
+            {
+                var response = await SendAsync(new ModifyChannelRequest(channelId, changes));
                 return response.GetBodyAsType<API.PreCheer>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
