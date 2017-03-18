@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Rest
+namespace NTwitch.Pubsub
 {
-    public class TwitchRestClient : BaseRestClient, ITwitchClient
+    public class TwitchPubsubClient : BasePubsubClient, ITwitchClient
     {
-        public TwitchRestClient() : this(new TwitchRestConfig()) { }
-        public TwitchRestClient(TwitchRestConfig config) : base(config) { }
+        public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
+        public TwitchPubsubClient(TwitchPubsubConfig config) : base(config) { }
 
         public Task LoginAsync(TokenType type, string token)
-            => RestLoginAsync(type, token);
-
+            => SocketLoginAsync(type, token);
+        
         Task ITwitchClient.ConnectAsync()
             => throw new NotSupportedException();
         Task ITwitchClient.DisconnectAsync()

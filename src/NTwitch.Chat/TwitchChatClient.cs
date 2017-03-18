@@ -20,7 +20,7 @@ namespace NTwitch.Chat
 
         public async Task LoginAsync(string username, string token)
         {
-            await LoginInternalAsync(TokenType.Oauth, token);
+            await RestLoginAsync(TokenType.Oauth, token);
 
             _chat = new ChatApiClient(_config, username, token);
             if (!Token.Authorization.Scopes.Contains("chat_login"))

@@ -18,7 +18,7 @@ namespace NTwitch.Rest
             _config = config;
         }
 
-        internal async Task LoginInternalAsync(TokenType type, string token)
+        internal async Task RestLoginAsync(TokenType type, string token)
         {
             _rest = new RestApiClient(_config, type, token);
             var auth = await _rest.ValidateTokenAsync();

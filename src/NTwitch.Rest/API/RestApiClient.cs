@@ -19,7 +19,7 @@ namespace NTwitch.Rest
             _client = new RestClient(config, type, token);
         }
 
-        private Task<RestResponse> SendAsync(string method, string endpoint)
+        public Task<RestResponse> SendAsync(string method, string endpoint)
             => SendAsync(new RestRequest(method, endpoint));
 
         public async Task<RestResponse> SendAsync(RestRequest request)
