@@ -92,7 +92,7 @@ namespace NTwitch.Rest
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
-        
+
         internal async Task<API.SelfChannel> GetCurrentChannelAsync()
         {
             try
@@ -144,6 +144,25 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.FollowCollection<API.ChannelFollow>>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
+        }
+
+        #endregion
+        #region Community
+
+        internal async Task<API.Community> GetCommunityAsync(string id, bool isname)
+        {
+            try
+            {
+                string endpoint;
+                if (isname)
+                    endpoint = $"communities?name={id}";
+                else
+                    endpoint = $"communities/{id}";
+                
+                var response = await SendAsync("GET", endpoint);
+                return response.GetBodyAsType<API.Community>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
         #endregion

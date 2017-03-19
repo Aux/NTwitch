@@ -1,6 +1,5 @@
 ﻿using NTwitch.Rest;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -16,10 +15,11 @@ namespace NTwitch.Tests
         {
             _client = new TwitchRestClient();
             await _client.LoginAsync(TokenType.Oauth, "");
-            var users = await _client.GetUsersAsync("auxesistv", "emongg", "timthetatman");
+            var community = await _client.GetCommunityAsync("CompetitiveOW", true);
+            var owner = await community.GetOwnerAsync();
 
-            Console.WriteLine($"Got users: {string.Join(", ", users.Select(x => $"{x.DisplayName} ({x.Id})"))}");
-            
+            Console.WriteLine($"{owner.DisplayName} ({owner.Id})");
+
             await Task.Delay(-1);
         }
     }

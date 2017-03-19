@@ -40,5 +40,9 @@ namespace NTwitch.Rest
             => ClientHelper.GetChannelAsync(this, channelId);
         public Task<IEnumerable<RestCheerInfo>> GetCheersAsync(ulong channelId)
             => ClientHelper.GetCheersAsync(this, channelId);
+
+        // Community
+        public Task<RestCommunity> GetCommunityAsync(string id, bool isname = false)
+            => ClientHelper.GetCommunityAsync(this, id, isname);
     }
 }

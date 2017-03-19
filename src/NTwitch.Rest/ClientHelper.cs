@@ -75,5 +75,22 @@ namespace NTwitch.Rest
             var cheers = model.Actions.Select(x => new RestCheerInfo(client, x));
             return cheers;
         }
+
+        //
+        //  Community
+        //
+
+        public static async Task<RestCommunity> GetCommunityAsync(BaseRestClient client, string id, bool isname = false)
+        {
+            var model = await client.RestClient.GetCommunityAsync(id, isname);
+            var community = new RestCommunity(client, model.Id);
+            community.Update(model);
+            return community;
+        }
+
+        public static Task ModifyChannelAsync(Action<ModifyCommunityParams> properties)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
