@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C557DFC3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.csproj", "{9308883F-F16B-487B-9C6C-89C64CF3ED18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{197F7F74-F562-42F2-8DE3-802353D30D6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tcp", "src\NTwitch.Tcp\NTwitch.Tcp.csproj", "{197F7F74-F562-42F2-8DE3-802353D30D6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{50AF929D-5B95-4686-9D90-30E5B6BECC2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.WebSocket", "src\NTwitch.WebSocket\NTwitch.WebSocket.csproj", "{50AF929D-5B95-4686-9D90-30E5B6BECC2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

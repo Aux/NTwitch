@@ -2,17 +2,17 @@
 using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Pubsub
+namespace NTwitch.WebSocket
 {
-    public class BasePubsubClient : BaseRestClient
+    public class BaseSocketClient : BaseRestClient
     {
         public SocketApiClient SocketClient => _socket;
 
         internal SocketApiClient _socket;
 
-        private TwitchPubsubConfig _config;
+        private TwitchSocketConfig _config;
         
-        public BasePubsubClient(TwitchPubsubConfig config) : base(config)
+        public BaseSocketClient(TwitchSocketConfig config) : base(config)
         {
             _config = config;
         }

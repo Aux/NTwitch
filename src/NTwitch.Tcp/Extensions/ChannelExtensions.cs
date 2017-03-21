@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Chat
+namespace NTwitch.Tcp
 {
     public static class ChannelExtensions
     {

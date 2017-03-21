@@ -1,11 +1,11 @@
-﻿namespace NTwitch.Chat
+﻿namespace NTwitch.Tcp
 {
-    public class ChatRequest
+    public class TcpRequest
     {
         public string Command { get; }
         public string Parameters { get; }
 
-        public ChatRequest(string command, string parameters)
+        public TcpRequest(string command, string parameters)
         {
             Command = command;
             Parameters = parameters;

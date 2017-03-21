@@ -1,4 +1,4 @@
-﻿namespace NTwitch.Chat
+﻿namespace NTwitch.Tcp
 {
     public static class UserExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NTwitch.Pubsub
+namespace NTwitch.WebSocket
 {
     public class SocketResponse
     {

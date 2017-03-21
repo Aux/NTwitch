@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NTwitch.Chat
+namespace NTwitch.Tcp
 {
-    internal class ChatClient : IDisposable
+    internal class TcpClient : IDisposable
     {
-        private TcpClient _client;
+        private System.Net.Sockets.TcpClient _client;
         private NetworkStream _stream;
         private StreamWriter _writer;
         private CancellationTokenSource _cancelTokenSource;
@@ -22,7 +22,7 @@ namespace NTwitch.Chat
         private string _token;
         private bool _disposed = false;
 
-        public ChatClient(TwitchChatConfig config, string username, string token)
+        public TcpClient(TwitchTcpConfig config, string username, string token)
         {
             _host = config.ChatHost;
             _port = config.ChatPort;
@@ -30,7 +30,7 @@ namespace NTwitch.Chat
             _token = token;
         }
 
-        public async Task SendAsync(ChatRequest request)
+        public async Task SendAsync(TcpRequest request)
         {
             if (!_client.Connected)
                 throw new InvalidOperationException("Client is not connected.");
@@ -40,7 +40,7 @@ namespace NTwitch.Chat
 
         public async Task ConnectAsync()
         {
-            _client = new TcpClient();
+            _client = new System.Net.Sockets.TcpClient();
             await _client.ConnectAsync(_host, _port).ConfigureAwait(false);
 
             _stream = _client.GetStream();

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Pubsub
+namespace NTwitch.WebSocket
 {
-    public class TwitchPubsubClient : BasePubsubClient, ITwitchClient
+    public class TwitchSocketClient : BaseSocketClient, ITwitchClient
     {
-        public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
-        public TwitchPubsubClient(TwitchPubsubConfig config) : base(config) { }
+        public TwitchSocketClient() : this(new TwitchSocketConfig()) { }
+        public TwitchSocketClient(TwitchSocketConfig config) : base(config) { }
 
         public Task LoginAsync(TokenType type, string token)
             => SocketLoginAsync(type, token);

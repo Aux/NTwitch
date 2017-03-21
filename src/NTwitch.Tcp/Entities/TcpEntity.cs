@@ -1,14 +1,14 @@
 ﻿using NTwitch.Rest;
 using System;
 
-namespace NTwitch.Chat
+namespace NTwitch.Tcp
 {
-    public class ChatEntity<T> : IEntity<T>
+    public class TcpEntity<T> : IEntity<T>
     {
         public BaseRestClient Client { get; }
         public T Id { get; }
 
-        public ChatEntity(BaseRestClient client, T id)
+        public TcpEntity(BaseRestClient client, T id)
         {
             Client = client;
             Id = id;

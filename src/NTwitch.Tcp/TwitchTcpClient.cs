@@ -3,17 +3,17 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.Chat
+namespace NTwitch.Tcp
 {
-    public class TwitchChatClient : BaseRestClient, ITwitchClient
+    public class TwitchTcpClient : BaseRestClient, ITwitchClient
     {
-        public ChatApiClient ChatClient => _chat;
+        public TcpApiClient ChatClient => _chat;
 
-        private ChatApiClient _chat;
-        private TwitchChatConfig _config;
+        private TcpApiClient _chat;
+        private TwitchTcpConfig _config;
 
-        public TwitchChatClient() : this(new TwitchChatConfig()) { }
-        public TwitchChatClient(TwitchChatConfig config) : base(config)
+        public TwitchTcpClient() : this(new TwitchTcpConfig()) { }
+        public TwitchTcpClient(TwitchTcpConfig config) : base(config)
         {
             _config = config;
         }
@@ -22,7 +22,7 @@ namespace NTwitch.Chat
         {
             await RestLoginAsync(TokenType.Oauth, token);
 
-            _chat = new ChatApiClient(_config, username, token);
+            _chat = new TcpApiClient(_config, username, token);
             if (!Token.Authorization.Scopes.Contains("chat_login"))
                 throw new InvalidOperationException("This token does not have permission to login to chat.");
         }
