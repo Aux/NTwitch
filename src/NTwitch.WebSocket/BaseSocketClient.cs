@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.WebSocket
 {
-    public class BaseSocketClient : BaseRestClient
+    public partial class BaseSocketClient : BaseRestClient
     {
         public SocketApiClient SocketClient => _socket;
 

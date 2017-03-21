@@ -3,18 +3,20 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    public class BaseRestClient
+    public partial class BaseRestClient
     {
         public RestApiClient RestClient => _rest;
         public RestToken Token => _auth;
 
         internal RestApiClient _rest;
+        internal LogManager _log;
 
         private RestToken _auth;
         private TwitchRestConfig _config;
 
         public BaseRestClient(TwitchRestConfig config)
         {
+            _log = new LogManager(config.LogLevel);
             _config = config;
         }
 

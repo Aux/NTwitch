@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Tcp
 {
-    public class TwitchTcpClient : BaseRestClient, ITwitchClient
+    public partial class TwitchTcpClient : BaseRestClient, ITwitchClient
     {
         public TcpApiClient ChatClient => _chat;
 

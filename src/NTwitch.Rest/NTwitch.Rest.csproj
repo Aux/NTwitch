@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="BaseRestClient.Events.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
   </ItemGroup>
 

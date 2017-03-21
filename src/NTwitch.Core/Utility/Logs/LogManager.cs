@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Utility.Logs
+namespace NTwitch
 {
     public class LogManager
     {
