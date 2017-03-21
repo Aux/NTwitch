@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@ namespace NTwitch.Rest
 
         public async Task<RestResponse> SendAsync(HttpRequestMessage message)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             EnsureClientExists();
 
             var reply = await _client.SendAsync(message);
@@ -37,7 +40,8 @@ namespace NTwitch.Rest
             }
             
             var content = await reply.Content.ReadAsStringAsync();
-            return new RestResponse(reply.StatusCode, content);
+            timer.Stop();
+            return new RestResponse(reply.StatusCode, content, timer.ElapsedMilliseconds);
         }
 
         private void EnsureClientExists()

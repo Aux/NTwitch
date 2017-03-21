@@ -11,11 +11,13 @@ namespace NTwitch.Rest
     public class RestApiClient : IDisposable
     {
         private RestClient _client;
+        private LogManager _log;
 
         private bool _disposed = false;
 
-        public RestApiClient(TwitchRestConfig config, TokenType type, string token)
+        public RestApiClient(TwitchRestConfig config, LogManager log, TokenType type, string token)
         {
+            _log = log;
             _client = new RestClient(config, type, token);
         }
 
@@ -24,9 +26,10 @@ namespace NTwitch.Rest
 
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
-            var endpoint = string.Format(request.Endpoint, request.GetParameterString());
+            var endpoint = request.Endpoint + request.GetParameterString();
             var message = new HttpRequestMessage(new HttpMethod(request.Method), endpoint);
 
+            await _log.DebugAsync("Rest", $"Attempting {request.Method} /{endpoint}").ConfigureAwait(false);
             if (!string.IsNullOrWhiteSpace(request.JsonBody))
             {
                 string content = JsonConvert.SerializeObject(request.JsonBody);
@@ -34,6 +37,7 @@ namespace NTwitch.Rest
             }
 
             var response = await _client.SendAsync(message);
+            await _log.VerboseAsync("Rest", $"{request.Method} /{request.Endpoint} {response.ExecuteTime}ms").ConfigureAwait(false);
             return response;
         }
 

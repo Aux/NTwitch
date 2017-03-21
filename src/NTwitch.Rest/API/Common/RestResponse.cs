@@ -7,11 +7,13 @@ namespace NTwitch.Rest
     {
         public HttpStatusCode StatusCode { get; }
         public string Body { get; }
+        public double ExecuteTime { get; }
 
-        public RestResponse(HttpStatusCode code, string body)
+        public RestResponse(HttpStatusCode code, string body, double time)
         {
             StatusCode = code;
             Body = body;
+            ExecuteTime = time;
         }
 
         public T GetBodyAsType<T>()

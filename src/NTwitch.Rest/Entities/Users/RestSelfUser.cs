@@ -38,28 +38,28 @@ namespace NTwitch.Rest
             Update(entity);
         }
 
-        // Follows
-        public Task<RestUserFollow> GetFollowersAsync()
-            => UserHelper.GetFollowersAsync(this);
-        public Task<IEnumerable<RestUserFollow>> GetFollowerAsync(ulong userId)
-            => UserHelper.GetFollowerAsync(this, userId);
+        //// Follows
+        //public Task<RestUserFollow> GetFollowersAsync()
+        //    => UserHelper.GetFollowersAsync(this);
+        //public Task<IEnumerable<RestUserFollow>> GetFollowerAsync(ulong userId)
+        //    => UserHelper.GetFollowerAsync(this, userId);
 
-        // Subscriptions
-        public Task<IEnumerable<RestChannelSubscription>> GetSubscriptionsAsync()
-            => UserHelper.GetSubscriptionsAsync(this);
-        public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
-            => UserHelper.GetSubscriptionAsync(this, channelId);
+        //// Subscriptions
+        //public Task<IEnumerable<RestChannelSubscription>> GetSubscriptionsAsync()
+        //    => UserHelper.GetSubscriptionsAsync(this);
+        //public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
+        //    => UserHelper.GetSubscriptionAsync(this, channelId);
 
-        // Blocks
-        public Task<IEnumerable<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
-            => UserHelper.GetBlocksAsync(this, Id, limit, offset);
+        //// Blocks
+        //public Task<IEnumerable<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
+        //    => UserHelper.GetBlocksAsync(this, Id, limit, offset);
 
-        // VHS
-        public Task<string> CreateHeartbeatAsync()
-            => UserHelper.CreateHeartbeatAsync(this);
-        public Task<string> GetHeartbeatAsync()
-            => UserHelper.GetHeartbeatAsync(this);
-        public Task DeleteHeartbeatAsync()
-            => UserHelper.DeleteHeartbeatAsync(this);
+        //// VHS
+        //public Task<string> CreateHeartbeatAsync()
+        //    => UserHelper.CreateHeartbeatAsync(this);
+        //public Task<string> GetHeartbeatAsync()
+        //    => UserHelper.GetHeartbeatAsync(this);
+        //public Task DeleteHeartbeatAsync()
+        //    => UserHelper.DeleteHeartbeatAsync(this);
     }
 }

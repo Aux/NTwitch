@@ -45,8 +45,8 @@ namespace NTwitch.Rest
             ProfileBannerUrl = model.ProfileBannerUrl;
             ProfileBannerBackgroundColor = model.ProfileBannerBackgroundColor;
             Url = model.Url;
-            IsMature = model.IsMature;
-            IsPartner = model.IsPartner;
+            IsMature = model.IsMature == true;
+            IsPartner = model.IsPartner == true;
             Views = model.Views;
             Followers = model.Followers;
             base.Update(model);

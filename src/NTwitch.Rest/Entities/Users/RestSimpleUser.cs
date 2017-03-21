@@ -37,10 +37,10 @@ namespace NTwitch.Rest
         public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
             => UserHelper.GetEmotesAsync(this, Id);
 
-        // Blocks
-        public Task BlockAsync()
-            => UserHelper.BlockAsync(this, Id);
-        public Task UnblockAsync()
-            => UserHelper.UnblockAsync(this, Id);
+        //// Blocks
+        //public Task BlockAsync()
+        //    => UserHelper.BlockAsync(this, Id);
+        //public Task UnblockAsync()
+        //    => UserHelper.UnblockAsync(this, Id);
     }
 }

@@ -5,11 +5,11 @@ namespace NTwitch.Rest
 {
     public partial class BaseRestClient
     {
-        internal readonly AsyncEvent<Func<LogMessage, Task>> logReceivedEvent = new AsyncEvent<Func<LogMessage, Task>>();
+        internal readonly AsyncEvent<Func<LogMessage, Task>> logEvent = new AsyncEvent<Func<LogMessage, Task>>();
         public event Func<LogMessage, Task> Log
         {
-            add { logReceivedEvent.Add(value); }
-            remove { logReceivedEvent.Remove(value); }
+            add { logEvent.Add(value); }
+            remove { logEvent.Remove(value); }
         }
 
         internal readonly AsyncEvent<Func<Task>> loggedInEvent = new AsyncEvent<Func<Task>>();

@@ -25,6 +25,9 @@ namespace NTwitch.Rest
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
         {
             var model = await client.RestClient.GetUserAsync(id);
+            if (model == null)
+                return null;
+
             var entity = new RestUser(client, model.Id);
             entity.Update(model);
             return entity;
@@ -33,6 +36,9 @@ namespace NTwitch.Rest
         public static async Task<IEnumerable<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
         {
             var model = await client.RestClient.GetUsersAsync(usernames);
+            if (model == null)
+                return new List<RestUser>();
+
             var entity = model.Users.Select(x =>
             {
                 var user = new RestUser(client, x.Id);

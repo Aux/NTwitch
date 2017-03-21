@@ -8,9 +8,8 @@ namespace NTwitch.Rest
         public RestApiClient RestClient => _rest;
         public RestToken Token => _auth;
 
-        internal RestApiClient _rest;
-        internal LogManager _log;
-
+        private LogManager _log;
+        private RestApiClient _rest;
         private RestToken _auth;
         private TwitchRestConfig _config;
 
@@ -18,13 +17,21 @@ namespace NTwitch.Rest
         {
             _log = new LogManager(config.LogLevel);
             _config = config;
+
+            _log.LogReceived += OnLogInternalAsync;
         }
+
+        private Task OnLogInternalAsync(LogMessage msg)
+            => logEvent.InvokeAsync(msg);
 
         internal async Task RestLoginAsync(TokenType type, string token)
         {
-            _rest = new RestApiClient(_config, type, token);
+            await _log.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
+            _rest = new RestApiClient(_config, _log, type, token);
             var auth = await _rest.ValidateTokenAsync();
             _auth = RestToken.Create(auth);
+            await _log.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
+            await loggedInEvent.InvokeAsync().ConfigureAwait(false);
         }
 
         // User
@@ -50,5 +57,6 @@ namespace NTwitch.Rest
         // Videos
         public Task<RestVideo> GetVideoAsync(string id)
             => ClientHelper.GetVideoAsync(this, id);
+        
     }
 }

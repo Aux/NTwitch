@@ -6,7 +6,7 @@ namespace NTwitch.Rest.API
     public class Channel : SimpleChannel
     {
         [JsonProperty("mature")]
-        public bool IsMature { get; set; }
+        public bool? IsMature { get; set; }
         [JsonProperty("status")]
         public string Status { get; set; }
         [JsonProperty("broadcaster_language")]
@@ -28,7 +28,7 @@ namespace NTwitch.Rest.API
         [JsonProperty("profile_banner_background_color")]
         public string ProfileBannerBackgroundColor { get; set; }
         [JsonProperty("partner")]
-        public bool IsPartner { get; set; }
+        public bool? IsPartner { get; set; }
         [JsonProperty("url")]
         public string Url { get; set; }
         [JsonProperty("views")]
