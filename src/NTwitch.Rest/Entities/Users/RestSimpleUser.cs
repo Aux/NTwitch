@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.SimpleUser;
 
@@ -25,10 +26,21 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
+        
+        // Follows
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, int limit = 25, int offset = 0)
+            => UserHelper.GetFollowsAsync(this, sort, ascending, limit, offset);
+        public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
+            => UserHelper.GetFollowAsync(this, channelId);
 
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
+        // Emotes
+        public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
+            => UserHelper.GetEmotesAsync(this, Id);
+
+        // Blocks
+        public Task BlockAsync()
+            => UserHelper.BlockAsync(this, Id);
+        public Task UnblockAsync()
+            => UserHelper.UnblockAsync(this, Id);
     }
 }

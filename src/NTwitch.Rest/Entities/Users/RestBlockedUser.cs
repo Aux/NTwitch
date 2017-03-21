@@ -1,7 +1,7 @@
 ﻿using System;
 using Model = NTwitch.Rest.API.BlockedUser;
 
-namespace NTwitch.Rest.Entities.Users
+namespace NTwitch.Rest
 {
     public class RestBlockedUser : RestEntity<ulong>
     {

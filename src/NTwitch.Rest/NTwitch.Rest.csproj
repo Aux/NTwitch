@@ -8,8 +8,4 @@
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\Subscriptions\" />
-  </ItemGroup>
-
 </Project>
