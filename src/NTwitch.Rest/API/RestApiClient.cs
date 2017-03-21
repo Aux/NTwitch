@@ -179,6 +179,19 @@ namespace NTwitch.Rest
         }
 
         #endregion
+        #region Emotes
+
+        internal async Task<API.EmoteSet> GetEmotesAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"users/{id}/emotes");
+                return response.GetBodyAsType<API.EmoteSet>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {
