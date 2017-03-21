@@ -7,10 +7,8 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
-        //
-        //  Users
-        //
-        
+        #region Users
+
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)
         {
             if (!client.Token.IsValid)
@@ -19,34 +17,33 @@ namespace NTwitch.Rest
                 throw new MissingScopeException("user_read");
 
             var model = await client.RestClient.GetCurrentUserAsync();
-            var user = new RestSelfUser(client, model.Id);
-            user.Update(model);
-            return user;
+            var entity = new RestSelfUser(client, model.Id);
+            entity.Update(model);
+            return entity;
         }
 
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
         {
             var model = await client.RestClient.GetUserAsync(id);
-            var user = new RestUser(client, model.Id);
-            user.Update(model);
-            return user;
+            var entity = new RestUser(client, model.Id);
+            entity.Update(model);
+            return entity;
         }
         
         public static async Task<IEnumerable<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
         {
             var model = await client.RestClient.GetUsersAsync(usernames);
-            var users = model.Users.Select(x =>
+            var entity = model.Users.Select(x =>
             {
                 var user = new RestUser(client, x.Id);
                 user.Update(x);
                 return user;
             });
-            return users;
+            return entity;
         }
 
-        //
-        //  Channels
-        //
+        #endregion
+        #region Channels
 
         public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)
         {
@@ -56,41 +53,53 @@ namespace NTwitch.Rest
                 throw new MissingScopeException("channel_read");
 
             var model = await client.RestClient.GetCurrentChannelAsync();
-            var channel = new RestSelfChannel(client, model.Id);
-            channel.Update(model);
-            return channel;
+            var entity = new RestSelfChannel(client, model.Id);
+            entity.Update(model);
+            return entity;
         }
 
         public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong channelId)
         {
             var model = await client.RestClient.GetChannelAsync(channelId);
-            var channel = new RestChannel(client, model.Id);
-            channel.Update(model);
-            return channel;
+            var entity = new RestChannel(client, model.Id);
+            entity.Update(model);
+            return entity;
         }
 
         public static async Task<IEnumerable<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
         {
             var model = await client.RestClient.GetCheersAsync(channelId);
-            var cheers = model.Actions.Select(x => new RestCheerInfo(client, x));
-            return cheers;
+            var entity = model.Actions.Select(x => new RestCheerInfo(client, x));
+            return entity;
         }
 
-        //
-        //  Community
-        //
+        #endregion
+        #region Communities
 
         public static async Task<RestCommunity> GetCommunityAsync(BaseRestClient client, string id, bool isname = false)
         {
             var model = await client.RestClient.GetCommunityAsync(id, isname);
-            var community = new RestCommunity(client, model.Id);
-            community.Update(model);
-            return community;
+            var entity = new RestCommunity(client, model.Id);
+            entity.Update(model);
+            return entity;
         }
 
         public static Task ModifyChannelAsync(Action<ModifyCommunityParams> properties)
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+        #region Videos
+
+        public static async Task<RestVideo> GetVideoAsync(BaseRestClient client, string id)
+        {
+            var model = await client.RestClient.GetVideoAsync(id);
+            var entity = new RestVideo(client, model.Id);
+            entity.Update(model);
+            return entity;
+        }
+
+        #endregion
     }
 }

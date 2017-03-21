@@ -44,5 +44,9 @@ namespace NTwitch.Rest
         // Community
         public Task<RestCommunity> GetCommunityAsync(string id, bool isname = false)
             => ClientHelper.GetCommunityAsync(this, id, isname);
+
+        // Videos
+        public Task<RestVideo> GetVideoAsync(string id)
+            => ClientHelper.GetVideoAsync(this, id);
     }
 }

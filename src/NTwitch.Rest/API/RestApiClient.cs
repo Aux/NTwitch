@@ -166,6 +166,19 @@ namespace NTwitch.Rest
         }
 
         #endregion
+        #region Videos
+
+        internal async Task<API.Video> GetVideoAsync(string id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"videos/{id}");
+                return response.GetBodyAsType<API.Video>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {
