@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,5 +56,41 @@ namespace NTwitch.WebSocket
                 return user;
             return null;
         }
+
+        #region ICache
+        IReadOnlyCollection<SocketChannel> ISocketCache.Channels
+            => throw new NotImplementedException();
+        IReadOnlyCollection<SocketUser> ISocketCache.Users
+            => throw new NotImplementedException();
+        IReadOnlyCollection<IChannel> ICache.Channels
+            => throw new NotImplementedException();
+        IReadOnlyCollection<IUser> ICache.Users
+            => throw new NotImplementedException();
+
+        SocketChannel ISocketCache.GetChannel(ulong channelId)
+            => throw new NotImplementedException();
+        SocketUser ISocketCache.GetUser(ulong userId)
+            => throw new NotImplementedException();
+        void ISocketCache.AddChannel(SocketChannel channel)
+            => throw new NotImplementedException();
+        void ISocketCache.AddUser(SocketUser user)
+            => throw new NotImplementedException();
+        SocketChannel ISocketCache.RemoveChannel(ulong channelId)
+            => throw new NotImplementedException();
+        SocketUser ISocketCache.RemoveUser(ulong userId)
+            => throw new NotImplementedException();
+        IChannel ICache.GetChannel(ulong channelId)
+            => throw new NotImplementedException();
+        IUser ICache.GetUser(ulong userId)
+            => throw new NotImplementedException();
+        void ICache.AddChannel(IChannel channel)
+            => throw new NotImplementedException();
+        void ICache.AddUser(IUser user)
+            => throw new NotImplementedException();
+        IChannel ICache.RemoveChannel(ulong channelId)
+            => throw new NotImplementedException();
+        IUser ICache.RemoveUser(ulong userId)
+            => throw new NotImplementedException();
+        #endregion
     }
 }

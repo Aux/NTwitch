@@ -2,18 +2,18 @@
 
 namespace NTwitch.WebSocket
 {
-    public interface ISocketCache
+    public interface ISocketCache : ICache
     {
-        IReadOnlyCollection<SocketChannel> Channels { get; }
-        IReadOnlyCollection<SocketUser> Users { get; }
+        new IReadOnlyCollection<SocketChannel> Channels { get; }
+        new IReadOnlyCollection<SocketUser> Users { get; }
 
-        SocketChannel GetChannel(ulong channelId);
-        SocketUser GetUser(ulong userId);
+        new SocketChannel GetChannel(ulong channelId);
+        new SocketUser GetUser(ulong userId);
 
         void AddChannel(SocketChannel channel);
         void AddUser(SocketUser user);
 
-        SocketChannel RemoveChannel(ulong channelId);
-        SocketUser RemoveUser(ulong userId);
+        new SocketChannel RemoveChannel(ulong channelId);
+        new SocketUser RemoveUser(ulong userId);
     }
 }
