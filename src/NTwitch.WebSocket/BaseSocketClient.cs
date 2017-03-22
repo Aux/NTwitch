@@ -6,21 +6,24 @@ namespace NTwitch.WebSocket
 {
     public partial class BaseSocketClient : BaseRestClient
     {
-        public SocketApiClient SocketClient => _socket;
+        public ChatApiClient ChatClient => _chat;
+        public PubsubApiClient PubsubClient => _pubsub;
 
-        internal SocketApiClient _socket;
-
+        private ChatApiClient _chat;
+        private PubsubApiClient _pubsub;
+        private ISocketCache _cache;
         private TwitchSocketConfig _config;
         
         public BaseSocketClient(TwitchSocketConfig config) : base(config)
         {
+            _cache = _config.CacheInstance;
             _config = config;
         }
 
         internal async Task SocketLoginAsync(TokenType type, string token)
         {
             await RestLoginAsync(type, token);
-            _socket = new SocketApiClient(_config, type, token);
+            _chat = new ChatApiClient(_config, type, token);
         }
 
         internal Task ConnectInternalAsync()
@@ -32,5 +35,11 @@ namespace NTwitch.WebSocket
         {
             throw new NotImplementedException();
         }
+
+        // Channel
+        public Task JoinChannelAsync(string name)
+            => _chat.JoinChannelAsync(name);
+        public Task LeaveChannelAsync(string name)
+            => _chat.LeaveChannelAsync(name);
     }
 }

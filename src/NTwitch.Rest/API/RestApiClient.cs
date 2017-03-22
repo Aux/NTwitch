@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NTwitch.Rest.Requests;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Threading.Tasks;
@@ -45,10 +44,15 @@ namespace NTwitch.Rest
 
         internal async Task<API.Token> ValidateTokenAsync()
         {
-            var response = await SendAsync(new ValidateTokenRequest());
-            if (response.StatusCode != HttpStatusCode.OK)
+            try
+            {
+                var response = await SendAsync(new ValidateTokenRequest());
+                return response.GetBodyAsType<API.PreToken>().Token;
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401)
+            {
                 throw new AuthenticationException("Token is invalid.");
-            return response.GetBodyAsType<API.PreToken>().Token;
+            }
         }
 
         #endregion

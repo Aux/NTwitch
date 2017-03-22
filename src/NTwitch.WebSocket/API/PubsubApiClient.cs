@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace NTwitch.WebSocket
 {
-    public class SocketApiClient : IDisposable
+    public class PubsubApiClient : IDisposable
     {
         private SocketClient _client;
 
         private bool _disposed = false;
 
-        public SocketApiClient(TwitchSocketConfig config, TokenType type, string token)
+        public PubsubApiClient(TwitchSocketConfig config, TokenType type, string token)
         {
             _client = new SocketClient(config, type, token);
         }
@@ -18,6 +18,20 @@ namespace NTwitch.WebSocket
         {
             throw new NotImplementedException();
         }
+
+        #region Channels
+
+        internal Task JoinChannelAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+        internal Task LeaveChannelAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
 
         protected virtual void Dispose(bool disposing)
         {
