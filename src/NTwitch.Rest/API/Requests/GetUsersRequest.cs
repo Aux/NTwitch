@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace NTwitch.Rest
+﻿namespace NTwitch.Rest
 {
     internal class GetUsersRequest : RestRequest
     {
-        public GetUsersRequest(string[] usernames) : base("GET", "users", new Dictionary<string, object>()
+        public GetUsersRequest(string[] usernames)
+            : base("GET", "users")
         {
-            { "login", string.Join(",", usernames) }
-        }) { }
+            Parameters.Add("login", string.Join(",", usernames));
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        internal static async Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(RestSimpleUser user, SortMode sort, bool ascending, int limit, int offset)
+        internal static async Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(RestSimpleUser user, SortMode sort, bool ascending, uint limit, uint offset)
         {
             var model = await user.Client.RestClient.GetFollowsAsync(user.Id, sort, ascending, limit, offset);
             var entity = model.Follows.Select(x =>

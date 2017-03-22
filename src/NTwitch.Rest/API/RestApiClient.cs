@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using NTwitch.Rest.Requests;
+﻿using NTwitch.Rest.Requests;
 using System;
-using System.Net.Http;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -25,17 +23,11 @@ namespace NTwitch.Rest
 
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
-            var endpoint = request.Endpoint + request.GetParameterString();
-            var message = new HttpRequestMessage(new HttpMethod(request.Method), endpoint);
+            await _log.DebugAsync("Rest", $"Attempting {request.Method} /{request.Endpoint}").ConfigureAwait(false);
 
-            await _log.DebugAsync("Rest", $"Attempting {request.Method} /{endpoint}").ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(request.JsonBody))
-            {
-                string content = JsonConvert.SerializeObject(request.JsonBody);
-                message.Content = new StringContent(content);
-            }
-
+            var message = request.GetRequest();
             var response = await _client.SendAsync(message);
+
             await _log.VerboseAsync("Rest", $"{request.Method} /{request.Endpoint} {response.ExecuteTime}ms").ConfigureAwait(false);
             return response;
         }
@@ -121,12 +113,16 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
-        internal async Task<API.PreCheer> ModifyChannelAsync(ulong channelId, ModifyChannelParams changes)
+        internal async Task<API.Channel> ModifyChannelAsync(ulong channelId, Action<ModifyChannelParams> options)
         {
+            var changes = new ModifyChannel();
+            options.Invoke(changes.Parameters);
+
             try
             {
-                var response = await SendAsync(new ModifyChannelRequest(channelId, changes));
-                return response.GetBodyAsType<API.PreCheer>();
+                var r = new ModifyChannelRequest(channelId, changes);
+                var response = await SendAsync(r);
+                return response.GetBodyAsType<API.Channel>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
@@ -144,7 +140,7 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
-        internal async Task<API.FollowCollection<API.ChannelFollow>> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, int limit, int offset)
+        internal async Task<API.FollowCollection<API.ChannelFollow>> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
         {
             try
             {

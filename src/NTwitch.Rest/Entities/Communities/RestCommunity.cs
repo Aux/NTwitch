@@ -48,7 +48,7 @@ namespace NTwitch.Rest
 
         public Task<RestUser> GetOwnerAsync()
             => ClientHelper.GetUserAsync(Client, OwnerId);
-        public Task ModifyAsync(Action<ModifyCommunityParams> properties)
-            => ClientHelper.ModifyChannelAsync(properties);
+        //public Task ModifyAsync(Action<ModifyCommunityParams> properties)
+        //    => ClientHelper.ModifyChannelAsync(properties);
     }
 }

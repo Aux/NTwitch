@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace NTwitch.Rest
 {
@@ -7,8 +10,8 @@ namespace NTwitch.Rest
     {
         public string Method { get; }
         public string Endpoint { get; }
-        public Dictionary<string, object> Parameters { get; } = null;
-        public string JsonBody { get; }
+        public Dictionary<string, object> Parameters { get; } = new Dictionary<string, object>();
+        public string JsonBody { get; set; }
 
         public RestRequest(string method, string endpoint)
         {
@@ -16,24 +19,24 @@ namespace NTwitch.Rest
             Endpoint = endpoint;
         }
 
-        public RestRequest(string method, string endpoint, Dictionary<string, object> parameters) 
-            : this(method, endpoint)
+        public HttpRequestMessage GetRequest()
         {
-            Parameters = parameters;
+            var endpoint = Endpoint + GetParameterString();
+            var request = new HttpRequestMessage(new HttpMethod(Method), endpoint);
+
+            if (!string.IsNullOrWhiteSpace(JsonBody))
+            {
+                string content = JsonConvert.SerializeObject(JsonBody);
+                request.Content = new StringContent(content);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            }
+            
+            return request;
         }
-
-        public RestRequest(string method, string endpoint, Dictionary<string, object> parameters, string body) 
-            : this(method, endpoint, parameters)
-        {
-            JsonBody = body;
-        }
-
-        public static string GetBodyString(object obj)
-            => JsonConvert.SerializeObject(obj);
-
+        
         public string GetParameterString()
         {
-            if (Parameters == null)
+            if (Parameters.Count == 0)
                 return "";
 
             List<string> paramList = new List<string>();

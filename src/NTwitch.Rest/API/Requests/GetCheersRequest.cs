@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace NTwitch.Rest
+﻿namespace NTwitch.Rest
 {
     internal class GetCheersRequest : RestRequest
     {
         public GetCheersRequest(ulong? channelId) 
-            : base("GET", "bits/actions", new Dictionary<string, object>()
+            : base("GET", "bits/actions")
         {
-            { "channel_id", channelId }
-        }) { }
+            Parameters.Add("channel_id", channelId);
+        }
     }
 }

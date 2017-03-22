@@ -24,10 +24,17 @@ namespace NTwitch.Tests
 
             await _client.LoginAsync(TokenType.Oauth, "");
 
-            var users = await _client.GetUsersAsync("timthetatman");
-            var follows = await users.First().GetFollowsAsync();
+            var users = await _client.GetUsersAsync("auxesistv");
+            var channel = await users.First().GetChannelAsync();
 
-            Console.WriteLine(follows.Count());
+            Console.WriteLine($"Before: {channel.Status}");
+
+            await channel.ModifyAsync(x =>
+            {
+                x.Status = "NTwitch changed this status :D";
+            });
+
+            Console.WriteLine($"After: {channel.Status}");
             
             await Task.Delay(-1);
         }

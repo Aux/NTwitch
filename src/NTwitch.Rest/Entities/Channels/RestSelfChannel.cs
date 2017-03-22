@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.SelfChannel;
 
 namespace NTwitch.Rest
@@ -20,7 +21,7 @@ namespace NTwitch.Rest
 
         internal virtual void Update(Model model)
         {
-            Email = model.Email;
+            Email = model?.Email ?? Email;
             StreamKey = model.StreamKey;
             base.Update(model);
         }
@@ -30,5 +31,9 @@ namespace NTwitch.Rest
             var entity = await Client.RestClient.GetCurrentChannelAsync().ConfigureAwait(false);
             Update(entity);
         }
+
+        // Channels
+        public Task ModifyAsync(Action<ModifyChannelParams> options)
+            => ChannelHelper.ModifyChannelAsync(this, options);
     }
 }

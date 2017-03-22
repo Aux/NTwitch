@@ -26,9 +26,13 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
-        
+
+        // Channels
+        public Task<RestSelfChannel> GetChannelAsync()
+            => ClientHelper.GetCurrentChannelAsync(Client);
+
         // Follows
-        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, int limit = 25, int offset = 0)
+        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
             => UserHelper.GetFollowsAsync(this, sort, ascending, limit, offset);
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
             => UserHelper.GetFollowAsync(this, channelId);

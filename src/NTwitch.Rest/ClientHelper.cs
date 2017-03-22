@@ -90,11 +90,6 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        public static Task ModifyChannelAsync(Action<ModifyCommunityParams> properties)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
         #region Videos
 
