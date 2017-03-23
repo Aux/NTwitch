@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Video;
 
@@ -24,11 +25,11 @@ namespace NTwitch.Rest
         public uint BroadcastId { get; private set; }
         public uint Length { get; private set; }
         public uint Views { get; private set; }
-        public IEnumerable<VideoSegment> MutedSegments { get; private set; }
-        public Dictionary<string, float> Qualities { get; private set; }
-        public Dictionary<string, string> Previews { get; private set; }
-        public Dictionary<string, string> Resolutions { get; private set; }
-        public Dictionary<string, VideoThumbnail> Thumbnails { get; private set; }
+        public IReadOnlyCollection<VideoSegment> MutedSegments { get; private set; }
+        public IReadOnlyDictionary<string, float> Qualities { get; private set; }
+        public IReadOnlyDictionary<string, string> Previews { get; private set; }
+        public IReadOnlyDictionary<string, string> Resolutions { get; private set; }
+        public IReadOnlyDictionary<string, VideoThumbnail> Thumbnails { get; private set; }
 
         internal RestVideo(BaseRestClient client, string id) 
             : base(client, id) { }
@@ -53,7 +54,7 @@ namespace NTwitch.Rest
             Game = model.Game;
             Language = model.Language;
             Length = model.Length;
-            MutedSegments = model.MutedSegments;
+            MutedSegments = model.MutedSegments.ToArray();
             Previews = model.PreviewImages;
             PublishedAt = model.PublishedAt;
             Resolutions = model.Resolutions;

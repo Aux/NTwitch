@@ -6,7 +6,7 @@ namespace NTwitch.Rest
 {
     public class RestTeam : RestSimpleTeam
     {
-        public IEnumerable<RestChannel> Channels { get; private set; }
+        public IReadOnlyCollection<RestChannel> Channels { get; private set; }
 
         public RestTeam(BaseRestClient client, ulong id) 
             : base(client, id) { }
@@ -26,7 +26,7 @@ namespace NTwitch.Rest
                 var entity = new RestChannel(Client, x.Id);
                 entity.Update(x);
                 return entity;
-            });
+            }).ToArray();
         }
     }
 }

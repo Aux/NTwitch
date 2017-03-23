@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        internal static async Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(RestSimpleUser user, SortMode sort, bool ascending, uint limit, uint offset)
+        internal static async Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(RestSimpleUser user, SortMode sort, bool ascending, uint limit, uint offset)
         {
             var model = await user.Client.RestClient.GetFollowsAsync(user.Id, sort, ascending, limit, offset);
             var entity = model.Follows.Select(x =>
@@ -26,7 +25,7 @@ namespace NTwitch.Rest
                 follow.Update(x);
                 return follow;
             });
-            return entity;
+            return entity.ToArray();
         }
 
         internal static async Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync(RestSimpleUser user, ulong id)

@@ -10,10 +10,10 @@ namespace NTwitch.Rest
     {
         public BaseRestClient Client { get; }
         public string Prefix { get; private set; }
-        public IEnumerable<string> Backgrounds { get; private set; }
-        public IEnumerable<double> Scales { get; private set; }
-        public IEnumerable<string> States { get; private set; }
-        public IEnumerable<RestCheer> Tiers { get; private set; }
+        public IReadOnlyCollection<string> Backgrounds { get; private set; }
+        public IReadOnlyCollection<double> Scales { get; private set; }
+        public IReadOnlyCollection<string> States { get; private set; }
+        public IReadOnlyCollection<RestCheer> Tiers { get; private set; }
         public DateTime UpdatedAt { get; private set; }
         public string Type { get; private set; }
 
@@ -26,9 +26,9 @@ namespace NTwitch.Rest
         internal virtual void Update(Model model)
         {
             Prefix = model.Prefix;
-            Backgrounds = model.Backgrounds;
-            Scales = model.Scales;
-            States = model.States;
+            Backgrounds = model.Backgrounds.ToArray();
+            Scales = model.Scales.ToArray();
+            States = model.States.ToArray();
             UpdatedAt = model.UpdatedAt;
             Type = model.Type;
             Tiers = model.Tiers.Select(x =>
@@ -36,7 +36,7 @@ namespace NTwitch.Rest
                 var cheer = new RestCheer(Client, x.Id);
                 cheer.Update(x);
                 return cheer;
-            });
+            }).ToArray();
         }
 
         public virtual Task UpdateAsync()

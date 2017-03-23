@@ -36,7 +36,7 @@ namespace NTwitch.Rest
         // Channels
         public Task ModifyAsync(Action<ModifyChannelParams> options)
             => ChannelHelper.ModifyChannelAsync(this, options);
-        public Task<IEnumerable<RestUser>> GetEditorsAsync()
+        public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
             => ChannelHelper.GetEditorsAsync(this);
     }
 }

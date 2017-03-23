@@ -32,7 +32,7 @@ namespace NTwitch.Rest
             => ClientHelper.GetCurrentChannelAsync(Client);
 
         // Follows
-        public Task<IEnumerable<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
+        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
             => UserHelper.GetFollowsAsync(this, sort, ascending, limit, offset);
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
             => UserHelper.GetFollowAsync(this, channelId);

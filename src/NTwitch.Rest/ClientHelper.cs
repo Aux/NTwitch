@@ -18,7 +18,7 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        internal static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)
+        internal static async Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
             var model = await client.RestClient.GetIngestsAsync();
 
@@ -28,7 +28,7 @@ namespace NTwitch.Rest
                 ingest.Update(x);
                 return ingest;
             });
-            return entity;
+            return entity.ToArray();
         }
 
         #region Users
@@ -57,7 +57,7 @@ namespace NTwitch.Rest
             return entity;
         }
         
-        public static async Task<IEnumerable<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
+        public static async Task<IReadOnlyCollection<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
         {
             var model = await client.RestClient.GetUsersAsync(usernames);
             if (model == null)
@@ -69,7 +69,7 @@ namespace NTwitch.Rest
                 user.Update(x);
                 return user;
             });
-            return entity;
+            return entity.ToArray();
         }
 
         #endregion
@@ -96,11 +96,11 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        public static async Task<IEnumerable<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
+        public static async Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
         {
             var model = await client.RestClient.GetCheersAsync(channelId);
             var entity = model.Actions.Select(x => new RestCheerInfo(client, x));
-            return entity;
+            return entity.ToArray();
         }
 
         #endregion
@@ -136,7 +136,7 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        public static async Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, uint limit, uint offset)
+        public static async Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, uint limit, uint offset)
         {
             var model = await client.RestClient.GetTeamsAsync(limit, offset);
             if (model == null)
@@ -148,7 +148,7 @@ namespace NTwitch.Rest
                 team.Update(x);
                 return team;
             });
-            return entity;
+            return entity.ToArray();
         }
 
         #endregion

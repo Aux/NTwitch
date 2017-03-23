@@ -42,7 +42,7 @@ namespace NTwitch.Rest
             => ClientHelper.GetCurrentUserAsync(this);
         public Task<RestUser> GetUserAsync(ulong id)
             => ClientHelper.GetUserAsync(this, id);
-        public Task<IEnumerable<RestUser>> GetUsersAsync(params string[] usernames)
+        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(params string[] usernames)
             => ClientHelper.GetUsersAsync(this, usernames);
 
         // Channel
@@ -50,11 +50,11 @@ namespace NTwitch.Rest
             => ClientHelper.GetCurrentChannelAsync(this);
         public Task<RestChannel> GetChannelAsync(ulong channelId)
             => ClientHelper.GetChannelAsync(this, channelId);
-        public Task<IEnumerable<RestCheerInfo>> GetCheersAsync(ulong channelId)
+        public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync(ulong channelId)
             => ClientHelper.GetCheersAsync(this, channelId);
 
         // Teams
-        public Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
             => ClientHelper.GetTeamsAsync(this, limit, offset);
         public Task<RestTeam> GetTeamAsync(string name)
             => ClientHelper.GetTeamAsync(this, name);
@@ -68,7 +68,7 @@ namespace NTwitch.Rest
             => ClientHelper.GetVideoAsync(this, id);
 
         // Ingests
-        public Task<IEnumerable<RestIngest>> GetIngestsAsync()
+        public Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync()
             => ClientHelper.GetIngestsAsync(this);
         
     }

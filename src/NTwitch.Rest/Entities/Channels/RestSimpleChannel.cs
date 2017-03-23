@@ -32,23 +32,23 @@ namespace NTwitch.Rest
         }
 
         // Users
-        public Task<IEnumerable<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
+        public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetFollowersAsync(this, ascending, limit, offset);
-        public Task<IEnumerable<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
+        public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
         public Task<RestUser> GetSubscriberAsync(ulong userId)
             => ChannelHelper.GetSubscriberAsync(this, userId);
 
         // Teams
-        public Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
             => ChannelHelper.GetTeamsAsync(this, limit, offset);
 
         // Cheers
-        public Task<IEnumerable<RestCheerInfo>> GetCheersAsync()
+        public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
             => ClientHelper.GetCheersAsync(Client, Id);
 
         // Videos
-        public Task<IEnumerable<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
+        public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
             => ChannelHelper.GetVideosAsync(this, limit, offset);
     }
 }

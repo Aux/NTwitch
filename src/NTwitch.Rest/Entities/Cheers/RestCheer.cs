@@ -10,7 +10,7 @@ namespace NTwitch.Rest
     {
         public string Color { get; private set; }
         public int MinimumBits { get; private set; }
-        public IEnumerable<RestCheerImage> Images { get; private set; }
+        public IReadOnlyCollection<RestCheerImage> Images { get; private set; }
 
         internal RestCheer(BaseRestClient client, ulong id)
             : base(client, id) { }
@@ -26,7 +26,7 @@ namespace NTwitch.Rest
         {
             Color = model.Color;
             MinimumBits = model.MinimumBits;
-            Images = model.Images.Select(x => new RestCheerImage(Client, x));
+            Images = model.Images.Select(x => new RestCheerImage(Client, x)).ToArray();
         }
 
         public virtual Task UpdateAsync()

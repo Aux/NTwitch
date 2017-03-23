@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Model = NTwitch.Rest.API.Authorization;
 
 namespace NTwitch.Rest
 {
     public class RestAuthorization
     {
-        public IEnumerable<string> Scopes { get; private set; }
+        public IReadOnlyCollection<string> Scopes { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
@@ -21,7 +22,7 @@ namespace NTwitch.Rest
 
         internal virtual void Update(Model model)
         {
-            Scopes = model.Scopes;
+            Scopes = model.Scopes.ToArray();
             CreatedAt = model.CreatedAt;
             UpdatedAt = model.UpdatedAt;
         }

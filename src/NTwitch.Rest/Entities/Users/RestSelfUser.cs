@@ -41,17 +41,17 @@ namespace NTwitch.Rest
         // Follows
         public Task<RestUserFollow> GetFollowersAsync()
             => UserHelper.GetFollowersAsync(this);
-        public Task<IEnumerable<RestUserFollow>> GetFollowerAsync(ulong userId)
+        public Task<IReadOnlyCollection<RestUserFollow>> GetFollowerAsync(ulong userId)
             => UserHelper.GetFollowerAsync(this, userId);
 
         // Subscriptions
-        public Task<IEnumerable<RestChannelSubscription>> GetSubscriptionsAsync()
+        public Task<IReadOnlyCollection<RestChannelSubscription>> GetSubscriptionsAsync()
             => UserHelper.GetSubscriptionsAsync(this);
         public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
             => UserHelper.GetSubscriptionAsync(this, channelId);
 
         // Blocks
-        public Task<IEnumerable<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
+        public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
             => UserHelper.GetBlocksAsync(this, Id, limit, offset);
 
         // VHS

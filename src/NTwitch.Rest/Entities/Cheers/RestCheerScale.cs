@@ -8,8 +8,8 @@ namespace NTwitch.Rest
     public class RestCheerScale
     {
         public BaseRestClient Client { get; }
-        public Dictionary<double, string> Animated { get; private set; }
-        public Dictionary<double, string> Static { get; private set; }
+        public IReadOnlyDictionary<double, string> Animated { get; private set; }
+        public IReadOnlyDictionary<double, string> Static { get; private set; }
 
         internal RestCheerScale(BaseRestClient client, Model model)
         {
