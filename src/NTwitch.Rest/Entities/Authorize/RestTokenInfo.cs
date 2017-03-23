@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Token;
 
 namespace NTwitch.Rest
 {
-    public class RestToken
+    public class RestTokenInfo
     {
         public bool IsValid { get; private set; }
         public string Username { get; private set; }
@@ -12,11 +12,11 @@ namespace NTwitch.Rest
         public string ClientId { get; private set; }
         public RestAuthorization Authorization { get; private set; } = new RestAuthorization();
 
-        internal RestToken() { }
+        internal RestTokenInfo() { }
 
-        internal static RestToken Create(Model model)
+        internal static RestTokenInfo Create(Model model)
         {
-            var entity = new RestToken();
+            var entity = new RestTokenInfo();
             entity.Update(model);
             return entity;
         }

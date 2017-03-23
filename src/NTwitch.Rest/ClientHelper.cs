@@ -7,6 +7,17 @@ namespace NTwitch.Rest
 {
     internal static class ClientHelper
     {
+        public static async Task<RestTokenInfo> AuthorizeAsync(BaseRestClient client)
+        {
+            await client.Logger.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
+            
+            var model = await client.RestClient.ValidateTokenAsync();
+            var entity = RestTokenInfo.Create(model);
+            
+            await client.Logger.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
+            return entity;
+        }
+
         #region Users
 
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)

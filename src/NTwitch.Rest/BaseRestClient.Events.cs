@@ -12,8 +12,8 @@ namespace NTwitch.Rest
             remove { logEvent.Remove(value); }
         }
 
-        internal readonly AsyncEvent<Func<Task>> loggedInEvent = new AsyncEvent<Func<Task>>();
-        public event Func<Task> LoggedIn
+        internal readonly AsyncEvent<Func<RestTokenInfo, Task>> loggedInEvent = new AsyncEvent<Func<RestTokenInfo, Task>>();
+        public event Func<RestTokenInfo, Task> LoggedIn
         {
             add { loggedInEvent.Add(value); }
             remove { loggedInEvent.Remove(value); }

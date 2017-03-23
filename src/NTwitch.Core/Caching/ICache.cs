@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NTwitch.WebSocket
+namespace NTwitch
 {
     public interface ICache
     {

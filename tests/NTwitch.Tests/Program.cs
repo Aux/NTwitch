@@ -25,16 +25,8 @@ namespace NTwitch.Tests
             await _client.LoginAsync(AuthMode.Oauth, "");
 
             var users = await _client.GetUsersAsync("auxesistv");
-            var channel = await users.First().GetChannelAsync();
-
-            Console.WriteLine($"Before: {channel.Status}");
-
-            await channel.ModifyAsync(x =>
-            {
-                x.Status = "Ok now I'm done I think";
-            });
-
-            Console.WriteLine($"After: {channel.Status}");
+            var user = users.First();
+            Console.WriteLine($"{user.Name} ({user.Id})");
 
             await Task.Delay(-1);
         }
