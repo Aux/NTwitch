@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Model = NTwitch.Rest.API.SelfUser;
+using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
@@ -15,14 +15,14 @@ namespace NTwitch.Rest
         public RestSelfUser(BaseRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestSelfUser Create(BaseRestClient client, Model model)
+        internal new static RestSelfUser Create(BaseRestClient client, Model model)
         {
             var entity = new RestSelfUser(client, model.Id);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             base.Update(model);
             Email = model.Email;
@@ -38,28 +38,28 @@ namespace NTwitch.Rest
             Update(entity);
         }
 
-        //// Follows
-        //public Task<RestUserFollow> GetFollowersAsync()
-        //    => UserHelper.GetFollowersAsync(this);
-        //public Task<IEnumerable<RestUserFollow>> GetFollowerAsync(ulong userId)
-        //    => UserHelper.GetFollowerAsync(this, userId);
+        // Follows
+        public Task<RestUserFollow> GetFollowersAsync()
+            => UserHelper.GetFollowersAsync(this);
+        public Task<IEnumerable<RestUserFollow>> GetFollowerAsync(ulong userId)
+            => UserHelper.GetFollowerAsync(this, userId);
 
-        //// Subscriptions
-        //public Task<IEnumerable<RestChannelSubscription>> GetSubscriptionsAsync()
-        //    => UserHelper.GetSubscriptionsAsync(this);
-        //public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
-        //    => UserHelper.GetSubscriptionAsync(this, channelId);
+        // Subscriptions
+        public Task<IEnumerable<RestChannelSubscription>> GetSubscriptionsAsync()
+            => UserHelper.GetSubscriptionsAsync(this);
+        public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
+            => UserHelper.GetSubscriptionAsync(this, channelId);
 
-        //// Blocks
-        //public Task<IEnumerable<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
-        //    => UserHelper.GetBlocksAsync(this, Id, limit, offset);
+        // Blocks
+        public Task<IEnumerable<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
+            => UserHelper.GetBlocksAsync(this, Id, limit, offset);
 
-        //// VHS
-        //public Task<string> CreateHeartbeatAsync()
-        //    => UserHelper.CreateHeartbeatAsync(this);
-        //public Task<string> GetHeartbeatAsync()
-        //    => UserHelper.GetHeartbeatAsync(this);
-        //public Task DeleteHeartbeatAsync()
-        //    => UserHelper.DeleteHeartbeatAsync(this);
+        // VHS
+        public Task<string> CreateHeartbeatAsync()
+            => UserHelper.CreateHeartbeatAsync(this);
+        public Task<string> GetHeartbeatAsync()
+            => UserHelper.GetHeartbeatAsync(this);
+        public Task DeleteHeartbeatAsync()
+            => UserHelper.DeleteHeartbeatAsync(this);
     }
 }

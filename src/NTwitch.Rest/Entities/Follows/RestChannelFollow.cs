@@ -1,4 +1,4 @@
-﻿using Model = NTwitch.Rest.API.ChannelFollow;
+﻿using Model = NTwitch.Rest.API.Follow;
 
 namespace NTwitch.Rest
 {
@@ -9,14 +9,14 @@ namespace NTwitch.Rest
         internal RestChannelFollow(BaseRestClient client) 
             : base(client) { }
 
-        internal static RestChannelFollow Create(BaseRestClient client, Model model)
+        internal new static RestChannelFollow Create(BaseRestClient client, Model model)
         {
             var entity = new RestChannelFollow(client);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             Channel = new RestChannel(Client, model.Channel.Id);
             Channel.Update(model.Channel);

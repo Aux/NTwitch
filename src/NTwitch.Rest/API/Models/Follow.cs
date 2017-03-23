@@ -9,5 +9,9 @@ namespace NTwitch.Rest.API
         public DateTime CreatedAt { get; set; }
         [JsonProperty("notifications")]
         public bool Notifications { get; set; }
+        [JsonProperty("user")]
+        public User User { get; set; }
+        [JsonProperty("channel")]
+        public Channel Channel { get; set; }
     }
 }

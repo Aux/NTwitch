@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    public class CheerInfo
+    internal class CheerInfo
     {
         [JsonProperty("backgrounds")]
         public IEnumerable<string> Backgrounds { get; set; }

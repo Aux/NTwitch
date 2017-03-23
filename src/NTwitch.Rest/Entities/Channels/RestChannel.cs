@@ -25,14 +25,14 @@ namespace NTwitch.Rest
         internal RestChannel(BaseRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestChannel Create(BaseRestClient client, Model model)
+        internal new static RestChannel Create(BaseRestClient client, Model model)
         {
             var entity = new RestChannel(client, model.Id);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             CreatedAt = model.CreatedAt;
             UpdatedAt = model.UpdatedAt;

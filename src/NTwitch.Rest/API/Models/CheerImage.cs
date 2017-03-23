@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class CheerImage
+    internal class CheerImage
     {
         [JsonProperty("dark")]
         public CheerScale Dark { get; set; }

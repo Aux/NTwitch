@@ -14,14 +14,14 @@ namespace NTwitch.Rest
         internal RestUser(BaseRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestUser Create(BaseRestClient client, Model model)
+        internal new static RestUser Create(BaseRestClient client, Model model)
         {
             var entity = new RestUser(client, model.Id);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             CreatedAt = model.CreatedAt;
             UpdatedAt = model.UpdatedAt;

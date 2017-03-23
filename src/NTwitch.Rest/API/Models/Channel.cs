@@ -3,8 +3,14 @@ using System;
 
 namespace NTwitch.Rest.API
 {
-    public class Channel : SimpleChannel
+    internal class Channel
     {
+        [JsonProperty("_id")]
+        public ulong Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("display_name")]
+        public string DisplayName { get; set; }
         [JsonProperty("mature")]
         public bool? IsMature { get; set; }
         [JsonProperty("status")]
@@ -35,5 +41,9 @@ namespace NTwitch.Rest.API
         public uint Views { get; set; }
         [JsonProperty("followers")]
         public uint Followers { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
+        [JsonProperty("stream_key")]
+        public string StreamKey { get; set; }
     }
 }

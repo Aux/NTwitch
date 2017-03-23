@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    public class CheerScale
+    internal class CheerScale
     {
         [JsonProperty("animated")]
         public Dictionary<double, string> Animated { get; set; }

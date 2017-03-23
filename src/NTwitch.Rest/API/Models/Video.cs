@@ -13,7 +13,7 @@ namespace NTwitch.Rest.API
         [JsonProperty("broadcast_type")]
         public string BroadcastType { get; set; }
         [JsonProperty("channel")]
-        public SimpleChannel Channel { get; set; }
+        public Channel Channel { get; set; }
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
         [JsonProperty("description")]

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    internal class FollowCollection<T> where T : Follow
+    internal class FollowCollection
     {
         [JsonProperty("follows")]
-        public IEnumerable<T> Follows { get; set; }
+        public IEnumerable<Follow> Follows { get; set; }
     }
 }

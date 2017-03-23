@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class Community
+    internal class Community
     {
         [JsonProperty("_id")]
         public string Id { get; set; }

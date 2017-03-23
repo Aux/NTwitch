@@ -1,4 +1,4 @@
-﻿using Model = NTwitch.Rest.API.ChannelSubscription;
+﻿using Model = NTwitch.Rest.API.Subscription;
 
 namespace NTwitch.Rest
 {
@@ -9,14 +9,14 @@ namespace NTwitch.Rest
         internal RestChannelSubscription(BaseRestClient client) 
             : base(client) { }
 
-        internal static RestChannelSubscription Create(BaseRestClient client, Model model)
+        internal new static RestChannelSubscription Create(BaseRestClient client, Model model)
         {
             var entity = new RestChannelSubscription(client);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             Channel = new RestChannel(Client, model.Channel.Id);
             Channel.Update(model.Channel);

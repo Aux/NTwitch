@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Model = NTwitch.Rest.API.SelfChannel;
+using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
@@ -12,14 +13,14 @@ namespace NTwitch.Rest
         internal RestSelfChannel(BaseRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestSelfChannel Create(BaseRestClient client, Model model)
+        internal new static RestSelfChannel Create(BaseRestClient client, Model model)
         {
             var entity = new RestSelfChannel(client, model.Id);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             Email = model?.Email ?? Email;
             StreamKey = model.StreamKey;
@@ -35,5 +36,7 @@ namespace NTwitch.Rest
         // Channels
         public Task ModifyAsync(Action<ModifyChannelParams> options)
             => ChannelHelper.ModifyChannelAsync(this, options);
+        public Task<IEnumerable<RestUser>> GetEditorsAsync()
+            => ChannelHelper.GetEditorsAsync(this);
     }
 }

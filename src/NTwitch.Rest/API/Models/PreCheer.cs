@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    public class PreCheer
+    internal class PreCheer
     {
         [JsonProperty("actions")]
         public IEnumerable<CheerInfo> Actions { get; set; }

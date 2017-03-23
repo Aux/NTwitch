@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    public class Cheer
+    internal class Cheer
     {
         [JsonProperty("id")]
         public uint Id { get; set; }

@@ -1,4 +1,4 @@
-﻿using Model = NTwitch.Rest.API.UserFollow;
+﻿using Model = NTwitch.Rest.API.Follow;
 
 namespace NTwitch.Rest
 {
@@ -8,14 +8,14 @@ namespace NTwitch.Rest
 
         internal RestUserFollow(BaseRestClient client) : base(client) { }
 
-        internal static RestUserFollow Create(BaseRestClient client, Model model)
+        internal new static RestUserFollow Create(BaseRestClient client, Model model)
         {
             var entity = new RestUserFollow(client);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
             User = new RestUser(Client, model.User.Id);
             User.Update(model.User);
