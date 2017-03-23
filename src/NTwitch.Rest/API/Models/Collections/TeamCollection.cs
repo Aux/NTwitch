@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NTwitch.Rest.API
 {
-    internal class PreTeam
+    internal class TeamCollection
     {
         [JsonProperty("teams")]
         public IEnumerable<Team> Teams { get; set; }

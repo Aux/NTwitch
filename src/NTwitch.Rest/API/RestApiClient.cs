@@ -39,7 +39,7 @@ namespace NTwitch.Rest
             try
             {
                 var response = await SendAsync(new ValidateTokenRequest());
-                return response.GetBodyAsType<API.PreToken>().Token;
+                return response.GetBodyAsType<API.TokenCollection>().Token;
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401)
             {
@@ -207,12 +207,12 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
-        internal async Task<API.PreTeam> GetTeamsAsync(uint limit, uint offset)
+        internal async Task<API.TeamCollection> GetTeamsAsync(uint limit, uint offset)
         {
             try
             {
                 var response = await SendAsync("GET", $"teams");
-                return response.GetBodyAsType<API.PreTeam>();
+                return response.GetBodyAsType<API.TeamCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
