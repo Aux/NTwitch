@@ -18,6 +18,19 @@ namespace NTwitch.Rest
             return entity;
         }
 
+        internal static async Task<IEnumerable<RestIngest>> GetIngestsAsync(BaseRestClient client)
+        {
+            var model = await client.RestClient.GetIngestsAsync();
+
+            var entity = model.Ingests.Select(x =>
+            {
+                var ingest = new RestIngest(client, x.Id);
+                ingest.Update(x);
+                return ingest;
+            });
+            return entity;
+        }
+
         #region Users
 
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)

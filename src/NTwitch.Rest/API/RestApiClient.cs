@@ -32,7 +32,7 @@ namespace NTwitch.Rest
             return response;
         }
 
-        #region Authorization
+        #region Misc
 
         internal async Task<API.Token> ValidateTokenAsync()
         {
@@ -45,6 +45,16 @@ namespace NTwitch.Rest
             {
                 throw new AuthenticationException("Token is invalid.");
             }
+        }
+
+        internal async Task<API.IngestCollection> GetIngestsAsync()
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"ingests");
+                return response.GetBodyAsType<API.IngestCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
         #endregion
@@ -103,12 +113,12 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
         
-        internal async Task<API.PreCheer> GetCheersAsync(ulong? id)
+        internal async Task<API.CheerCollection> GetCheersAsync(ulong? id)
         {
             try
             {
                 var response = await SendAsync(new GetCheersRequest(id));
-                return response.GetBodyAsType<API.PreCheer>();
+                return response.GetBodyAsType<API.CheerCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }

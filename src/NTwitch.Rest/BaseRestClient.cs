@@ -66,6 +66,10 @@ namespace NTwitch.Rest
         // Videos
         public Task<RestVideo> GetVideoAsync(string id)
             => ClientHelper.GetVideoAsync(this, id);
+
+        // Ingests
+        public Task<IEnumerable<RestIngest>> GetIngestsAsync()
+            => ClientHelper.GetIngestsAsync(this);
         
     }
 }
