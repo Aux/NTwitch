@@ -12,7 +12,7 @@ namespace NTwitch.Rest
 
         private bool _disposed = false;
 
-        public RestApiClient(TwitchRestConfig config, LogManager log, TokenType type, string token)
+        public RestApiClient(TwitchRestConfig config, LogManager log, AuthMode type, string token)
         {
             _log = log;
             _client = new RestClient(config, type, token);
@@ -120,8 +120,7 @@ namespace NTwitch.Rest
 
             try
             {
-                var r = new ModifyChannelRequest(channelId, changes);
-                var response = await SendAsync(r);
+                var response = await SendAsync(new ModifyChannelRequest(channelId, changes));
                 return response.GetBodyAsType<API.Channel>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }

@@ -20,7 +20,7 @@ namespace NTwitch.Tcp
 
         public async Task LoginAsync(string username, string token)
         {
-            await RestLoginAsync(TokenType.Oauth, token);
+            await RestLoginAsync(AuthMode.Oauth, token);
 
             _chat = new TcpApiClient(_config, username, token);
             if (!Token.Authorization.Scopes.Contains("chat_login"))
@@ -33,7 +33,7 @@ namespace NTwitch.Tcp
         public Task DisconnectAsync()
             => _chat.DisconnectAsync();
 
-        Task ITwitchClient.LoginAsync(TokenType type, string token)
+        Task ITwitchClient.LoginAsync(AuthMode type, string token)
             => throw new NotSupportedException();
     }
 }

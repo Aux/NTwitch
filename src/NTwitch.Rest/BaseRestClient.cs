@@ -24,7 +24,7 @@ namespace NTwitch.Rest
         private Task OnLogInternalAsync(LogMessage msg)
             => logEvent.InvokeAsync(msg);
 
-        internal async Task RestLoginAsync(TokenType type, string token)
+        internal async Task RestLoginAsync(AuthMode type, string token)
         {
             await _log.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
             _rest = new RestApiClient(_config, _log, type, token);

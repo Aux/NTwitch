@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public enum TokenType
+    public enum AuthMode
     {
         ClientId,
         Oauth

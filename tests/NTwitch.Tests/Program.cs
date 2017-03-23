@@ -22,7 +22,7 @@ namespace NTwitch.Tests
 
             _client.Log += OnLogAsync;
 
-            await _client.LoginAsync(TokenType.Oauth, "");
+            await _client.LoginAsync(AuthMode.Oauth, "");
 
             var users = await _client.GetUsersAsync("auxesistv");
             var channel = await users.First().GetChannelAsync();
@@ -31,11 +31,11 @@ namespace NTwitch.Tests
 
             await channel.ModifyAsync(x =>
             {
-                x.Status = "NTwitch changed this status :D";
+                x.Status = "Ok now I'm done I think";
             });
 
             Console.WriteLine($"After: {channel.Status}");
-            
+
             await Task.Delay(-1);
         }
 

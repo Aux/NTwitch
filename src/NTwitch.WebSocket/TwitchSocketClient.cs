@@ -8,7 +8,7 @@ namespace NTwitch.WebSocket
         public TwitchSocketClient() : this(new TwitchSocketConfig()) { }
         public TwitchSocketClient(TwitchSocketConfig config) : base(config) { }
         
-        public Task LoginAsync(TokenType type, string token)
+        public Task LoginAsync(AuthMode type, string token)
             => SocketLoginAsync(type, token);
         
         Task ITwitchClient.ConnectAsync()

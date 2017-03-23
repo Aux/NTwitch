@@ -13,12 +13,12 @@ namespace NTwitch.WebSocket
         private CancellationTokenSource _cancelTokenSource;
         private Task _task;
 
-        private TokenType _tokenType;
+        private AuthMode _tokenType;
         private string _host;
         private string _token;
         private bool _disposed = false;
 
-        public SocketClient(TwitchSocketConfig config, TokenType type, string token)
+        public SocketClient(TwitchSocketConfig config, AuthMode type, string token)
         {
             _host = config.SocketHost;
             _tokenType = type;

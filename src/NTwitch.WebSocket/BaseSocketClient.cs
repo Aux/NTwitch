@@ -20,7 +20,7 @@ namespace NTwitch.WebSocket
             _config = config;
         }
 
-        internal async Task SocketLoginAsync(TokenType type, string token)
+        internal async Task SocketLoginAsync(AuthMode type, string token)
         {
             await RestLoginAsync(type, token);
             _chat = new ChatApiClient(_config, type, token);

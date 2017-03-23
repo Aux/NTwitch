@@ -9,7 +9,7 @@ namespace NTwitch.WebSocket
 
         private bool _disposed = false;
 
-        public ChatApiClient(TwitchSocketConfig config, TokenType type, string token)
+        public ChatApiClient(TwitchSocketConfig config, AuthMode type, string token)
         {
             _client = new SocketClient(config, type, token);
         }

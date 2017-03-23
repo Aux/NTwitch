@@ -8,7 +8,7 @@ namespace NTwitch.Rest
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
         public TwitchRestClient(TwitchRestConfig config) : base(config) { }
 
-        public Task LoginAsync(TokenType type, string token)
+        public Task LoginAsync(AuthMode type, string token)
             => RestLoginAsync(type, token);
 
         Task ITwitchClient.ConnectAsync()

@@ -9,14 +9,14 @@ namespace NTwitch.Rest
     {
         private HttpClient _client = null;
         
-        private TokenType _tokenType;
+        private AuthMode _tokenType;
         private string _host;
         private string _token;
         private bool _disposed = false;
 
-        public RestClient(TwitchRestConfig config, TokenType type, string token)
+        public RestClient(TwitchRestConfig config, AuthMode type, string token)
             : this(config.RestHost, type, token) { }
-        public RestClient(string host, TokenType type, string token)
+        public RestClient(string host, AuthMode type, string token)
         {
             _host = host;
             _tokenType = type;
@@ -52,11 +52,11 @@ namespace NTwitch.Rest
 
                 client.BaseAddress = new Uri(_host);
                 client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-                client.DefaultRequestHeaders.Add("User-Agent", TwitchConfig.UserAgent);
+                client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", TwitchConfig.UserAgent);
 
-                if (_tokenType == TokenType.ClientId)
+                if (_tokenType == AuthMode.ClientId)
                     client.DefaultRequestHeaders.Add("Client-ID", _token);
-                if (_tokenType == TokenType.Oauth)
+                if (_tokenType == AuthMode.Oauth)
                     client.DefaultRequestHeaders.Add("Authorization", $"OAuth {_token}");
 
                 _client = client;

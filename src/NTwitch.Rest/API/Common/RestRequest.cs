@@ -25,11 +25,7 @@ namespace NTwitch.Rest
             var request = new HttpRequestMessage(new HttpMethod(Method), endpoint);
 
             if (!string.IsNullOrWhiteSpace(JsonBody))
-            {
-                string content = JsonConvert.SerializeObject(JsonBody);
-                request.Content = new StringContent(content);
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            }
+                request.Content = new StringContent(JsonBody, Encoding.UTF8, "application/json");
             
             return request;
         }
