@@ -40,7 +40,7 @@ namespace NTwitch.Rest
             => ChannelHelper.GetSubscriberAsync(this, userId);
 
         // Teams
-        public Task<IEnumerable<RestTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
+        public Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
             => ChannelHelper.GetTeamsAsync(this, limit, offset);
 
         // Cheers

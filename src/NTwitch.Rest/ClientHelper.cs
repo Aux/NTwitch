@@ -113,5 +113,31 @@ namespace NTwitch.Rest
         }
 
         #endregion
+        #region Teams
+
+        public static async Task<RestTeam> GetTeamAsync(BaseRestClient client, string name)
+        {
+            var model = await client.RestClient.GetTeamAsync(name);
+            var entity = new RestTeam(client, model.Id);
+            entity.Update(model);
+            return entity;
+        }
+
+        public static async Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, uint limit, uint offset)
+        {
+            var model = await client.RestClient.GetTeamsAsync(limit, offset);
+            if (model == null)
+                return new List<RestSimpleTeam>();
+
+            var entity = model.Teams.Select(x =>
+            {
+                var team = new RestSimpleTeam(client, x.Id);
+                team.Update(x);
+                return team;
+            });
+            return entity;
+        }
+
+        #endregion
     }
 }

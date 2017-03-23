@@ -50,12 +50,12 @@ namespace NTwitch.Rest
         #endregion
         #region Users
 
-        internal async Task<API.SelfUser> GetCurrentUserAsync()
+        internal async Task<API.User> GetCurrentUserAsync()
         {
             try
             {
                 var response = await SendAsync("GET", "user");
-                return response.GetBodyAsType<API.SelfUser>();
+                return response.GetBodyAsType<API.User>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
@@ -93,12 +93,12 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
-        internal async Task<API.SelfChannel> GetCurrentChannelAsync()
+        internal async Task<API.Channel> GetCurrentChannelAsync()
         {
             try
             {
                 var response = await SendAsync("GET", "channel");
-                return response.GetBodyAsType<API.SelfChannel>();
+                return response.GetBodyAsType<API.Channel>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
@@ -129,22 +129,22 @@ namespace NTwitch.Rest
         #endregion
         #region Follows
 
-        internal async Task<API.ChannelFollow> GetFollowAsync(ulong userId, ulong channelId)
+        internal async Task<API.Follow> GetFollowAsync(ulong userId, ulong channelId)
         {
             try
             {
                 var response = await SendAsync("GET", $"users/{userId}/follows/channels/{channelId}");
-                return response.GetBodyAsType<API.ChannelFollow>();
+                return response.GetBodyAsType<API.Follow>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
-        internal async Task<API.FollowCollection<API.ChannelFollow>> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
+        internal async Task<API.FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
         {
             try
             {
                 var response = await SendAsync(new GetFollowsRequest(userId, sort, ascending, limit, offset));
-                return response.GetBodyAsType<API.FollowCollection<API.ChannelFollow>>();
+                return response.GetBodyAsType<API.FollowCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
         }
@@ -190,6 +190,29 @@ namespace NTwitch.Rest
             {
                 var response = await SendAsync("GET", $"users/{id}/emotes");
                 return response.GetBodyAsType<API.EmoteSet>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        #endregion
+        #region Teams
+
+        internal async Task<API.Team> GetTeamAsync(string name)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"teams/{name}");
+                return response.GetBodyAsType<API.Team>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        internal async Task<API.PreTeam> GetTeamsAsync(uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"teams");
+                return response.GetBodyAsType<API.PreTeam>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }

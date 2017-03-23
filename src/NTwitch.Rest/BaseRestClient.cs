@@ -54,8 +54,8 @@ namespace NTwitch.Rest
             => ClientHelper.GetCheersAsync(this, channelId);
 
         // Teams
-        public Task<IEnumerable<RestTeam>> GetTeamsAsync()
-            => ClientHelper.GetTeamsAsync(this);
+        public Task<IEnumerable<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
+            => ClientHelper.GetTeamsAsync(this, limit, offset);
         public Task<RestTeam> GetTeamAsync(string name)
             => ClientHelper.GetTeamAsync(this, name);
 
