@@ -11,5 +11,11 @@ namespace NTwitch.Rest.API
         public int Total { get; set; }
         [JsonProperty("communities")]
         public IEnumerable<Community> Communities { get; set; }
+        [JsonProperty("moderators")]
+        public IEnumerable<User> Moderators { get; set; }
+        [JsonProperty("timed_out_users")]
+        public IEnumerable<User> Timeouts { get; set; }
+        [JsonProperty("banned_users")]
+        public IEnumerable<User> Bans { get; set; }
     }
 }

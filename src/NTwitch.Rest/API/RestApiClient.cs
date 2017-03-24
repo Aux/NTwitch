@@ -246,6 +246,36 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
         }
 
+        internal async Task<API.CommunityCollection> GetCommunityModeratorsAsync(string id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"communities/{id}/moderators");
+                return response.GetBodyAsType<API.CommunityCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.CommunityCollection> GetCommunityBansAsync(string id, uint limit)
+        {
+            try
+            {
+                var response = await SendAsync(new GetCommunityBansRequest(id, limit));
+                return response.GetBodyAsType<API.CommunityCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.CommunityCollection> GetCommunityTimeoutsAsync(string id, uint limit)
+        {
+            try
+            {
+                var response = await SendAsync(new GetCommunityTimeoutsRequest(id, limit));
+                return response.GetBodyAsType<API.CommunityCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
         #endregion
         #region Videos
 

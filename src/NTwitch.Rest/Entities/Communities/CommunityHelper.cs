@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -97,6 +98,58 @@ namespace NTwitch.Rest
 
             return community.Client.RestClient.RemoveCoverAsync(community.Id);
         }
+
+        #endregion
+        #region Users
+
+        public static async Task<IReadOnlyCollection<RestUser>> GetModeratorsAsync(RestSimpleCommunity community)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
+                throw new MissingScopeException("communities_edit");
+
+            var model = await community.Client.RestClient.GetCommunityModeratorsAsync(community.Id);
+
+            var entity = model.Moderators.Select(x =>
+            {
+                var user = new RestUser(community.Client, x.Id);
+                user.Update(x);
+                return user;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, uint limit)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
+                throw new MissingScopeException("communities_edit");
+
+            var model = await community.Client.RestClient.GetCommunityBansAsync(community.Id, limit);
+
+            var entity = model.Bans.Select(x =>
+            {
+                var user = new RestBannedUser(community.Client, x.Id);
+                user.Update(x);
+                return user;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestSimpleCommunity community, uint limit)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
+                throw new MissingScopeException("communities_edit");
+
+            var model = await community.Client.RestClient.GetCommunityTimeoutsAsync(community.Id, limit);
+
+            var entity = model.Timeouts.Select(x =>
+            {
+                var user = new RestBannedUser(community.Client, x.Id);
+                user.Update(x);
+                return user;
+            });
+            return entity.ToArray();
+        }
+
 
         #endregion
     }

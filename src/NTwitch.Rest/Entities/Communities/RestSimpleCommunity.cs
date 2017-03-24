@@ -64,8 +64,8 @@ namespace NTwitch.Rest
         public Task RemoveModeratorAsync(ulong userId)
             => CommunityHelper.RemoveModeratorAsync(this, userId);
         /// <summary> Get users banned from this community. </summary>
-        public Task<IReadOnlyCollection<RestBannedUser>> GetBannedUsersAsync(uint limit = 10)
-            => CommunityHelper.GetBannedUsersAsync(this, limit);
+        public Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(uint limit = 10)
+            => CommunityHelper.GetBansAsync(this, limit);
         /// <summary> Add a new ban to this community. </summary>
         public Task AddBanAsync(ulong userId)
             => CommunityHelper.AddBanAsync(this, userId);
