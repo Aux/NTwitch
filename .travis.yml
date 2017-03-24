@@ -19,8 +19,8 @@ script:
   - dotnet restore
   - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 
-#deploy:
-#  provider: script
-#  skip_cleanup: true
-#  script:
-#    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
