@@ -21,6 +21,10 @@ namespace NTwitch.Rest.API
         public DateTime CreatedAt { get; set; }
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; set; }
+        [JsonProperty("start_timestamp")]
+        public DateTime StartAt { get; set; }
+        [JsonProperty("end_timestamp")]
+        public DateTime EndAt { get; set; }
         [JsonProperty("email")]
         public string Email { get; set; }
         [JsonProperty("email_verified")]

@@ -26,5 +26,9 @@ namespace NTwitch.Rest.API
         public string AvatarImageUrl { get; set; }
         [JsonProperty("cover_image_url")]
         public string CoverImageUrl { get; set; }
+        [JsonProperty("channels")]
+        public uint Channels { get; set; }
+        [JsonProperty("viewers")]
+        public uint Viewers { get; set; }
     }
 }

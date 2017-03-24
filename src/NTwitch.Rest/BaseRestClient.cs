@@ -40,8 +40,8 @@ namespace NTwitch.Rest
         // User
         public Task<RestSelfUser> GetCurrentUserAsync()
             => ClientHelper.GetCurrentUserAsync(this);
-        public Task<RestUser> GetUserAsync(ulong id)
-            => ClientHelper.GetUserAsync(this, id);
+        public Task<RestUser> GetUserAsync(ulong userId)
+            => ClientHelper.GetUserAsync(this, userId);
         public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(params string[] usernames)
             => ClientHelper.GetUsersAsync(this, usernames);
 
@@ -60,12 +60,12 @@ namespace NTwitch.Rest
             => ClientHelper.GetTeamAsync(this, name);
 
         // Community
-        public Task<RestCommunity> GetCommunityAsync(string id, bool isname = false)
-            => ClientHelper.GetCommunityAsync(this, id, isname);
+        public Task<RestCommunity> GetCommunityAsync(string communityId, bool isname = false)
+            => ClientHelper.GetCommunityAsync(this, communityId, isname);
 
         // Videos
-        public Task<RestVideo> GetVideoAsync(string id)
-            => ClientHelper.GetVideoAsync(this, id);
+        public Task<RestVideo> GetVideoAsync(string videoId)
+            => ClientHelper.GetVideoAsync(this, videoId);
 
         // Ingests
         public Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync()
