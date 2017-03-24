@@ -31,7 +31,7 @@ namespace NTwitch.Rest
             await _log.VerboseAsync("Rest", $"{request.Method} /{request.Endpoint} {response.ExecuteTime}ms").ConfigureAwait(false);
             return response;
         }
-
+        
         #region Misc
 
         internal async Task<API.Token> ValidateTokenAsync()
@@ -197,7 +197,16 @@ namespace NTwitch.Rest
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
-        
+
+        internal async Task CommunityReportAsync(string id, ulong channelId)
+        {
+            try
+            {
+                var response = await SendAsync(new CommunityReportRequest(id, channelId));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
         internal async Task ModifyCommunityAsync(string communityId, Action<ModifyCommunityParams> options)
         {
             var changes = new ModifyCommunityParams();
@@ -256,6 +265,24 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
+        internal async Task RemoveCommunityModeratorAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("PUT", $"communities/{id}/moderators/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task AddCommunityModeratorAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("DELETE", $"communities/{id}/moderators/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
         internal async Task<API.CommunityCollection> GetCommunityBansAsync(string id, uint limit)
         {
             try
@@ -266,6 +293,24 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
+        internal async Task AddCommunityBanAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("PUT", $"communities/{id}/bans/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task RemoveCommunityBanAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("DELETE", $"communities/{id}/bans/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
         internal async Task<API.CommunityCollection> GetCommunityTimeoutsAsync(string id, uint limit)
         {
             try
@@ -274,6 +319,24 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.CommunityCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task AddCommunityTimeoutAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("PUT", $"communities/{id}/timeouts/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task RemoveCommunityTimeoutAsync(string id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("DELETE", $"communities/{id}/timeouts/{userId}");
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
         }
 
         #endregion

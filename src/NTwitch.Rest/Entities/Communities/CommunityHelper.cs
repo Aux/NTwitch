@@ -23,6 +23,11 @@ namespace NTwitch.Rest
             return Convert.ToBase64String(bytes);
         }
 
+        internal static Task ReportChannelAsync(RestSimpleCommunity community, ulong channelId)
+        {
+            return community.Client.RestClient.CommunityReportAsync(community.Id, channelId);
+        }
+
         #region Communities
 
         internal static async Task<RestCommunityPermissions> GetPermissionsAsync(RestSimpleCommunity community)
@@ -118,10 +123,26 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, uint limit)
+        internal static Task AddModeratorAsync(RestSimpleCommunity community, ulong userId)
         {
             if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
+
+            return community.Client.RestClient.AddCommunityModeratorAsync(community.Id, userId);
+        }
+
+        internal static Task RemoveModeratorAsync(RestSimpleCommunity community, ulong userId)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
+                throw new MissingScopeException("communities_edit");
+
+            return community.Client.RestClient.RemoveCommunityModeratorAsync(community.Id, userId);
+        }
+
+        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, uint limit)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
 
             var model = await community.Client.RestClient.GetCommunityBansAsync(community.Id, limit);
 
@@ -134,10 +155,26 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
+        internal static Task AddBanAsync(RestSimpleCommunity community, ulong userId)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
+
+            return community.Client.RestClient.AddCommunityBanAsync(community.Id, userId);
+        }
+
+        internal static Task RemoveBanAsync(RestSimpleCommunity community, ulong userId)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
+
+            return community.Client.RestClient.RemoveCommunityBanAsync(community.Id, userId);
+        }
+
         internal static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestSimpleCommunity community, uint limit)
         {
-            if (!community.Client.Token.Authorization.Scopes.Contains("communities_edit"))
-                throw new MissingScopeException("communities_edit");
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
 
             var model = await community.Client.RestClient.GetCommunityTimeoutsAsync(community.Id, limit);
 
@@ -150,7 +187,22 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
+        internal static Task AddTimeoutAsync(RestSimpleCommunity community, ulong userId, uint duration, string reason)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
 
+            return community.Client.RestClient.AddCommunityTimeoutAsync(community.Id, userId);
+        }
+
+        internal static Task RemoveTimeoutAsync(RestSimpleCommunity community, ulong userId)
+        {
+            if (!community.Client.Token.Authorization.Scopes.Contains("communities_moderate"))
+                throw new MissingScopeException("communities_moderate");
+
+            return community.Client.RestClient.RemoveCommunityTimeoutAsync(community.Id, userId);
+        }
+        
         #endregion
     }
 }
