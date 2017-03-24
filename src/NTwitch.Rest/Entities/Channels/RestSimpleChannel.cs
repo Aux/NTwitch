@@ -25,30 +25,23 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
-
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         // Users
         public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetFollowersAsync(this, ascending, limit, offset);
-        public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
-        public Task<RestUser> GetSubscriberAsync(ulong userId)
-            => ChannelHelper.GetSubscriberAsync(this, userId);
 
         // Teams
-        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetTeamsAsync(this, limit, offset);
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
+            => ChannelHelper.GetTeamsAsync(this);
 
-        // Cheers
+        // Chat
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
             => ClientHelper.GetCheersAsync(Client, Id);
+        public Task<RestChatBadges> GetChatBadgesAsync()
+            => ChannelHelper.GetChatBadgesAsync(this);
 
         // Videos
-        public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
-            => ChannelHelper.GetVideosAsync(this, limit, offset);
+        //public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
+        //    => ChannelHelper.GetVideosAsync(this, limit, offset);
     }
 }

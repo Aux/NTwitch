@@ -31,7 +31,7 @@ namespace NTwitch.Rest
             await _log.VerboseAsync("Rest", $"{request.Method} /{request.Endpoint} {response.ExecuteTime}ms").ConfigureAwait(false);
             return response;
         }
-        
+
         #region Misc
 
         internal async Task<API.Token> ValidateTokenAsync()
@@ -103,22 +103,22 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
         }
 
+        internal async Task<API.Subscription> GetSubscriberAsync(ulong id, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"channels/{id}/subscriptions/{userId}");
+                return response.GetBodyAsType<API.Subscription>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
         internal async Task<API.Channel> GetCurrentChannelAsync()
         {
             try
             {
                 var response = await SendAsync("GET", "channel");
                 return response.GetBodyAsType<API.Channel>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.CheerCollection> GetCheersAsync(ulong? id)
-        {
-            try
-            {
-                var response = await SendAsync(new GetCheersRequest(id));
-                return response.GetBodyAsType<API.CheerCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
@@ -132,6 +132,46 @@ namespace NTwitch.Rest
             {
                 var response = await SendAsync(new ModifyChannelRequest(channelId, changes));
                 return response.GetBodyAsType<API.Channel>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.TeamCollection> GetChannelTeamsAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"channels/{id}/teams");
+                return response.GetBodyAsType<API.TeamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.UserCollection> GetChannelEditorsAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"channels/{id}/editors");
+                return response.GetBodyAsType<API.UserCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.FollowCollection> GetChannelFollowsAsync(ulong id, bool ascending, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"channels/{id}/follows");
+                return response.GetBodyAsType<API.FollowCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.SubscriptionCollection> GetChannelSubscriptionsAsync(ulong id, bool ascending, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"channels/{id}/subscriptions");
+                return response.GetBodyAsType<API.SubscriptionCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
@@ -386,6 +426,29 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.TeamCollection>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        #endregion
+        #region Chat
+
+        internal async Task<API.CheerCollection> GetCheersAsync(ulong? id)
+        {
+            try
+            {
+                var response = await SendAsync(new GetCheersRequest(id));
+                return response.GetBodyAsType<API.CheerCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.ChatBadges> GetChatBadgesAsync(ulong id)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"chat/{id}/badges");
+                return response.GetBodyAsType<API.ChatBadges>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
         #endregion

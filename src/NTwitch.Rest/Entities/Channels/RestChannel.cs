@@ -52,7 +52,7 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
-        public override async Task UpdateAsync()
+        public virtual async Task UpdateAsync()
         {
             var entity = await Client.RestClient.GetChannelAsync(Id).ConfigureAwait(false);
             Update(entity);

@@ -24,9 +24,16 @@ namespace NTwitch.Tests
 
             await _client.LoginAsync(AuthMode.Oauth, "");
 
-            var users = await _client.GetUsersAsync("auxesistv");
-            var user = users.First();
-            Console.WriteLine($"{user.Name} ({user.Id})");
+            var community = await _client.GetCommunityAsync("CompetitiveOW", true);
+
+            if (community == null)
+                Console.WriteLine("Could not find a community named `CompetitiveOW`.");
+            else
+            {
+                var owner = await community.GetOwnerAsync();
+
+                Console.WriteLine(JsonConvert.SerializeObject(owner));
+            }
 
             await Task.Delay(-1);
         }

@@ -42,9 +42,9 @@ namespace NTwitch.Rest
             => UserHelper.GetEmotesAsync(this, Id);
 
         // Blocks
-        public Task BlockAsync()
-            => UserHelper.BlockAsync(this, Id);
-        public Task UnblockAsync()
-            => UserHelper.UnblockAsync(this, Id);
+        //public Task BlockAsync()
+        //    => UserHelper.BlockAsync(this, Id);
+        //public Task UnblockAsync()
+        //    => UserHelper.UnblockAsync(this, Id);
     }
 }

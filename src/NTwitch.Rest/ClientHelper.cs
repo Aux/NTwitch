@@ -109,6 +109,9 @@ namespace NTwitch.Rest
         public static async Task<RestCommunity> GetCommunityAsync(BaseRestClient client, string id, bool isname = false)
         {
             var model = await client.RestClient.GetCommunityAsync(id, isname);
+            if (model == null)
+                return null;
+
             var entity = new RestCommunity(client, model.Id);
             entity.Update(model);
             return entity;

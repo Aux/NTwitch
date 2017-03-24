@@ -20,7 +20,7 @@ namespace NTwitch.WebSocket
 
         public SocketClient(TwitchSocketConfig config, AuthMode type, string token)
         {
-            _host = config.SocketHost;
+            //_host = config.SocketHost;
             _tokenType = type;
             _token = token;
         }
