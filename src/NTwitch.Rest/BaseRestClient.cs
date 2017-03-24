@@ -62,6 +62,8 @@ namespace NTwitch.Rest
         // Community
         public Task<RestCommunity> GetCommunityAsync(string communityId, bool isname = false)
             => ClientHelper.GetCommunityAsync(this, communityId, isname);
+        public Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(uint limit = 10)
+            => ClientHelper.GetTopCommunitiesAsync(this, limit);
 
         // Videos
         public Task<RestVideo> GetVideoAsync(string videoId)

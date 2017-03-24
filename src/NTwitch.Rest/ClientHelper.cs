@@ -114,6 +114,19 @@ namespace NTwitch.Rest
             return entity;
         }
 
+        public static async Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(BaseRestClient client, uint limit)
+        {
+            var model = await client.RestClient.GetTopCommunitiesAsync(limit);
+
+            var entity = model.Communities.Select(x =>
+            {
+                var community = new RestTopCommunity(client, x.Id);
+                community.Update(x);
+                return community;
+            });
+            return entity.ToArray();
+        }
+
         #endregion
         #region Videos
 

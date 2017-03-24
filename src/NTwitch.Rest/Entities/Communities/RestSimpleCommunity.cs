@@ -28,8 +28,8 @@ namespace NTwitch.Rest
         }
 
         // Communities
-        /// <summary>  </summary>
-        public Task GetPermissionsAsync()
+        /// <summary> Get the authorized user's permissions for this community. </summary>
+        public Task<RestCommunityPermissions> GetPermissionsAsync()
             => CommunityHelper.GetPermissionsAsync(this);
         /// <summary> Change properties for this community. </summary>
         public Task ModifyAsync(Action<ModifyCommunityParams> properties)
@@ -42,7 +42,7 @@ namespace NTwitch.Rest
             => CommunityHelper.SetAvatarAsync(this, avatarStream);
         /// <summary> Remove the avatar image on this community. </summary>
         public Task RemoveAvatarAsync()
-            => CommunityHelper.RemoveAvatarAsync();
+            => CommunityHelper.RemoveAvatarAsync(this);
         /// <summary> Upload a new cover image for this community. </summary>
         public Task SetCoverAsync(string coverPath)
             => CommunityHelper.SetCoverAsync(this, coverPath);
@@ -51,7 +51,7 @@ namespace NTwitch.Rest
             => CommunityHelper.SetCoverAsync(this, coverStream);
         /// <summary> Remove the cover image on this community. </summary>
         public Task RemoveCoverAsync()
-            => CommunityHelper.RemoveCoverAsync();
+            => CommunityHelper.RemoveCoverAsync(this);
 
         // Users
         /// <summary> Get users with moderator permissions in this community. </summary>

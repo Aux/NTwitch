@@ -1,18 +1,16 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.IO;
 
 namespace NTwitch.Rest
 {
     public class ModifyCommunityParams
     {
-        [JsonProperty("summary")]
+        [JsonProperty("summary", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Summary { get; set; }
-        [JsonProperty("description")]
+        [JsonProperty("description", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Description { get; set; }
-        [JsonProperty("rules")]
+        [JsonProperty("rules", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Rules { get; set; }
-        [JsonProperty("email")]
+        [JsonProperty("email", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Email { get; set; }
     }
 }

@@ -112,7 +112,7 @@ namespace NTwitch.Rest
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
-        
+
         internal async Task<API.CheerCollection> GetCheersAsync(ulong? id)
         {
             try
@@ -176,6 +176,74 @@ namespace NTwitch.Rest
                 return response.GetBodyAsType<API.Community>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+
+        internal async Task<API.CommunityCollection> GetTopCommunitiesAsync(uint limit)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"communities/top");
+                return response.GetBodyAsType<API.CommunityCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.CommunityPermissions> GetCommunityPermissionsAsync(string communityId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"communities/{communityId}/permissions");
+                return response.GetBodyAsType<API.CommunityPermissions>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+        }
+        
+        internal async Task ModifyCommunityAsync(string communityId, Action<ModifyCommunityParams> options)
+        {
+            var changes = new ModifyCommunityParams();
+            options.Invoke(changes);
+
+            try
+            {
+                var response = await SendAsync(new ModifyCommunityRequest(communityId, changes));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task SetAvatarAsync(string communityId, string imageString)
+        {
+            try
+            {
+                var response = await SendAsync(new SetCommunityAvatarRequest(communityId, imageString));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task RemoveAvatarAsync(string communityId)
+        {
+            try
+            {
+                var response = await SendAsync(new RemoveCommunityAvatarRequest(communityId));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task SetCoverAsync(string communityId, string imageString)
+        {
+            try
+            {
+                var response = await SendAsync(new SetCommunityCoverRequest(communityId, imageString));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+        }
+
+        internal async Task RemoveCoverAsync(string communityId)
+        {
+            try
+            {
+                var response = await SendAsync(new RemoveCommunityCoverRequest(communityId));
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
         }
 
         #endregion

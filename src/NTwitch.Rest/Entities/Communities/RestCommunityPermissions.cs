@@ -1,0 +1,27 @@
+﻿using Model = NTwitch.Rest.API.CommunityPermissions;
+
+namespace NTwitch.Rest
+{
+    public class RestCommunityPermissions
+    {
+        public bool CanBan { get; private set; }
+        public bool CanTimeout { get; private set; }
+        public bool CanEdit { get; private set; }
+
+        internal RestCommunityPermissions() { }
+
+        internal static RestCommunityPermissions Create(Model model)
+        {
+            var entity = new RestCommunityPermissions();
+            entity.Update(model);
+            return entity;
+        }
+
+        internal virtual void Update(Model model)
+        {
+            CanBan = model.CanBan;
+            CanTimeout = model.CanTimeout;
+            CanEdit = model.CanEdit;
+        }
+    }
+}
