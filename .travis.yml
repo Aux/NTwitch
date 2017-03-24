@@ -17,8 +17,7 @@ matrix:
 script:
   - sudo apt-get install dotnet-dev-1.0.1
   - dotnet restore
-  - if ["$TRAVIS_BRANCH" == "master"] then dotnet build --configuration Release fi
-  - if ["$TRAVIS_BRANCH" == "dev"] then dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER fi
+  - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 
 #deploy:
 #  provider: script
