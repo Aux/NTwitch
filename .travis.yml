@@ -24,3 +24,12 @@ deploy:
   skip_cleanup: true
   script:
     - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
+  on:
+    branch: dev
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - cd NTwitch && nuget push *.nupkg $NUGET_KEY -verbosity detailed
+  on:
+    branch: master
