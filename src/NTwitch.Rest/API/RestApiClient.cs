@@ -1,6 +1,5 @@
 ﻿using NTwitch.Rest.Requests;
 using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -43,7 +42,7 @@ namespace NTwitch.Rest
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401)
             {
-                throw new AuthenticationException("Token is invalid.");
+                throw new InvalidOperationException("Token is invalid.");
             }
         }
 

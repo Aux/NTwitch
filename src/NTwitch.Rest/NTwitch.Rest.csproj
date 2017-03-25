@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netstandard1.4</TargetFramework>
     <Version>0.0.5</Version>
     <Authors>Auxesis,Aux</Authors>
     <Company />
@@ -17,9 +17,9 @@
     <FileVersion>0.0.5.0</FileVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <None Include="BaseRestClient.Events.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
