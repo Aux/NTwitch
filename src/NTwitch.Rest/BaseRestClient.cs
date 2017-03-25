@@ -6,20 +6,20 @@ namespace NTwitch.Rest
 {
     public partial class BaseRestClient
     {
-        public IReadOnlyDictionary<ulong, RestTokenInfo> Tokens => _tokens;
+        //public IReadOnlyDictionary<ulong, RestTokenInfo> Tokens => _tokens;
         public RestApiClient RestClient => _rest;
         public RestTokenInfo Token => _auth;
 
         internal LogManager Logger;
 
-        private ConcurrentDictionary<ulong, RestTokenInfo> _tokens;
+        //private ConcurrentDictionary<ulong, RestTokenInfo> _tokens;
         private RestApiClient _rest;
         private RestTokenInfo _auth;
         private TwitchRestConfig _config;
 
         public BaseRestClient(TwitchRestConfig config)
         {
-            _tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
+            //_tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
             Logger = new LogManager(config.LogLevel);
             _config = config;
 
@@ -32,9 +32,9 @@ namespace NTwitch.Rest
         internal async Task RestLoginAsync(AuthMode type, string token)
         {
             _rest = new RestApiClient(_config, Logger, type, token);
-            var auth = await ClientHelper.AuthorizeAsync(this);
-            _tokens.AddOrUpdate(auth.UserId.Value, auth, (i, f) => f);
-            await loggedInEvent.InvokeAsync(auth).ConfigureAwait(false);
+            _auth = await ClientHelper.AuthorizeAsync(this);
+            //_tokens.AddOrUpdate(auth.UserId.Value, auth, (i, f) => f);
+            await loggedInEvent.InvokeAsync(_auth).ConfigureAwait(false);
         }
 
         // User
