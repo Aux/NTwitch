@@ -1,11 +1,11 @@
-﻿namespace NTwitch.WebSocket
+﻿namespace NTwitch.Pubsub
 {
-    public class SocketChannel : SocketEntity<ulong>, IChannel
+    public class PubsubChannel : PubsubEntity<ulong>, IChannel
     {
         public string Name { get; private set; }
         public string DisplayName { get; private set; }
         
-        public SocketChannel(BaseSocketClient client, ulong id) 
+        public PubsubChannel(BasePubsubClient client, ulong id) 
             : base(client, id) { }
 
 

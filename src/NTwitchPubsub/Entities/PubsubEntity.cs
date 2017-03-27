@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    public class SocketEntity<T> : IEntity<T>
+    public class PubsubEntity<T> : IEntity<T>
     {
-        public BaseSocketClient Client { get; }
+        public BasePubsubClient Client { get; }
         public T Id { get; }
 
-        public SocketEntity(BaseSocketClient client, T id)
+        public PubsubEntity(BasePubsubClient client, T id)
         {
             Client = client;
             Id = id;

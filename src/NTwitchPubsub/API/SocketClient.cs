@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
     internal class SocketClient : IDisposable
     {
@@ -18,7 +18,7 @@ namespace NTwitch.WebSocket
         private string _token;
         private bool _disposed = false;
 
-        public SocketClient(TwitchSocketConfig config, AuthMode type, string token)
+        public SocketClient(TwitchPubsubConfig config, AuthMode type, string token)
         {
             //_host = config.SocketHost;
             _tokenType = type;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    public partial class BaseSocketClient
+    public partial class BasePubsubClient
     {
         internal readonly AsyncEvent<Func<Task>> connectedEvent = new AsyncEvent<Func<Task>>();
         public event Func<Task> Connected

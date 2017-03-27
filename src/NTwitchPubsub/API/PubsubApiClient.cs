@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    public class ChatApiClient : IDisposable
+    public class PubsubApiClient : IDisposable
     {
         private SocketClient _client;
 
         private bool _disposed = false;
 
-        public ChatApiClient(TwitchSocketConfig config, AuthMode type, string token)
+        public PubsubApiClient(TwitchPubsubConfig config, AuthMode type, string token)
         {
             _client = new SocketClient(config, type, token);
         }

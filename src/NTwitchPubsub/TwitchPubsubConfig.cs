@@ -1,11 +1,11 @@
 ﻿using NTwitch.Rest;
 
-namespace NTwitch.WebSocket
+namespace NTwitch.Pubsub
 {
-    public class TwitchSocketConfig : TwitchRestConfig
+    public class TwitchPubsubConfig : TwitchRestConfig
     {
         public string PubsubHost { get; set; } = "wss://pubsub-edge.twitch.tv";
         public string ChatHost { get; set; } = "wss://irc-ws.chat.twitch.tv";
-        public ISocketCache CacheInstance { get; set; } = new SocketCache();
+        public new ICache CacheProvider { get; set; } = new PubsubCache();
     }
 }
