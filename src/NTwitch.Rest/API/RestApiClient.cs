@@ -56,6 +56,39 @@ namespace NTwitch.Rest
         }
 
         #endregion
+        #region Search
+
+        internal async Task<API.ChannelCollection> SearchChannelsAsync(string query, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync(new SearchChannelsRequest(query, limit, offset));
+                return response.GetBodyAsType<API.ChannelCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.StreamCollection> SearchStreamsAsync(string query, bool? hls, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync(new SearchStreamsRequest(query, hls, limit, offset));
+                return response.GetBodyAsType<API.StreamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.GameCollection> SearchGamesAsync(string query, bool islive)
+        {
+            try
+            {
+                var response = await SendAsync(new SearchGamesRequest(query, islive));
+                return response.GetBodyAsType<API.GameCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        #endregion
         #region Users
 
         internal async Task<API.User> GetCurrentUserAsync()

@@ -31,6 +31,54 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
+        #region Search
+
+        internal static async Task<IReadOnlyCollection<RestStream>> SearchStreamsAsync(BaseRestClient client, string query, bool? hls, uint limit, uint offset)
+        {
+            var model = await client.RestClient.SearchStreamsAsync(query, hls, limit, offset);
+            if (model == null)
+                return new List<RestStream>();
+
+            var entity = model.Streams.Select(x =>
+            {
+                var stream = new RestStream(client, x.Id);
+                stream.Update(x);
+                return stream;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<IReadOnlyCollection<RestGame>> SearchGamesAsync(BaseRestClient client, string query, bool islive)
+        {
+            var model = await client.RestClient.SearchGamesAsync(query, islive);
+            if (model == null)
+                return new List<RestGame>();
+
+            var entity = model.Games.Select(x =>
+            {
+                var game = new RestGame(client, x.Id);
+                game.Update(x);
+                return game;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<IReadOnlyCollection<RestChannel>> SearchChannelsAsync(BaseRestClient client, string query, uint limit, uint offset)
+        {
+            var model = await client.RestClient.SearchChannelsAsync(query, limit, offset);
+            if (model == null)
+                return new List<RestChannel>();
+
+            var entity = model.Channels.Select(x =>
+            {
+                var channel = new RestChannel(client, x.Id);
+                channel.Update(x);
+                return channel;
+            });
+            return entity.ToArray();
+        }
+
+        #endregion
         #region Users
 
         public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)

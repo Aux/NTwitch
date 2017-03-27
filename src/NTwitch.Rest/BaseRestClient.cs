@@ -33,6 +33,14 @@ namespace NTwitch.Rest
             await loggedInEvent.InvokeAsync(_auth).ConfigureAwait(false);
         }
 
+        // Search
+        public Task<IReadOnlyCollection<RestChannel>> SearchChannelsAsync(string query, uint limit = 25, uint offset = 0)
+            => ClientHelper.SearchChannelsAsync(this, query, limit, offset);
+        public Task<IReadOnlyCollection<RestGame>> SearchGamesAsync(string query, bool islive = false)
+            => ClientHelper.SearchGamesAsync(this, query, islive);
+        public Task<IReadOnlyCollection<RestStream>> SearchStreamsAsync(string query, bool? hls = null, uint limit = 25, uint offset = 0)
+            => ClientHelper.SearchStreamsAsync(this, query, hls, limit, offset);
+
         // User
         public Task<RestSelfUser> GetCurrentUserAsync()
             => ClientHelper.GetCurrentUserAsync(this);
