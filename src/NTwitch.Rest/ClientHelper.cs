@@ -108,6 +108,9 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(BaseRestClient client, StreamType type, uint limit, uint offset)
         {
+            if (!client.Token.Authorization.Scopes.Contains("user_read"))
+                throw new MissingScopeException("user_read");
+
             var model = await client.RestClient.GetFollowedStreamsAsync(type, limit, offset);
             if (model == null)
                 return new List<RestStream>();
