@@ -7,10 +7,18 @@ namespace NTwitch.Pubsub
     {
         private SocketClient _client;
 
+        internal LogManager Logger;
+
         private bool _disposed = false;
 
         public PubsubApiClient(TwitchPubsubConfig config, AuthMode type, string token)
         {
+            _client = new SocketClient(config, type, token);
+        }
+
+        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, AuthMode type, string token)
+        {
+            Logger = logger;
             _client = new SocketClient(config, type, token);
         }
 

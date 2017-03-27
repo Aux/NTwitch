@@ -19,6 +19,7 @@ namespace NTwitch.Pubsub
         internal async Task SocketLoginAsync(AuthMode type, string token)
         {
             await RestLoginAsync(type, token);
+            _pubsub = new PubsubApiClient(_config, Logger, type, token);
         }
 
         internal Task ConnectInternalAsync()

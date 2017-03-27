@@ -5,14 +5,14 @@ namespace NTwitch.Chat
 {
     public class ChatApiClient : IDisposable
     {
-        private ChatClient _client;
+        private TcpClient _client;
         private TwitchChatConfig _config;
         private bool _disposed = false;
 
         public ChatApiClient(TwitchChatConfig config, string username, string token)
         {
             _config = config;
-            _client = new ChatClient(config, username, token);
+            _client = new TcpClient(config, username, token);
         }
 
         public Task ConnectAsync()
