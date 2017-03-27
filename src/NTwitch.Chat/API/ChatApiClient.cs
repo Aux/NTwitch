@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Tcp
+namespace NTwitch.Chat
 {
-    public class TcpApiClient : IDisposable
+    public class ChatApiClient : IDisposable
     {
-        private TcpClient _client;
-        private TwitchTcpConfig _config;
+        private ChatClient _client;
+        private TwitchChatConfig _config;
         private bool _disposed = false;
 
-        public TcpApiClient(TwitchTcpConfig config, string username, string token)
+        public ChatApiClient(TwitchChatConfig config, string username, string token)
         {
             _config = config;
-            _client = new TcpClient(config, username, token);
+            _client = new ChatClient(config, username, token);
         }
 
         public Task ConnectAsync()
@@ -21,7 +21,7 @@ namespace NTwitch.Tcp
         public Task DisconnectAsync()
             => _client.DisconnectAsync();
         
-        public Task SendAsync(TcpRequest request)
+        public Task SendAsync(ChatRequest request)
             => _client.SendAsync(request);
         
         

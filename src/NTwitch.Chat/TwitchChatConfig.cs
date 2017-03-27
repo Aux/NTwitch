@@ -1,8 +1,8 @@
 ﻿using NTwitch.Rest;
 
-namespace NTwitch.Tcp
+namespace NTwitch.Chat
 {
-    public class TwitchTcpConfig : TwitchRestConfig
+    public class TwitchChatConfig : TwitchRestConfig
     {
         /// <summary> Allow the authenticated user to speak in channels without the moderator permission. </summary>
         public bool CanSpeakWithoutMod { get; set; } = false;

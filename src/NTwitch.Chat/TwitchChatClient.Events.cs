@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NTwitch.Tcp
+namespace NTwitch.Chat
 {
-    public partial class TwitchTcpClient
+    public partial class TwitchChatClient
     {
         internal readonly AsyncEvent<Func<Task>> connectedEvent = new AsyncEvent<Func<Task>>();
         public event Func<Task> Connected
