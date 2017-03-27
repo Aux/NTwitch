@@ -41,6 +41,31 @@ namespace NTwitch.Rest
         public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
             => UserHelper.GetEmotesAsync(this, Id);
 
+
+        //// Follows
+        //public Task<RestUserFollow> GetFollowersAsync()
+        //    => UserHelper.GetFollowersAsync(this);
+        //public Task<IReadOnlyCollection<RestUserFollow>> GetFollowerAsync(ulong userId)
+        //    => UserHelper.GetFollowerAsync(this, userId);
+
+        //// Subscriptions
+        //public Task<IReadOnlyCollection<RestChannelSubscription>> GetSubscriptionsAsync()
+        //    => UserHelper.GetSubscriptionsAsync(this);
+        //public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
+        //    => UserHelper.GetSubscriptionAsync(this, channelId);
+
+        //// Blocks
+        //public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
+        //    => UserHelper.GetBlocksAsync(this, Id, limit, offset);
+
+        // VHS
+        //public Task<string> CreateHeartbeatAsync()
+        //    => UserHelper.CreateHeartbeatAsync(this);
+        //public Task<string> GetHeartbeatAsync()
+        //    => UserHelper.GetHeartbeatAsync(this);
+        //public Task DeleteHeartbeatAsync()
+        //    => UserHelper.DeleteHeartbeatAsync(this);
+
         // Blocks
         //public Task BlockAsync()
         //    => UserHelper.BlockAsync(this, Id);

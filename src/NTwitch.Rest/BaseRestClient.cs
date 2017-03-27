@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,20 +6,17 @@ namespace NTwitch.Rest
 {
     public partial class BaseRestClient
     {
-        //public IReadOnlyDictionary<ulong, RestTokenInfo> Tokens => _tokens;
         public RestApiClient RestClient => _rest;
         public RestTokenInfo Token => _auth;
 
         internal LogManager Logger;
 
-        //private ConcurrentDictionary<ulong, RestTokenInfo> _tokens;
         private RestApiClient _rest;
         private RestTokenInfo _auth;
         private TwitchRestConfig _config;
 
         public BaseRestClient(TwitchRestConfig config)
         {
-            //_tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
             Logger = new LogManager(config.LogLevel);
             _config = config;
 
@@ -33,7 +30,6 @@ namespace NTwitch.Rest
         {
             _rest = new RestApiClient(_config, Logger, type, token);
             _auth = await ClientHelper.AuthorizeAsync(this);
-            //_tokens.AddOrUpdate(auth.UserId.Value, auth, (i, f) => f);
             await loggedInEvent.InvokeAsync(_auth).ConfigureAwait(false);
         }
 
@@ -52,6 +48,18 @@ namespace NTwitch.Rest
             => ClientHelper.GetChannelAsync(this, channelId);
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync(ulong channelId)
             => ClientHelper.GetCheersAsync(this, channelId);
+
+        // Streams
+        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
+            => ClientHelper.GetFollowedStreamsAsync(this, type, limit, offset);
+        public Task<RestStream> GetStreamAsync(ulong channelId, StreamType type = StreamType.Live)
+            => ClientHelper.GetStreamAsync(this, channelId, type);
+        public Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(Action<GetStreamsParams> options)
+            => ClientHelper.GetStreamsAsync(this, options);
+        public Task<RestStreamSummary> GetStreamSummaryAsync(string game)
+            => ClientHelper.GetStreamSummaryAsync(this, game);
+        public Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(uint limit = 25, uint offset = 0)
+            => ClientHelper.GetFeaturedStreamsAsync(this, limit, offset);
 
         // Teams
         public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)

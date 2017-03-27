@@ -1,5 +1,4 @@
-﻿using NTwitch.Rest.Requests;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -37,7 +36,7 @@ namespace NTwitch.Rest
         {
             try
             {
-                var response = await SendAsync(new ValidateTokenRequest());
+                var response = await SendAsync("GET", "");
                 return response.GetBodyAsType<API.TokenCollection>().Token;
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401)
@@ -73,7 +72,7 @@ namespace NTwitch.Rest
         {
             try
             {
-                var response = await SendAsync(new GetUserRequest(id));
+                var response = await SendAsync("GET", $"users/{id}");
                 return response.GetBodyAsType<API.User>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
@@ -171,6 +170,62 @@ namespace NTwitch.Rest
             {
                 var response = await SendAsync("GET", $"channels/{id}/subscriptions");
                 return response.GetBodyAsType<API.SubscriptionCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        #endregion
+        #region Streams
+
+        internal async Task<API.StreamCollection> GetFollowedStreamsAsync(StreamType type, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync(new GetFollowedStreamsRequest(type, limit, offset));
+                return response.GetBodyAsType<API.StreamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.StreamCollection> GetStreamAsync(ulong channelId, StreamType type)
+        {
+            try
+            {
+                var response = await SendAsync(new GetStreamRequest(channelId, type));
+                return response.GetBodyAsType<API.StreamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.StreamCollection> GetStreamsAsync(Action<GetStreamsParams> options)
+        {
+            var changes = new GetStreamsParams();
+            options.Invoke(changes);
+
+            try
+            {
+                var response = await SendAsync(new GetStreamsRequest(changes));
+                return response.GetBodyAsType<API.StreamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.StreamCollection> GetFeaturedStreams(uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync(new GetFeaturedStreamsRequest(limit, offset));
+                return response.GetBodyAsType<API.StreamCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+        }
+
+        internal async Task<API.Stream> GetStreamSummaryAsync(string game)
+        {
+            try
+            {
+                var response = await SendAsync(new GetStreamSummaryRequest(game));
+                return response.GetBodyAsType<API.Stream>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }

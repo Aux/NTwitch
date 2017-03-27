@@ -25,20 +25,31 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
+
+
+        // Channels
+        public Task ModifyAsync(Action<ModifyChannelParams> options)
+            => ChannelHelper.ModifyChannelAsync(this, options);
         
         // Users
         public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetFollowersAsync(this, ascending, limit, offset);
-
-        // Teams
-        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
-            => ChannelHelper.GetTeamsAsync(this);
+        public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
+            => ChannelHelper.GetEditorsAsync(this);
+        public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
+            => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
+        public Task<RestUserSubscription> GetSubscriberAsync(ulong userId)
+            => ChannelHelper.GetSubscriberAsync(this, userId);
 
         // Chat
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
             => ClientHelper.GetCheersAsync(Client, Id);
         public Task<RestChatBadges> GetChatBadgesAsync()
             => ChannelHelper.GetChatBadgesAsync(this);
+
+        // Teams
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
+            => ChannelHelper.GetTeamsAsync(this);
 
         // Videos
         //public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point

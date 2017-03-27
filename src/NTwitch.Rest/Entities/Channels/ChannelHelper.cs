@@ -9,7 +9,7 @@ namespace NTwitch.Rest
     {
         #region Channel
 
-        public static async Task ModifyChannelAsync(RestSelfChannel channel, Action<ModifyChannelParams> options)
+        public static async Task ModifyChannelAsync(RestSimpleChannel channel, Action<ModifyChannelParams> options)
         {
             if (!channel.Client.Token.Authorization.Scopes.Contains("channel_editor"))
                 throw new MissingScopeException("channel_editor");
@@ -21,7 +21,7 @@ namespace NTwitch.Rest
         #endregion
         #region Users
 
-        internal static async Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(RestSelfChannel channel)
+        internal static async Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(RestSimpleChannel channel)
         {
             if (!channel.Client.Token.Authorization.Scopes.Contains("channel_read"))
                 throw new MissingScopeException("channel_read");
@@ -63,7 +63,7 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static async Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(RestSelfChannel channel, bool ascending, uint limit, uint offset)
+        internal static async Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(RestSimpleChannel channel, bool ascending, uint limit, uint offset)
         {
             if (!channel.Client.Token.Authorization.Scopes.Contains("channel_subscriptions"))
                 throw new MissingScopeException("channel_subscriptions");
@@ -79,7 +79,7 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static async Task<RestUserSubscription> GetSubscriberAsync(RestSelfChannel channel, ulong userId)
+        internal static async Task<RestUserSubscription> GetSubscriberAsync(RestSimpleChannel channel, ulong userId)
         {
             var model = await channel.Client.RestClient.GetSubscriberAsync(channel.Id, userId);
             if (model == null)

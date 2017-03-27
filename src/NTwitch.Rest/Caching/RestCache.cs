@@ -4,16 +4,15 @@ using System.Linq;
 
 namespace NTwitch.Rest
 {
-    public class RestCache
+    public class RestCache : ICache
     {
-        public IReadOnlyCollection<RestTokenInfo> Tokens => _tokens.Select(x => x.Value).ToArray();
         public IReadOnlyCollection<IChannel> Channels => _channels.Select(x => x.Value).ToArray();
         public IReadOnlyCollection<IUser> Users => _users.Select(x => x.Value).ToArray();
-
-        private ConcurrentDictionary<ulong, RestTokenInfo> _tokens;
+        
         private ConcurrentDictionary<ulong, IChannel> _channels;
         private ConcurrentDictionary<ulong, IUser> _users;
-
+        private int cacheLimit;
+        
         public IReadOnlyCollection<T> GetChannels<T>() where T : IChannel
             => Channels.Where(x => x is T).Select(x => (T)x).ToArray();
         public IReadOnlyCollection<T> GetUsers<T>() where T : IUser

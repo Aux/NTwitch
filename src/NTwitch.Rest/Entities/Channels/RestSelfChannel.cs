@@ -32,17 +32,5 @@ namespace NTwitch.Rest
             var entity = await Client.RestClient.GetCurrentChannelAsync().ConfigureAwait(false);
             Update(entity);
         }
-
-        // Channels
-        public Task ModifyAsync(Action<ModifyChannelParams> options)
-            => ChannelHelper.ModifyChannelAsync(this, options);
-
-        // Users
-        public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
-            => ChannelHelper.GetEditorsAsync(this);
-        public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
-        public Task<RestUserSubscription> GetSubscriberAsync(ulong userId)
-            => ChannelHelper.GetSubscriberAsync(this, userId);
     }
 }

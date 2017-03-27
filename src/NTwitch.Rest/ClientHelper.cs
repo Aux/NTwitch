@@ -18,7 +18,7 @@ namespace NTwitch.Rest
             return entity;
         }
 
-        internal static async Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync(BaseRestClient client)
+        public static async Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
             var model = await client.RestClient.GetIngestsAsync();
 
@@ -56,7 +56,7 @@ namespace NTwitch.Rest
             entity.Update(model);
             return entity;
         }
-        
+
         public static async Task<IReadOnlyCollection<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
         {
             var model = await client.RestClient.GetUsersAsync(usernames);
@@ -101,6 +101,76 @@ namespace NTwitch.Rest
             var model = await client.RestClient.GetCheersAsync(channelId);
             var entity = model.Actions.Select(x => new RestCheerInfo(client, x));
             return entity.ToArray();
+        }
+
+        #endregion
+        #region Streams
+
+        internal static async Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(BaseRestClient client, StreamType type, uint limit, uint offset)
+        {
+            var model = await client.RestClient.GetFollowedStreamsAsync(type, limit, offset);
+            if (model == null)
+                return new List<RestStream>();
+
+            var entity = model.Streams.Select(x =>
+            {
+                var stream = new RestStream(client, x.Id);
+                stream.Update(x);
+                return stream;
+            });
+            return entity.ToArray();
+        }
+
+        public static async Task<RestStream> GetStreamAsync(BaseRestClient client, ulong channelId, StreamType type)
+        {
+            var model = await client.RestClient.GetStreamAsync(channelId, type);
+            if (model.Stream == null)
+                return null;
+            
+            var entity = new RestStream(client, model.Stream.Id);
+            entity.Update(model.Stream);
+            return entity;
+        }
+
+        internal static async Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, Action<GetStreamsParams> options)
+        {
+            var model = await client.RestClient.GetStreamsAsync(options);
+            if (model == null)
+                return new List<RestStream>();
+
+            var entity = model.Streams.Select(x =>
+            {
+                var stream = new RestStream(client, x.Id);
+                stream.Update(x);
+                return stream;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(BaseRestClient client, uint limit, uint offset)
+        {
+            var model = await client.RestClient.GetFeaturedStreams(limit, offset);
+            if (model == null)
+                return new List<RestFeaturedStream>();
+
+            var entity = model.Featured.Select(x =>
+            {
+                var stream = new RestFeaturedStream();
+                stream.Update(client, x);
+                return stream;
+            });
+            return entity.ToArray();
+        }
+
+        internal static async Task<RestStreamSummary> GetStreamSummaryAsync(BaseRestClient client, string game)
+        {
+            var model = await client.RestClient.GetStreamSummaryAsync(game);
+            if (model == null)
+                return null;
+
+            var entity = new RestStreamSummary();
+            entity.Update(model);
+            return entity;
         }
 
         #endregion
