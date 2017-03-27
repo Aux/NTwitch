@@ -253,7 +253,7 @@ namespace NTwitch.Rest
             catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
         }
 
-        internal async Task<API.Stream> GetStreamSummaryAsync(string game)
+        internal async Task<API.Stream> GetGameSummaryAsync(string game)
         {
             try
             {

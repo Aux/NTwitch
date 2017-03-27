@@ -16,6 +16,7 @@ matrix:
     env: DOTNETCORE=1
 script:
   - sudo apt-get install dotnet-dev-1.0.1
+  - sudo apt-get install nuget
   - dotnet restore
   - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 

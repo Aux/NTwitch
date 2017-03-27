@@ -4,12 +4,19 @@ namespace NTwitch.Rest
 {
     public class RestFeaturedStream
     {
+        /// <summary> The stream that is being featured </summary>
         public RestStream Stream { get; private set; }
+        /// <summary> The image shown to preview this stream </summary>
         public string Image { get; private set; }
+        /// <summary> The level of priority this stream gets on the front page of twitch </summary>
         public int Priority { get; private set; }
+        /// <summary> True if this stream is scheduled </summary>
         public bool Scheduled { get; private set; }
+        /// <summary> True if this stream is sponsored </summary>
         public bool Sponsored { get; private set; }
+        /// <summary> The text description of this featured stream </summary>
         public string Text { get; private set; }
+        /// <summary> The title of this featured stream </summary>
         public string Title { get; private set; }
         
         internal static RestFeaturedStream Create(BaseRestClient client, Model model)

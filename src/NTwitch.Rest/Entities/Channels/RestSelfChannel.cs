@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
     public class RestSelfChannel : RestChannel
     {
+        /// <summary> The email associated with this channel </summary>
         public string Email { get; private set; }
+        /// <summary> The key used to stream video to twitch as this channel </summary>
         public string StreamKey { get; private set; }
 
         internal RestSelfChannel(BaseRestClient client, ulong id) 
@@ -27,6 +27,7 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
+        /// <summary> Update this channel's properties </summary>
         public override async Task UpdateAsync()
         {
             var entity = await Client.RestClient.GetCurrentChannelAsync().ConfigureAwait(false);

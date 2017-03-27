@@ -2,14 +2,16 @@
 
 namespace NTwitch.Rest
 {
-    public class RestStreamSummary
+    public class RestGameSummary
     {
+        /// <summary> The total number of channels streaming this game </summary>
         public uint Channels { get; private set; }
+        /// <summary> The total number of viewers watching channels streaming this game </summary>
         public uint Viewers { get; private set; }
         
-        internal static RestStreamSummary Create(Model model)
+        internal static RestGameSummary Create(Model model)
         {
-            var entity = new RestStreamSummary();
+            var entity = new RestGameSummary();
             entity.Update(model);
             return entity;
         }

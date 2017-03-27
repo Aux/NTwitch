@@ -4,6 +4,7 @@ namespace NTwitch.Rest
 {
     public class RestChannelSubscription : RestSubscription
     {
+        /// <summary> The channel associated with this subscription </summary>
         public RestChannel Channel { get; private set; }
 
         internal RestChannelSubscription(BaseRestClient client) 

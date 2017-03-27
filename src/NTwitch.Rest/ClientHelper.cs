@@ -213,13 +213,13 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static async Task<RestStreamSummary> GetStreamSummaryAsync(BaseRestClient client, string game)
+        internal static async Task<RestGameSummary> GetGameSummaryAsync(BaseRestClient client, string game)
         {
-            var model = await client.RestClient.GetStreamSummaryAsync(game);
+            var model = await client.RestClient.GetGameSummaryAsync(game);
             if (model == null)
                 return null;
 
-            var entity = new RestStreamSummary();
+            var entity = new RestGameSummary();
             entity.Update(model);
             return entity;
         }

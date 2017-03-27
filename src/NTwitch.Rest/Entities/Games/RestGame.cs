@@ -5,10 +5,15 @@ namespace NTwitch.Rest
 {
     public class RestGame : RestEntity<ulong>
     {
+        /// <summary> The name of this game </summary>
         public string Name { get; private set; }
+        /// <summary> The total number of viewers for this game </summary>
         public uint Viewers { get; private set; }
+        /// <summary> This game's giantbomb id </summary>
         public ulong GiantbombId { get; private set; }
+        /// <summary> The urls for this game's box art images </summary>
         public IReadOnlyDictionary<string, string> Box { get; private set; }
+        /// <summary> The urls for this game's logo images </summary>
         public IReadOnlyDictionary<string, string> Logo { get; private set; }
 
         internal RestGame(BaseRestClient client, ulong id) 

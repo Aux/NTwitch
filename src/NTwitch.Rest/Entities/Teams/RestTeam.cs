@@ -6,9 +6,10 @@ namespace NTwitch.Rest
 {
     public class RestTeam : RestSimpleTeam
     {
+        /// <summary> All channels associated with this team </summary>
         public IReadOnlyCollection<RestChannel> Channels { get; private set; }
 
-        public RestTeam(BaseRestClient client, ulong id) 
+        internal RestTeam(BaseRestClient client, ulong id) 
             : base(client, id) { }
 
         internal new static RestTeam Create(BaseRestClient client, Model model)

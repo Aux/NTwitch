@@ -5,8 +5,11 @@ namespace NTwitch.Rest
 {
     public class RestBannedUser : RestSimpleUser
     {
+        /// <summary> The date and time that this user was banned </summary>
         public DateTime StartAt { get; private set; }
+        /// <summary> The date and time that this ban will expire </summary>
         public DateTime EndAt { get; private set; }
+        /// <summary> The description provided for this user </summary>
         public string Bio { get; private set; }
 
         internal RestBannedUser(BaseRestClient client, ulong id)

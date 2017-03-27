@@ -7,7 +7,9 @@ namespace NTwitch.Rest
 {
     public class RestSimpleChannel : RestEntity<ulong>, IChannel
     {
+        /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
+        /// <summary> This channel's display username </summary>
         public string DisplayName { get; private set; }
 
         internal RestSimpleChannel(BaseRestClient client, ulong id) 
@@ -28,26 +30,34 @@ namespace NTwitch.Rest
 
 
         // Channels
+        /// <summary> Change properties of this channel </summary>
         public Task ModifyAsync(Action<ModifyChannelParams> options)
             => ChannelHelper.ModifyChannelAsync(this, options);
-        
+
         // Users
+        /// <summary> Get all users following this channel </summary>
         public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetFollowersAsync(this, ascending, limit, offset);
+        /// <summary> Get all users authorized as an editor on this channel </summary>
         public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
             => ChannelHelper.GetEditorsAsync(this);
+        /// <summary> Get all users subscribed to this channel </summary>
         public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
             => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
+        /// <summary> Get a specific user subscriber by id </summary>
         public Task<RestUserSubscription> GetSubscriberAsync(ulong userId)
             => ChannelHelper.GetSubscriberAsync(this, userId);
 
         // Chat
+        /// <summary> Get cheer badges for this channel </summary>
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
             => ClientHelper.GetCheersAsync(Client, Id);
+        /// <summary> Get chat badges for this channel </summary>
         public Task<RestChatBadges> GetChatBadgesAsync()
             => ChannelHelper.GetChatBadgesAsync(this);
 
         // Teams
+        /// <summary> Get all teams this channel is a member of </summary>
         public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
             => ChannelHelper.GetTeamsAsync(this);
 

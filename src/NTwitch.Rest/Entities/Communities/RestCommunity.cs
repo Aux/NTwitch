@@ -5,13 +5,21 @@ namespace NTwitch.Rest
 {
     public class RestCommunity : RestSimpleCommunity
     {
+        /// <summary> The id of the user that owns this community </summary>
         public ulong OwnerId { get; private set; }
+        /// <summary> The summary specified for this community </summary>
         public string Summary { get; private set; }
+        /// <summary> The description specified for this community </summary>
         public string Description { get; private set; }
+        /// <summary> The raw html of this community's description </summary>
         public string DescriptionHtml { get; private set; }
+        /// <summary> The rules specified for this community </summary>
         public string Rules { get; private set; }
+        /// <summary> The raw html of this community's rules </summary>
         public string RulesHtml { get; private set; }
+        /// <summary> This community's specified language </summary>
         public string Language { get; private set; }
+        /// <summary> The url of this community's cover image </summary>
         public string CoverUrl { get; private set; }
         
         internal RestCommunity(BaseRestClient client, string id) 
@@ -37,12 +45,14 @@ namespace NTwitch.Rest
             CoverUrl = model.CoverImageUrl;
         }
 
+        /// <summary> Update this community's properties </summary>
         public virtual async Task UpdateAsync()
         {
             var entity = await Client.RestClient.GetCommunityAsync(Id, false).ConfigureAwait(false);
             Update(entity);
         }
 
+        /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => ClientHelper.GetUserAsync(Client, OwnerId);
     }

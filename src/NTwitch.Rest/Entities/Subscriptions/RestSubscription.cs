@@ -5,7 +5,9 @@ namespace NTwitch.Rest
 {
     public class RestSubscription
     {
+        /// <summary> The instance of the client that created this entity </summary>
         public BaseRestClient Client { get; }
+        /// <summary> The date and time this subscription was created </summary>
         public DateTime CreatedAt { get; private set; }
 
         internal RestSubscription(BaseRestClient client)

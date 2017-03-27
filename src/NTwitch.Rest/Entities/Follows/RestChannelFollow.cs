@@ -4,6 +4,7 @@ namespace NTwitch.Rest
 {
     public class RestChannelFollow : RestFollow
     {
+        /// <summary> The channel associated with this follow </summary>
         public RestChannel Channel { get; private set; }
 
         internal RestChannelFollow(BaseRestClient client) 

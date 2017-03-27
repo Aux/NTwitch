@@ -5,7 +5,9 @@ namespace NTwitch.Rest
 {
     public class RestBlockedUser : RestEntity<ulong>
     {
+        /// <summary> The date and time this block was last updated </summary>
         public DateTime UpdatedAt { get; set; }
+        /// <summary> The user associated with this block </summary>
         public RestUser User { get; set; }
 
         internal RestBlockedUser(BaseRestClient client, ulong id) 

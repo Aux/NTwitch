@@ -4,10 +4,12 @@ namespace NTwitch.Rest
 {
     public class RestTopCommunity : RestSimpleCommunity
     {
+        /// <summary> The number of channels in this community </summary>
         public uint Channels { get; private set; }
+        /// <summary> The total number of viewers watching channels in this community </summary>
         public uint Viewers { get; private set; }
 
-        public RestTopCommunity(BaseRestClient client, string id) 
+        internal RestTopCommunity(BaseRestClient client, string id) 
             : base(client, id) { }
         
         internal new static RestTopCommunity Create(BaseRestClient client, Model model)

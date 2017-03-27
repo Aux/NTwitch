@@ -4,6 +4,7 @@ namespace NTwitch.Rest
 {
     public class RestEmote : RestEntity<uint>
     {
+        /// <summary>  </summary>
         public string Code { get; private set; }
         
         internal RestEmote(BaseRestClient client, uint id) 

@@ -7,8 +7,11 @@ namespace NTwitch.Rest
 {
     public class RestAuthorization
     {
+        /// <summary> A collection of scopes authorized by the user </summary>
         public IReadOnlyCollection<string> Scopes { get; private set; }
+        /// <summary> The date and time this token was created </summary>
         public DateTime CreatedAt { get; private set; }
+        /// <summary> The date and time this token was last updated </summary>
         public DateTime UpdatedAt { get; private set; }
 
         internal RestAuthorization() { }

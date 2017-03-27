@@ -4,8 +4,11 @@ namespace NTwitch.Rest
 {
     public class RestCommunityPermissions
     {
+        /// <summary> True if the authorized user can ban users from this community </summary>
         public bool CanBan { get; private set; }
+        /// <summary> True if the authorized user can timeout users from this community </summary>
         public bool CanTimeout { get; private set; }
+        /// <summary> True if the authorized user can modify properties of this community </summary>
         public bool CanEdit { get; private set; }
 
         internal RestCommunityPermissions() { }

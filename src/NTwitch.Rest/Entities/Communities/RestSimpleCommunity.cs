@@ -8,7 +8,9 @@ namespace NTwitch.Rest
 {
     public class RestSimpleCommunity : RestEntity<string>
     {
+        /// <summary> The name of this community </summary>
         public string Name { get; private set; }
+        /// <summary> The url to the avatar image of this community </summary>
         public string AvatarUrl { get; private set; }
 
         internal RestSimpleCommunity(BaseRestClient client, string id)

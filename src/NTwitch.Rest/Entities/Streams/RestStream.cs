@@ -7,17 +7,26 @@ namespace NTwitch.Rest
 {
     public class RestStream : RestEntity<ulong>
     {
+        /// <summary> Date and time when this stream was created </summary>
         public DateTime CreatedAt { get; private set; }
+        /// <summary> The name of the game being streamed </summary>
         public string Game { get; private set; }
+        /// <summary> The delay in seconds of this stream </summary>
         public int Delay { get; private set; }
+        /// <summary> The number of viewers currently watching this stream </summary>
         public uint Viewers { get; private set; }
+        /// <summary> The height of this stream's video </summary>
         public uint VideoHeight { get; private set; }
+        /// <summary> The average fps of this stream's video </summary>
         public double AverageFps { get; private set; }
+        /// <summary> True if this stream is pre-recorded </summary>
         public bool IsPlaylist { get; private set; }
+        /// <summary> Preview images for this stream </summary>
         public IReadOnlyDictionary<string, string> Previews { get; private set; }
+        /// <summary> The channel this stream is associated with </summary>
         public RestChannel Channel { get; private set; }
 
-        public RestStream(BaseRestClient client, ulong id)
+        internal RestStream(BaseRestClient client, ulong id)
             : base(client, id) { }
 
         internal static RestStream Create(BaseRestClient client, Model model)
@@ -42,10 +51,14 @@ namespace NTwitch.Rest
             Previews = model.Previews;
         }
 
-        //public virtual async Task UpdateAsync()
-        //{
-        //    var entity = await Client.RestClient.GetStreamAsync().ConfigureAwait(false);
-        //    Update(entity);
-        //}
+        /// <summary> Update this stream's properties </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var entity = await Client.RestClient.GetStreamAsync(Id, StreamType.All).ConfigureAwait(false);
+            if (entity.Stream == null)
+                return;
+
+            Update(entity.Stream);
+        }
     }
 }

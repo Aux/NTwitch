@@ -6,10 +6,15 @@ namespace NTwitch.Rest
 {
     public class RestTokenInfo
     {
+        /// <summary> True if the specified token is valid </summary>
         public bool IsValid { get; private set; }
+        /// <summary> The authorized user's name </summary>
         public string Username { get; private set; }
+        /// <summary> The authorized user's id </summary>
         public ulong? UserId { get; private set; }
+        /// <summary> The client id of the authorized application </summary>
         public string ClientId { get; private set; }
+        /// <summary> Information about the authorized oauth token </summary>
         public RestAuthorization Authorization { get; private set; } = new RestAuthorization();
 
         internal RestTokenInfo() { }

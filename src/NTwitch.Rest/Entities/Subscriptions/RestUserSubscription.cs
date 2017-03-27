@@ -4,6 +4,7 @@ namespace NTwitch.Rest
 {
     public class RestUserSubscription : RestSubscription
     {
+        /// <summary> The user associated with this subscription </summary>
         public RestUser User { get; private set; }
 
         internal RestUserSubscription(BaseRestClient client) : base(client) { }

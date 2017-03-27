@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.CheerInfo;
 
 namespace NTwitch.Rest
 {
     public class RestCheerInfo
     {
+        /// <summary> The instance of the client that created this entity </summary>
         public BaseRestClient Client { get; }
+        /// <summary>  </summary>
         public string Prefix { get; private set; }
+        /// <summary> Alternate backgrounds for this cheer's image </summary>
         public IReadOnlyCollection<string> Backgrounds { get; private set; }
+        /// <summary> Alternate sizes for this cheer's image </summary>
         public IReadOnlyCollection<double> Scales { get; private set; }
+        /// <summary>  </summary>
         public IReadOnlyCollection<string> States { get; private set; }
+        /// <summary>  </summary>
         public IReadOnlyCollection<RestCheer> Tiers { get; private set; }
+        /// <summary> Date and time when this cheer was last updated </summary>
         public DateTime UpdatedAt { get; private set; }
+        /// <summary>  </summary>
         public string Type { get; private set; }
 
         internal RestCheerInfo(BaseRestClient client, Model model)
@@ -37,11 +44,6 @@ namespace NTwitch.Rest
                 cheer.Update(x);
                 return cheer;
             }).ToArray();
-        }
-
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }
