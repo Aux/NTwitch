@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53879A91
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.csproj", "{0D0BAD04-28C1-48E7-8F64-533E774A362E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{8C12A4BB-58B6-4C3B-A447-3D9BF0FB2022}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Examples.Rest", "examples\NTwitch.Examples.Rest\NTwitch.Examples.Rest.csproj", "{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,11 +51,16 @@ Global
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E} = {53879A91-FB4C-4A04-B26D-DD2F0CD2EA55}
+		{8A436F2B-DCEE-4F1C-98D6-3DADF91E302B} = {8C12A4BB-58B6-4C3B-A447-3D9BF0FB2022}
 	EndGlobalSection
 EndGlobal
