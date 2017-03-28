@@ -7,7 +7,7 @@
     <Company />
     <Product />
     <Description>NTwitch's shared source package.</Description>
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
     <PackageLicenseUrl>https://github.com/Aux/NTwitch/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Aux/NTwitch</PackageProjectUrl>
     <PackageIconUrl>http://i.imgur.com/kcL6nG0.png</PackageIconUrl>

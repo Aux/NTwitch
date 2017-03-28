@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.4</TargetFramework>
     <RootNamespace>NTwitch.Pubsub</RootNamespace>
     <AssemblyName>NTwitch.Pubsub</AssemblyName>
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
     <Authors>Auxesis,Aux</Authors>
     <Company>Auxesis,Aux</Company>
     <Product>NTwitch.Pubsub</Product>
