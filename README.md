@@ -17,7 +17,7 @@ Release and pre-release builds can be found on Nuget under [NTwitch](https://www
 - [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.PubSub/)
 
 ## Documentation
-Documentation for released NTwitch features will be available at https://aux.github.io/NTwitch/ (once I write it). The source for the docs site is available on the [gh-pages branch](https://github.com/Aux/NTwitch/tree/gh-pages). Until then, you can always join the [NTWitch Discord Guild](https://discord.gg/yd8x2wM) and ask any questions you might have.
+Documentation for released NTwitch features will be available at https://aux.github.io/NTwitch/ (once I write it). The source for the docs site is available on the [gh-pages branch](https://github.com/Aux/NTwitch/tree/gh-pages). Until then, you can always join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM) and ask any questions you might have.
 
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
