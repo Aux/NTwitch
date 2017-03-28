@@ -36,9 +36,9 @@ namespace NTwitch.Pubsub
             await disconnectedEvent.InvokeAsync().ConfigureAwait(false);
         }
 
-        public Task SubscribeAsync(string method, string topic, Func<string, Task> callback)
-            => _pubsub.SendAsync(method, topic);
-        public Task UnsubscribeAsync(string method, string topic)
-            => _pubsub.SendAsync(method, topic);
+        public Task SubscribeAsync(string topic, string parameters, Func<string, Task> callback)
+            => _pubsub.SendAsync(topic, parameters);
+        public Task UnsubscribeAsync(string topic, string parameters)
+            => _pubsub.SendAsync(topic, parameters);
     }
 }

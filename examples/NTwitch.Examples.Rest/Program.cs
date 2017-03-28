@@ -14,12 +14,12 @@ namespace NTwitch.Examples.Rest
 
         public async Task StartAsync()
         {
+            _client.LoggedIn += OnLoggedInAsync;
+
             Console.Write("Please enter your client id: ");
             string clientid = Console.ReadLine();
 
             await _client.LoginAsync(AuthMode.ClientId, clientid);
-
-            Console.WriteLine("Login success!");
             
             while (true)
             {
@@ -41,5 +41,8 @@ namespace NTwitch.Examples.Rest
                     Console.WriteLine($"{user.DisplayName} is streaming {stream.Game} at {stream.Channel.Url}!");
             }
         }
+
+        private Task OnLoggedInAsync(RestTokenInfo token)
+            => Console.Out.WriteLineAsync("Logged in!");
     }
 }
