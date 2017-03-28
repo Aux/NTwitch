@@ -18,5 +18,19 @@ namespace NTwitch.Pubsub
             add { disconnectedEvent.Add(value); }
             remove { disconnectedEvent.Remove(value); }
         }
+
+        internal readonly AsyncEvent<Func<Task>> subscriptionAddedEvent = new AsyncEvent<Func<Task>>();
+        public event Func<Task> SubscriptionAdded
+        {
+            add { subscriptionAddedEvent.Add(value); }
+            remove { subscriptionAddedEvent.Remove(value); }
+        }
+
+        internal readonly AsyncEvent<Func<Task>> subscriptionRemovedEvent = new AsyncEvent<Func<Task>>();
+        public event Func<Task> SubscriptionRemoved
+        {
+            add { subscriptionRemovedEvent.Add(value); }
+            remove { subscriptionRemovedEvent.Remove(value); }
+        }
     }
 }

@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using NTwitch.Rest;
+﻿using NTwitch.Pubsub;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -11,31 +9,37 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchRestClient _client;
+        private TwitchPubsubClient _client;
 
         public async Task Start()
         {
-            _client = new TwitchRestClient(new TwitchRestConfig()
-            {
-                LogLevel = LogLevel.Debug
-            });
+            var client = new SocketClient(new TwitchPubsubConfig());
 
-            _client.Log += OnLogAsync;
+            client.MessageReceived += OnMessageReceived;
+            client.Connected += OnConnected;
+            client.Disconnected += OnDisconnected;
+            
+            await client.ConnectAsync();
 
-            await _client.LoginAsync(AuthMode.Oauth, "");
-
-            var community = await _client.GetCommunityAsync("CompetitiveOW", true);
-
-            if (community == null)
-                Console.WriteLine("Could not find a community named `CompetitiveOW`.");
-            else
-            {
-                var owner = await community.GetOwnerAsync();
-
-                Console.WriteLine(JsonConvert.SerializeObject(owner));
-            }
+            await client.SendAsync("{\"type\":\"PING\"}");
+            await client.SendAsync("{\"type\":\"PING\"}");
 
             await Task.Delay(-1);
+        }
+
+        private Task OnConnected()
+        {
+            return Console.Out.WriteLineAsync("Connected");
+        }
+
+        private Task OnDisconnected()
+        {
+            return Console.Out.WriteLineAsync("Disconnected");
+        }
+
+        private Task OnMessageReceived(string arg)
+        {
+            return Console.Out.WriteLineAsync(arg);
         }
 
         private Task OnLogAsync(LogMessage msg)

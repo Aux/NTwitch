@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
@@ -7,38 +8,31 @@ namespace NTwitch.Pubsub
     {
         private SocketClient _client;
 
+        internal ConcurrentDictionary<string, Func<string, Task>> Callbacks;
         internal LogManager Logger;
 
         private bool _disposed = false;
-
-        public PubsubApiClient(TwitchPubsubConfig config, AuthMode type, string token)
-        {
-            _client = new SocketClient(config, type, token);
-        }
-
+        
         public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, AuthMode type, string token)
         {
             Logger = logger;
-            _client = new SocketClient(config, type, token);
+            _client = new SocketClient(config);
         }
 
         public Task SendAsync(string method, string topic)
         {
             throw new NotImplementedException();
         }
-
-        #region Channels
-
-        internal Task JoinChannelAsync(string name)
+        
+        internal Task ConnectAsync()
         {
-            throw new NotImplementedException();
-        }
-        internal Task LeaveChannelAsync(string name)
-        {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        #endregion
+        internal Task DisconnectAsync()
+        {
+            return Task.CompletedTask;
+        }
 
 
         protected virtual void Dispose(bool disposing)
@@ -47,12 +41,11 @@ namespace NTwitch.Pubsub
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    DisconnectAsync().GetAwaiter().GetResult();
+                    _client.Dispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
+                _client = null;
                 _disposed = true;
             }
         }

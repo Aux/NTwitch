@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable CS1998
+using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -12,17 +13,34 @@ namespace NTwitch.Pubsub
         private ClientWebSocket _client = null;
         private CancellationTokenSource _cancelTokenSource;
         private Task _task;
-
-        private AuthMode _tokenType;
+        
         private string _host;
-        private string _token;
         private bool _disposed = false;
 
-        public SocketClient(TwitchPubsubConfig config, AuthMode type, string token)
+        public SocketClient(TwitchPubsubConfig config)
         {
-            //_host = config.SocketHost;
-            _tokenType = type;
-            _token = token;
+            _host = config.PubsubHost;
+        }
+
+        internal readonly AsyncEvent<Func<Task>> connectedEvent = new AsyncEvent<Func<Task>>();
+        public event Func<Task> Connected
+        {
+            add { connectedEvent.Add(value); }
+            remove { connectedEvent.Remove(value); }
+        }
+
+        internal readonly AsyncEvent<Func<Task>> disconnectedEvent = new AsyncEvent<Func<Task>>();
+        public event Func<Task> Disconnected
+        {
+            add { disconnectedEvent.Add(value); }
+            remove { disconnectedEvent.Remove(value); }
+        }
+
+        internal readonly AsyncEvent<Func<string, Task>> messageReceivedEvent = new AsyncEvent<Func<string, Task>>();
+        public event Func<string, Task> MessageReceived
+        {
+            add { messageReceivedEvent.Add(value); }
+            remove { messageReceivedEvent.Remove(value); }
         }
 
         public async Task SendAsync(string message)
@@ -35,51 +53,86 @@ namespace NTwitch.Pubsub
 
             for (int i = 0; i < count; i++)
             {
+                var offset = _chunkSize * i;
+                var buffer = new ArraySegment<Byte>(bytes, offset, count);
+
                 bool isfinal = i + 1 == count;
-
-                var buffer = new ArraySegment<Byte>(bytes, _chunkSize * i, _chunkSize);
-
-                await _client.SendAsync(buffer, WebSocketMessageType.Text, isfinal, _cancelTokenSource.Token);
+                await _client.SendAsync(buffer, WebSocketMessageType.Text, isfinal, _cancelTokenSource.Token).ConfigureAwait(false);
             }
 
+            Console.WriteLine($"Sent {message}");
             // something about callbacks
         }
 
-        public Task StartAsync()
+        public async Task ConnectAsync()
         {
-            throw new NotImplementedException();
+            _cancelTokenSource = new CancellationTokenSource();
+            _client = new ClientWebSocket();
+            await _client.ConnectAsync(new Uri(_host), _cancelTokenSource.Token);
+            await StartAsync(_cancelTokenSource);
+            await connectedEvent.InvokeAsync().ConfigureAwait(false);
+        }
+        
+        public async Task StartAsync(CancellationTokenSource cancelTokenSource)
+        {
+            _task = RunAsync(cancelTokenSource);
         }
 
-        public Task RunAsync()
+        public async Task RunAsync(CancellationTokenSource cancelTokenSource)
         {
-            throw new NotImplementedException();
-        }
+            var closeTask = Task.Delay(-1, cancelTokenSource.Token);
 
-        public Task StopAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void EnsureClientsExist()
-        {
-            if (_client == null)
+            while (!cancelTokenSource.IsCancellationRequested)
             {
+                var buffer = new ArraySegment<byte>(new byte[_chunkSize]);
 
+                var builder = new StringBuilder();
+                WebSocketReceiveResult result;
+                do
+                {
+                    var recieveTask = _client.ReceiveAsync(buffer, cancelTokenSource.Token);
+
+                    var task = await Task.WhenAny(closeTask, recieveTask);
+                    if (task == closeTask)
+                        break;
+
+                    result = recieveTask.Result;
+
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        cancelTokenSource.Cancel();
+                        break;
+                    }
+
+                    string message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
+                    builder.Append(message);
+                } while (!result.EndOfMessage);
+
+                await messageReceivedEvent.InvokeAsync(builder.ToString()).ConfigureAwait(false);
             }
-        }
 
+            await StopAsync(cancelTokenSource);
+        }
+        
+        public async Task StopAsync(CancellationTokenSource cancelTokenSource)
+        {
+            await _client.CloseAsync(WebSocketCloseStatus.NormalClosure, null, cancelTokenSource.Token);
+            Dispose();
+            await disconnectedEvent.InvokeAsync().ConfigureAwait(false);
+        }
+        
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    _cancelTokenSource.Cancel();
+                    _client.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
+                
+                _task = null;
+                _client = null;
                 _disposed = true;
             }
         }
