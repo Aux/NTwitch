@@ -37,16 +37,16 @@ namespace NTwitch.Rest
         // Users
         /// <summary> Get all users following this channel </summary>
         public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetFollowersAsync(this, ascending, limit, offset);
+            => ChannelHelper.GetFollowersAsync(Client, Id, ascending, limit, offset);
         /// <summary> Get all users authorized as an editor on this channel </summary>
         public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
-            => ChannelHelper.GetEditorsAsync(this);
+            => ChannelHelper.GetEditorsAsync(Client, Id);
         /// <summary> Get all users subscribed to this channel </summary>
         public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetSubscribersAsync(this, ascending, limit, offset);
+            => ChannelHelper.GetSubscribersAsync(Client, Id, ascending, limit, offset);
         /// <summary> Get a specific user subscriber by id </summary>
         public Task<RestUserSubscription> GetSubscriberAsync(ulong userId)
-            => ChannelHelper.GetSubscriberAsync(this, userId);
+            => ChannelHelper.GetSubscriberAsync(Client, Id, userId);
 
         // Chat
         /// <summary> Get cheer badges for this channel </summary>
@@ -54,15 +54,15 @@ namespace NTwitch.Rest
             => ClientHelper.GetCheersAsync(Client, Id);
         /// <summary> Get chat badges for this channel </summary>
         public Task<RestChatBadges> GetChatBadgesAsync()
-            => ChannelHelper.GetChatBadgesAsync(this);
+            => ChannelHelper.GetChatBadgesAsync(Client, Id);
 
         // Teams
         /// <summary> Get all teams this channel is a member of </summary>
         public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
-            => ChannelHelper.GetTeamsAsync(this);
+            => ChannelHelper.GetTeamsAsync(Client, Id);
 
         // Videos
         //public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
-        //    => ChannelHelper.GetVideosAsync(this, limit, offset);
+        //    => ChannelHelper.GetVideosAsync(Client, Id, limit, offset);
     }
 }

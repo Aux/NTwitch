@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace NTwitch
+﻿namespace NTwitch
 {
     public interface IUser : IEntity<ulong>
     {
+        string Name { get; }
     }
 }

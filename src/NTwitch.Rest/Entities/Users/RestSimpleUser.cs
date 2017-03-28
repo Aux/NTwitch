@@ -37,50 +37,50 @@ namespace NTwitch.Rest
         // Emotes
         /// <summary> Get all emotes available to this user </summary>
         public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
-            => UserHelper.GetEmotesAsync(this, Id);
+            => UserHelper.GetEmotesAsync(Client, Id, Id);
 
         //// Subscriptions
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestChannelSubscription>> GetSubscriptionsAsync()
-        //    => UserHelper.GetSubscriptionsAsync(this);
+        //    => UserHelper.GetSubscriptionsAsync(Client, Id);
         ///// <summary>  </summary>
         //public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
-        //    => UserHelper.GetSubscriptionAsync(this, channelId);
+        //    => UserHelper.GetSubscriptionAsync(Client, Id, channelId);
 
         // Follows
         /// <summary> Get all channels this user is following </summary>
         public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
-            => UserHelper.GetFollowsAsync(this, sort, ascending, limit, offset);
+            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, limit, offset);
         /// <summary> Get a specific channel follow by id </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
-            => UserHelper.GetFollowAsync(this, channelId);
+            => UserHelper.GetFollowAsync(Client, Id, channelId);
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync()
-        //    => UserHelper.GetFollowersAsync(this);
+        //    => UserHelper.GetFollowersAsync(Client, Id);
         ///// <summary>  </summary>
         //public Task<RestUserFollow> GetFollowerAsync(ulong userId)
-        //    => UserHelper.GetFollowerAsync(this, userId);
+        //    => UserHelper.GetFollowerAsync(Client, Id, userId);
 
         //// Blocks
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
-        //    => UserHelper.GetBlocksAsync(this, Id, limit, offset);
+        //    => UserHelper.GetBlocksAsync(Client, Id, limit, offset);
         ///// <summary>  </summary>
         //public Task BlockAsync()
-        //    => UserHelper.BlockAsync(this, Id);
+        //    => UserHelper.BlockAsync(Client, Id);
         ///// <summary>  </summary>
         //public Task UnblockAsync()
-        //    => UserHelper.UnblockAsync(this, Id);
+        //    => UserHelper.UnblockAsync(Client, Id);
 
         //// VHS
         ///// <summary>  </summary>
         //public Task<string> CreateHeartbeatAsync()
-        //    => UserHelper.CreateHeartbeatAsync(this);
+        //    => UserHelper.CreateHeartbeatAsync(Client, Id);
         ///// <summary>  </summary>
         //public Task<string> GetHeartbeatAsync()
-        //    => UserHelper.GetHeartbeatAsync(this);
+        //    => UserHelper.GetHeartbeatAsync(Client, Id);
         ///// <summary>  </summary>
         //public Task DeleteHeartbeatAsync()
-        //    => UserHelper.DeleteHeartbeatAsync(this);
+        //    => UserHelper.DeleteHeartbeatAsync(Client, Id);
     }
 }
