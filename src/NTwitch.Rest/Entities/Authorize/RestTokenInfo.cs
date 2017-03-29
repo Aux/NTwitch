@@ -6,6 +6,8 @@ namespace NTwitch.Rest
 {
     public class RestTokenInfo
     {
+        /// <summary> The oauth token of this session. </summary>
+        public string Token { get; private set; }
         /// <summary> True if the specified token is valid </summary>
         public bool IsValid { get; private set; }
         /// <summary> The authorized user's name </summary>
@@ -17,11 +19,14 @@ namespace NTwitch.Rest
         /// <summary> Information about the authorized oauth token </summary>
         public RestAuthorization Authorization { get; private set; } = new RestAuthorization();
 
-        internal RestTokenInfo() { }
-
-        internal static RestTokenInfo Create(Model model)
+        internal RestTokenInfo(string token)
         {
-            var entity = new RestTokenInfo();
+            Token = token;
+        }
+
+        internal static RestTokenInfo Create(Model model, string token)
+        {
+            var entity = new RestTokenInfo(token);
             entity.Update(model);
             return entity;
         }

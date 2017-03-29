@@ -12,14 +12,16 @@ namespace NTwitch.Pubsub
         private const int _chunkSize = 1024;
         private ClientWebSocket _client = null;
         private CancellationTokenSource _cancelTokenSource;
+        private LogManager _log;
         private Task _task;
         
         private string _host;
         private bool _disposed = false;
 
-        public SocketClient(TwitchPubsubConfig config)
+        public SocketClient(TwitchPubsubConfig config, LogManager logger)
         {
             _host = config.PubsubHost;
+            _log = logger;
         }
 
         internal readonly AsyncEvent<Func<Task>> connectedEvent = new AsyncEvent<Func<Task>>();
@@ -59,9 +61,6 @@ namespace NTwitch.Pubsub
                 bool isfinal = i + 1 == count;
                 await _client.SendAsync(buffer, WebSocketMessageType.Text, isfinal, _cancelTokenSource.Token).ConfigureAwait(false);
             }
-
-            Console.WriteLine($"Sent {message}");
-            // something about callbacks
         }
 
         public async Task ConnectAsync()

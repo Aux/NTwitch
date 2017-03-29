@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
-    internal static class ClientHelper
+    internal static class RestHelper
     {
-        public static async Task<RestTokenInfo> AuthorizeAsync(BaseRestClient client)
+        public static async Task<RestTokenInfo> AuthorizeAsync(BaseRestClient client, string token)
         {
             await client.Logger.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
             
             var model = await client.RestClient.ValidateTokenAsync();
-            var entity = RestTokenInfo.Create(model);
+            var entity = RestTokenInfo.Create(model, token);
             
             await client.Logger.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
             return entity;

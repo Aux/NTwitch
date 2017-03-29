@@ -51,7 +51,7 @@ namespace NTwitch.Rest
         // Chat
         /// <summary> Get cheer badges for this channel </summary>
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
-            => ClientHelper.GetCheersAsync(Client, Id);
+            => RestHelper.GetCheersAsync(Client, Id);
         /// <summary> Get chat badges for this channel </summary>
         public Task<RestChatBadges> GetChatBadgesAsync()
             => ChannelHelper.GetChatBadgesAsync(Client, Id);

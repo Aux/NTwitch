@@ -13,33 +13,23 @@ namespace NTwitch.Tests
 
         public async Task Start()
         {
-            var client = new SocketClient(new TwitchPubsubConfig());
+            _client = new TwitchPubsubClient(new TwitchPubsubConfig()
+            {
+                LogLevel = LogLevel.Info
+            });
 
-            client.MessageReceived += OnMessageReceived;
-            client.Connected += OnConnected;
-            client.Disconnected += OnDisconnected;
+            _client.Log += OnLogAsync;
+            _client.WhisperReceived += OnWhisperReceivedAsync;
+
+            await _client.LoginAsync(AuthMode.Oauth, "");
+            await _client.AddWhispersAsync(123, 1321, 123);
             
-            await client.ConnectAsync();
-
-            await client.SendAsync("{\"type\":\"PING\"}");
-            await client.SendAsync("{\"type\":\"PING\"}");
-
             await Task.Delay(-1);
         }
 
-        private Task OnConnected()
+        private Task OnWhisperReceivedAsync()
         {
-            return Console.Out.WriteLineAsync("Connected");
-        }
-
-        private Task OnDisconnected()
-        {
-            return Console.Out.WriteLineAsync("Disconnected");
-        }
-
-        private Task OnMessageReceived(string arg)
-        {
-            return Console.Out.WriteLineAsync(arg);
+            throw new NotImplementedException();
         }
 
         private Task OnLogAsync(LogMessage msg)

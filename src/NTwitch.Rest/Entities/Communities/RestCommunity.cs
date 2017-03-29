@@ -54,6 +54,6 @@ namespace NTwitch.Rest
 
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
-            => ClientHelper.GetUserAsync(Client, OwnerId);
+            => RestHelper.GetUserAsync(Client, OwnerId);
     }
 }

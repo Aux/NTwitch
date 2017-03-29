@@ -27,7 +27,7 @@ namespace NTwitch.Pubsub
         // Channels
         /// <summary> Get information about this channel </summary>
         public Task GetChannelAsync()
-            => ClientHelper.GetChannelAsync(Client, Id);
+            => RestHelper.GetChannelAsync(Client, Id);
 
         // Users
         /// <summary> Get all users following this channel </summary>
@@ -46,7 +46,7 @@ namespace NTwitch.Pubsub
         // Chat
         /// <summary> Get cheer badges for this channel </summary>
         public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
-            => ClientHelper.GetCheersAsync(Client, Id);
+            => RestHelper.GetCheersAsync(Client, Id);
         /// <summary> Get chat badges for this channel </summary>
         public Task<RestChatBadges> GetChatBadgesAsync()
             => ChannelHelper.GetChatBadgesAsync(Client, Id);

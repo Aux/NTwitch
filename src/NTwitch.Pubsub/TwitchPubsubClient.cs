@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace NTwitch.Pubsub
 {
@@ -11,10 +10,9 @@ namespace NTwitch.Pubsub
         public Task LoginAsync(AuthMode type, string token)
             => SocketLoginAsync(type, token);
 
+        public Task ConnectAsync()
+            => ConnectInternalAsync();
         public Task DisconnectAsync()
             => DisconnectInternalAsync();
-
-        Task ITwitchClient.ConnectAsync()
-            => throw new NotSupportedException();
     }
 }

@@ -32,7 +32,7 @@ namespace NTwitch.Rest
         // Channels
         /// <summary> Get information about this user's channel </summary>
         public Task<RestChannel> GetChannelAsync()
-            => ClientHelper.GetChannelAsync(Client, Id);
+            => RestHelper.GetChannelAsync(Client, Id);
 
         // Emotes
         /// <summary> Get all emotes available to this user </summary>

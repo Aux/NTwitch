@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NTwitch.Pubsub.API
+namespace NTwitch.Pubsub
 {
     internal class PubsubResponseData
     {

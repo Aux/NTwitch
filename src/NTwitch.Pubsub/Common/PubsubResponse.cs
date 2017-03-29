@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NTwitch.Pubsub.API
+namespace NTwitch.Pubsub
 {
     internal class PubsubResponse
     {
@@ -12,5 +12,8 @@ namespace NTwitch.Pubsub.API
         public string Nonce { get; set; }
         [JsonProperty("error")]
         public string Error { get; set; }
+
+        public static PubsubResponse FromString(string msg)
+            => JsonConvert.DeserializeObject<PubsubResponse>(msg);
     }
 }
