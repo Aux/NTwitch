@@ -1,7 +1,7 @@
 # NTwitch
 [![Discord](https://discordapp.com/api/guilds/257698577894080512/widget.png)](https://discord.gg/yd8x2wM)
 
-NTwitch is a fully async-compatible implementation of TwitchTV's version 5 api. Using Microsoft's .Net Core it aims to maintain as lightweight and extensibile a structure as possible for developers interested in implementing Twitch's services in their application.
+A .net core implementation of the https://twitch.tv/ version 5 api.
 
 | Build       | Nuget  | Status  |
 | ----------- |:------:|:-------:|
@@ -13,11 +13,11 @@ Release and pre-release builds can be found on Nuget under [NTwitch](https://www
 
 - [NTwitch](https://www.nuget.org/packages/NTwitch/)
 - [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
-- [NTwitch.Chat](https://www.nuget.org/packages/NTwitch.Chat/)
-- [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.PubSub/)
+- NTwitch.Chat (not released)
+- NTwitch.Pubsub (not released)
 
 ## Documentation
-Documentation for released NTwitch features will be available at https://aux.github.io/NTwitch/ (once I write it). The source for the docs site is available on the [gh-pages branch](https://github.com/Aux/NTwitch/tree/gh-pages). Until then, you can always join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM) and ask any questions you might have.
+There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM).
 
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
