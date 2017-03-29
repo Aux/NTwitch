@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Rest", "src\NTwitch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{6B7344E5-6E7F-4435-89DD-B4D235AB8B0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitchPubsub", "src\NTwitchPubsub\NTwitchPubsub.csproj", "{C520412C-0148-4CBA-A680-5F28B5A1711E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{C520412C-0148-4CBA-A680-5F28B5A1711E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53879A91-FB4C-4A04-B26D-DD2F0CD2EA55}"
 EndProject
