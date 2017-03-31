@@ -3,30 +3,31 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace NTwitch.Rest
+namespace NTwitch.Rest.API
 {
-    internal class RestClient : IDisposable
+    internal class RestClient
     {
+        public string RestHost => _host;
+
         private HttpClient _client = null;
-        
-        private AuthMode _tokenType;
         private string _host;
-        private string _token;
+        private string _clientId;
         private bool _disposed = false;
 
-        public RestClient(TwitchRestConfig config, AuthMode type, string token)
-            : this(config.RestHost, type, token) { }
-        public RestClient(string host, AuthMode type, string token)
+        public RestClient(string host, string clientId = null)
         {
             _host = host;
-            _tokenType = type;
-            _token = token;
+            _clientId = clientId;
         }
 
         public async Task<RestResponse> SendAsync(HttpRequestMessage message)
         {
+            if (_disposed)
+                throw new InvalidOperationException("Client is disposed");
+
             var timer = new Stopwatch();
             timer.Start();
+
             EnsureClientExists();
 
             var reply = await _client.SendAsync(message);
@@ -34,14 +35,17 @@ namespace NTwitch.Rest
             try
             {
                 reply.EnsureSuccessStatusCode();
-            } catch (HttpRequestException ex)
+            }
+            catch (HttpRequestException ex)
             {
                 throw new HttpException(reply.StatusCode, ex);
             }
-            
-            var content = await reply.Content.ReadAsStringAsync();
+
             timer.Stop();
-            return new RestResponse(reply.StatusCode, content, timer.ElapsedMilliseconds);
+            var code = reply.StatusCode;
+            var body = await reply.Content.ReadAsStringAsync();
+
+            return new RestResponse(code, body, timer.ElapsedMilliseconds);
         }
 
         private void EnsureClientExists()
@@ -52,17 +56,15 @@ namespace NTwitch.Rest
 
                 client.BaseAddress = new Uri(_host);
                 client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-                client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", TwitchConfig.UserAgent);
+                client.DefaultRequestHeaders.Add("User-Agent", TwitchConfig.UserAgent);
 
-                if (_tokenType == AuthMode.ClientId)
-                    client.DefaultRequestHeaders.Add("Client-ID", _token);
-                if (_tokenType == AuthMode.Oauth)
-                    client.DefaultRequestHeaders.Add("Authorization", $"OAuth {_token}");
+                if (!string.IsNullOrWhiteSpace(_clientId))
+                    client.DefaultRequestHeaders.Add("Client-ID", _clientId);
 
                 _client = client;
             }
         }
-        
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -72,9 +74,7 @@ namespace NTwitch.Rest
                     _client.Dispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
+                _client = null;
                 _disposed = true;
             }
         }

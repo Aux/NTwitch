@@ -4,7 +4,7 @@ namespace NTwitch
 {
     public interface ITwitchClient
     {
-        Task LoginAsync(AuthMode type, string token);
+        Task LoginAsync(string token);
         Task ConnectAsync();
         Task DisconnectAsync();
     }

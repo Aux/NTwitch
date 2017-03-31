@@ -9,8 +9,8 @@ namespace NTwitch.Rest
         public TwitchRestClient(TwitchRestConfig config) : base(config) { }
 
         /// <summary> Authorize this client with a clientid or oauth token </summary>
-        public Task LoginAsync(AuthMode type, string token)
-            => RestLoginAsync(type, token);
+        public Task LoginAsync(string token)
+            => RestLoginAsync(token);
 
         Task ITwitchClient.ConnectAsync()
             => throw new NotSupportedException();

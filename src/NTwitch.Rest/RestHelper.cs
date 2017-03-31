@@ -11,7 +11,7 @@ namespace NTwitch.Rest
         {
             await client.Logger.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
             
-            var model = await client.RestClient.ValidateTokenAsync();
+            var model = await client.RestClient.AuthorizeAsync(token);
             var entity = RestTokenInfo.Create(model, token);
             
             await client.Logger.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
@@ -20,7 +20,7 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
-            var model = await client.RestClient.GetIngestsAsync();
+            var model = await client.RestClient.GetIngestsInternalAsync();
 
             var entity = model.Ingests.Select(x =>
             {
@@ -31,6 +31,17 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
+        #region Tokens
+
+        public static RestTokenInfo GetTokenInfo(BaseRestClient client, ulong userId)
+        {
+            if (client.Tokens.TryGetValue(userId, out RestTokenInfo token))
+                return token;
+            else
+                return null;
+        }
+        
+        #endregion
         #region Search
 
         internal static async Task<IReadOnlyCollection<RestStream>> SearchStreamsAsync(BaseRestClient client, string query, bool? hls, uint limit, uint offset)

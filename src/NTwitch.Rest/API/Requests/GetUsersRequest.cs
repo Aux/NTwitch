@@ -2,8 +2,8 @@
 {
     internal class GetUsersRequest : RestRequest
     {
-        public GetUsersRequest(string[] usernames)
-            : base("GET", "users")
+        public GetUsersRequest(string token, string[] usernames)
+            : base("GET", "users", token)
         {
             Parameters.Add("login", string.Join(",", usernames));
         }

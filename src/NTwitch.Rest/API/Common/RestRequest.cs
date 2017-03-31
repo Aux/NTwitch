@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace NTwitch.Rest
@@ -13,10 +11,11 @@ namespace NTwitch.Rest
         public Dictionary<string, object> Parameters { get; } = new Dictionary<string, object>();
         public string JsonBody { get; set; }
 
-        public RestRequest(string method, string endpoint)
+        public RestRequest(string method, string endpoint, string token)
         {
             Method = method;
             Endpoint = endpoint;
+            Parameters.Add("oauth_token", token);
         }
 
         public HttpRequestMessage GetRequest()
