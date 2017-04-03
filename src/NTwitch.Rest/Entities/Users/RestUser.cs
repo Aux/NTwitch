@@ -33,12 +33,5 @@ namespace NTwitch.Rest
             Bio = model.Bio;
             base.Update(model);
         }
-
-        /// <summary> Update this user's properties </summary>
-        public virtual async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetUserAsync(Id).ConfigureAwait(false);
-            Update(entity);
-        }
     }
 }

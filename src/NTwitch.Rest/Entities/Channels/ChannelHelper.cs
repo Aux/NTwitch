@@ -11,11 +11,21 @@ namespace NTwitch.Rest
 
         public static async Task ModifyChannelAsync(RestSimpleChannel channel, Action<ModifyChannelParams> options)
         {
-            if (!channel.Client.Token.Authorization?.Scopes.Contains("channel_editor") ?? false)
+            if (!TokenHelper.TryGetToken(channel.Client, channel.Id, out RestTokenInfo info))
+                throw new MissingScopeException("channel_editor");
+            if (!info.Authorization.Scopes.Contains("channel_editor"))
                 throw new MissingScopeException("channel_editor");
 
-            var model = await channel.Client.RestClient.ModifyChannelAsync(channel.Id, options);
+            var changes = new ModifyChannel();
+            options.Invoke(changes.Parameters);
+
+            var model = await channel.Client.RestClient.ModifyChannelInternalAsync(info.Token, channel.Id, changes);
             channel.Update(model);
+
+            if (channel is RestChannel rc)
+                await rc.UpdateAsync();
+            if (channel is RestSelfChannel rsc)
+                await rsc.UpdateAsync();
         }
 
         #endregion
@@ -23,10 +33,12 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(BaseRestClient client, ulong channelId)
         {
-            if (!client.Token.Authorization?.Scopes.Contains("channel_read") ?? false)
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+                throw new MissingScopeException("channel_read");
+            if (!info.Authorization.Scopes.Contains("channel_read"))
                 throw new MissingScopeException("channel_read");
 
-            var model = await client.RestClient.GetChannelEditorsAsync(channelId);
+            var model = await client.RestClient.GetChannelEditorsAsync(info.Token, channelId);
 
             var entity = model.Users.Select(x =>
             {
@@ -39,7 +51,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, ulong channelId)
         {
-            var model = await client.RestClient.GetChannelTeamsAsync(channelId);
+            TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info);
+            var model = await client.RestClient.GetChannelTeamsInternalAsync(info?.Token, channelId);
 
             var entity = model.Teams.Select(x =>
             {
@@ -52,7 +65,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(BaseRestClient client, ulong channelId, bool ascending, uint limit, uint offset)
         {
-            var model = await client.RestClient.GetChannelFollowsAsync(channelId, ascending, limit, offset);
+            TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info);
+            var model = await client.RestClient.GetChannelFollowersInternalAsync(info?.Token, channelId, ascending, limit, offset);
 
             var entity = model.Follows.Select(x =>
             {
@@ -65,10 +79,12 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(BaseRestClient client, ulong channelId, bool ascending, uint limit, uint offset)
         {
-            if (!client.Token.Authorization?.Scopes.Contains("channel_subscriptions") ?? false)
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+                throw new MissingScopeException("channel_subscriptions");
+            if (info.Authorization.Scopes.Contains("channel_subscriptions"))
                 throw new MissingScopeException("channel_subscriptions");
 
-            var model = await client.RestClient.GetChannelSubscriptionsAsync(channelId, ascending, limit, offset);
+            var model = await client.RestClient.GetChannelSubscribersInternalAsync(info.Token, channelId, ascending, limit, offset);
 
             var entity = model.Subscriptions.Select(x =>
             {
@@ -81,7 +97,12 @@ namespace NTwitch.Rest
 
         internal static async Task<RestUserSubscription> GetSubscriberAsync(BaseRestClient client, ulong channelId, ulong userId)
         {
-            var model = await client.RestClient.GetSubscriberAsync(channelId, userId);
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+                throw new MissingScopeException("channel_subscriptions");
+            if (info.Authorization.Scopes.Contains("channel_subscriptions"))
+                throw new MissingScopeException("channel_subscriptions");
+
+            var model = await client.RestClient.GetSubscriberInternalAsync(info.Token, channelId, userId);
             if (model == null)
                 return null;
 
@@ -95,7 +116,8 @@ namespace NTwitch.Rest
 
         internal static async Task<RestChatBadges> GetChatBadgesAsync(BaseRestClient client, ulong channelId)
         {
-            var model = await client.RestClient.GetChatBadgesAsync(channelId);
+            TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info);
+            var model = await client.RestClient.GetBadgesInternalAsync(info?.Token, channelId);
             if (model == null)
                 return null;
 

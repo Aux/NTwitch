@@ -19,10 +19,8 @@ namespace NTwitch.Tests
             });
 
             _client.Log += OnLogAsync;
-            _client.WhisperReceived += OnWhisperReceivedAsync;
 
-            await _client.LoginAsync(AuthMode.Oauth, "");
-            await _client.AddWhispersAsync(123, 1321, 123);
+            await _client.LoginAsync("");
             
             await Task.Delay(-1);
         }

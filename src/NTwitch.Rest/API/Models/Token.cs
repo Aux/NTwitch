@@ -5,7 +5,7 @@ namespace NTwitch.Rest.API
     internal class Token
     {
         [JsonProperty("valid")]
-        public bool IsValid { get; set; }
+        public bool IsValid { get; set; } = false;
         [JsonProperty("user_name")]
         public string Username { get; set; }
         [JsonProperty("user_id")]

@@ -50,15 +50,5 @@ namespace NTwitch.Rest
             IsPlaylist = model.IsPlaylist;
             Previews = model.Previews;
         }
-
-        /// <summary> Update this stream's properties </summary>
-        public virtual async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetStreamAsync(Id, StreamType.All).ConfigureAwait(false);
-            if (entity.Stream == null)
-                return;
-
-            Update(entity.Stream);
-        }
     }
 }

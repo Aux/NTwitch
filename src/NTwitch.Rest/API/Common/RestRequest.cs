@@ -1,22 +1,28 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace NTwitch.Rest
 {
     public class RestRequest
     {
+        public bool HasToken { get; } = false;
+
         public string Method { get; }
         public string Endpoint { get; }
         public Dictionary<string, object> Parameters { get; } = new Dictionary<string, object>();
         public string JsonBody { get; set; }
 
-        public RestRequest(string method, string endpoint)
+        public RestRequest(string method, string endpoint, string token)
         {
             Method = method;
             Endpoint = endpoint;
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                HasToken = true;
+                Parameters.Add("oauth_token", token);
+            }
         }
 
         public HttpRequestMessage GetRequest()

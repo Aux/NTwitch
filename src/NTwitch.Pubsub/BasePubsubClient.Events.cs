@@ -39,5 +39,12 @@ namespace NTwitch.Pubsub
             add { whisperReceivedEvent.Add(value); }
             remove { whisperReceivedEvent.Remove(value); }
         }
+
+        internal readonly AsyncEvent<Func<Task>> streamOnlineEvent = new AsyncEvent<Func<Task>>();
+        public event Func<Task> StreamOnline
+        {
+            add { streamOnlineEvent.Add(value); }
+            remove { streamOnlineEvent.Remove(value); }
+        }
     }
 }

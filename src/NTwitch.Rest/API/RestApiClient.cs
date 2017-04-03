@@ -1,561 +1,593 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Net;
 using System.Threading.Tasks;
 
-namespace NTwitch.Rest
+namespace NTwitch.Rest.API
 {
-    public class RestApiClient : IDisposable
+    public class RestApiClient
     {
+        public string RestHost => _client.RestHost;
+        
         private RestClient _client;
-        private LogManager _log;
 
-        private bool _disposed = false;
+        internal LogManager Logger;
+        internal string ClientId;
 
-        public RestApiClient(TwitchRestConfig config, LogManager log, AuthMode type, string token)
+
+        public RestApiClient(TwitchRestConfig config)
         {
-            _log = log;
-            _client = new RestClient(config, type, token);
+            Logger = new LogManager(config.LogLevel);
+            ClientId = config.ClientId;
+            _client = new RestClient(config.RestHost, config.ClientId);
         }
 
-        public Task<RestResponse> SendAsync(string method, string endpoint)
-            => SendAsync(new RestRequest(method, endpoint));
-
+        public Task<RestResponse> SendAsync(string method, string endpoint, string token)
+            => SendAsync(new RestRequest(method, endpoint, token));
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
-            await _log.DebugAsync("Rest", $"Attempting {request.Method} /{request.Endpoint}").ConfigureAwait(false);
+            await Logger.DebugAsync("Rest", $"Attempting {request.Method} /{request.Endpoint}").ConfigureAwait(false);
 
-            var message = request.GetRequest();
-            var response = await _client.SendAsync(message);
+            if (!request.HasToken && string.IsNullOrWhiteSpace(ClientId))
+                throw new InvalidOperationException("No oauth token or client id specified");
 
-            await _log.VerboseAsync("Rest", $"{request.Method} /{request.Endpoint} {response.ExecuteTime}ms").ConfigureAwait(false);
+            var msg = request.GetRequest();
+            var response = await _client.SendAsync(msg);
+
+            await Logger.DebugAsync("Rest", $"{request.Method} /{request.Endpoint} in {response.ExecuteTime}ms").ConfigureAwait(false);
             return response;
         }
 
-        #region Misc
+        //
+        // Authorization
+        //
 
-        internal async Task<API.Token> ValidateTokenAsync()
+        internal async Task<Token> AuthorizeAsync(string token)
         {
             try
             {
-                var response = await SendAsync("GET", "");
-                return response.GetBodyAsType<API.TokenCollection>().Token;
+                var response = await SendAsync("GET", "", token);
+                return response.GetBodyAsType<TokenCollection>().Token;
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401)
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
             {
-                throw new InvalidOperationException("Token is invalid.");
+                return new Token();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new InvalidOperationException("Specified string is not a valid token or client id");
             }
         }
 
-        internal async Task<API.IngestCollection> GetIngestsAsync()
+        //
+        // Channels
+        //
+
+        internal async Task<Channel> GetSelfChannelInternalAsync(string token)
         {
             try
             {
-                var response = await SendAsync("GET", $"ingests");
-                return response.GetBodyAsType<API.IngestCollection>();
+                var response = await SendAsync("GET", "channel", token);
+                return response.GetBodyAsType<Channel>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        #endregion
-        #region Search
-
-        internal async Task<API.ChannelCollection> SearchChannelsAsync(string query, uint limit, uint offset)
+        internal async Task<Channel> GetChannelInternalAsync(string token, ulong channelId)
         {
             try
             {
-                var response = await SendAsync(new SearchChannelsRequest(query, limit, offset));
-                return response.GetBodyAsType<API.ChannelCollection>();
+                var response = await SendAsync("GET", $"channel/{channelId}", token);
+                return response.GetBodyAsType<Channel>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422)
+            {
+                return null;
+            }
         }
 
-        internal async Task<API.StreamCollection> SearchStreamsAsync(string query, bool? hls, uint limit, uint offset)
+        internal async Task<Subscription> GetSubscriberInternalAsync(string token, ulong channelId, ulong userId)
         {
             try
             {
-                var response = await SendAsync(new SearchStreamsRequest(query, hls, limit, offset));
-                return response.GetBodyAsType<API.StreamCollection>();
+                var response = await SendAsync("GET", $"channels/{channelId}/subscriptions/{userId}", token);
+                return response.GetBodyAsType<Subscription>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized || ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
-
-        internal async Task<API.GameCollection> SearchGamesAsync(string query, bool islive)
+        
+        internal async Task<Channel> ModifyChannelInternalAsync(string token, ulong channelId, ModifyChannel changes)
         {
             try
             {
-                var response = await SendAsync(new SearchGamesRequest(query, islive));
-                return response.GetBodyAsType<API.GameCollection>();
+                var response = await SendAsync(new ModifyChannelRequest(token, channelId, changes));
+                return response.GetBodyAsType<Channel>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        #endregion
-        #region Users
+        internal async Task<TeamCollection> GetChannelTeamsInternalAsync(string token, ulong channelId)
+        {
+            var response = await SendAsync("GET", $"channels/{channelId}/teams", token);
+            return response.GetBodyAsType<TeamCollection>();
+        }
 
-        internal async Task<API.User> GetCurrentUserAsync()
+        internal async Task<UserCollection> GetChannelEditorsAsync(string token, ulong channelId)
         {
             try
             {
-                var response = await SendAsync("GET", "user");
-                return response.GetBodyAsType<API.User>();
+                var response = await SendAsync("GET", $"channels/{channelId}/editors", token);
+                return response.GetBodyAsType<UserCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        internal async Task<API.User> GetUserAsync(ulong id)
+        internal async Task<FollowCollection> GetChannelFollowersInternalAsync(string token, ulong channelId, bool ascending, uint limit, uint offset)
+        {
+            var response = await SendAsync(new GetChannelFollowersRequest(token, channelId, ascending, limit, offset));
+            return response.GetBodyAsType<FollowCollection>();
+        }
+
+        internal async Task<SubscriptionCollection> GetChannelSubscribersInternalAsync(string token, ulong channelId, bool ascending, uint limit, uint offset)
         {
             try
             {
-                var response = await SendAsync("GET", $"users/{id}");
-                return response.GetBodyAsType<API.User>();
+                var response = await SendAsync(new GetChannelSubscribersRequest(token, channelId, ascending, limit, offset));
+                return response.GetBodyAsType<SubscriptionCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
-        }
-
-        internal async Task<API.UserCollection> GetUsersAsync(string[] usernames)
-        {
-            try
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
             {
-                var response = await SendAsync(new GetUsersRequest(usernames));
-                return response.GetBodyAsType<API.UserCollection>();
+                return null;
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 400) { return null; }
         }
 
-        #endregion
-        #region Channels
+        //
+        // Chat
+        //
 
-        internal async Task<API.Channel> GetChannelAsync(ulong id)
+        internal async Task<CheerCollection> GetCheersInternalAsync(string token, ulong? channelId)
         {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}");
-                return response.GetBodyAsType<API.Channel>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+            var response = await SendAsync(new GetCheersRequest(token, channelId));
+            return response.GetBodyAsType<CheerCollection>();
         }
 
-        internal async Task<API.Subscription> GetSubscriberAsync(ulong id, ulong userId)
+        internal async Task<ChatBadges> GetBadgesInternalAsync(string token, ulong channelId)
         {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}/subscriptions/{userId}");
-                return response.GetBodyAsType<API.Subscription>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+            var response = await SendAsync("GET", $"chat/{channelId}/badges", token);
+            return response.GetBodyAsType<ChatBadges>();
         }
 
-        internal async Task<API.Channel> GetCurrentChannelAsync()
-        {
-            try
-            {
-                var response = await SendAsync("GET", "channel");
-                return response.GetBodyAsType<API.Channel>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.Channel> ModifyChannelAsync(ulong channelId, Action<ModifyChannelParams> options)
-        {
-            var changes = new ModifyChannel();
-            options.Invoke(changes.Parameters);
-
-            try
-            {
-                var response = await SendAsync(new ModifyChannelRequest(channelId, changes));
-                return response.GetBodyAsType<API.Channel>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.TeamCollection> GetChannelTeamsAsync(ulong id)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}/teams");
-                return response.GetBodyAsType<API.TeamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.UserCollection> GetChannelEditorsAsync(ulong id)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}/editors");
-                return response.GetBodyAsType<API.UserCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.FollowCollection> GetChannelFollowsAsync(ulong id, bool ascending, uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}/follows");
-                return response.GetBodyAsType<API.FollowCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.SubscriptionCollection> GetChannelSubscriptionsAsync(ulong id, bool ascending, uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"channels/{id}/subscriptions");
-                return response.GetBodyAsType<API.SubscriptionCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        #endregion
-        #region Streams
-
-        internal async Task<API.StreamCollection> GetFollowedStreamsAsync(StreamType type, uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync(new GetFollowedStreamsRequest(type, limit, offset));
-                return response.GetBodyAsType<API.StreamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.StreamCollection> GetStreamAsync(ulong channelId, StreamType type)
-        {
-            try
-            {
-                var response = await SendAsync(new GetStreamRequest(channelId, type));
-                return response.GetBodyAsType<API.StreamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.StreamCollection> GetStreamsAsync(Action<GetStreamsParams> options)
-        {
-            var changes = new GetStreamsParams();
-            options.Invoke(changes);
-
-            try
-            {
-                var response = await SendAsync(new GetStreamsRequest(changes));
-                return response.GetBodyAsType<API.StreamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.StreamCollection> GetFeaturedStreams(uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync(new GetFeaturedStreamsRequest(limit, offset));
-                return response.GetBodyAsType<API.StreamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.Stream> GetGameSummaryAsync(string game)
-        {
-            try
-            {
-                var response = await SendAsync(new GetStreamSummaryRequest(game));
-                return response.GetBodyAsType<API.Stream>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        #endregion
-        #region Follows
-
-        internal async Task<API.Follow> GetFollowAsync(ulong userId, ulong channelId)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"users/{userId}/follows/channels/{channelId}");
-                return response.GetBodyAsType<API.Follow>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
-        }
-
-        internal async Task<API.FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync(new GetFollowsRequest(userId, sort, ascending, limit, offset));
-                return response.GetBodyAsType<API.FollowCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 422) { return null; }
-        }
-
-        #endregion
-        #region Community
-
-        internal async Task<API.Community> GetCommunityAsync(string id, bool isname)
+        //
+        // Community
+        //
+        
+        internal async Task<Community> GetCommunityInternalAsync(string token, string communityId, bool isname)
         {
             try
             {
                 string endpoint;
                 if (isname)
-                    endpoint = $"communities?name={id}";
+                    endpoint = $"communities?name={communityId}";
                 else
-                    endpoint = $"communities/{id}";
-                
-                var response = await SendAsync("GET", endpoint);
-                return response.GetBodyAsType<API.Community>();
+                    endpoint = $"communities/{communityId}";
+
+                var response = await SendAsync("GET", endpoint, token);
+                return response.GetBodyAsType<Community>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
-        internal async Task<API.CommunityCollection> GetTopCommunitiesAsync(uint limit)
+        internal async Task<CommunityCollection> GetTopCommunitiesInternalAsync(string token, uint limit)
         {
             try
             {
-                var response = await SendAsync("GET", $"communities/top");
-                return response.GetBodyAsType<API.CommunityCollection>();
+                var response = await SendAsync("GET", $"communities/top", token);
+                return response.GetBodyAsType<CommunityCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        internal async Task<API.CommunityPermissions> GetCommunityPermissionsAsync(string communityId)
+        internal async Task<CommunityPermissions> GetCommunityPermissionsInternalAsync(string token, string communityId)
         {
             try
             {
-                var response = await SendAsync("GET", $"communities/{communityId}/permissions");
-                return response.GetBodyAsType<API.CommunityPermissions>();
+                var response = await SendAsync("GET", $"communities/{communityId}/permissions", token);
+                return response.GetBodyAsType<CommunityPermissions>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
-        internal async Task CommunityReportAsync(string id, ulong channelId)
+        internal async Task CommunityReportInternalAsync(string token, string communityId, ulong channelId)
         {
             try
             {
-                var response = await SendAsync(new CommunityReportRequest(id, channelId));
+                var response = await SendAsync(new CommunityReportRequest(token, communityId, channelId));
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
-        }
-
-        internal async Task ModifyCommunityAsync(string communityId, Action<ModifyCommunityParams> options)
-        {
-            var changes = new ModifyCommunityParams();
-            options.Invoke(changes);
-
-            try
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
             {
-                var response = await SendAsync(new ModifyCommunityRequest(communityId, changes));
+                return;
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
         }
 
-        internal async Task SetAvatarAsync(string communityId, string imageString)
+        internal async Task ModifyCommunityInternalAsync(string token, string communityId, ModifyCommunityParams changes)
         {
             try
             {
-                var response = await SendAsync(new SetCommunityAvatarRequest(communityId, imageString));
+                var response = await SendAsync(new ModifyCommunityRequest(token, communityId, changes));
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task RemoveAvatarAsync(string communityId)
+        internal async Task SetAvatarInternalAsync(string token, string communityId, string imageString)
         {
             try
             {
-                var response = await SendAsync(new RemoveCommunityAvatarRequest(communityId));
+                var response = await SendAsync(new SetCommunityAvatarRequest(token, communityId, imageString));
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task SetCoverAsync(string communityId, string imageString)
+        internal async Task RemoveAvatarInternalAsync(string token, string communityId)
         {
             try
             {
-                var response = await SendAsync(new SetCommunityCoverRequest(communityId, imageString));
+                var response = await SendAsync("DELETE", $"communities/{communityId}/images/avatar", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task RemoveCoverAsync(string communityId)
+        internal async Task SetCoverInternalAsync(string token, string communityId, string imageString)
         {
             try
             {
-                var response = await SendAsync(new RemoveCommunityCoverRequest(communityId));
+                var response = await SendAsync(new SetCommunityCoverRequest(token, communityId, imageString));
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task<API.CommunityCollection> GetCommunityModeratorsAsync(string id)
+        internal async Task RemoveCoverInternalAsync(string token, string communityId)
         {
             try
             {
-                var response = await SendAsync("GET", $"communities/{id}/moderators");
-                return response.GetBodyAsType<API.CommunityCollection>();
+                var response = await SendAsync("DELETE", $"communities/{communityId}/images/cover", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task RemoveCommunityModeratorAsync(string id, ulong userId)
+        internal async Task<CommunityCollection> GetCommunityModeratorsInternalAsync(string token, string communityId)
         {
             try
             {
-                var response = await SendAsync("PUT", $"communities/{id}/moderators/{userId}");
+                var response = await SendAsync("GET", $"communities/{communityId}/moderators", token);
+                return response.GetBodyAsType<CommunityCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        internal async Task AddCommunityModeratorAsync(string id, ulong userId)
+        internal async Task RemoveCommunityModeratorInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync("DELETE", $"communities/{id}/moderators/{userId}");
+                var response = await SendAsync("PUT", $"communities/{communityId}/moderators/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task<API.CommunityCollection> GetCommunityBansAsync(string id, uint limit)
+        internal async Task AddCommunityModeratorInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync(new GetCommunityBansRequest(id, limit));
-                return response.GetBodyAsType<API.CommunityCollection>();
+                var response = await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task AddCommunityBanAsync(string id, ulong userId)
+        internal async Task<CommunityCollection> GetCommunityBansInternalAsync(string token, string communityId, uint limit)
         {
             try
             {
-                var response = await SendAsync("PUT", $"communities/{id}/bans/{userId}");
+                var response = await SendAsync(new GetCommunityBansRequest(token, communityId, limit));
+                return response.GetBodyAsType<CommunityCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        internal async Task RemoveCommunityBanAsync(string id, ulong userId)
+        internal async Task AddCommunityBanInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync("DELETE", $"communities/{id}/bans/{userId}");
+                var response = await SendAsync("PUT", $"communities/{communityId}/bans/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task<API.CommunityCollection> GetCommunityTimeoutsAsync(string id, uint limit)
+        internal async Task RemoveCommunityBanInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync(new GetCommunityTimeoutsRequest(id, limit));
-                return response.GetBodyAsType<API.CommunityCollection>();
+                var response = await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        internal async Task AddCommunityTimeoutAsync(string id, ulong userId)
+        internal async Task<CommunityCollection> GetCommunityTimeoutsInternalAsync(string token, string communityId, uint limit)
         {
             try
             {
-                var response = await SendAsync("PUT", $"communities/{id}/timeouts/{userId}");
+                var response = await SendAsync(new GetCommunityTimeoutsRequest(token, communityId, limit));
+                return response.GetBodyAsType<CommunityCollection>();
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
         }
 
-        internal async Task RemoveCommunityTimeoutAsync(string id, ulong userId)
+        internal async Task AddCommunityTimeoutInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync("DELETE", $"communities/{id}/timeouts/{userId}");
+                var response = await SendAsync("PUT", $"communities/{communityId}/timeouts/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 204) { return; }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                return;
+            }
         }
 
-        #endregion
-        #region Videos
-
-        internal async Task<API.Video> GetVideoAsync(string id)
+        internal async Task RemoveCommunityTimeoutInternalAsync(string token, string communityId, ulong userId)
         {
             try
             {
-                var response = await SendAsync("GET", $"videos/{id}");
-                return response.GetBodyAsType<API.Video>();
+                var response = await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", token);
             }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
-        }
-
-        #endregion
-        #region Emotes
-
-        internal async Task<API.EmoteSet> GetEmotesAsync(ulong id)
-        {
-            try
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
             {
-                var response = await SendAsync("GET", $"users/{id}/emotes");
-                return response.GetBodyAsType<API.EmoteSet>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
-        }
-
-        #endregion
-        #region Teams
-
-        internal async Task<API.Team> GetTeamAsync(string name)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"teams/{name}");
-                return response.GetBodyAsType<API.Team>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
-        }
-
-        internal async Task<API.TeamCollection> GetTeamsAsync(uint limit, uint offset)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"teams");
-                return response.GetBodyAsType<API.TeamCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 404) { return null; }
-        }
-
-        #endregion
-        #region Chat
-
-        internal async Task<API.CheerCollection> GetCheersAsync(ulong? id)
-        {
-            try
-            {
-                var response = await SendAsync(new GetCheersRequest(id));
-                return response.GetBodyAsType<API.CheerCollection>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        internal async Task<API.ChatBadges> GetChatBadgesAsync(ulong id)
-        {
-            try
-            {
-                var response = await SendAsync("GET", $"chat/{id}/badges");
-                return response.GetBodyAsType<API.ChatBadges>();
-            }
-            catch (HttpException ex) when ((int)ex.StatusCode == 401) { return null; }
-        }
-
-        #endregion
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _client.Dispose();
-                }
-                
-                _disposed = true;
+                return;
             }
         }
         
-        public void Dispose()
+        //
+        // Ingests
+        //
+
+        internal async Task<IngestCollection> GetIngestsInternalAsync(string token)
         {
-            Dispose(true);
+            var response = await SendAsync("GET", "ingests", token);
+            return response.GetBodyAsType<IngestCollection>();
         }
+
+        //
+        // Search
+        //
+
+        internal async Task<ChannelCollection> SearchChannelsInternalAsync(string token, string query, uint limit, uint offset)
+        {
+            var response = await SendAsync(new SearchChannelsRequest(token, query, limit, offset));
+            return response.GetBodyAsType<ChannelCollection>();
+        }
+
+        internal async Task<StreamCollection> SearchStreamsInternalAsync(string token, string query, bool? hls, uint limit, uint offset)
+        {
+            var response = await SendAsync(new SearchStreamsRequest(token, query, hls, limit, offset));
+            return response.GetBodyAsType<StreamCollection>();
+        }
+
+        internal async Task<GameCollection> SearchGamesInternalAsync(string token, string query, bool islive)
+        {
+            var response = await SendAsync(new SearchGamesRequest(token, query, islive));
+            return response.GetBodyAsType<GameCollection>();
+        }
+
+        //
+        // Streams
+        //
+        
+        internal async Task<StreamCollection> GetFollowedStreamsInternalAsync(string token, StreamType type, uint limit, uint offset)
+        {
+            var response = await SendAsync(new GetFollowedStreamsRequest(token, type, limit, offset));
+            return response.GetBodyAsType<StreamCollection>();
+        }
+
+        internal async Task<StreamCollection> GetStreamInternalAsync(string token, ulong channelId, StreamType type)
+        {
+            var response = await SendAsync(new GetStreamRequest(token, channelId, type));
+            return response.GetBodyAsType<StreamCollection>();
+        }
+
+        internal async Task<StreamCollection> GetStreamsInternalAsync(string token, GetStreamsParams changes)
+        {
+            var response = await SendAsync(new GetStreamsRequest(token, changes));
+            return response.GetBodyAsType<StreamCollection>();
+        }
+
+        internal async Task<StreamCollection> GetFeaturedStreamsInternalAsync(string token, uint limit, uint offset)
+        {
+            var response = await SendAsync(new GetFeaturedStreamsRequest(token, limit, offset));
+            return response.GetBodyAsType<StreamCollection>();
+        }
+
+        internal async Task<Stream> GetGameSummaryInternalAsync(string token, string game)
+        {
+            var response = await SendAsync(new GetStreamSummaryRequest(token, game));
+            return response.GetBodyAsType<Stream>();
+        }
+
+        //
+        // Teams
+        //
+
+        internal async Task<Team> GetTeamInternalAsync(string token, string name)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"teams/{name}", token);
+                return response.GetBodyAsType<Team>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<TeamCollection> GetTeamsInternalAsync(string token, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"teams", token);
+                return response.GetBodyAsType<TeamCollection>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        //
+        // Users
+        //
+
+        internal async Task<User> GetSelfUserInternalAsync(string token)
+        {
+            try
+            {
+                var response = await SendAsync("GET", "user", token);
+                return response.GetBodyAsType<User>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<User> GetUserInternalAsync(string token, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"user/{userId}", token);
+                return response.GetBodyAsType<User>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<UserCollection> GetUsersInternalAsync(string token, string[] names)
+        {
+            var response = await SendAsync(new GetUsersRequest(token, names));
+            return response.GetBodyAsType<UserCollection>();
+        }
+
+        internal async Task<EmoteSet> GetEmotesInternalAsync(string token, ulong userId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"users/{userId}/emotes", token);
+                return response.GetBodyAsType<EmoteSet>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<Follow> GetFollowInternalAsync(string token, ulong userId, ulong channelId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"users/{userId}/follows/channels/{channelId}", token);
+                return response.GetBodyAsType<Follow>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<FollowCollection> GetFollowsInternalAsync(string token, ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
+        {
+            try
+            {
+                var response = await SendAsync(new GetFollowsRequest(token, userId, sort, ascending, limit, offset));
+                return response.GetBodyAsType<FollowCollection>();
+            }
+            catch (HttpException ex) when ((int)ex.StatusCode == 422)
+            {
+                return null;
+            }
+        }
+
+        //
+        // Videos
+        //
+
+        internal async Task<Video> GetVideoInternalAsync(string token, string videoId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"videos/{videoId}", token);
+                return response.GetBodyAsType<Video>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
     }
 }

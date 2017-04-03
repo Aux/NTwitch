@@ -2,8 +2,8 @@
 {
     internal class GetChannelFollowersRequest : RestRequest
     {
-        public GetChannelFollowersRequest(ulong channelId, bool ascending, uint limit, uint offset) 
-            : base("GET", $"channels/{channelId}/follows")
+        public GetChannelFollowersRequest(string token, ulong channelId, bool ascending, uint limit, uint offset) 
+            : base("GET", $"channels/{channelId}/follows", token)
         {
             Parameters.Add("limit", limit);
             Parameters.Add("offset", offset);

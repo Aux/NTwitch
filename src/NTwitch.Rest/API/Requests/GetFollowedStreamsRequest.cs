@@ -2,8 +2,8 @@
 {
     internal class GetFollowedStreamsRequest : RestRequest
     {
-        public GetFollowedStreamsRequest(StreamType type, uint limit, uint offset)
-            : base("GET", "streams/followed")
+        public GetFollowedStreamsRequest(string token, StreamType type, uint limit, uint offset)
+            : base("GET", "streams/followed", token)
         {
             string value = null;
             switch (type)

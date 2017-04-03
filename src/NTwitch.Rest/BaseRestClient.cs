@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NTwitch.Rest.API;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,33 +10,33 @@ namespace NTwitch.Rest
     {
         /// <summary> The client used to manage rest requests </summary>
         public RestApiClient RestClient => _rest;
-        /// <summary> Information about the authorized user </summary>
-        public RestTokenInfo Token => _auth;
 
         internal ConcurrentDictionary<ulong, RestTokenInfo> Tokens;
-        internal LogManager Logger;
+        internal LogManager Logger => _rest.Logger;
 
         private RestApiClient _rest;
-        private RestTokenInfo _auth;
-        private TwitchRestConfig _config;
 
         public BaseRestClient(TwitchRestConfig config)
         {
-            Logger = new LogManager(config.LogLevel);
-            _config = config;
-
+            Tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
+            _rest = new RestApiClient(config);
             Logger.LogReceived += OnLogInternalAsync;
         }
         
         private Task OnLogInternalAsync(LogMessage msg)
             => logEvent.InvokeAsync(msg);
 
-        internal async Task RestLoginAsync(AuthMode type, string token)
+        internal async Task<RestTokenInfo> RestLoginAsync(string token)
         {
-            _rest = new RestApiClient(_config, Logger, type, token);
-            _auth = await RestHelper.AuthorizeAsync(this, token);
-            await loggedInEvent.InvokeAsync(_auth).ConfigureAwait(false);
+            var auth = await RestHelper.AuthorizeAsync(this, token);
+            Tokens.AddOrUpdate(auth.UserId, auth, (id, t) => t);
+            await loggedInEvent.InvokeAsync(auth).ConfigureAwait(false);
+            return auth;
         }
+
+        // Tokens
+        public RestTokenInfo GetTokenInfo(ulong userId)
+            => RestHelper.GetTokenInfo(this, userId);
 
         // Search
         /// <summary> Find channels relating to the specified query </summary>
@@ -50,8 +51,8 @@ namespace NTwitch.Rest
 
         // User
         /// <summary> Get the user associated with the authorized token </summary>
-        public Task<RestSelfUser> GetCurrentUserAsync()
-            => RestHelper.GetCurrentUserAsync(this);
+        public Task<RestSelfUser> GetSelfUserAsync(ulong userId)
+            => RestHelper.GetSelfUserAsync(this, userId);
         /// <summary> Get information about a user by id </summary>
         public Task<RestUser> GetUserAsync(ulong userId)
             => RestHelper.GetUserAsync(this, userId);
@@ -61,16 +62,13 @@ namespace NTwitch.Rest
 
         // Channel
         /// <summary> Get the channel associated with the authorized token </summary>
-        public Task<RestSelfChannel> GetCurrentChannelAsync()
-            => RestHelper.GetCurrentChannelAsync(this);
+        public Task<RestSelfChannel> GetSelfChannelAsync(ulong channelId)
+            => RestHelper.GetSelfChannelAsync(this, channelId);
         /// <summary> Get information about a channel by id </summary>
         public Task<RestChannel> GetChannelAsync(ulong channelId)
             => RestHelper.GetChannelAsync(this, channelId);
 
         // Streams
-        /// <summary> Get streams the current user is following. </summary>
-        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
-            => RestHelper.GetFollowedStreamsAsync(this, type, limit, offset);
         /// <summary> Get information about a channel's stream </summary>
         public Task<RestStream> GetStreamAsync(ulong channelId, StreamType type = StreamType.Live)
             => RestHelper.GetStreamAsync(this, channelId, type);

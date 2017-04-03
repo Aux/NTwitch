@@ -2,8 +2,8 @@
 {
     internal class GetFeaturedStreamsRequest : RestRequest
     {
-        public GetFeaturedStreamsRequest(uint limit, uint offset)
-            : base("GET", "streams/featured")
+        public GetFeaturedStreamsRequest(string token, uint limit, uint offset)
+            : base("GET", "streams/featured", token)
         {
             Parameters.Add("limit", limit);
             Parameters.Add("offset", offset);

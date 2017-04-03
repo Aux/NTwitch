@@ -1,26 +1,35 @@
-﻿using NTwitch.Rest;
+﻿// 
+// This example shows how to check if a stream is online or offline.
+// 
+
+using NTwitch;
+using NTwitch.Rest;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.Examples.Rest
+namespace Basic
 {
     class Program
     {
         public static void Main(string[] args)
             => new Program().StartAsync().GetAwaiter().GetResult();
 
-        private TwitchRestClient _client = new TwitchRestClient();
+        private TwitchRestClient _client;
 
         public async Task StartAsync()
         {
-            _client.LoggedIn += OnLoggedInAsync;
-
             Console.Write("Please enter your client id: ");
             string clientid = Console.ReadLine();
 
-            await _client.LoginAsync(AuthMode.ClientId, clientid);
-            
+            _client = new TwitchRestClient(new TwitchRestConfig()
+            {
+                ClientId = clientid,
+                LogLevel = LogLevel.Info
+            });
+
+            _client.Log += OnLogAsync;
+
             while (true)
             {
                 Console.WriteLine();
@@ -42,7 +51,7 @@ namespace NTwitch.Examples.Rest
             }
         }
 
-        private Task OnLoggedInAsync(RestTokenInfo token)
-            => Console.Out.WriteLineAsync("Logged in!");
+        private Task OnLogAsync(LogMessage msg)
+            => Console.Out.WriteLineAsync(msg.ToString());
     }
 }

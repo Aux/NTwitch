@@ -27,11 +27,11 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
-        /// <summary> Update this channel's properties </summary>
         public override async Task UpdateAsync()
         {
-            var entity = await Client.RestClient.GetCurrentChannelAsync().ConfigureAwait(false);
-            Update(entity);
+            TokenHelper.TryGetToken(Client, Id, out RestTokenInfo info);
+            var model = await Client.RestClient.GetSelfChannelInternalAsync(info.Token);
+            this.Update(model);
         }
     }
 }

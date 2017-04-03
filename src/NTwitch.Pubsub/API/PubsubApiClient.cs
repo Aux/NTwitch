@@ -15,7 +15,7 @@ namespace NTwitch.Pubsub
 
         private bool _disposed = false;
         
-        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, AuthMode type, string token)
+        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, string token)
         {
             Logger = logger;
             _client = new SocketClient(config, logger);
@@ -51,7 +51,7 @@ namespace NTwitch.Pubsub
 
         public Task SendAsync(string type)
             => SendAsync(new PubsubRequest(type));
-        public Task SendAsync(string type, string[] topics)
+        public Task SendAsync(string type, params string[] topics)
             => SendAsync(new PubsubRequest(type).WithData(null, topics));
         public async Task SendAsync(PubsubRequest request)
         {

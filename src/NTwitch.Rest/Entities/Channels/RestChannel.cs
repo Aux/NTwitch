@@ -67,11 +67,11 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
-        /// <summary> Update this channel's properties </summary>
         public virtual async Task UpdateAsync()
         {
-            var entity = await Client.RestClient.GetChannelAsync(Id).ConfigureAwait(false);
-            Update(entity);
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetChannelInternalAsync(token, Id);
+            this.Update(model);
         }
     }
 }
