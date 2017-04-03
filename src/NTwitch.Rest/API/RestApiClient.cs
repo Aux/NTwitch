@@ -60,6 +60,49 @@ namespace NTwitch.Rest.API
         }
 
         //
+        // Clips
+        //
+
+        internal async Task<Clip> GetClipInternalAsync(string token, string clipId)
+        {
+            try
+            {
+                var response = await SendAsync("GET", $"clips/{clipId}", token);
+                return response.GetBodyAsType<Clip>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized || ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<ClipCollection> GetTopClipsInternalAsync(string token, TopClipsParams options)
+        {
+            try
+            {
+                var response = await SendAsync(new GetTopClipsRequest(token, options));
+                return response.GetBodyAsType<ClipCollection>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
+        }
+
+        internal async Task<ClipCollection> GetFollowedClipsInternalAsync(string token, bool istrending, uint limit)
+        {
+            try
+            {
+                var response = await SendAsync(new GetFollowedClipsRequest(token, istrending, limit));
+                return response.GetBodyAsType<ClipCollection>();
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
+        }
+
+        //
         // Channels
         //
 

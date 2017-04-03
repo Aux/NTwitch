@@ -49,6 +49,14 @@ namespace NTwitch.Rest
         public Task<IReadOnlyCollection<RestStream>> SearchStreamsAsync(string query, bool? hls = null, uint limit = 25, uint offset = 0)
             => RestHelper.SearchStreamsAsync(this, query, hls, limit, offset);
 
+        // Clips
+        /// <summary> Get information about a clip by id </summary>
+        public Task<RestClip> GetClipAsync(string clipId)
+            => RestHelper.GetClipAsync(this, clipId);
+        /// <summary> Get the most popular clips for the specified parameters </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetTopClipsAsync(Action<TopClipsParams> options)
+            => RestHelper.GetTopClipsAsync(this, options);
+
         // User
         /// <summary> Get the user associated with the authorized token </summary>
         public Task<RestSelfUser> GetSelfUserAsync(ulong userId)

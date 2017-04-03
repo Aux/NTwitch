@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : RestEntity<string>
+    public class RestVideo : RestSimpleVideo
     {
         /// <summary> The channel associated with this video </summary>
         public RestSimpleChannel Channel { get; private set; }
@@ -34,8 +33,6 @@ namespace NTwitch.Rest
         public string Status { get; private set; }
         /// <summary> The title of this video </summary>
         public string Title { get; private set; }
-        /// <summary> The url to this video's page </summary>
-        public string Url { get; private set; }
         /// <summary> The id of the broadcast associated with this video </summary>
         public uint BroadcastId { get; private set; }
         /// <summary> The length in seconds of this video </summary>
@@ -56,15 +53,16 @@ namespace NTwitch.Rest
         internal RestVideo(BaseRestClient client, string id) 
             : base(client, id) { }
 
-        internal static RestVideo Create(BaseRestClient client, Model model)
+        internal new static RestVideo Create(BaseRestClient client, Model model)
         {
             var entity = new RestVideo(client, model.Id);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal override void Update(Model model)
         {
+            base.Update(model);
             Channel = new RestSimpleChannel(Client, model.Channel.Id);
             Channel.Update(model.Channel);
             BroadcastId = model.BroadcastId;
@@ -84,7 +82,6 @@ namespace NTwitch.Rest
             Tags = model.Tags.Split(' ');
             Thumbnails = model.Thumbnails;
             Title = model.Title;
-            Url = model.Url;
             Viewable = model.Viewable;
             ViewableAt = model.ViewableAt;
             Views = model.Views;

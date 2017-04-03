@@ -33,6 +33,11 @@ namespace NTwitch.Rest
         public Task ModifyAsync(Action<ModifyChannelParams> options)
             => ChannelHelper.ModifyChannelAsync(this, options);
 
+        // Clips
+        /// <summary>  </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, uint limit = 10)
+            => RestHelper.GetFollowedClipsAsync(Client, Id, istrending, limit);
+
         // Users
         /// <summary> Get all users following this channel </summary>
         public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)

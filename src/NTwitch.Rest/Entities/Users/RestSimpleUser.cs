@@ -44,6 +44,11 @@ namespace NTwitch.Rest
         public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
             => RestHelper.GetFollowedStreamsAsync(Client, Id, type, limit, offset);
 
+        // Clips
+        /// <summary>  </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, uint limit = 10)
+            => RestHelper.GetFollowedClipsAsync(Client, Id, istrending, limit);
+
         //// Subscriptions
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestChannelSubscription>> GetSubscriptionsAsync()

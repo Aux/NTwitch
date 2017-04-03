@@ -23,12 +23,7 @@ namespace NTwitch.Rest
             string token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetIngestsInternalAsync(token);
 
-            var entity = model.Ingests.Select(x =>
-            {
-                var ingest = new RestIngest(client, x.Id);
-                ingest.Update(x);
-                return ingest;
-            });
+            var entity = model.Ingests.Select(x => RestIngest.Create(client, x));
             return entity.ToArray();
         }
 
@@ -52,12 +47,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestStream>();
 
-            var entity = model.Streams.Select(x =>
-            {
-                var stream = new RestStream(client, x.Id);
-                stream.Update(x);
-                return stream;
-            });
+            var entity = model.Streams.Select(x => RestStream.Create(client, x));
             return entity.ToArray();
         }
 
@@ -68,12 +58,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestGame>();
 
-            var entity = model.Games.Select(x =>
-            {
-                var game = new RestGame(client, x.Id);
-                game.Update(x);
-                return game;
-            });
+            var entity = model.Games.Select(x => RestGame.Create(client, x));
             return entity.ToArray();
         }
 
@@ -84,12 +69,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestChannel>();
 
-            var entity = model.Channels.Select(x =>
-            {
-                var channel = new RestChannel(client, x.Id);
-                channel.Update(x);
-                return channel;
-            });
+            var entity = model.Channels.Select(x => RestChannel.Create(client, x));
             return entity.ToArray();
         }
 
@@ -148,18 +128,14 @@ namespace NTwitch.Rest
                 throw new MissingScopeException("channel_read");
 
             var model = await client.RestClient.GetSelfChannelInternalAsync(info.Token);
-            var entity = new RestSelfChannel(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestSelfChannel.Create(client, model);
         }
 
         public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong channelId)
         {
             var token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetChannelInternalAsync(token, channelId);
-            var entity = new RestChannel(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestChannel.Create(client, model);
         }
 
         public static async Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
@@ -167,6 +143,40 @@ namespace NTwitch.Rest
             var token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetCheersInternalAsync(token, channelId);
             var entity = model.Actions.Select(x => new RestCheerInfo(client, x));
+            return entity.ToArray();
+        }
+
+        #endregion
+        #region Clips
+
+        public static async Task<RestClip> GetClipAsync(BaseRestClient client, string clipId)
+        {
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetClipInternalAsync(token, clipId);
+            return RestClip.Create(client, model);
+        }
+
+        public static async Task<IReadOnlyCollection<RestClip>> GetTopClipsAsync(BaseRestClient client, Action<TopClipsParams> options)
+        {
+            var token = TokenHelper.GetSingleToken(client);
+
+            var properties = new TopClipsParams();
+            options.Invoke(properties);
+
+            var model = await client.RestClient.GetTopClipsInternalAsync(token, properties);
+            var entity = model.Clips.Select(x => RestClip.Create(client, x));
+            return entity.ToArray();
+        }
+
+        public static async Task<IReadOnlyCollection<RestClip>> GetFollowedClipsAsync(BaseRestClient client, ulong userId, bool istrending, uint limit)
+        {
+            if (!TokenHelper.TryGetToken(client, userId, out RestTokenInfo info))
+                throw new MissingScopeException("user_read");
+            if (!info.Authorization.Scopes.Contains("user_read"))
+                throw new MissingScopeException("user_read");
+
+            var model = await client.RestClient.GetFollowedClipsInternalAsync(info.Token, istrending, limit);
+            var entity = model.Clips.Select(x => RestClip.Create(client, x));
             return entity.ToArray();
         }
 
@@ -184,12 +194,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestStream>();
 
-            var entity = model.Streams.Select(x =>
-            {
-                var stream = new RestStream(client, x.Id);
-                stream.Update(x);
-                return stream;
-            });
+            var entity = model.Streams.Select(x => RestStream.Create(client, x));
             return entity.ToArray();
         }
 
@@ -200,9 +205,7 @@ namespace NTwitch.Rest
             if (model.Stream == null)
                 return null;
             
-            var entity = new RestStream(client, model.Stream.Id);
-            entity.Update(model.Stream);
-            return entity;
+            return RestStream.Create(client, model.Stream);
         }
 
         internal static async Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, Action<GetStreamsParams> options)
@@ -216,12 +219,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestStream>();
 
-            var entity = model.Streams.Select(x =>
-            {
-                var stream = new RestStream(client, x.Id);
-                stream.Update(x);
-                return stream;
-            });
+            var entity = model.Streams.Select(x => RestStream.Create(client, x));
             return entity.ToArray();
         }
 
@@ -232,12 +230,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestFeaturedStream>();
 
-            var entity = model.Featured.Select(x =>
-            {
-                var stream = new RestFeaturedStream();
-                stream.Update(client, x);
-                return stream;
-            });
+            var entity = model.Featured.Select(x => RestFeaturedStream.Create(client, x));
             return entity.ToArray();
         }
 
@@ -248,9 +241,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return null;
 
-            var entity = new RestGameSummary();
-            entity.Update(model);
-            return entity;
+            return RestGameSummary.Create(model);
         }
 
         #endregion
@@ -263,9 +254,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return null;
 
-            var entity = new RestCommunity(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestCommunity.Create(client, model);
         }
 
         public static async Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(BaseRestClient client, uint limit)
@@ -273,12 +262,7 @@ namespace NTwitch.Rest
             var token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetTopCommunitiesInternalAsync(token, limit);
 
-            var entity = model.Communities.Select(x =>
-            {
-                var community = new RestTopCommunity(client, x.Id);
-                community.Update(x);
-                return community;
-            });
+            var entity = model.Communities.Select(x => RestTopCommunity.Create(client, x));
             return entity.ToArray();
         }
 
@@ -289,9 +273,7 @@ namespace NTwitch.Rest
         {
             var token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetVideoInternalAsync(token, id);
-            var entity = new RestVideo(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestVideo.Create(client, model);
         }
 
         #endregion
@@ -301,9 +283,7 @@ namespace NTwitch.Rest
         {
             var token = TokenHelper.GetSingleToken(client);
             var model = await client.RestClient.GetTeamInternalAsync(token, name);
-            var entity = new RestTeam(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestTeam.Create(client, model);
         }
 
         public static async Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, uint limit, uint offset)
@@ -313,12 +293,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestSimpleTeam>();
 
-            var entity = model.Teams.Select(x =>
-            {
-                var team = new RestSimpleTeam(client, x.Id);
-                team.Update(x);
-                return team;
-            });
+            var entity = model.Teams.Select(x => RestSimpleTeam.Create(client, x));
             return entity.ToArray();
         }
 
