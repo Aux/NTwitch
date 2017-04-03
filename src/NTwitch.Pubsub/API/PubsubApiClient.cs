@@ -15,7 +15,7 @@ namespace NTwitch.Pubsub
 
         private bool _disposed = false;
         
-        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, AuthMode type, string token)
+        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, string token)
         {
             Logger = logger;
             _client = new SocketClient(config, logger);

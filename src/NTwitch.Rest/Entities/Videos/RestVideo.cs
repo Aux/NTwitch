@@ -89,12 +89,5 @@ namespace NTwitch.Rest
             ViewableAt = model.ViewableAt;
             Views = model.Views;
         }
-
-        /// <summary> Update this video's properties </summary>
-        public async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetVideoAsync(Id).ConfigureAwait(false);
-            Update(entity);
-        }
     }
 }

@@ -66,12 +66,5 @@ namespace NTwitch.Rest
             Followers = model.Followers;
             base.Update(model);
         }
-
-        /// <summary> Update this channel's properties </summary>
-        public virtual async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetChannelAsync(Id).ConfigureAwait(false);
-            Update(entity);
-        }
     }
 }

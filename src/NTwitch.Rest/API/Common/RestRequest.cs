@@ -6,6 +6,8 @@ namespace NTwitch.Rest
 {
     public class RestRequest
     {
+        public bool HasToken { get; } = false;
+
         public string Method { get; }
         public string Endpoint { get; }
         public Dictionary<string, object> Parameters { get; } = new Dictionary<string, object>();
@@ -15,7 +17,12 @@ namespace NTwitch.Rest
         {
             Method = method;
             Endpoint = endpoint;
-            Parameters.Add("oauth_token", token);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                HasToken = true;
+                Parameters.Add("oauth_token", token);
+            }
         }
 
         public HttpRequestMessage GetRequest()

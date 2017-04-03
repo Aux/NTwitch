@@ -63,7 +63,7 @@ namespace NTwitch.Pubsub
         // Emotes
         /// <summary> Get all emotes available to this user </summary>
         public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
-            => UserHelper.GetEmotesAsync(Client, Id, Id);
+            => UserHelper.GetEmotesAsync(Client, Id);
         
         // Follows
         /// <summary> Get all channels this user is following </summary>

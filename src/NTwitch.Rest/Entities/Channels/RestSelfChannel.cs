@@ -26,12 +26,5 @@ namespace NTwitch.Rest
             StreamKey = model.StreamKey;
             base.Update(model);
         }
-
-        /// <summary> Update this channel's properties </summary>
-        public override async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetCurrentChannelAsync().ConfigureAwait(false);
-            Update(entity);
-        }
     }
 }

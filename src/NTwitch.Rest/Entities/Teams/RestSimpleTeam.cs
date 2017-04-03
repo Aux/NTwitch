@@ -44,12 +44,5 @@ namespace NTwitch.Rest
             Name = model.Name;
             UpdatedAt = model.UpdatedAt;
         }
-
-        /// <summary> Update this team's properties </summary>
-        public async Task UpdateAsync()
-        {
-            var model = await Client.RestClient.GetTeamAsync(Name).ConfigureAwait(false);
-            Update(model);
-        }
     }
 }

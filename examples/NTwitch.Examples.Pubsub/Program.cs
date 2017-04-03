@@ -26,9 +26,6 @@ namespace NTwitch.Examples.Pubsub
             string token = Console.ReadLine();
 
             _client.Log += OnLogAsync;
-            
-            await _client.LoginAsync(AuthMode.Oauth, token);
-            await _client.SubscribeAsync("video-playback", _client.Token.UserId.ToString(), OnVideoPlayBackAsync);
         }
 
         private Task OnVideoPlayBackAsync(string message)

@@ -50,8 +50,8 @@ namespace NTwitch.Rest
 
         // User
         /// <summary> Get the user associated with the authorized token </summary>
-        public Task<RestSelfUser> GetCurrentUserAsync()
-            => RestHelper.GetCurrentUserAsync(this);
+        public Task<RestSelfUser> GetSelfUserAsync(ulong userId)
+            => RestHelper.GetSelfUserAsync(this, userId);
         /// <summary> Get information about a user by id </summary>
         public Task<RestUser> GetUserAsync(ulong userId)
             => RestHelper.GetUserAsync(this, userId);
@@ -61,16 +61,13 @@ namespace NTwitch.Rest
 
         // Channel
         /// <summary> Get the channel associated with the authorized token </summary>
-        public Task<RestSelfChannel> GetCurrentChannelAsync()
-            => RestHelper.GetCurrentChannelAsync(this);
+        public Task<RestSelfChannel> GetSelfChannelAsync(ulong channelId)
+            => RestHelper.GetSelfChannelAsync(this, channelId);
         /// <summary> Get information about a channel by id </summary>
         public Task<RestChannel> GetChannelAsync(ulong channelId)
             => RestHelper.GetChannelAsync(this, channelId);
 
         // Streams
-        /// <summary> Get streams the current user is following. </summary>
-        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
-            => RestHelper.GetFollowedStreamsAsync(this, type, limit, offset);
         /// <summary> Get information about a channel's stream </summary>
         public Task<RestStream> GetStreamAsync(ulong channelId, StreamType type = StreamType.Live)
             => RestHelper.GetStreamAsync(this, channelId, type);

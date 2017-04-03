@@ -2,8 +2,8 @@
 {
     internal class GetStreamsRequest :RestRequest
     {
-        public GetStreamsRequest(GetStreamsParams options) 
-            : base("GET", $"streams")
+        public GetStreamsRequest(string token, GetStreamsParams options) 
+            : base("GET", $"streams", token)
         {
             if (options.Channels != null)
                 Parameters.Add("channels", string.Join(",", options.Channels));

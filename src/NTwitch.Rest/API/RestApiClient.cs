@@ -12,10 +12,13 @@ namespace NTwitch.Rest.API
         private RestClient _client;
 
         internal LogManager Logger;
+        internal string ClientId;
+
 
         public RestApiClient(TwitchRestConfig config)
         {
             Logger = new LogManager(config.LogLevel);
+            ClientId = config.ClientId;
             _client = new RestClient(config.RestHost, config.ClientId);
         }
 
@@ -24,6 +27,9 @@ namespace NTwitch.Rest.API
         public async Task<RestResponse> SendAsync(RestRequest request)
         {
             await Logger.DebugAsync("Rest", $"Attempting {request.Method} /{request.Endpoint}").ConfigureAwait(false);
+
+            if (!request.HasToken && string.IsNullOrWhiteSpace(ClientId))
+                throw new InvalidOperationException("No oauth token or client id specified");
 
             var msg = request.GetRequest();
             var response = await _client.SendAsync(msg);
@@ -45,9 +51,7 @@ namespace NTwitch.Rest.API
             }
             catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
             {
-                var info = new Token();
-                info.Value = token;
-                return info;
+                return new Token();
             }
             catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
             {
@@ -59,7 +63,7 @@ namespace NTwitch.Rest.API
         // Channels
         //
 
-        internal async Task<Channel> GetSelfChannelAsync(string token)
+        internal async Task<Channel> GetSelfChannelInternalAsync(string token)
         {
             try
             {
@@ -72,7 +76,7 @@ namespace NTwitch.Rest.API
             }
         }
 
-        internal async Task<Channel> GetChannelAsync(string token, ulong channelId)
+        internal async Task<Channel> GetChannelInternalAsync(string token, ulong channelId)
         {
             try
             {
@@ -85,7 +89,7 @@ namespace NTwitch.Rest.API
             }
         }
 
-        internal async Task<Subscription> GetSubscriberAsync(string token, ulong channelId, ulong userId)
+        internal async Task<Subscription> GetSubscriberInternalAsync(string token, ulong channelId, ulong userId)
         {
             try
             {
@@ -159,7 +163,7 @@ namespace NTwitch.Rest.API
             return response.GetBodyAsType<CheerCollection>();
         }
 
-        internal async Task<ChatBadges> GetBadgesInternalAsynC(string token, ulong channelId)
+        internal async Task<ChatBadges> GetBadgesInternalAsync(string token, ulong channelId)
         {
             var response = await SendAsync("GET", $"chat/{channelId}/badges", token);
             return response.GetBodyAsType<ChatBadges>();
@@ -169,7 +173,7 @@ namespace NTwitch.Rest.API
         // Community
         //
         
-        internal async Task<Community> GetCommunityInternalInternalAsync(string token, string communityId, bool isname)
+        internal async Task<Community> GetCommunityInternalAsync(string token, string communityId, bool isname)
         {
             try
             {
@@ -433,31 +437,31 @@ namespace NTwitch.Rest.API
         // Streams
         //
         
-        internal async Task<StreamCollection> GetFollowedStreamsAsync(string token, StreamType type, uint limit, uint offset)
+        internal async Task<StreamCollection> GetFollowedStreamsInternalAsync(string token, StreamType type, uint limit, uint offset)
         {
             var response = await SendAsync(new GetFollowedStreamsRequest(token, type, limit, offset));
             return response.GetBodyAsType<StreamCollection>();
         }
 
-        internal async Task<StreamCollection> GetStreamAsync(string token, ulong channelId, StreamType type)
+        internal async Task<StreamCollection> GetStreamInternalAsync(string token, ulong channelId, StreamType type)
         {
             var response = await SendAsync(new GetStreamRequest(token, channelId, type));
             return response.GetBodyAsType<StreamCollection>();
         }
 
-        internal async Task<StreamCollection> GetStreamsAsync(string token, GetStreamsParams changes)
+        internal async Task<StreamCollection> GetStreamsInternalAsync(string token, GetStreamsParams changes)
         {
             var response = await SendAsync(new GetStreamsRequest(token, changes));
             return response.GetBodyAsType<StreamCollection>();
         }
 
-        internal async Task<StreamCollection> GetFeaturedStreams(string token, uint limit, uint offset)
+        internal async Task<StreamCollection> GetFeaturedStreamsInternalAsync(string token, uint limit, uint offset)
         {
             var response = await SendAsync(new GetFeaturedStreamsRequest(token, limit, offset));
             return response.GetBodyAsType<StreamCollection>();
         }
 
-        internal async Task<Stream> GetGameSummaryAsync(string token, string game)
+        internal async Task<Stream> GetGameSummaryInternalAsync(string token, string game)
         {
             var response = await SendAsync(new GetStreamSummaryRequest(token, game));
             return response.GetBodyAsType<Stream>();
@@ -467,7 +471,7 @@ namespace NTwitch.Rest.API
         // Teams
         //
 
-        internal async Task<Team> GetTeamAsync(string token, string name)
+        internal async Task<Team> GetTeamInternalAsync(string token, string name)
         {
             try
             {
@@ -480,7 +484,7 @@ namespace NTwitch.Rest.API
             }
         }
 
-        internal async Task<TeamCollection> GetTeamsAsync(string token, uint limit, uint offset)
+        internal async Task<TeamCollection> GetTeamsInternalAsync(string token, uint limit, uint offset)
         {
             try
             {

@@ -35,12 +35,5 @@ namespace NTwitch.Rest
             IsTwitterConnected = model.IsTwitterConnected;
             Notifications.Update(model.Notifications);
         }
-
-        /// <summary> Update this user's properties </summary>
-        public override async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetCurrentUserAsync().ConfigureAwait(false);
-            Update(entity);
-        }
     }
 }

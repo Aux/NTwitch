@@ -20,7 +20,8 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync(BaseRestClient client)
         {
-            var model = await client.RestClient.GetIngestsInternalAsync();
+            string token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetIngestsInternalAsync(token);
 
             var entity = model.Ingests.Select(x =>
             {
@@ -46,7 +47,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestStream>> SearchStreamsAsync(BaseRestClient client, string query, bool? hls, uint limit, uint offset)
         {
-            var model = await client.RestClient.SearchStreamsAsync(query, hls, limit, offset);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.SearchStreamsInternalAsync(token, query, hls, limit, offset);
             if (model == null)
                 return new List<RestStream>();
 
@@ -61,7 +63,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestGame>> SearchGamesAsync(BaseRestClient client, string query, bool islive)
         {
-            var model = await client.RestClient.SearchGamesAsync(query, islive);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.SearchGamesInternalAsync(token, query, islive);
             if (model == null)
                 return new List<RestGame>();
 
@@ -76,7 +79,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestChannel>> SearchChannelsAsync(BaseRestClient client, string query, uint limit, uint offset)
         {
-            var model = await client.RestClient.SearchChannelsAsync(query, limit, offset);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.SearchChannelsInternalAsync(token, query, limit, offset);
             if (model == null)
                 return new List<RestChannel>();
 
@@ -92,14 +96,14 @@ namespace NTwitch.Rest
         #endregion
         #region Users
 
-        public static async Task<RestSelfUser> GetCurrentUserAsync(BaseRestClient client)
+        public static async Task<RestSelfUser> GetSelfUserAsync(BaseRestClient client, ulong userId)
         {
-            if (!client.Token.IsValid)
-                throw new NotSupportedException("You must log in with oauth to get the current user.");
-            if (!client.Token.Authorization.Scopes.Contains("user_read"))
+            if (TokenHelper.TryGetToken(client, userId, out RestTokenInfo info))
+                throw new MissingScopeException("user_read");
+            if (!info.Authorization.Scopes.Contains("user_read"))
                 throw new MissingScopeException("user_read");
 
-            var model = await client.RestClient.GetCurrentUserAsync();
+            var model = await client.RestClient.GetSelfUserInternalAsync(info.Token);
             var entity = new RestSelfUser(client, model.Id);
             entity.Update(model);
             return entity;
@@ -107,7 +111,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
         {
-            var model = await client.RestClient.GetUserAsync(id);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetUserInternalAsync(token, id);
             if (model == null)
                 return null;
 
@@ -118,7 +123,8 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
         {
-            var model = await client.RestClient.GetUsersAsync(usernames);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetUsersInternalAsync(token, usernames);
             if (model == null)
                 return new List<RestUser>();
 
@@ -134,14 +140,14 @@ namespace NTwitch.Rest
         #endregion
         #region Channels
 
-        public static async Task<RestSelfChannel> GetCurrentChannelAsync(BaseRestClient client)
+        public static async Task<RestSelfChannel> GetSelfChannelAsync(BaseRestClient client, ulong channelId)
         {
-            if (!client.Token.IsValid)
-                throw new NotSupportedException("You must log in with oauth to get the current channel.");
-            if (!client.Token.Authorization.Scopes.Contains("channel_read"))
+            if (TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+                throw new MissingScopeException("channel_read");
+            if (!info.Authorization.Scopes.Contains("channel_read"))
                 throw new MissingScopeException("channel_read");
 
-            var model = await client.RestClient.GetCurrentChannelAsync();
+            var model = await client.RestClient.GetSelfChannelInternalAsync(info.Token);
             var entity = new RestSelfChannel(client, model.Id);
             entity.Update(model);
             return entity;
@@ -149,7 +155,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestChannel> GetChannelAsync(BaseRestClient client, ulong channelId)
         {
-            var model = await client.RestClient.GetChannelAsync(channelId);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetChannelInternalAsync(token, channelId);
             var entity = new RestChannel(client, model.Id);
             entity.Update(model);
             return entity;
@@ -157,7 +164,8 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync(BaseRestClient client, ulong? channelId)
         {
-            var model = await client.RestClient.GetCheersAsync(channelId);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetCheersInternalAsync(token, channelId);
             var entity = model.Actions.Select(x => new RestCheerInfo(client, x));
             return entity.ToArray();
         }
@@ -165,12 +173,14 @@ namespace NTwitch.Rest
         #endregion
         #region Streams
 
-        internal static async Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(BaseRestClient client, StreamType type, uint limit, uint offset)
+        internal static async Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(BaseRestClient client, ulong userId, StreamType type, uint limit, uint offset)
         {
-            if (!client.Token.Authorization.Scopes.Contains("user_read"))
+            if (TokenHelper.TryGetToken(client, userId, out RestTokenInfo info))
+                throw new MissingScopeException("user_read");
+            if (!info.Authorization.Scopes.Contains("user_read"))
                 throw new MissingScopeException("user_read");
 
-            var model = await client.RestClient.GetFollowedStreamsAsync(type, limit, offset);
+            var model = await client.RestClient.GetFollowedStreamsInternalAsync(info?.Token, type, limit, offset);
             if (model == null)
                 return new List<RestStream>();
 
@@ -185,7 +195,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestStream> GetStreamAsync(BaseRestClient client, ulong channelId, StreamType type)
         {
-            var model = await client.RestClient.GetStreamAsync(channelId, type);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetStreamInternalAsync(token, channelId, type);
             if (model.Stream == null)
                 return null;
             
@@ -196,7 +207,12 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, Action<GetStreamsParams> options)
         {
-            var model = await client.RestClient.GetStreamsAsync(options);
+            var token = TokenHelper.GetSingleToken(client);
+
+            var changes = new GetStreamsParams();
+            options.Invoke(changes);
+
+            var model = await client.RestClient.GetStreamsInternalAsync(token, changes);
             if (model == null)
                 return new List<RestStream>();
 
@@ -211,7 +227,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(BaseRestClient client, uint limit, uint offset)
         {
-            var model = await client.RestClient.GetFeaturedStreams(limit, offset);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetFeaturedStreamsInternalAsync(token, limit, offset);
             if (model == null)
                 return new List<RestFeaturedStream>();
 
@@ -226,7 +243,8 @@ namespace NTwitch.Rest
 
         internal static async Task<RestGameSummary> GetGameSummaryAsync(BaseRestClient client, string game)
         {
-            var model = await client.RestClient.GetGameSummaryAsync(game);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetGameSummaryInternalAsync(token, game);
             if (model == null)
                 return null;
 
@@ -240,7 +258,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestCommunity> GetCommunityAsync(BaseRestClient client, string id, bool isname = false)
         {
-            var model = await client.RestClient.GetCommunityAsync(id, isname);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetCommunityInternalAsync(token, id, isname);
             if (model == null)
                 return null;
 
@@ -251,7 +270,8 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(BaseRestClient client, uint limit)
         {
-            var model = await client.RestClient.GetTopCommunitiesAsync(limit);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetTopCommunitiesInternalAsync(token, limit);
 
             var entity = model.Communities.Select(x =>
             {
@@ -267,7 +287,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestVideo> GetVideoAsync(BaseRestClient client, string id)
         {
-            var model = await client.RestClient.GetVideoAsync(id);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetVideoInternalAsync(token, id);
             var entity = new RestVideo(client, model.Id);
             entity.Update(model);
             return entity;
@@ -278,7 +299,8 @@ namespace NTwitch.Rest
 
         public static async Task<RestTeam> GetTeamAsync(BaseRestClient client, string name)
         {
-            var model = await client.RestClient.GetTeamAsync(name);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetTeamInternalAsync(token, name);
             var entity = new RestTeam(client, model.Id);
             entity.Update(model);
             return entity;
@@ -286,7 +308,8 @@ namespace NTwitch.Rest
 
         public static async Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(BaseRestClient client, uint limit, uint offset)
         {
-            var model = await client.RestClient.GetTeamsAsync(limit, offset);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetTeamsInternalAsync(token, limit, offset);
             if (model == null)
                 return new List<RestSimpleTeam>();
 

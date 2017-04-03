@@ -8,7 +8,8 @@ namespace NTwitch.Rest
     {
         internal static async Task<RestChannelFollow> GetFollowAsync(BaseRestClient client, ulong userId, ulong channelId)
         {
-            var model = await client.RestClient.GetFollowAsync(userId, channelId);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetFollowInternalAsync(token, userId, channelId);
             if (model == null) return null;
 
             var entity = new RestChannelFollow(client);
@@ -18,7 +19,8 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(BaseRestClient client, ulong userId, SortMode sort, bool ascending, uint limit, uint offset)
         {
-            var model = await client.RestClient.GetFollowsAsync(userId, sort, ascending, limit, offset);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetFollowsInternalAsync(token, userId, sort, ascending, limit, offset);
             var entity = model.Follows.Select(x =>
             {
                 var follow = new RestChannelFollow(client);
@@ -28,9 +30,10 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static async Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync(BaseRestClient client, ulong userId, ulong id)
+        internal static async Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync(BaseRestClient client, ulong userId)
         {
-            var model = await client.RestClient.GetEmotesAsync(userId);
+            var token = TokenHelper.GetSingleToken(client);
+            var model = await client.RestClient.GetEmotesInternalAsync(token, userId);
             var entity = model.Emotes.Select(x =>
             {
                 var values = x.Value.Select(y =>

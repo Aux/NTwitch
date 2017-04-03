@@ -2,8 +2,8 @@
 {
     internal class GetStreamRequest : RestRequest
     {
-        public GetStreamRequest(ulong channelId, StreamType type) 
-            : base("GET", $"streams/{channelId}")
+        public GetStreamRequest(string token, ulong channelId, StreamType type) 
+            : base("GET", $"streams/{channelId}", token)
         {
             string value = null;
             switch (type)

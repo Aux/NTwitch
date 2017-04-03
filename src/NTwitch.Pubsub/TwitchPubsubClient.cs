@@ -7,8 +7,8 @@ namespace NTwitch.Pubsub
         public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
         public TwitchPubsubClient(TwitchPubsubConfig config) : base(config) { }
         
-        public Task LoginAsync(AuthMode type, string token)
-            => SocketLoginAsync(type, token);
+        public Task LoginAsync(string token)
+            => SocketLoginAsync(token);
 
         public Task ConnectAsync()
             => ConnectInternalAsync();

@@ -17,23 +17,24 @@ namespace NTwitch.Chat
         {
             _config = config;
         }
-
-        public async Task LoginAsync(string username, string token)
+        
+        public Task ConnectAsync(ulong userId)
         {
-            await RestLoginAsync(AuthMode.Oauth, token);
+            if (TokenHelper.TryGetToken(this, userId, out RestTokenInfo info))
+                throw new MissingScopeException("chat_login");
+            if (!info.Authorization.Scopes.Contains("chat_login"))
+                throw new MissingScopeException("chat_login");
 
-            _chat = new ChatApiClient(_config, username, token);
-            if (!Token.Authorization.Scopes.Contains("chat_login"))
-                throw new InvalidOperationException("This token does not have permission to login to chat.");
+            _chat = new ChatApiClient(_config, info.Username, info.Token);
+            return _chat.ConnectAsync();
         }
-
-        public Task ConnectAsync()
-            => _chat.ConnectAsync();
 
         public Task DisconnectAsync()
             => _chat.DisconnectAsync();
 
-        Task ITwitchClient.LoginAsync(AuthMode type, string token)
+        Task ITwitchClient.ConnectAsync()
+            => throw new NotImplementedException();
+        Task ITwitchClient.LoginAsync(string token)
             => throw new NotSupportedException();
     }
 }

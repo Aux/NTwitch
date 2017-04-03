@@ -44,14 +44,7 @@ namespace NTwitch.Rest
             Language = model.Language;
             CoverUrl = model.CoverImageUrl;
         }
-
-        /// <summary> Update this community's properties </summary>
-        public virtual async Task UpdateAsync()
-        {
-            var entity = await Client.RestClient.GetCommunityAsync(Id, false).ConfigureAwait(false);
-            Update(entity);
-        }
-
+        
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => RestHelper.GetUserAsync(Client, OwnerId);
