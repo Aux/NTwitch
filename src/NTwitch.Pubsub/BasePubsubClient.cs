@@ -1,4 +1,5 @@
 ﻿using NTwitch.Rest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,10 +42,11 @@ namespace NTwitch.Pubsub
             // Forward to appropriate event
         }
 
-        internal async Task SocketLoginAsync(string token)
+        internal async Task<RestTokenInfo> SocketLoginAsync(string token)
         {
-            await RestLoginAsync(token);
+            var auth = await RestLoginAsync(token);
             _pubsub = new PubsubApiClient(_config, Logger, token);
+            return auth;
         }
 
         internal async Task ConnectInternalAsync()
@@ -58,7 +60,7 @@ namespace NTwitch.Pubsub
             //await _pubsub.DisconnectAsync();
             await disconnectedEvent.InvokeAsync().ConfigureAwait(false);
         }
-
+        
         // Channels
         public Task SubscribePlaybackAsync(IEnumerable<ulong> ids)
             => SubscribePlaybackAsync(ids.ToArray());

@@ -18,6 +18,7 @@ namespace NTwitch.Rest
 
         public BaseRestClient(TwitchRestConfig config)
         {
+            Tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
             _rest = new RestApiClient(config);
             Logger.LogReceived += OnLogInternalAsync;
         }

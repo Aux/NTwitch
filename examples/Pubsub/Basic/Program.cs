@@ -1,34 +1,40 @@
-﻿using NTwitch.Rest;
+﻿// 
+// This example is not complete and not compatible with latest NTwitch
+// 
+
+using NTwitch;
+using NTwitch.Pubsub;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NTwitch.Examples.Rest
+namespace Basic
 {
     class Program
     {
         public static void Main(string[] args)
             => new Program().StartAsync().GetAwaiter().GetResult();
 
-        private TwitchRestClient _client;
+        private TwitchPubsubClient _client;
 
         public async Task StartAsync()
         {
             Console.Write("Please enter your client id: ");
             string clientid = Console.ReadLine();
-
-            _client = new TwitchRestClient(new TwitchRestConfig()
+            
+            _client = new TwitchPubsubClient(new TwitchPubsubConfig()
             {
                 ClientId = clientid,
                 LogLevel = LogLevel.Info
             });
-
+            
             _client.Log += OnLogAsync;
+            _client.StreamOnline += OnStreamOnlineAsync;
 
             while (true)
             {
                 Console.WriteLine();
-                Console.Write("Enter the name of a stream: ");
+                Console.Write("Enter the name of a stream to watch for: ");
                 string name = Console.ReadLine();
 
                 var user = (await _client.GetUsersAsync(name)).FirstOrDefault();
@@ -38,15 +44,16 @@ namespace NTwitch.Examples.Rest
                     continue;
                 }
 
-                var stream = await _client.GetStreamAsync(user.Id);
-                if (stream == null)
-                    Console.WriteLine($"{user.DisplayName} is not currently streaming.");
-                else
-                    Console.WriteLine($"{user.DisplayName} is streaming {stream.Game} at {stream.Channel.Url}!");
+                await _client.SubscribePlaybackAsync(user.Id);
             }
         }
 
+        private Task OnStreamOnlineAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         private Task OnLogAsync(LogMessage msg)
-            => Console.Out.WriteLineAsync(msg.ToString());
+            => Console.Out.WriteLineAsync($"[{msg.Level}] {msg.Source}: {msg.Message}");
     }
 }

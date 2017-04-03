@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using NTwitch.Rest;
+using System.Threading.Tasks;
+using System;
 
 namespace NTwitch.Pubsub
 {
@@ -7,12 +9,14 @@ namespace NTwitch.Pubsub
         public TwitchPubsubClient() : this(new TwitchPubsubConfig()) { }
         public TwitchPubsubClient(TwitchPubsubConfig config) : base(config) { }
         
-        public Task LoginAsync(string token)
+        public Task<RestTokenInfo> LoginAsync(string token)
             => SocketLoginAsync(token);
 
         public Task ConnectAsync()
             => ConnectInternalAsync();
         public Task DisconnectAsync()
             => DisconnectInternalAsync();
+        Task ITwitchClient.LoginAsync(string token)
+            => throw new NotImplementedException();
     }
 }

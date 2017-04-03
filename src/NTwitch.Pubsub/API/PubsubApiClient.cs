@@ -51,7 +51,7 @@ namespace NTwitch.Pubsub
 
         public Task SendAsync(string type)
             => SendAsync(new PubsubRequest(type));
-        public Task SendAsync(string type, string[] topics)
+        public Task SendAsync(string type, params string[] topics)
             => SendAsync(new PubsubRequest(type).WithData(null, topics));
         public async Task SendAsync(PubsubRequest request)
         {
