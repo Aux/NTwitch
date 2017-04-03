@@ -27,8 +27,7 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
-
-
+        
         // Channels
         /// <summary> Change properties of this channel </summary>
         public Task ModifyAsync(Action<ModifyChannelParams> options)

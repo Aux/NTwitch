@@ -142,7 +142,7 @@ namespace NTwitch.Rest
 
         public static async Task<RestSelfChannel> GetSelfChannelAsync(BaseRestClient client, ulong channelId)
         {
-            if (TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
                 throw new MissingScopeException("channel_read");
             if (!info.Authorization.Scopes.Contains("channel_read"))
                 throw new MissingScopeException("channel_read");
@@ -175,7 +175,7 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(BaseRestClient client, ulong userId, StreamType type, uint limit, uint offset)
         {
-            if (TokenHelper.TryGetToken(client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("user_read");
             if (!info.Authorization.Scopes.Contains("user_read"))
                 throw new MissingScopeException("user_read");

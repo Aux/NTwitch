@@ -1,4 +1,9 @@
-﻿using NTwitch.Rest;
+﻿// 
+// This examples shows how to get a user's channel from an oauth token and edit their status.
+// 
+
+using NTwitch;
+using NTwitch.Rest;
 using System;
 using System.Threading.Tasks;
 
@@ -13,7 +18,37 @@ namespace Advanced
 
         public async Task StartAsync()
         {
-            await Task.Delay(0);
+            _client = new TwitchRestClient(new TwitchRestConfig()
+            {
+                LogLevel = LogLevel.Info
+            });
+
+            _client.Log += OnLogAsync;
+
+            Console.Write("Please enter your oauth token: ");
+            string token = Console.ReadLine();
+
+            var info = await _client.LoginAsync(token);
+            var channel = await _client.GetChannelAsync(info.UserId);
+
+            string previous = channel.Status;
+            while (true)
+            {
+                Console.WriteLine();
+                Console.Write("Please enter a new value for the stream title: ");
+                string title = Console.ReadLine();
+
+                await channel.ModifyAsync(x =>
+                {
+                    x.Status = title;
+                });
+
+                Console.WriteLine($"I changed {channel.DisplayName}'s status from `{previous}` to `{channel.Status}`");
+                previous = channel.Status;
+            }
         }
+
+        private Task OnLogAsync(LogMessage msg)
+            => Console.Out.WriteLineAsync(msg.ToString());
     }
 }

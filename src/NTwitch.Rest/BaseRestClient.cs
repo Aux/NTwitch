@@ -29,7 +29,7 @@ namespace NTwitch.Rest
         internal async Task<RestTokenInfo> RestLoginAsync(string token)
         {
             var auth = await RestHelper.AuthorizeAsync(this, token);
-            Tokens.AddOrUpdate(auth.UserId.Value, auth, (id, t) => t);
+            Tokens.AddOrUpdate(auth.UserId, auth, (id, t) => t);
             await loggedInEvent.InvokeAsync(auth).ConfigureAwait(false);
             return auth;
         }

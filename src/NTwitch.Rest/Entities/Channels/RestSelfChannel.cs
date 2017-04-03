@@ -26,5 +26,12 @@ namespace NTwitch.Rest
             StreamKey = model.StreamKey;
             base.Update(model);
         }
+
+        public override async Task UpdateAsync()
+        {
+            TokenHelper.TryGetToken(Client, Id, out RestTokenInfo info);
+            var model = await Client.RestClient.GetSelfChannelInternalAsync(info.Token);
+            this.Update(model);
+        }
     }
 }

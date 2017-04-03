@@ -11,7 +11,7 @@ namespace NTwitch.Rest
 
         public static async Task ModifyChannelAsync(RestSimpleChannel channel, Action<ModifyChannelParams> options)
         {
-            if (TokenHelper.TryGetToken(channel.Client, channel.Id, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(channel.Client, channel.Id, out RestTokenInfo info))
                 throw new MissingScopeException("channel_editor");
             if (!info.Authorization.Scopes.Contains("channel_editor"))
                 throw new MissingScopeException("channel_editor");
@@ -21,6 +21,11 @@ namespace NTwitch.Rest
 
             var model = await channel.Client.RestClient.ModifyChannelInternalAsync(info.Token, channel.Id, changes);
             channel.Update(model);
+
+            if (channel is RestChannel rc)
+                await rc.UpdateAsync();
+            if (channel is RestSelfChannel rsc)
+                await rsc.UpdateAsync();
         }
 
         #endregion
@@ -28,7 +33,7 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(BaseRestClient client, ulong channelId)
         {
-            if (TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
                 throw new MissingScopeException("channel_read");
             if (!info.Authorization.Scopes.Contains("channel_read"))
                 throw new MissingScopeException("channel_read");
@@ -74,7 +79,7 @@ namespace NTwitch.Rest
 
         internal static async Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(BaseRestClient client, ulong channelId, bool ascending, uint limit, uint offset)
         {
-            if (TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
                 throw new MissingScopeException("channel_subscriptions");
             if (info.Authorization.Scopes.Contains("channel_subscriptions"))
                 throw new MissingScopeException("channel_subscriptions");
@@ -92,7 +97,7 @@ namespace NTwitch.Rest
 
         internal static async Task<RestUserSubscription> GetSubscriberAsync(BaseRestClient client, ulong channelId, ulong userId)
         {
-            if (TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info))
                 throw new MissingScopeException("channel_subscriptions");
             if (info.Authorization.Scopes.Contains("channel_subscriptions"))
                 throw new MissingScopeException("channel_subscriptions");

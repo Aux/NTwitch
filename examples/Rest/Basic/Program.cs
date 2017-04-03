@@ -1,4 +1,8 @@
-﻿using NTwitch;
+﻿// 
+// This example shows how to check if a stream is online or offline.
+// 
+
+using NTwitch;
 using NTwitch.Rest;
 using System;
 using System.Linq;

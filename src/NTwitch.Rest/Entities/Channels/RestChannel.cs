@@ -66,5 +66,12 @@ namespace NTwitch.Rest
             Followers = model.Followers;
             base.Update(model);
         }
+
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetChannelInternalAsync(token, Id);
+            this.Update(model);
+        }
     }
 }
