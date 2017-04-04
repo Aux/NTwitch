@@ -31,7 +31,7 @@ namespace NTwitch.Rest
 
         public static RestTokenInfo GetTokenInfo(BaseRestClient client, ulong userId)
         {
-            if (client.Tokens.TryGetValue(userId, out RestTokenInfo token))
+            if (TokenHelper.TryGetToken(client, userId, out RestTokenInfo token))
                 return token;
             else
                 return null;

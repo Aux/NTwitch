@@ -9,21 +9,23 @@ namespace NTwitch.Pubsub
     public partial class BasePubsubClient : BaseRestClient
     {
         public PubsubApiClient PubsubClient => _pubsub;
+        public long Latency => _latency;
         
         private PubsubApiClient _pubsub;
         private TwitchPubsubConfig _config;
-        private long Latency = -1;
+        private long _latency = -1;
         
         public BasePubsubClient(TwitchPubsubConfig config) : base(config)
         {
             _config = config;
+            _pubsub = new PubsubApiClient(config);
             _pubsub.LatencyUpdated += OnLatencyInternalAsync;
             _pubsub.MessageReceived += OnMessageInternalAsync;
         }
 
         private Task OnLatencyInternalAsync(long ms)
         {
-            Latency = ms;
+            _latency = ms;
             return Task.CompletedTask;
         }
 
@@ -45,7 +47,7 @@ namespace NTwitch.Pubsub
         internal async Task<RestTokenInfo> SocketLoginAsync(string token)
         {
             var auth = await RestLoginAsync(token);
-            _pubsub = new PubsubApiClient(_config, Logger, token);
+            _pubsub = new PubsubApiClient(_config);
             return auth;
         }
 

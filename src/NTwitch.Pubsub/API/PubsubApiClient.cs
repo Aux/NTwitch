@@ -1,4 +1,5 @@
-﻿using NTwitch.Rest;
+﻿using NTwitch.Pubsub.API;
+using NTwitch.Rest;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -12,13 +13,16 @@ namespace NTwitch.Pubsub
 
         internal ConcurrentDictionary<string, PubsubRequest> Requests;
         internal LogManager Logger;
-
-        private bool _disposed = false;
         
-        public PubsubApiClient(TwitchPubsubConfig config, LogManager logger, string token)
+        public PubsubApiClient(TwitchPubsubConfig config)
         {
-            Logger = logger;
-            _client = new SocketClient(config, logger);
+            Logger = new LogManager(config.LogLevel);
+
+            if (config.PubsubProvider == null)
+                _client = new WebSocketClient(Logger, config.PubsubHost);
+            else
+                _client = config.PubsubProvider;
+
             _client.MessageReceived += OnMessageInternalAsync;
         }
 

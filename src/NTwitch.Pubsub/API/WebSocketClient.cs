@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NTwitch.Pubsub
+namespace NTwitch.Pubsub.API
 {
-    internal class SocketClient : IDisposable
+    internal partial class WebSocketClient : SocketClient, IDisposable
     {
         private const int _chunkSize = 1024;
         private ClientWebSocket _client = null;
@@ -18,34 +18,10 @@ namespace NTwitch.Pubsub
         private string _host;
         private bool _disposed = false;
 
-        public SocketClient(TwitchPubsubConfig config, LogManager logger)
-        {
-            _host = config.PubsubHost;
-            _log = logger;
-        }
+        public WebSocketClient(LogManager logger, string host)
+            : base(logger, host) { }
 
-        internal readonly AsyncEvent<Func<Task>> connectedEvent = new AsyncEvent<Func<Task>>();
-        public event Func<Task> Connected
-        {
-            add { connectedEvent.Add(value); }
-            remove { connectedEvent.Remove(value); }
-        }
-
-        internal readonly AsyncEvent<Func<Task>> disconnectedEvent = new AsyncEvent<Func<Task>>();
-        public event Func<Task> Disconnected
-        {
-            add { disconnectedEvent.Add(value); }
-            remove { disconnectedEvent.Remove(value); }
-        }
-
-        internal readonly AsyncEvent<Func<string, Task>> messageReceivedEvent = new AsyncEvent<Func<string, Task>>();
-        public event Func<string, Task> MessageReceived
-        {
-            add { messageReceivedEvent.Add(value); }
-            remove { messageReceivedEvent.Remove(value); }
-        }
-
-        public async Task SendAsync(string message)
+        public override async Task SendAsync(string message)
         {
             if (_client.State != WebSocketState.Open)
                 throw new InvalidOperationException("Client must be connected before sending data");
@@ -63,7 +39,7 @@ namespace NTwitch.Pubsub
             }
         }
 
-        public async Task ConnectAsync()
+        public override async Task ConnectAsync()
         {
             _cancelTokenSource = new CancellationTokenSource();
             _client = new ClientWebSocket();
@@ -71,7 +47,7 @@ namespace NTwitch.Pubsub
             await StartAsync(_cancelTokenSource);
             await connectedEvent.InvokeAsync().ConfigureAwait(false);
         }
-        
+
         public async Task StartAsync(CancellationTokenSource cancelTokenSource)
         {
             _task = RunAsync(cancelTokenSource);
@@ -119,7 +95,23 @@ namespace NTwitch.Pubsub
             Dispose();
             await disconnectedEvent.InvokeAsync().ConfigureAwait(false);
         }
-        
+
+        public override async Task DisconnectAsync(bool disposing = false)
+        {
+            try { _cancelTokenSource.Cancel(false); } catch { }
+
+            if (!disposing)
+                await (_task ?? Task.Delay(0));
+
+            if (_client != null && _client.State == WebSocketState.Open)
+            {
+                _cancelTokenSource.Cancel(false);
+
+                try { _client.Dispose(); } catch { }
+                _client = null;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)

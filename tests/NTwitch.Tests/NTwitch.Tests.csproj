@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NTwitch\NTwitch.csproj" />
+    <ProjectReference Include="..\..\src\NTwitch.Chat\NTwitch.Chat.csproj" />
+    <ProjectReference Include="..\..\src\NTwitch.Core\NTwitch.Core.csproj" />
+    <ProjectReference Include="..\..\src\NTwitch.Pubsub\NTwitch.Pubsub.csproj" />
+    <ProjectReference Include="..\..\src\NTwitch.Rest\NTwitch.Rest.csproj" />
   </ItemGroup>
 
 </Project>

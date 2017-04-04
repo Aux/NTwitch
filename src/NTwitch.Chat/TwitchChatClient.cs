@@ -1,11 +1,12 @@
-﻿using NTwitch.Rest;
+﻿using NTwitch.Pubsub;
+using NTwitch.Rest;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public partial class TwitchChatClient : BaseRestClient, ITwitchClient
+    public partial class TwitchChatClient : BasePubsubClient, ITwitchClient
     {
         public ChatApiClient ChatClient => _chat;
 
@@ -16,25 +17,45 @@ namespace NTwitch.Chat
         public TwitchChatClient(TwitchChatConfig config) : base(config)
         {
             _config = config;
+            _chat = new ChatApiClient(config);
+        }
+
+        public Task<RestTokenInfo> LoginAsync(string token)
+            => RestLoginAsync(token);
+
+        public Task ConnectAsync()
+        {
+            if (Tokens.Count() != 1)
+                throw new InvalidOperationException("You must log in as a single user to use implicit connection.");
+
+            var auth = Tokens.First();
+            return ConnectAsync(auth);
         }
         
-        public Task ConnectAsync(ulong userId)
+        public async Task ConnectAsync(RestTokenInfo auth)
         {
-            if (TokenHelper.TryGetToken(this, userId, out RestTokenInfo info))
-                throw new MissingScopeException("chat_login");
-            if (!info.Authorization.Scopes.Contains("chat_login"))
-                throw new MissingScopeException("chat_login");
+            await _chat.ConnectAsync();
+            await _chat.AuthorizeAsync(auth.Username, auth.Token);
 
-            _chat = new ChatApiClient(_config, info.Username, info.Token);
-            return _chat.ConnectAsync();
+            if (_config.RequestTags)
+                await _chat.RequestTagsAsync().ConfigureAwait(false);
+            if (_config.RequestCommands)
+                await _chat.RequestCommandsAsync().ConfigureAwait(false);
+            if (_config.RequestMembership)
+                await _chat.RequestMembershipAsync().ConfigureAwait(false);
         }
 
         public Task DisconnectAsync()
             => _chat.DisconnectAsync();
 
-        Task ITwitchClient.ConnectAsync()
-            => throw new NotImplementedException();
+        // Channels
+        public Task JoinChannelAsync(string name)
+            => _chat.JoinChannelAsync(name);
+        public Task LeaveChannelAsync(string name)
+            => _chat.PartChannelAsync(name);
+        
+        // ITwitchClient
         Task ITwitchClient.LoginAsync(string token)
-            => throw new NotSupportedException();
+            => throw new NotImplementedException();
     }
 }

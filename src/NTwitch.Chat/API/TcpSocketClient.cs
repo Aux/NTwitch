@@ -8,40 +8,35 @@ using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    internal class TcpClient : IDisposable
+    internal class TcpSocketClient : SocketClient, IDisposable
     {
-        private System.Net.Sockets.TcpClient _client;
+        private TcpClient _client;
         private NetworkStream _stream;
         private StreamWriter _writer;
         private CancellationTokenSource _cancelTokenSource;
         private Task _task;
 
-        private string _host;
         private int _port;
-        private string _username;
-        private string _token;
         private bool _disposed = false;
 
-        public TcpClient(TwitchChatConfig config, string username, string token)
+        public TcpSocketClient(LogManager logger, string host, int port)
+            : base(logger, host)
         {
-            _host = config.ChatHost;
-            _port = config.ChatPort;
-            _username = username;
-            _token = token;
+            _port = port;
         }
 
-        public async Task SendAsync(ChatRequest request)
+        public override async Task SendAsync(string message)
         {
             if (!_client.Connected)
                 throw new InvalidOperationException("Client is not connected.");
 
-            await _writer.WriteLineAsync(request.ToString()).ConfigureAwait(false);
+            await _writer.WriteLineAsync(message).ConfigureAwait(false);
         }
 
-        public async Task ConnectAsync()
+        public override async Task ConnectAsync()
         {
-            _client = new System.Net.Sockets.TcpClient();
-            await _client.ConnectAsync(_host, _port).ConfigureAwait(false);
+            _client = new TcpClient();
+            await _client.ConnectAsync(Host, _port);
 
             _stream = _client.GetStream();
             _writer = new StreamWriter(_stream)
@@ -74,11 +69,11 @@ namespace NTwitch.Chat
 
                 var result = receiveTask.Result;
                 string msg = Encoding.UTF8.GetString(buffer, 0, result);
-                //await _messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
+                await messageReceivedEvent.InvokeAsync(msg).ConfigureAwait(false);
             }
         }
 
-        public async Task DisconnectAsync(bool disposing = false)
+        public override async Task DisconnectAsync(bool disposing = false)
         {
             try { _cancelTokenSource.Cancel(false); } catch { }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Rest
@@ -10,15 +11,16 @@ namespace NTwitch.Rest
     {
         /// <summary> The client used to manage rest requests </summary>
         public RestApiClient RestClient => _rest;
+        public IReadOnlyCollection<RestTokenInfo> Tokens => TokensInternal.Select(x => x.Value).ToArray();
 
-        internal ConcurrentDictionary<ulong, RestTokenInfo> Tokens;
+        internal ConcurrentDictionary<ulong, RestTokenInfo> TokensInternal;
         internal LogManager Logger => _rest.Logger;
 
         private RestApiClient _rest;
 
         public BaseRestClient(TwitchRestConfig config)
         {
-            Tokens = new ConcurrentDictionary<ulong, RestTokenInfo>();
+            TokensInternal = new ConcurrentDictionary<ulong, RestTokenInfo>();
             _rest = new RestApiClient(config);
             Logger.LogReceived += OnLogInternalAsync;
         }
@@ -29,7 +31,7 @@ namespace NTwitch.Rest
         internal async Task<RestTokenInfo> RestLoginAsync(string token)
         {
             var auth = await RestHelper.AuthorizeAsync(this, token);
-            Tokens.AddOrUpdate(auth.UserId, auth, (id, t) => t);
+            TokensInternal.AddOrUpdate(auth.UserId, auth, (id, t) => t);
             await loggedInEvent.InvokeAsync(auth).ConfigureAwait(false);
             return auth;
         }
