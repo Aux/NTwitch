@@ -14,9 +14,10 @@ namespace NTwitch.Pubsub
         internal ConcurrentDictionary<string, PubsubRequest> Requests;
         internal LogManager Logger;
         
-        public PubsubApiClient(TwitchPubsubConfig config)
+        public PubsubApiClient(TwitchPubsubConfig config, LogManager log)
         {
-            Logger = new LogManager(config.LogLevel);
+            Requests = new ConcurrentDictionary<string, PubsubRequest>();
+            Logger = log;
 
             if (config.PubsubProvider == null)
                 _client = new WebSocketClient(Logger, config.PubsubHost);
@@ -28,30 +29,36 @@ namespace NTwitch.Pubsub
 
         private async Task OnMessageInternalAsync(string msg)
         {
-            var response = PubsubResponse.FromString(msg);
+            await Console.Out.WriteLineAsync(msg);
+            //var response = PubsubResponse.FromString(msg);
 
-            if (!Requests.TryRemove(response.Nonce, out PubsubRequest request))
-                await Logger.DebugAsync("Pubsub", $"Received {response.Type} event with no matching nonce.").ConfigureAwait(false);
+            //if (!Requests.TryRemove(response.Nonce, out PubsubRequest request))
+            //    await Logger.DebugAsync("Pubsub", $"Received {response.Type} event with no matching nonce.").ConfigureAwait(false);
             
-            switch (response.Type.ToLower())
-            {
-                case "pong":
-                    await latencyUpdatedEvent.InvokeAsync(request.GetTime()).ConfigureAwait(false);
-                    break;
-                case "reconnect": // Reconnecting event
-                    await Logger.DebugAsync("Pubsub", $"Recieved reconnect request").ConfigureAwait(false);
-                    break;
-                case "response":
-                    await Logger.DebugAsync("Pubsub", $"Received {request.Nonce} after {request.GetTime()}ms").ConfigureAwait(false);
-                    break;
-                case "message":
-                    await messageReceivedEvent.InvokeAsync(response.Data.Topic, response.Data.Message).ConfigureAwait(false);
-                    break;
-                default:
-                    await Logger.ErrorAsync("Pubsub", $"Recieved unknown message type `{response.Type}`").ConfigureAwait(false);
-                    break;
-            }
+            //switch (response.Type.ToLower())
+            //{
+            //    case "pong":
+            //        await latencyUpdatedEvent.InvokeAsync(request.GetTime()).ConfigureAwait(false);
+            //        break;
+            //    case "reconnect": // Reconnecting event
+            //        await Logger.DebugAsync("Pubsub", $"Recieved reconnect request").ConfigureAwait(false);
+            //        break;
+            //    case "response":
+            //        await Logger.DebugAsync("Pubsub", $"Received {request.Nonce} after {request.GetTime()}ms").ConfigureAwait(false);
+            //        break;
+            //    case "message":
+            //        await messageReceivedEvent.InvokeAsync(response.Data.Topic, response.Data.Message).ConfigureAwait(false);
+            //        break;
+            //    default:
+            //        await Logger.ErrorAsync("Pubsub", $"Recieved unknown message type `{response.Type}`").ConfigureAwait(false);
+            //        break;
+            //}
         }
+
+        public Task ConnectAsync()
+            => _client.ConnectAsync();
+        public Task DisconnectAsync()
+            => _client.DisconnectAsync();
 
         public Task SendAsync(string type)
             => SendAsync(new PubsubRequest(type));
@@ -59,10 +66,12 @@ namespace NTwitch.Pubsub
             => SendAsync(new PubsubRequest(type).WithData(null, topics));
         public async Task SendAsync(PubsubRequest request)
         {
-            if (!Requests.TryAdd(request.Nonce, request))
+            await Logger.DebugAsync("Pubsub", $"Attempting {request.Type}").ConfigureAwait(false);
+            if (request.Nonce != null && !Requests.TryAdd(request.Nonce, request))
                 throw new Exception($"Unable to create nonce for {request.Type} {request.Data?.Topics.First()}");
 
             await _client.SendAsync(request.ToString());
+            await Logger.DebugAsync("Pubsub", $"{request.Type} success").ConfigureAwait(false);
         }
         
         #region Channels

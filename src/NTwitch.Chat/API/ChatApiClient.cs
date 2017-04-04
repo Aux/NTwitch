@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NTwitch.Chat.API;
+using System;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
@@ -23,6 +24,11 @@ namespace NTwitch.Chat
 
         private Task OnMessageInternalAsync(string msg)
         {
+            var message = ChatResponse.Parse(msg);
+
+
+
+            System.IO.File.AppendAllText(@"C:\chat.txt", $"\n\n{msg}");
             return Console.Out.WriteLineAsync(msg);
         }
 
@@ -56,8 +62,11 @@ namespace NTwitch.Chat
         #endregion
         #region Channels
 
-        internal Task JoinChannelAsync(string name)
-            => SendAsync("JOIN", $"#{name}");
+        internal async Task JoinChannelAsync(string name)
+        {
+            await SendAsync("JOIN", $"#{name}");
+
+        }
 
         internal Task PartChannelAsync(string name)
             => SendAsync("PART", $"#{name}");

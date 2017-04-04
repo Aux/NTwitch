@@ -7,7 +7,7 @@ namespace NTwitch.Rest
     {
         public static bool TryGetToken(BaseRestClient client, ulong id, out RestTokenInfo info)
         {
-            if (client.TokensInternal.TryGetValue(id, out info))
+            if (client.Tokens.TryGetValue(id, out info))
                 return true;
             else
                 return false;
@@ -17,10 +17,10 @@ namespace NTwitch.Rest
         {
             string clientid = client.RestClient.ClientId;
             
-            if (client.Tokens.Count() > 1 && string.IsNullOrWhiteSpace(clientid))
+            if (client.TokenInfos.Count() > 1 && string.IsNullOrWhiteSpace(clientid))
                 throw new InvalidOperationException("A client id must be specified for multi-token management.");
             
-            var token = client.Tokens.FirstOrDefault();
+            var token = client.TokenInfos.FirstOrDefault();
             if (token != null)
                 return token.Token;
             else

@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS1998
 using System;
+using System.ComponentModel;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -10,12 +11,12 @@ namespace NTwitch.Pubsub.API
     internal partial class WebSocketClient : SocketClient, IDisposable
     {
         private const int _chunkSize = 1024;
+        private const int _timeout = -2147012894;
+
         private ClientWebSocket _client = null;
         private CancellationTokenSource _cancelTokenSource;
-        private LogManager _log;
         private Task _task;
         
-        private string _host;
         private bool _disposed = false;
 
         public WebSocketClient(LogManager logger, string host)
@@ -23,19 +24,30 @@ namespace NTwitch.Pubsub.API
 
         public override async Task SendAsync(string message)
         {
-            if (_client.State != WebSocketState.Open)
-                throw new InvalidOperationException("Client must be connected before sending data");
+            if (_client == null) return;
 
-            var bytes = Encoding.UTF8.GetBytes(message);
-            int count = (int)Math.Ceiling((double)bytes.Length / _chunkSize);
-
-            for (int i = 0; i < count; i++)
+            try
             {
-                var offset = _chunkSize * i;
-                var buffer = new ArraySegment<Byte>(bytes, offset, count);
+                var bytes = Encoding.UTF8.GetBytes(message);
+                int count = (int)Math.Ceiling((double)bytes.Length / _chunkSize);
 
-                bool isfinal = i + 1 == count;
-                await _client.SendAsync(buffer, WebSocketMessageType.Text, isfinal, _cancelTokenSource.Token).ConfigureAwait(false);
+                for (int i = 0; i < count; i += _chunkSize)
+                {
+                    bool isfinal = i == (count - 1);
+                    int index = _chunkSize * i;
+                    var buffer = new ArraySegment<Byte>(bytes, index, count);
+
+                    int size;
+                    if (isfinal)
+                        size = count - (i * _chunkSize);
+                    else
+                        size = _chunkSize;
+
+                    await _client.SendAsync(buffer, WebSocketMessageType.Text, isfinal, _cancelTokenSource.Token).ConfigureAwait(false);
+                }
+            } catch (Exception ex)
+            {
+                await Logger.DebugAsync("WebSocket", ex);
             }
         }
 
@@ -43,57 +55,72 @@ namespace NTwitch.Pubsub.API
         {
             _cancelTokenSource = new CancellationTokenSource();
             _client = new ClientWebSocket();
-            await _client.ConnectAsync(new Uri(_host), _cancelTokenSource.Token);
-            await StartAsync(_cancelTokenSource);
-            await connectedEvent.InvokeAsync().ConfigureAwait(false);
+            _client.Options.KeepAliveInterval = TimeSpan.Zero;
+            
+            await _client.ConnectAsync(new Uri(Host), _cancelTokenSource.Token);
+            _task = RunAsync(_cancelTokenSource);
         }
-
-        public async Task StartAsync(CancellationTokenSource cancelTokenSource)
-        {
-            _task = RunAsync(cancelTokenSource);
-        }
-
-        public async Task RunAsync(CancellationTokenSource cancelTokenSource)
+        
+        private async Task RunAsync(CancellationTokenSource cancelTokenSource)
         {
             var closeTask = Task.Delay(-1, cancelTokenSource.Token);
 
-            while (!cancelTokenSource.IsCancellationRequested)
+            try
             {
-                var buffer = new ArraySegment<byte>(new byte[_chunkSize]);
-
-                var builder = new StringBuilder();
-                WebSocketReceiveResult result;
-                do
+                while (!cancelTokenSource.IsCancellationRequested)
                 {
-                    var recieveTask = _client.ReceiveAsync(buffer, cancelTokenSource.Token);
+                    var buffer = new ArraySegment<byte>(new byte[_chunkSize]);
+                    var receiveTask = ReceiveAsync(buffer);
 
-                    var task = await Task.WhenAny(closeTask, recieveTask);
+                    var task = await Task.WhenAny(closeTask, receiveTask);
                     if (task == closeTask)
                         break;
 
-                    result = recieveTask.Result;
+                    var result = receiveTask.Result;
 
-                    if (result.MessageType == WebSocketMessageType.Close)
+                    if (result.Item1 == WebSocketMessageType.Close)
                     {
-                        cancelTokenSource.Cancel();
+                        await StopAsync("Connect was closed by server");
                         break;
                     }
 
-                    string message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
-                    builder.Append(message);
-                } while (!result.EndOfMessage);
-
-                await messageReceivedEvent.InvokeAsync(builder.ToString()).ConfigureAwait(false);
+                    await messageReceivedEvent.InvokeAsync(result.Item2).ConfigureAwait(false);
+                }
             }
-
-            await StopAsync(cancelTokenSource);
+            catch (Win32Exception ex) when (ex.HResult == _timeout)
+            {
+                var _ = StopAsync("Connected timed out", ex);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                var _ = StopAsync(ex.Message, ex);
+            }
         }
         
-        public async Task StopAsync(CancellationTokenSource cancelTokenSource)
+        private async Task<Tuple<WebSocketMessageType, string>> ReceiveAsync(ArraySegment<byte> buffer)
         {
-            await _client.CloseAsync(WebSocketCloseStatus.NormalClosure, null, cancelTokenSource.Token);
+            var builder = new StringBuilder();
+            WebSocketReceiveResult result;
+            do
+            {
+                result = await _client.ReceiveAsync(buffer, _cancelTokenSource.Token);
+                
+                if (result.MessageType == WebSocketMessageType.Close)
+                    break;
+                
+                string message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
+                builder.Append(message);
+            } while (!result.EndOfMessage);
+
+            return Tuple.Create(result.MessageType, builder.ToString());
+        }
+
+        private async Task StopAsync(string message, Exception ex = null)
+        {
+            await Logger.InfoAsync(message, ex).ConfigureAwait(false);
+            await _client.CloseAsync(WebSocketCloseStatus.NormalClosure, null, _cancelTokenSource.Token);
             Dispose();
-            await disconnectedEvent.InvokeAsync().ConfigureAwait(false);
         }
 
         public override async Task DisconnectAsync(bool disposing = false)

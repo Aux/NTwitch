@@ -13,8 +13,7 @@ namespace NTwitch.Rest.API
 
         internal LogManager Logger;
         internal string ClientId;
-
-
+        
         public RestApiClient(TwitchRestConfig config)
         {
             Logger = new LogManager(config.LogLevel);

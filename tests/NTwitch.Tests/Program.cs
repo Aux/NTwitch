@@ -1,4 +1,5 @@
 ﻿using NTwitch.Chat;
+using NTwitch.Pubsub;
 using System;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace NTwitch.Tests
         {
             _client = new TwitchChatClient(new TwitchChatConfig()
             {
-                LogLevel = LogLevel.Info
+                LogLevel = LogLevel.Debug
             });
 
             _client.Log += OnLogAsync;
@@ -23,8 +24,8 @@ namespace NTwitch.Tests
             await _client.LoginAsync("z05gs6s3y58vxv9gbxv7n8vazk0n98");
             await _client.ConnectAsync();
 
-            await _client.JoinChannelAsync("timthetatman");
-            
+            await _client.JoinChannelAsync("summit1g");
+
             await Task.Delay(-1);
         }
 

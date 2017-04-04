@@ -28,7 +28,7 @@ namespace NTwitch.Chat
             if (Tokens.Count() != 1)
                 throw new InvalidOperationException("You must log in as a single user to use implicit connection.");
 
-            var auth = Tokens.First();
+            var auth = TokenInfos.First();
             return ConnectAsync(auth);
         }
         

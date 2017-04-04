@@ -13,8 +13,8 @@ namespace NTwitch.Chat
         public string ChatHost { get; set; } = "irc.chat.twitch.tv";
         public int ChatPort { get; set; } = 6667;
 
-        public bool RequestTags { get; set; } = true;
-        public bool RequestCommands { get; set; } = true;
-        public bool RequestMembership { get; set; } = true;
+        public bool RequestTags { get; } = true;
+        public bool RequestCommands { get; } = true;
+        public bool RequestMembership { get; } = true;
     }
 }

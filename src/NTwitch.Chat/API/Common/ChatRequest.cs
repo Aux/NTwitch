@@ -1,4 +1,4 @@
-﻿namespace NTwitch.Chat
+﻿namespace NTwitch.Chat.API
 {
     public class ChatRequest
     {
