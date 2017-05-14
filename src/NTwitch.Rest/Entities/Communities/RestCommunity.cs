@@ -44,9 +44,29 @@ namespace NTwitch.Rest
             Language = model.Language;
             CoverUrl = model.CoverImageUrl;
         }
+
+        internal void Update(RestCommunity community)
+        {
+            base.Update(community);
+            OwnerId = community.OwnerId;
+            Summary = community.Summary;
+            Description = community.Description;
+            DescriptionHtml = community.DescriptionHtml;
+            Rules = community.Rules;
+            RulesHtml = community.RulesHtml;
+            Language = community.Language;
+            CoverUrl = community.CoverUrl;
+        }
         
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => RestHelper.GetUserAsync(Client, OwnerId);
+
+        /// <summary> Get this community from the perspective of the specified user </summary>
+        public Task<RestUserCommunity> GetUserCommunityAsync(ulong userId)
+            => CommunityHelper.GetUserCommunityAsync(this, userId);
+        /// <summary> Get this community from the perspective of the specified user </summary>
+        public Task<RestUserCommunity> GetUserCommunityAsync(IUser user)
+            => CommunityHelper.GetUserCommunityAsync(this, user);
     }
 }

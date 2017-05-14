@@ -256,7 +256,7 @@ namespace NTwitch.Rest
 
             return RestCommunity.Create(client, model);
         }
-
+        
         public static async Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(BaseRestClient client, uint limit)
         {
             var token = TokenHelper.GetSingleToken(client);

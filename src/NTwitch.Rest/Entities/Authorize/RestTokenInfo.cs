@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Model = NTwitch.Rest.API.Token;
+﻿using Model = NTwitch.Rest.API.Token;
 
 namespace NTwitch.Rest
 {
@@ -39,11 +37,6 @@ namespace NTwitch.Rest
             ClientId = model.ClientId;
             if (model.Authorization != null)
                 Authorization.Update(model.Authorization);
-        }
-
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }
