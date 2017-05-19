@@ -208,6 +208,14 @@ namespace NTwitch.Rest
             return RestStream.Create(client, model.Stream);
         }
 
+        internal static Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, ulong[] channels)
+        {
+            return GetStreamsAsync(client, x =>
+            {
+                x.ChannelIds = channels;
+            });
+        }
+
         internal static async Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, Action<GetStreamsParams> options)
         {
             var token = TokenHelper.GetSingleToken(client);

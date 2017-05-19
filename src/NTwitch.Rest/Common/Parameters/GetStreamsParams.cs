@@ -2,7 +2,7 @@
 {
     public class GetStreamsParams
     {
-        public string[] Channels { get; set; } = null;
+        public ulong[] ChannelIds { get; set; } = null;
         public string Game { get; set; } = null;
         public string Language { get; set; } = null;
         public StreamType Type { get; set; } = StreamType.Live;
