@@ -40,6 +40,9 @@ namespace NTwitch.Rest
             => UserHelper.GetEmotesAsync(Client, Id);
 
         // Streams
+        /// <summary> Get this user's stream information, if available </summary>
+        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live)
+            => RestHelper.GetStreamAsync(Client, Id, type);
         /// <summary> Get streams this user is following. </summary>
         public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
             => RestHelper.GetFollowedStreamsAsync(Client, Id, type, limit, offset);

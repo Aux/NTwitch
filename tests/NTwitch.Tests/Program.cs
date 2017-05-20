@@ -22,9 +22,10 @@ namespace NTwitch.Tests
             _client.Log += OnLogAsync;
 
             await _client.LoginAsync("");
-            var users = await _client.GetUsersAsync("wraxu");
 
-            var stream = await _client.GetStreamsAsync(users.First().Id);
+            var user = (await _client.GetUsersAsync("auxesistv")).FirstOrDefault();
+            var channel1 = await _client.GetChannelAsync(user.Id);
+            var channel2 = await user.GetChannelAsync();
             
             await Task.Delay(-1);
         }

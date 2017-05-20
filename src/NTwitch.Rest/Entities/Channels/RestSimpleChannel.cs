@@ -33,6 +33,19 @@ namespace NTwitch.Rest
         public Task ModifyAsync(Action<ModifyChannelParams> options)
             => ChannelHelper.ModifyChannelAsync(this, options);
 
+        // Users
+        /// <summary> Get information about this channel's user </summary>
+        public Task<RestUser> GetUserAsync()
+            => RestHelper.GetUserAsync(Client, Id);
+        /// <summary> Get information about this channel's user, if authenticated </summary>
+        public Task<RestSelfUser> GetSelfUserAsync()
+            => RestHelper.GetSelfUserAsync(Client, Id);
+
+        // Streams
+        /// <summary> Get this channel's stream information, if available </summary>
+        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live)
+            => RestHelper.GetStreamAsync(Client, Id, type);
+
         // Clips
         /// <summary>  </summary>
         public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, uint limit = 10)
