@@ -1,5 +1,6 @@
 ﻿using NTwitch.Chat.API;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
@@ -24,11 +25,12 @@ namespace NTwitch.Chat
 
         private Task OnMessageInternalAsync(string msg)
         {
-            var message = ChatResponse.Parse(msg);
+            var parts = msg.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var messages = new List<ChatResponse>();
 
-
-
-            System.IO.File.AppendAllText(@"C:\chat.txt", $"\n\n{msg}");
+            foreach (var p in parts)
+                messages.Add(ChatResponse.Parse(p));
+            
             return Console.Out.WriteLineAsync(msg);
         }
 

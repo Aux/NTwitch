@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
-    <ProjectReference Include="..\NTwitch.Pubsub\NTwitch.Pubsub.csproj" />
     <ProjectReference Include="..\NTwitch.Rest\NTwitch.Rest.csproj" />
   </ItemGroup>
 

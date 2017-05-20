@@ -1,12 +1,11 @@
-﻿using NTwitch.Pubsub;
-using NTwitch.Rest;
+﻿using NTwitch.Rest;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Chat
 {
-    public partial class TwitchChatClient : BasePubsubClient, ITwitchClient
+    public partial class TwitchChatClient : BaseRestClient, ITwitchClient
     {
         public ChatApiClient ChatClient => _chat;
 
