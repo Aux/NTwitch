@@ -12,7 +12,7 @@ namespace NTwitch.Rest
             await client.Logger.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
             
             var model = await client.RestClient.AuthorizeAsync(token);
-            var entity = RestTokenInfo.Create(model, token);
+            var entity = RestTokenInfo.Create(client, model, token);
             
             await client.Logger.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
             return entity;

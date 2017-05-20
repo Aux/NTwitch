@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Token;
 
 namespace NTwitch.Rest
 {
-    public class RestTokenInfo
+    public class RestTokenInfo : IUpdateable
     {
+        /// <summary> An instance of the client that created this entity </summary>
+        public BaseRestClient Client { get; private set; }
         /// <summary> The oauth token of this session. </summary>
         public string Token { get; private set; }
         /// <summary> True if the specified token is valid </summary>
@@ -19,14 +20,15 @@ namespace NTwitch.Rest
         /// <summary> Information about the authorized oauth token </summary>
         public RestAuthorization Authorization { get; private set; } = new RestAuthorization();
 
-        internal RestTokenInfo(string token)
+        internal RestTokenInfo(BaseRestClient client, string token)
         {
+            Client = client;
             Token = token;
         }
 
-        internal static RestTokenInfo Create(Model model, string token)
+        internal static RestTokenInfo Create(BaseRestClient client, Model model, string token)
         {
-            var entity = new RestTokenInfo(token);
+            var entity = new RestTokenInfo(client, token);
             entity.Update(model);
             return entity;
         }
@@ -41,9 +43,11 @@ namespace NTwitch.Rest
                 Authorization.Update(model.Authorization);
         }
 
-        public virtual Task UpdateAsync()
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var model = await Client.RestClient.AuthorizeAsync(Token);
+            Update(model);
         }
     }
 }

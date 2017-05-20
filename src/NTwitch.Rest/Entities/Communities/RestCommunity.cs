@@ -3,7 +3,7 @@ using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
-    public class RestCommunity : RestSimpleCommunity
+    public class RestCommunity : RestSimpleCommunity, IUpdateable
     {
         /// <summary> The id of the user that owns this community </summary>
         public ulong OwnerId { get; private set; }
@@ -44,7 +44,15 @@ namespace NTwitch.Rest
             Language = model.Language;
             CoverUrl = model.CoverImageUrl;
         }
-        
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetCommunityInternalAsync(token, Id, false);
+            Update(model);
+        }
+
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => RestHelper.GetUserAsync(Client, OwnerId);

@@ -31,11 +31,5 @@ namespace NTwitch.Rest
             MinimumBits = model.MinimumBits;
             Images = model.Images.Select(x => new RestCheerImage(Client, x)).ToArray();
         }
-
-        /// <summary> Update this cheer's properties </summary>
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -3,7 +3,7 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestSelfChannel : RestChannel
+    public class RestSelfChannel : RestChannel, IUpdateable
     {
         /// <summary> The email associated with this channel </summary>
         public string Email { get; private set; }
@@ -27,11 +27,12 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
+        /// <summary> Get the most recent information for this entity </summary>
         public override async Task UpdateAsync()
         {
             TokenHelper.TryGetToken(Client, Id, out RestTokenInfo info);
             var model = await Client.RestClient.GetSelfChannelInternalAsync(info.Token);
-            this.Update(model);
+            Update(model);
         }
     }
 }

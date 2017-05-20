@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Team;
 
 namespace NTwitch.Rest

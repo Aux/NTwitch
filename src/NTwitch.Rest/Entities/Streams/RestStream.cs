@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Stream;
 
 namespace NTwitch.Rest
 {
-    public class RestStream : RestEntity<ulong>
+    public class RestStream : RestEntity<ulong>, IUpdateable
     {
         /// <summary> Date and time when this stream was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -49,6 +49,14 @@ namespace NTwitch.Rest
             AverageFps = model.AverageFps;
             IsPlaylist = model.IsPlaylist;
             Previews = model.Previews;
+        }
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetStreamInternalAsync(token, Id, StreamType.All);
+            Update(model.Stream);
         }
     }
 }

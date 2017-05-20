@@ -1,4 +1,5 @@
-﻿using Model = NTwitch.Rest.API.Ingest;
+﻿using System.Threading.Tasks;
+using Model = NTwitch.Rest.API.Ingest;
 
 namespace NTwitch.Rest
 {
