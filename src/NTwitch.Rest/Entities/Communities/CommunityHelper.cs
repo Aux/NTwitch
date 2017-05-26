@@ -39,9 +39,7 @@ namespace NTwitch.Rest
                 throw new InvalidOperationException("No valid token specified for this user.");
             
             var model = await community.Client.RestClient.GetCommunityPermissionsInternalAsync(info.Token, community.Id);
-            var entity = new RestCommunityPermissions();
-            entity.Update(model);
-            return entity;
+            return RestCommunityPermissions.Create(model);
         }
 
         public static Task ModifyAsync(RestSimpleCommunity community, ulong userId, Action<ModifyCommunityParams> options)
@@ -129,16 +127,11 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityModeratorsInternalAsync(info.Token, community.Id);
 
-            var entity = model.Moderators.Select(x =>
-            {
-                var user = new RestUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Moderators.Select(x => RestUser.Create(community.Client, x));
             return entity.ToArray();
         }
 
-        internal static Task AddModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task AddModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
@@ -148,7 +141,7 @@ namespace NTwitch.Rest
             return community.Client.RestClient.AddCommunityModeratorInternalAsync(info.Token, community.Id, victimId);
         }
 
-        internal static Task RemoveModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task RemoveModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
@@ -158,7 +151,7 @@ namespace NTwitch.Rest
             return community.Client.RestClient.RemoveCommunityModeratorInternalAsync(info.Token, community.Id, victimId);
         }
 
-        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, ulong userId, uint limit)
+        public static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, ulong userId, uint limit)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
@@ -167,16 +160,11 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityBansInternalAsync(info.Token, community.Id, limit);
 
-            var entity = model.Bans.Select(x =>
-            {
-                var user = new RestBannedUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Bans.Select(x => RestBannedUser.Create(community.Client, x));
             return entity.ToArray();
         }
 
-        internal static Task AddBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task AddBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
@@ -186,7 +174,7 @@ namespace NTwitch.Rest
             return community.Client.RestClient.AddCommunityBanInternalAsync(info.Token, community.Id, victimId);
         }
 
-        internal static Task RemoveBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task RemoveBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
@@ -196,7 +184,7 @@ namespace NTwitch.Rest
             return community.Client.RestClient.RemoveCommunityBanInternalAsync(info.Token, community.Id, victimId);
         }
 
-        internal static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestSimpleCommunity community, ulong userId, uint limit)
+        public static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestSimpleCommunity community, ulong userId, uint limit)
         {
             if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
@@ -205,12 +193,7 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityTimeoutsInternalAsync(info.Token, community.Id, limit);
 
-            var entity = model.Timeouts.Select(x =>
-            {
-                var user = new RestBannedUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Timeouts.Select(x => RestBannedUser.Create(community.Client, x));
             return entity.ToArray();
         }
 
