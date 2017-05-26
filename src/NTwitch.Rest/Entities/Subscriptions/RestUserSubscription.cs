@@ -7,11 +7,12 @@ namespace NTwitch.Rest
         /// <summary> The user associated with this subscription </summary>
         public RestUser User { get; private set; }
 
-        internal RestUserSubscription(BaseRestClient client) : base(client) { }
+        internal RestUserSubscription(BaseRestClient client, string id) 
+            : base(client, id) { }
 
         internal new static RestUserSubscription Create(BaseRestClient client, Model model)
         {
-            var entity = new RestUserSubscription(client);
+            var entity = new RestUserSubscription(client, model.Id);
             entity.Update(model);
             return entity;
         }
