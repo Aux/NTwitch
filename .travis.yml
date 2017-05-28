@@ -16,9 +16,5 @@ script:
   - dotnet restore
   - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: deploy.sh
-  on:
-    branch: master
+after_success:
+  - deploy.sh
