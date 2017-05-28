@@ -17,4 +17,4 @@ script:
   - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 
 after_success:
-  - cd NTwitch && deploy.sh
+  - $TRAVIS_BUILD_DIR/deploy.sh
