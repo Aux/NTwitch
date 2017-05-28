@@ -17,4 +17,5 @@ script:
   - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
 
 after_success:
-  - $TRAVIS_BUILD_DIR/deploy.sh
+  - chmod +x $TRAVIS_BUILD_DIR/deploy.sh
+  - sudo $TRAVIS_BUILD_DIR/deploy.sh
