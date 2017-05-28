@@ -19,10 +19,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script:
-    - dotnet pack "src/NTwitch/NTwitch.csproj" -c "Release" -o "../../nuget" --no-build 
-    - dotnet pack "src/NTwitch.Core/NTwitch.Core.csproj" -c "Release" -o "../../nuget" --no-build 
-    - dotnet pack "src/NTwitch.Rest/NTwitch.Rest.csproj" -c "Release" -o "../../nuget" --no-build 
-    - dotnet nuget push *.nupkg $NUGET_API_KEY -verbosity detailed
+  script: deploy.sh
   on:
     branch: master
