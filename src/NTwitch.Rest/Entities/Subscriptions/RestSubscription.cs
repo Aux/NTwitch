@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Model = NTwitch.Rest.API.Subscription;
 
 namespace NTwitch.Rest
 {
-    public class RestSubscription : RestEntity<string>
+    public class RestSubscription : RestEntity<string>, IEqualityComparer<RestSubscription>
     {
         /// <summary> The date and time this subscription was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -28,5 +29,10 @@ namespace NTwitch.Rest
             Plan = model.SubPlan;
             PlanName = model.SubPlanName;
         }
+
+        public bool Equals(RestSubscription x, RestSubscription y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestSubscription obj)
+            => obj.GetHashCode();
     }
 }

@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, IUser
+    public class RestSimpleUser : RestEntity<ulong>, IUser, IEqualityComparer<IUser>
     {
         /// <summary> The url for this user's logo </summary>
         public string LogoUrl { get; private set; }
@@ -28,6 +28,11 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
+        
+        public bool Equals(IUser x, IUser y)
+            => x.Id == y.Id;
+        public int GetHashCode(IUser user)
+            => user.GetHashCode();
 
         // Channels
         /// <summary> Get information about this user's channel </summary>
@@ -67,6 +72,7 @@ namespace NTwitch.Rest
         /// <summary> Get a specific channel follow by id </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
             => UserHelper.GetFollowAsync(Client, Id, channelId);
+
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync()
         //    => UserHelper.GetFollowersAsync(Client, Id);

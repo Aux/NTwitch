@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleChannel : RestEntity<ulong>, IChannel
+    public class RestSimpleChannel : RestEntity<ulong>, IChannel, IEqualityComparer<IChannel>
     {
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
@@ -27,7 +27,12 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
-        
+
+        public bool Equals(IChannel x, IChannel y)
+            => x.Id == y.Id;
+        public int GetHashCode(IChannel obj)
+            => obj.GetHashCode();
+
         // Channels
         /// <summary> Change properties of this channel </summary>
         public Task ModifyAsync(Action<ModifyChannelParams> options)

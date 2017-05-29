@@ -1,8 +1,9 @@
-﻿using Model = NTwitch.Rest.API.Emote;
+﻿using System.Collections.Generic;
+using Model = NTwitch.Rest.API.Emote;
 
 namespace NTwitch.Rest
 {
-    public class RestEmote : RestEntity<uint>
+    public class RestEmote : RestEntity<uint>, IEqualityComparer<RestEmote>
     {
         /// <summary>  </summary>
         public string Code { get; private set; }
@@ -21,5 +22,10 @@ namespace NTwitch.Rest
         {
             Code = model.Code;
         }
+
+        public bool Equals(RestEmote x, RestEmote y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestEmote obj)
+            => obj.GetHashCode();
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Model = NTwitch.Rest.API.Game;
 
 namespace NTwitch.Rest
 {
-    public class RestGame : RestEntity<ulong>
+    public class RestGame : RestEntity<ulong>, IEqualityComparer<RestGame>
     {
         /// <summary> The name of this game </summary>
         public string Name { get; private set; }
@@ -34,5 +35,10 @@ namespace NTwitch.Rest
             Box = model.Box;
             Logo = model.Logo;
         }
+
+        public bool Equals(RestGame x, RestGame y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestGame obj)
+            => obj.GetHashCode();
     }
 }
