@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,9 +23,9 @@ namespace NTwitch.Rest
             return Convert.ToBase64String(bytes);
         }
 
-        internal static Task ReportChannelAsync(RestSimpleCommunity community, ulong userId, ulong channelId)
+        public static Task ReportChannelAsync(RestUserCommunity community, ulong channelId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new InvalidOperationException("No valid token specified for this user.");
 
             return community.Client.RestClient.CommunityReportInternalAsync(info.Token, community.Id, channelId);
@@ -33,18 +33,18 @@ namespace NTwitch.Rest
 
         #region Communities
 
-        internal static async Task<RestCommunityPermissions> GetPermissionsAsync(RestSimpleCommunity community, ulong userId)
+        public static async Task<RestCommunityPermissions> GetPermissionsAsync(RestUserCommunity community)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new InvalidOperationException("No valid token specified for this user.");
             
             var model = await community.Client.RestClient.GetCommunityPermissionsInternalAsync(info.Token, community.Id);
             return RestCommunityPermissions.Create(model);
         }
 
-        public static Task ModifyAsync(RestSimpleCommunity community, ulong userId, Action<ModifyCommunityParams> options)
+        public static Task ModifyAsync(RestUserCommunity community, Action<ModifyCommunityParams> options)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -55,15 +55,15 @@ namespace NTwitch.Rest
             return community.Client.RestClient.ModifyCommunityInternalAsync(info.Token, community.Id, changes);
         }
 
-        public static Task SetAvatarAsync(RestSimpleCommunity community, ulong userId, string avatarPath)
+        public static Task SetAvatarAsync(RestUserCommunity community, string avatarPath)
         {
             var avatarStream = File.Open(avatarPath, FileMode.Open);
-            return SetAvatarAsync(community, userId, avatarStream);
+            return SetAvatarAsync(community, avatarStream);
         }
 
-        public static async Task SetAvatarAsync(RestSimpleCommunity community, ulong userId, Stream avatarStream)
+        public static async Task SetAvatarAsync(RestUserCommunity community, Stream avatarStream)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -75,9 +75,9 @@ namespace NTwitch.Rest
             //    await c.UpdateAsync().ConfigureAwait(false);
         }
 
-        public static Task RemoveAvatarAsync(RestSimpleCommunity community, ulong userId)
+        public static Task RemoveAvatarAsync(RestUserCommunity community)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -85,15 +85,15 @@ namespace NTwitch.Rest
             return community.Client.RestClient.RemoveAvatarInternalAsync(info.Token, community.Id);
         }
 
-        public static Task SetCoverAsync(RestSimpleCommunity community, ulong userId, string coverPath)
+        public static Task SetCoverAsync(RestUserCommunity community, string coverPath)
         {
             var coverStream = File.Open(coverPath, FileMode.Open);
-            return SetCoverAsync(community, userId, coverStream);
+            return SetCoverAsync(community, coverStream);
         }
 
-        public static async Task SetCoverAsync(RestSimpleCommunity community, ulong userId, Stream coverStream)
+        public static async Task SetCoverAsync(RestUserCommunity community, Stream coverStream)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -105,9 +105,9 @@ namespace NTwitch.Rest
             //    await c.UpdateAsync().ConfigureAwait(false);
         }
 
-        public static Task RemoveCoverAsync(RestSimpleCommunity community, ulong userId)
+        public static Task RemoveCoverAsync(RestUserCommunity community)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -118,9 +118,9 @@ namespace NTwitch.Rest
         #endregion
         #region Users
 
-        public static async Task<IReadOnlyCollection<RestUser>> GetModeratorsAsync(RestSimpleCommunity community, ulong userId)
+        public static async Task<IReadOnlyCollection<RestUser>> GetModeratorsAsync(RestUserCommunity community)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -131,9 +131,9 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        public static Task AddModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task AddModeratorAsync(RestUserCommunity community, ulong victimId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -141,9 +141,9 @@ namespace NTwitch.Rest
             return community.Client.RestClient.AddCommunityModeratorInternalAsync(info.Token, community.Id, victimId);
         }
 
-        public static Task RemoveModeratorAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task RemoveModeratorAsync(RestUserCommunity community, ulong victimId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_edit"))
                 throw new MissingScopeException("communities_edit");
@@ -151,9 +151,9 @@ namespace NTwitch.Rest
             return community.Client.RestClient.RemoveCommunityModeratorInternalAsync(info.Token, community.Id, victimId);
         }
 
-        public static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestSimpleCommunity community, ulong userId, uint limit)
+        public static async Task<IReadOnlyCollection<RestBannedUser>> GetBansAsync(RestUserCommunity community, uint limit)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_edit");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
@@ -164,9 +164,9 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        public static Task AddBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task AddBanAsync(RestUserCommunity community, ulong victimId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
@@ -174,9 +174,9 @@ namespace NTwitch.Rest
             return community.Client.RestClient.AddCommunityBanInternalAsync(info.Token, community.Id, victimId);
         }
 
-        public static Task RemoveBanAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task RemoveBanAsync(RestUserCommunity community, ulong victimId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
@@ -184,9 +184,9 @@ namespace NTwitch.Rest
             return community.Client.RestClient.RemoveCommunityBanInternalAsync(info.Token, community.Id, victimId);
         }
 
-        public static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestSimpleCommunity community, ulong userId, uint limit)
+        public static async Task<IReadOnlyCollection<RestBannedUser>> GetTimeoutsAsync(RestUserCommunity community, uint limit)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
@@ -197,9 +197,9 @@ namespace NTwitch.Rest
             return entity.ToArray();
         }
 
-        internal static Task AddTimeoutAsync(RestSimpleCommunity community, ulong userId, ulong victimId, uint duration, string reason)
+        public static Task AddTimeoutAsync(RestUserCommunity community, ulong victimId, uint duration, string reason)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
@@ -207,16 +207,40 @@ namespace NTwitch.Rest
             return community.Client.RestClient.AddCommunityTimeoutInternalAsync(info.Token, community.Id, victimId);
         }
 
-        internal static Task RemoveTimeoutAsync(RestSimpleCommunity community, ulong userId, ulong victimId)
+        public static Task RemoveTimeoutAsync(RestUserCommunity community, ulong victimId)
         {
-            if (!TokenHelper.TryGetToken(community.Client, userId, out RestTokenInfo info))
+            if (!TokenHelper.TryGetToken(community.Client, community.CurrentUser.Id, out RestTokenInfo info))
                 throw new MissingScopeException("communities_moderate");
             if (!info.Authorization.Scopes.Contains("communities_moderate"))
                 throw new MissingScopeException("communities_moderate");
 
             return community.Client.RestClient.RemoveCommunityTimeoutInternalAsync(info.Token, community.Id, victimId);
         }
-        
+
+        #endregion
+        #region User Communities
+
+        public static async Task<RestUserCommunity> GetUserCommunityAsync(RestCommunity community, ulong userId)
+        {
+            var user = await community.Client.GetSelfUserAsync(userId);
+            var usercommunity = await GetUserCommunityAsync(community, user);
+            return usercommunity;
+        }
+
+        public static async Task<RestUserCommunity> GetUserCommunityAsync(IUser user, string communityId, bool isname)
+        {
+            var client = user.Client as TwitchRestClient;
+            var community = await client.GetCommunityAsync(communityId, isname);
+            var usercommunity = await GetUserCommunityAsync(community, user);
+            return usercommunity;
+        }
+
+        public static Task<RestUserCommunity> GetUserCommunityAsync(RestCommunity community, IUser user)
+        {
+            var usercommunity = RestUserCommunity.Create(community, user);
+            return Task.FromResult(usercommunity);
+        }
+
         #endregion
     }
 }

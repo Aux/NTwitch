@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
@@ -45,8 +46,21 @@ namespace NTwitch.Rest
             CoverUrl = model.CoverImageUrl;
         }
 
+        internal void Update(RestCommunity community)
+        {
+            base.Update(community);
+            OwnerId = community.OwnerId;
+            Summary = community.Summary;
+            Description = community.Description;
+            DescriptionHtml = community.DescriptionHtml;
+            Rules = community.Rules;
+            RulesHtml = community.RulesHtml;
+            Language = community.Language;
+            CoverUrl = community.CoverUrl;
+        }
+        
         /// <summary> Get the most recent information for this entity </summary>
-        public virtual async Task UpdateAsync()
+        public async Task UpdateAsync()
         {
             var token = TokenHelper.GetSingleToken(Client);
             var model = await Client.RestClient.GetCommunityInternalAsync(token, Id, false);
@@ -56,5 +70,12 @@ namespace NTwitch.Rest
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => RestHelper.GetUserAsync(Client, OwnerId);
+
+        /// <summary> Get this community from the perspective of the specified user </summary>
+        public Task<RestUserCommunity> GetUserCommunityAsync(ulong userId)
+            => CommunityHelper.GetUserCommunityAsync(this, userId);
+        /// <summary> Get this community from the perspective of the specified user </summary>
+        public Task<RestUserCommunity> GetUserCommunityAsync(IUser user)
+            => CommunityHelper.GetUserCommunityAsync(this, user);
     }
 }

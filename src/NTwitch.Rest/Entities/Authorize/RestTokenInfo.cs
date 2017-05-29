@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Token;
 
 namespace NTwitch.Rest
@@ -42,7 +42,7 @@ namespace NTwitch.Rest
             if (model.Authorization != null)
                 Authorization.Update(model.Authorization);
         }
-
+        
         /// <summary> Get the most recent information for this entity </summary>
         public virtual async Task UpdateAsync()
         {

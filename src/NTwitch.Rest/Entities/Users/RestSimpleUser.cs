@@ -34,6 +34,10 @@ namespace NTwitch.Rest
         public int GetHashCode(IUser user)
             => user.GetHashCode();
 
+        // Communities
+        public Task<RestUserCommunity> GetUserCommunityAsync(string communityId, bool isname = false)
+            => CommunityHelper.GetUserCommunityAsync(this, communityId, isname);
+
         // Channels
         /// <summary> Get information about this user's channel </summary>
         public Task<RestChannel> GetChannelAsync()
