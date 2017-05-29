@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
@@ -58,6 +59,14 @@ namespace NTwitch.Rest
             CoverUrl = community.CoverUrl;
         }
         
+        /// <summary> Get the most recent information for this entity </summary>
+        public async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetCommunityInternalAsync(token, Id, false);
+            Update(model);
+        }
+
         /// <summary> Get information about the user that owns this community </summary>
         public Task<RestUser> GetOwnerAsync()
             => RestHelper.GetUserAsync(Client, OwnerId);

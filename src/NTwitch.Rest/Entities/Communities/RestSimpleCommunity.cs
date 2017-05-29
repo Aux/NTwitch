@@ -1,4 +1,5 @@
-﻿using Model = NTwitch.Rest.API.Community;
+﻿using System.Collections.Generic;
+using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
