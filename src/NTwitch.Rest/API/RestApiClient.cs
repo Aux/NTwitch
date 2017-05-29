@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -122,7 +121,7 @@ namespace NTwitch.Rest.API
         {
             try
             {
-                var response = await SendAsync("GET", $"channel/{channelId}", token);
+                var response = await SendAsync("GET", $"channels/{channelId}", token);
                 return response.GetBodyAsType<Channel>();
             }
             catch (HttpException ex) when ((int)ex.StatusCode == 422)

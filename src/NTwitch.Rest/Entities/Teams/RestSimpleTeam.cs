@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Model = NTwitch.Rest.API.Team;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleTeam : RestEntity<ulong>
+    public class RestSimpleTeam : RestEntity<ulong>, IEqualityComparer<RestSimpleTeam>
     {
         /// <summary> The hexadecimal color of this team's background </summary>
         public string Background { get; private set; }
@@ -44,5 +44,10 @@ namespace NTwitch.Rest
             Name = model.Name;
             UpdatedAt = model.UpdatedAt;
         }
+
+        public bool Equals(RestSimpleTeam x, RestSimpleTeam y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestSimpleTeam obj)
+            => obj.GetHashCode();
     }
 }

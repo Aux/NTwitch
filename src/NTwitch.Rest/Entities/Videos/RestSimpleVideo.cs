@@ -1,8 +1,9 @@
-﻿using Model = NTwitch.Rest.API.Video;
+﻿using System.Collections.Generic;
+using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleVideo : RestEntity<string>
+    public class RestSimpleVideo : RestEntity<string>, IEqualityComparer<RestSimpleVideo>
     {
         /// <summary> The url to this video's page </summary>
         public string Url { get; private set; }
@@ -21,5 +22,10 @@ namespace NTwitch.Rest
         {
             Url = model.Url;
         }
+
+        public bool Equals(RestSimpleVideo x, RestSimpleVideo y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestSimpleVideo obj)
+            => obj.GetHashCode();
     }
 }

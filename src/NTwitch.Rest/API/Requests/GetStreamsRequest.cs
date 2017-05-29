@@ -1,12 +1,12 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetStreamsRequest :RestRequest
+    internal class GetStreamsRequest : RestRequest
     {
         public GetStreamsRequest(string token, GetStreamsParams options) 
             : base("GET", $"streams", token)
         {
-            if (options.Channels != null)
-                Parameters.Add("channels", string.Join(",", options.Channels));
+            if (options.ChannelIds != null)
+                Parameters.Add("channel", string.Join(",", options.ChannelIds));
             if (options.Game != null)
                 Parameters.Add("game", options.Game);
             if (options.Language != null)

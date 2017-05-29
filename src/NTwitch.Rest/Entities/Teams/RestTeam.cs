@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Team;
 
 namespace NTwitch.Rest
 {
-    public class RestTeam : RestSimpleTeam
+    public class RestTeam : RestSimpleTeam, IUpdateable
     {
         /// <summary> All channels associated with this team </summary>
         public IReadOnlyCollection<RestChannel> Channels { get; private set; }
@@ -28,6 +29,14 @@ namespace NTwitch.Rest
                 entity.Update(x);
                 return entity;
             }).ToArray();
+        }
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetTeamInternalAsync(token, Name);
+            Update(model);
         }
     }
 }

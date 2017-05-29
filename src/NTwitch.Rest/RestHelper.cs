@@ -12,7 +12,7 @@ namespace NTwitch.Rest
             await client.Logger.InfoAsync("Rest", "Logging in...").ConfigureAwait(false);
             
             var model = await client.RestClient.AuthorizeAsync(token);
-            var entity = RestTokenInfo.Create(model, token);
+            var entity = RestTokenInfo.Create(client, model, token);
             
             await client.Logger.InfoAsync("Rest", "Login success!").ConfigureAwait(false);
             return entity;
@@ -84,9 +84,7 @@ namespace NTwitch.Rest
                 throw new MissingScopeException("user_read");
 
             var model = await client.RestClient.GetSelfUserInternalAsync(info.Token);
-            var entity = new RestSelfUser(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestSelfUser.Create(client, model);
         }
 
         public static async Task<RestUser> GetUserAsync(BaseRestClient client, ulong id)
@@ -96,9 +94,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return null;
 
-            var entity = new RestUser(client, model.Id);
-            entity.Update(model);
-            return entity;
+            return RestUser.Create(client, model);
         }
 
         public static async Task<IReadOnlyCollection<RestUser>> GetUsersAsync(BaseRestClient client, string[] usernames)
@@ -108,12 +104,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return new List<RestUser>();
 
-            var entity = model.Users.Select(x =>
-            {
-                var user = new RestUser(client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Users.Select(x => RestUser.Create(client, x));
             return entity.ToArray();
         }
 
@@ -206,6 +197,14 @@ namespace NTwitch.Rest
                 return null;
             
             return RestStream.Create(client, model.Stream);
+        }
+
+        internal static Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, ulong[] channels)
+        {
+            return GetStreamsAsync(client, x =>
+            {
+                x.ChannelIds = channels;
+            });
         }
 
         internal static async Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(BaseRestClient client, Action<GetStreamsParams> options)

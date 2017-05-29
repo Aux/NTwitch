@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Stream;
 
 namespace NTwitch.Rest
 {
-    public class RestStream : RestEntity<ulong>
+    public class RestStream : RestEntity<ulong>, IUpdateable, IEqualityComparer<RestStream>
     {
         /// <summary> Date and time when this stream was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -49,6 +49,19 @@ namespace NTwitch.Rest
             AverageFps = model.AverageFps;
             IsPlaylist = model.IsPlaylist;
             Previews = model.Previews;
+        }
+
+        public bool Equals(RestStream x, RestStream y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestStream obj)
+            => obj.GetHashCode();
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetStreamInternalAsync(token, Id, StreamType.All);
+            Update(model.Stream);
         }
     }
 }

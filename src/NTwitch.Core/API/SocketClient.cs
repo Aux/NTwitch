@@ -13,7 +13,7 @@ namespace NTwitch
             Logger = logger;
             Host = host;
         }
-
+        
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync(bool disposing = false);
         public abstract Task SendAsync(string message);

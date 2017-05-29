@@ -5,24 +5,38 @@ using Model = NTwitch.Rest.API.Clip;
 
 namespace NTwitch.Rest
 {
-    public class RestClip : RestEntity<string>
+    public class RestClip : RestEntity<string>, IUpdateable, IEqualityComparer<RestClip>
     {
-        public DateTime CreatedAt { get; set; }
-        public RestSimpleUser Broadcaster { get; set; }
-        public RestSimpleUser Curator { get; set; }
-        public RestSimpleVideo Vod { get; set; }
-        public string EmbedHtml { get; set; }
-        public string EmbedUrl { get; set; }
-        public string Game { get; set; }
-        public string Language { get; set; }
-        public string Title { get; set; }
-        public string Url { get; set; }
-        public IReadOnlyDictionary<string, string> Thumbnails { get; set; }
-        public ulong TrackingId { get; set; }
-        public double Duration { get; set; }
-        public uint Views { get; set; }
+        /// <summary> The date and time this clip was created </summary>
+        public DateTime CreatedAt { get; private set; }
+        /// <summary> The user whose channel this clip was created on </summary>
+        public RestSimpleUser Broadcaster { get; private set; }
+        /// <summary> The user who created this clip </summary>
+        public RestSimpleUser Curator { get; private set; }
+        /// <summary> The vod associated with this clip </summary>
+        public RestSimpleVideo Vod { get; private set; }
+        /// <summary> The code to embed this clip on a website </summary>
+        public string EmbedHtml { get; private set; }
+        /// <summary> The url used to embed this clip </summary>
+        public string EmbedUrl { get; private set; }
+        /// <summary> The game being played in this clip </summary>
+        public string Game { get; private set; }
+        /// <summary> The language used in this clip </summary>
+        public string Language { get; private set; }
+        /// <summary> The title of this clip </summary>
+        public string Title { get; private set; }
+        /// <summary> The url to this clip </summary>
+        public string Url { get; private set; }
+        /// <summary> Preview images for this clip </summary>
+        public IReadOnlyDictionary<string, string> Thumbnails { get; private set; }
+        /// <summary>  </summary>
+        public ulong TrackingId { get; private set; }
+        /// <summary>  </summary>
+        public double Duration { get; private set; }
+        /// <summary> The total number of views this clip has received </summary>
+        public uint Views { get; private set; }
 
-        public RestClip(BaseRestClient client, string id)
+        internal RestClip(BaseRestClient client, string id)
             : base(client, id) { }
 
         internal static RestClip Create(BaseRestClient client, Model model)
@@ -50,11 +64,17 @@ namespace NTwitch.Rest
             Views = model.Views;
         }
 
-        public async Task UpdateAsync()
+        public bool Equals(RestClip x, RestClip y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestClip obj)
+            => obj.GetHashCode();
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
         {
             var token = TokenHelper.GetSingleToken(Client);
             var model = await Client.RestClient.GetClipInternalAsync(token, Id);
-            this.Update(model);
+            Update(model);
         }
     }
 }

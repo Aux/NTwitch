@@ -11,8 +11,13 @@ namespace NTwitch.Rest
         
         private ConcurrentDictionary<ulong, IChannel> _channels;
         private ConcurrentDictionary<ulong, IUser> _users;
-        private int cacheLimit;
         
+        internal RestCache()
+        {
+            _channels = new ConcurrentDictionary<ulong, IChannel>();
+            _users = new ConcurrentDictionary<ulong, IUser>();
+        }
+
         public IReadOnlyCollection<T> GetChannels<T>() where T : IChannel
             => Channels.Where(x => x is T).Select(x => (T)x).ToArray();
         public IReadOnlyCollection<T> GetUsers<T>() where T : IUser

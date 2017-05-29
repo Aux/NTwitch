@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Cheer;
 
 namespace NTwitch.Rest
 {
-    public class RestCheer : RestEntity<ulong>
+    public class RestCheer : RestEntity<ulong>, IEqualityComparer<RestCheer>
     {
         /// <summary> The hexadecimal color of this cheer </summary>
         public string Color { get; private set; }
@@ -32,10 +30,9 @@ namespace NTwitch.Rest
             Images = model.Images.Select(x => new RestCheerImage(Client, x)).ToArray();
         }
 
-        /// <summary> Update this cheer's properties </summary>
-        public virtual Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public bool Equals(RestCheer x, RestCheer y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestCheer obj)
+            => obj.GetHashCode();
     }
 }

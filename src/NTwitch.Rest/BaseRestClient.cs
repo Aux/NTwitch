@@ -82,6 +82,9 @@ namespace NTwitch.Rest
         /// <summary> Get information about a channel's stream </summary>
         public Task<RestStream> GetStreamAsync(ulong channelId, StreamType type = StreamType.Live)
             => RestHelper.GetStreamAsync(this, channelId, type);
+        /// <summary> Get the streams for the specified channels, if available </summary>
+        public Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(params ulong[] channels)
+            => RestHelper.GetStreamsAsync(this, channels);
         /// <summary> Get the top viewed streams on twitch for the specified options </summary>
         public Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(Action<GetStreamsParams> options)
             => RestHelper.GetStreamsAsync(this, options);

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : RestSimpleVideo
+    public class RestVideo : RestSimpleVideo, IUpdateable
     {
         /// <summary> The channel associated with this video </summary>
         public RestSimpleChannel Channel { get; private set; }
@@ -85,6 +86,14 @@ namespace NTwitch.Rest
             Viewable = model.Viewable;
             ViewableAt = model.ViewableAt;
             Views = model.Views;
+        }
+
+        /// <summary> Get the most recent information for this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var token = TokenHelper.GetSingleToken(Client);
+            var model = await Client.RestClient.GetVideoInternalAsync(token, Id);
+            Update(model);
         }
     }
 }

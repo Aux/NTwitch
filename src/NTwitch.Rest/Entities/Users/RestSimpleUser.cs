@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, IUser
+    public class RestSimpleUser : RestEntity<ulong>, IUser, IEqualityComparer<IUser>
     {
         /// <summary> The url for this user's logo </summary>
         public string LogoUrl { get; private set; }
@@ -28,6 +28,11 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
+        
+        public bool Equals(IUser x, IUser y)
+            => x.Id == y.Id;
+        public int GetHashCode(IUser user)
+            => user.GetHashCode();
 
         // Communities
         public Task<RestUserCommunity> GetUserCommunityAsync(string communityId, bool isname = false)
@@ -44,6 +49,9 @@ namespace NTwitch.Rest
             => UserHelper.GetEmotesAsync(Client, Id);
 
         // Streams
+        /// <summary> Get this user's stream information, if available </summary>
+        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live)
+            => RestHelper.GetStreamAsync(Client, Id, type);
         /// <summary> Get streams this user is following. </summary>
         public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
             => RestHelper.GetFollowedStreamsAsync(Client, Id, type, limit, offset);
@@ -68,6 +76,7 @@ namespace NTwitch.Rest
         /// <summary> Get a specific channel follow by id </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
             => UserHelper.GetFollowAsync(Client, Id, channelId);
+
         ///// <summary>  </summary>
         //public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync()
         //    => UserHelper.GetFollowersAsync(Client, Id);

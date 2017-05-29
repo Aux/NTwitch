@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleCommunity : RestEntity<string>
+    public class RestSimpleCommunity : RestEntity<string>, IEqualityComparer<RestSimpleCommunity>
     {
         /// <summary> The name of this community </summary>
         public string Name { get; private set; }
@@ -30,5 +30,10 @@ namespace NTwitch.Rest
             Name = community.Name;
             AvatarUrl = community.AvatarUrl;
         }
+        
+        public bool Equals(RestSimpleCommunity x, RestSimpleCommunity y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestSimpleCommunity obj)
+            => obj.GetHashCode();
     }
 }

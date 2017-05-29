@@ -40,12 +40,7 @@ namespace NTwitch.Rest
 
             var model = await client.RestClient.GetChannelEditorsAsync(info.Token, channelId);
 
-            var entity = model.Users.Select(x =>
-            {
-                var user = new RestUser(client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Users.Select(x => RestUser.Create(client, x));
             return entity.ToArray();
         }
 
@@ -54,12 +49,7 @@ namespace NTwitch.Rest
             TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info);
             var model = await client.RestClient.GetChannelTeamsInternalAsync(info?.Token, channelId);
 
-            var entity = model.Teams.Select(x =>
-            {
-                var team = new RestSimpleTeam(client, x.Id);
-                team.Update(x);
-                return team;
-            });
+            var entity = model.Teams.Select(x => RestSimpleTeam.Create(client, x));
             return entity.ToArray();
         }
 
@@ -68,12 +58,7 @@ namespace NTwitch.Rest
             TokenHelper.TryGetToken(client, channelId, out RestTokenInfo info);
             var model = await client.RestClient.GetChannelFollowersInternalAsync(info?.Token, channelId, ascending, limit, offset);
 
-            var entity = model.Follows.Select(x =>
-            {
-                var follow = new RestUserFollow(client);
-                follow.Update(x);
-                return follow;
-            });
+            var entity = model.Follows.Select(x => RestUserFollow.Create(client, x));
             return entity.ToArray();
         }
 
@@ -86,12 +71,7 @@ namespace NTwitch.Rest
 
             var model = await client.RestClient.GetChannelSubscribersInternalAsync(info.Token, channelId, ascending, limit, offset);
 
-            var entity = model.Subscriptions.Select(x =>
-            {
-                var sub = new RestUserSubscription(client);
-                sub.Update(x);
-                return sub;
-            });
+            var entity = model.Subscriptions.Select(x => RestUserSubscription.Create(client, x));
             return entity.ToArray();
         }
 
@@ -106,9 +86,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return null;
 
-            var entity = new RestUserSubscription(client);
-            entity.Update(model);
-            return entity;
+            return RestUserSubscription.Create(client, model);
         }
 
         #endregion
@@ -121,9 +99,7 @@ namespace NTwitch.Rest
             if (model == null)
                 return null;
 
-            var entity = new RestChatBadges();
-            entity.Update(model);
-            return entity;
+            return RestChatBadges.Create(model);
         }
 
         #endregion

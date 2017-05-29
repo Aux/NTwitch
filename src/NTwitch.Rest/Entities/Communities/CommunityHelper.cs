@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,9 +39,7 @@ namespace NTwitch.Rest
                 throw new InvalidOperationException("No valid token specified for this user.");
             
             var model = await community.Client.RestClient.GetCommunityPermissionsInternalAsync(info.Token, community.Id);
-            var entity = new RestCommunityPermissions();
-            entity.Update(model);
-            return entity;
+            return RestCommunityPermissions.Create(model);
         }
 
         public static Task ModifyAsync(RestUserCommunity community, Action<ModifyCommunityParams> options)
@@ -129,12 +127,7 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityModeratorsInternalAsync(info.Token, community.Id);
 
-            var entity = model.Moderators.Select(x =>
-            {
-                var user = new RestUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Moderators.Select(x => RestUser.Create(community.Client, x));
             return entity.ToArray();
         }
 
@@ -167,12 +160,7 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityBansInternalAsync(info.Token, community.Id, limit);
 
-            var entity = model.Bans.Select(x =>
-            {
-                var user = new RestBannedUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Bans.Select(x => RestBannedUser.Create(community.Client, x));
             return entity.ToArray();
         }
 
@@ -205,12 +193,7 @@ namespace NTwitch.Rest
 
             var model = await community.Client.RestClient.GetCommunityTimeoutsInternalAsync(info.Token, community.Id, limit);
 
-            var entity = model.Timeouts.Select(x =>
-            {
-                var user = new RestBannedUser(community.Client, x.Id);
-                user.Update(x);
-                return user;
-            });
+            var entity = model.Timeouts.Select(x => RestBannedUser.Create(community.Client, x));
             return entity.ToArray();
         }
 

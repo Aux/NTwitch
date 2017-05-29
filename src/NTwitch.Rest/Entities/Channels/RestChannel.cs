@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestChannel : RestSimpleChannel, IChannel
+    public class RestChannel : RestSimpleChannel, IChannel, IUpdateable
     {
         /// <summary> The date and time this channel was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -67,11 +67,12 @@ namespace NTwitch.Rest
             base.Update(model);
         }
 
+        /// <summary> Get the most recent information for this entity </summary>
         public virtual async Task UpdateAsync()
         {
             var token = TokenHelper.GetSingleToken(Client);
             var model = await Client.RestClient.GetChannelInternalAsync(token, Id);
-            this.Update(model);
+            Update(model);
         }
     }
 }

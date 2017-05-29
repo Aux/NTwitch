@@ -1,8 +1,11 @@
-﻿using Model = NTwitch.Rest.API.Ingest;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Model = NTwitch.Rest.API.Ingest;
 
 namespace NTwitch.Rest
 {
-    public class RestIngest : RestEntity<ulong>
+    public class RestIngest : RestEntity<ulong>, IEqualityComparer<RestIngest>
     {
         /// <summary> The percentage availability of this ingest server </summary>
         public double Availability { get; private set; }
@@ -30,5 +33,10 @@ namespace NTwitch.Rest
             Name = model.Name;
             UrlTemplate = model.UrlTemplate;
         }
+
+        public bool Equals(RestIngest x, RestIngest y)
+            => x.Id == y.Id;
+        public int GetHashCode(RestIngest obj)
+            => obj.GetHashCode();
     }
 }
