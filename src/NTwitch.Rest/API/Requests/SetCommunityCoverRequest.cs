@@ -1,11 +1,16 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class SetCommunityCoverRequest : OldRestRequest
+    public class SetCommunityCoverRequest : JsonRequestBuilder
     {
-        public SetCommunityCoverRequest(string token, string communityId, string image) 
-            : base("POST", $"communities/{communityId}/images/cover", token)
+        public SetCommunityCoverRequest(string communityId, string imageBase64) 
+            : base("POST", $"communities/{communityId}/images/cover", null)
         {
-            JsonBody = $"{{\"cover_image\":\"{image}\"}}";
+            SetPayload(new
+            {
+                cover_image = imageBase64
+            });
         }
     }
 }

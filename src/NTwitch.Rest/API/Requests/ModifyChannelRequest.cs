@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using NTwitch.Rest.Queue;
 
-namespace NTwitch.Rest
+namespace NTwitch.Rest.API
 {
-    internal class ModifyChannelRequest : OldRestRequest
+    public class ModifyChannelRequest : JsonRequestBuilder
     {
-        public ModifyChannelRequest(string token, ulong channelId, ModifyChannel changes) 
-            : base("PUT", $"channels/{channelId}", token)
-        {
-            JsonBody = JsonConvert.SerializeObject(changes);
-        }
+        public ModifyChannelRequest(ulong channelId, ModifyChannelParams changes)
+            : base("PUT", $"channels/{channelId}", changes) { }
     }
 }

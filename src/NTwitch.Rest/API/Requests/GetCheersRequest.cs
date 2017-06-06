@@ -1,11 +1,14 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetCheersRequest : OldRestRequest
+    public class GetCheersRequest : RequestBuilder
     {
-        public GetCheersRequest(string token, ulong? channelId) 
-            : base("GET", "bits/actions", token)
+        public GetCheersRequest(ulong? channelId) 
+            : base("GET", "bits/actions")
         {
-            Parameters.Add("channel_id", channelId);
+            if (channelId != null)
+                SetParameter("channel_id", channelId);
         }
     }
 }

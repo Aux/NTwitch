@@ -2,6 +2,7 @@
 
 namespace NTwitch
 {
+    [JsonObject("channel")]
     public class ModifyChannelParams
     {
         [JsonProperty("status", DefaultValueHandling = DefaultValueHandling.Ignore)]
