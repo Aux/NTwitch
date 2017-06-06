@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface IVideo
+    public interface IVideo : ISimpleVideo, IUpdateable
     {
     }
 }

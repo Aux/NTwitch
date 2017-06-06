@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using NTwitch.Rest.API;
-using System.Collections.Generic;
+﻿using NTwitch.Rest.API;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NTwitch.Rest
 {
@@ -11,7 +10,7 @@ namespace NTwitch.Rest
         private RestToken _restToken;
 
         public new RestSelfUser CurrentUser => base.CurrentUser as RestSelfUser;
-        public RestToken Token => _restToken;
+        public new RestToken TokenInfo => _restToken;
 
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
         public TwitchRestClient(TwitchRestConfig config) 
@@ -49,9 +48,15 @@ namespace NTwitch.Rest
         }
         
         // Tokens
+        /// <summary> Get information about the currently authorized token </summary>
         public async Task<RestToken> GetTokenInfo(RequestOptions options = null)
-            => _restToken ?? (_restToken = await ClientHelper.GetTokenInfoAsync(this, options));
-
+        {
+            if (TokenInfo != null) return TokenInfo;
+            var token = await ClientHelper.GetTokenInfoAsync(this, options).ConfigureAwait(false);
+            base.TokenInfo = token;
+            return token;
+        }
+        
         // User
         /// <summary> Get the user associated with the authorized token </summary>
         public async Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
@@ -137,8 +142,8 @@ namespace NTwitch.Rest
             => ClientHelper.GetVideoAsync(this, videoId);
 
         // ITwitchClient
-        Task<IToken> ITwitchClient.GetTokenInfo(RequestOptions options)
-            => Task.FromResult<IToken>(null);
+        Task<ITokenInfo> ITwitchClient.GetTokenInfo(RequestOptions options)
+            => Task.FromResult<ITokenInfo>(null);
         Task<IClip> ITwitchClient.GetClipAsync(string clipId)
             => Task.FromResult<IClip>(null);
         Task<IReadOnlyCollection<IClip>> ITwitchClient.GetTopClipsAsync(Action<TopClipsParams> options)

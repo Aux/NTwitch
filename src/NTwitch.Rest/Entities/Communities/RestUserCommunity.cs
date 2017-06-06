@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace NTwitch.Rest
+﻿namespace NTwitch.Rest
 {
-    public class RestUserCommunity : RestCommunity
+    public class RestUserCommunity : RestCommunity, IUserCommunity
     {
         /// <summary> The user used to access this community </summary>
         public IUser CurrentUser { get; private set; }

@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.CheerInfo;
 
 namespace NTwitch.Rest
 {
-    public class RestCheerInfo
+    public class RestCheerInfo : ICheerInfo
     {
         /// <summary> The instance of the client that created this entity </summary>
         public TwitchRestClient Client { get; }

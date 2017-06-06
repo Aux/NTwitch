@@ -13,20 +13,23 @@ namespace NTwitch.Tests
 
         public async Task Start()
         {
+            string token = "";
+            string clientId = "";
+
             try
             {
                 _client = new TwitchRestClient(new TwitchRestConfig()
                 {
-                    ClientId = "",
+                    ClientId = clientId,
                     LogLevel = LogSeverity.Debug
                 });
 
                 _client.Log += OnLogAsync;
 
-                await _client.LoginAsync("");
+                await _client.LoginAsync(token);
                 var user = await _client.GetCurrentUserAsync();
 
-                Console.WriteLine($"Current Token: {_client.Token?.Username}");
+                Console.WriteLine($"Current Token: {_client.TokenInfo?.Username}");
                 Console.WriteLine($"Current User: {user?.DisplayName}");
 
             } catch (Exception ex)

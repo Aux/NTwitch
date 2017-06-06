@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Model = NTwitch.Rest.API.User;
+﻿using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, IUser, IEqualityComparer<IUser>
+    public class RestSimpleUser : RestEntity<ulong>, ISimpleUser
     {
         /// <summary> The url for this user's logo </summary>
         public string LogoUrl { get; private set; }
@@ -29,9 +27,9 @@ namespace NTwitch.Rest
             Name = model.Name;
         }
         
-        public bool Equals(IUser x, IUser y)
+        public bool Equals(ISimpleUser x, ISimpleUser y)
             => x.Id == y.Id;
-        public int GetHashCode(IUser user)
+        public int GetHashCode(ISimpleUser user)
             => user.GetHashCode();
     }
 }

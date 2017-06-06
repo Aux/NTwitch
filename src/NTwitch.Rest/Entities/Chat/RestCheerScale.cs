@@ -3,7 +3,7 @@ using Model = NTwitch.Rest.API.CheerScale;
 
 namespace NTwitch.Rest
 {
-    public class RestCheerScale
+    public class RestCheerScale : ICheerScale
     {
         /// <summary> The instance of the client that created this entity </summary>
         public TwitchRestClient Client { get; }

@@ -6,6 +6,7 @@ namespace NTwitch
 {
     public interface ITwitchClient : IDisposable
     {
+        ITokenInfo TokenInfo { get; }
         ISelfUser CurrentUser { get; }
         ConnectionState ConnectionState { get; }
 
@@ -13,7 +14,7 @@ namespace NTwitch
         Task DisconnectAsync();
 
         // Tokens
-        Task<IToken> GetTokenInfo(RequestOptions options = null);
+        Task<ITokenInfo> GetTokenInfo(RequestOptions options = null);
 
         // Clips
         Task<IClip> GetClipAsync(string clipId);

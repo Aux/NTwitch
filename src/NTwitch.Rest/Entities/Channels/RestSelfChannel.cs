@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestSelfChannel : RestChannel, IUpdateable
+    public class RestSelfChannel : RestChannel, ISelfChannel, IUpdateable
     {
         /// <summary> The email associated with this channel </summary>
         public string Email { get; private set; }

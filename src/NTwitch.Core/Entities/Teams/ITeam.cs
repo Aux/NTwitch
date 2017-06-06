@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface ITeam
+    public interface ITeam : ISimpleTeam
     {
     }
 }

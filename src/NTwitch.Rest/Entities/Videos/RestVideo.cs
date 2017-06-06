@@ -6,7 +6,7 @@ using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : RestSimpleVideo, IUpdateable
+    public class RestVideo : RestSimpleVideo, IVideo, IUpdateable
     {
         /// <summary> The channel associated with this video </summary>
         public RestSimpleChannel Channel { get; private set; }

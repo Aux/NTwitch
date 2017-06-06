@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch
 {
-    public interface IUser : IEntity<ulong>
+    public interface IUser : ISimpleUser, IUpdateable
     {
         string DisplayName { get; }
 

@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface IToken
+    public interface ICheerInfo
     {
     }
 }

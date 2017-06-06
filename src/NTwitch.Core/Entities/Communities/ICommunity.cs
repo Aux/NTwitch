@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface ICommunity
+    public interface ICommunity : ISimpleCommunity, IUpdateable
     {
     }
 }

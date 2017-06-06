@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestCheerImage
+    public class RestCheerImage : ICheerImage
     {
         /// <summary> An instance of the client that created this entity </summary>
         public TwitchRestClient Client { get; }

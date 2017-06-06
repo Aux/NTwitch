@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Model = NTwitch.Rest.API.Community;
+﻿using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleCommunity : RestEntity<string>, IEqualityComparer<RestSimpleCommunity>
+    public class RestSimpleCommunity : RestEntity<string>, ISimpleCommunity
     {
         /// <summary> The name of this community </summary>
         public string Name { get; private set; }
@@ -31,10 +30,9 @@ namespace NTwitch.Rest
             Name = community.Name;
             AvatarUrl = community.AvatarUrl;
         }
-        
-        public bool Equals(RestSimpleCommunity x, RestSimpleCommunity y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestSimpleCommunity obj)
-            => obj.GetHashCode();
+
+        // IEqualityComparer
+        public bool Equals(ISimpleCommunity x, ISimpleCommunity y) => x.Id == y.Id;
+        public int GetHashCode(ISimpleCommunity obj) => obj.GetHashCode();
     }
 }

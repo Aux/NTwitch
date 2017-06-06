@@ -1,6 +1,6 @@
 ﻿namespace NTwitch
 {
-    public interface IClip
+    public interface ICheerImage
     {
     }
 }

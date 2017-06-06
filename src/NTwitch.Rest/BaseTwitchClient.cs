@@ -24,6 +24,7 @@ namespace NTwitch.Rest
         internal TwitchRestApiClient ApiClient { get; }
         public LoginState LoginState { get; private set; }
         public ISelfUser CurrentUser { get; protected set; }
+        public ITokenInfo TokenInfo { get; protected set; }
 
         internal BaseTwitchClient(TwitchConfig config, TwitchRestApiClient client)
         {
@@ -116,14 +117,15 @@ namespace NTwitch.Rest
         // ITwitchClient
         ConnectionState ITwitchClient.ConnectionState => ConnectionState.Disconnected;
         ISelfUser ITwitchClient.CurrentUser => CurrentUser;
+        ITokenInfo ITwitchClient.TokenInfo => TokenInfo;
 
         Task ITwitchClient.ConnectAsync()
             => Task.Delay(0);
         Task ITwitchClient.DisconnectAsync()
             => Task.Delay(0);
 
-        Task<IToken> ITwitchClient.GetTokenInfo(RequestOptions options)
-            => Task.FromResult<IToken>(null);
+        Task<ITokenInfo> ITwitchClient.GetTokenInfo(RequestOptions options)
+            => Task.FromResult<ITokenInfo>(null);
         Task<IClip> ITwitchClient.GetClipAsync(string clipId)
             => Task.FromResult<IClip>(null);
         Task<IReadOnlyCollection<IClip>> ITwitchClient.GetTopClipsAsync(Action<TopClipsParams> options)

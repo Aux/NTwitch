@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Cheer;
 
 namespace NTwitch.Rest
 {
-    public class RestCheer : RestEntity<ulong>, IEqualityComparer<RestCheer>
+    public class RestCheer : RestEntity<ulong>, ICheer
     {
         /// <summary> The hexadecimal color of this cheer </summary>
         public string Color { get; private set; }
@@ -30,9 +30,8 @@ namespace NTwitch.Rest
             Images = model.Images.Select(x => new RestCheerImage(Client, x)).ToArray();
         }
 
-        public bool Equals(RestCheer x, RestCheer y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestCheer obj)
-            => obj.GetHashCode();
+        // IEqualityComparer
+        public bool Equals(ICheer x, ICheer y) => x.Id == y.Id;
+        public int GetHashCode(ICheer obj) => obj.GetHashCode();
     }
 }
