@@ -445,6 +445,12 @@ namespace NTwitch.Rest.API
             return await SendAsync<StreamCollection>(new FindStreamsRequest(query, hls, paging), options).ConfigureAwait(false);
         }
         
+        public async Task<GameCollection> FindGamesAsync(string query, bool islive, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<GameCollection>(new FindGamesRequest(query, islive), options).ConfigureAwait(false);
+        }
+
         // Subscribers
         public async Task<Subscription> GetSubscriptionAsync(ulong channelId, ulong userId, RequestOptions options)
         {
@@ -503,6 +509,25 @@ namespace NTwitch.Rest.API
         {
             options = RequestOptions.CreateOrClone(options);
             return await SendAsync<Video>("GET", $"videos/{videoId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<Clip>("GET", $"clips/{clipId}", options);
+        }
+
+        public async Task<ClipCollection> GetTopClipsAsync(TopClipsParams parameters, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<ClipCollection>(new GetTopClipsRequest(parameters), options);
+        }
+
+        public async Task<ClipCollection> GetFollowedClipsAsync(bool istrending, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
         }
     }
 }
