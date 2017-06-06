@@ -8,7 +8,7 @@ namespace NTwitch.Rest.API
             : base("GET", "bits/actions")
         {
             if (channelId != null)
-                SetParameter("channel_id", channelId);
+                _endpointParams.Add("channel_id", channelId);
         }
     }
 }

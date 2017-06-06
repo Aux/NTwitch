@@ -7,7 +7,7 @@ namespace NTwitch.Rest.API
         public SendCommunityReportRequest(string communityId, ulong channelId)
             : base("PUT", $"communities/{communityId}/report_channel")
         {
-            SetParameter("channel_id", channelId);
+            _endpointParams.Add("channel_id", channelId);
         }
     }
 }

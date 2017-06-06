@@ -7,9 +7,9 @@ namespace NTwitch.Rest.API
         public GetSubscribersRequest(ulong channelId, bool ascending, PageOptions paging) 
             : base("GET", $"channels/{channelId}/subscriptions")
         {
-            SetParameter("direction", ascending ? "asc" : "desc");
-            SetParameter("limit", paging.Limit);
-            SetParameter("offset", paging.Offset);
+            _endpointParams.Add("direction", ascending ? "asc" : "desc");
+            _endpointParams.Add("limit", paging.Limit);
+            _endpointParams.Add("offset", paging.Offset);
         }
     }
 }

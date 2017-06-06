@@ -246,6 +246,13 @@ namespace NTwitch.Rest.API
             return await SendAsync<UserCollection>("GET", $"channels/{channelId}/editors", options).ConfigureAwait(false);
         }
 
+        public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<ChannelCollection>(new FindChannelsRequest(query, paging), options).ConfigureAwait(false);
+        }
+
         // Chat
         public async Task<CheerCollection> GetCheersAsync(ulong? channelId, RequestOptions options)
         {
@@ -259,6 +266,12 @@ namespace NTwitch.Rest.API
             return await SendAsync<ChatBadges>("GET", $"chat/{channelId}/badges", options).ConfigureAwait(false);
         }
 
+        public async Task<EmoteSet> GetEmotesAsync(ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<EmoteSet>("GET", $"users/{userId}/emotes", options).ConfigureAwait(false);
+        }
+
         // Communities
         public async Task<Community> GetCommunityAsync(string communityId, bool isName, RequestOptions options)
         {
@@ -266,7 +279,7 @@ namespace NTwitch.Rest.API
             return await SendAsync<Community>(new GetCommunityRequest(communityId, isName), options).ConfigureAwait(false);
         }
 
-        public async Task<CommunityCollection> GetTopCommunitiesAsync(PageOptions paging, RequestOptions options)       // Paging is unused because I'm lazy
+        public async Task<CommunityCollection> GetTopCommunitiesAsync(PageOptions paging, RequestOptions options)       // Paging is unused
         {
             options = RequestOptions.CreateOrClone(options);
             return await SendAsync<CommunityCollection>("GET", "communities/top", options).ConfigureAwait(false);
@@ -314,10 +327,124 @@ namespace NTwitch.Rest.API
             await SendAsync("DELETE", $"communities/{communityId}/images/cover", options).ConfigureAwait(false);
         }
 
-        //
-        // You took a break here don't forget ;)
-        //
+        public async Task<CommunityCollection> GetCommunityModeratorsAsync(string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/moderators").ConfigureAwait(false);
+        }
 
+        public async Task AddCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task RemoveCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<CommunityCollection> GetCommunityBansAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
+        }
+
+        public async Task AddCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("Put", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task RemoveCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<CommunityCollection> GetCommunityTimeoutsAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
+        }
+
+        public async Task AddCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task RemoveCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+        }
+
+        // Follows
+        public async Task<Follow> GetFollowAsync(ulong userId, ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<Follow>("GET", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<FollowCollection>(new GetFollowsRequest(userId, sort, ascending, paging), options).ConfigureAwait(false);
+        }
+
+        // Ingests
+        public async Task<IngestCollection> GetIngestsAsync(RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<IngestCollection>("GET", "ingests", options).ConfigureAwait(false);
+        }
+        
+        // Streams
+        public async Task<StreamCollection> GetStreamAsync(ulong channelId, StreamType type, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<StreamCollection>(new GetStreamRequest(channelId, type), options).ConfigureAwait(false);
+        }
+
+        public async Task<StreamCollection> GetStreamsAsync(GetStreamsParams parameters, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<StreamCollection>(new GetStreamsRequest(parameters, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<StreamCollection> GetFeaturedStreamsAsync(PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<StreamCollection>(new GetFeaturedStreamsRequest(paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<StreamCollection> GetFollowedStreamsAsync(StreamType type, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<Stream> GetStreamSummaryAsync(string game, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<Stream>(new GetStreamSummaryRequest(game), options).ConfigureAwait(false);
+        }
+
+        public async Task<StreamCollection> FindStreamsAsync(string query, bool? hls, PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<StreamCollection>(new FindStreamsRequest(query, hls, paging), options).ConfigureAwait(false);
+        }
+        
         // Subscribers
         public async Task<Subscription> GetSubscriptionAsync(ulong channelId, ulong userId, RequestOptions options)
         {
@@ -333,6 +460,19 @@ namespace NTwitch.Rest.API
         }
 
         // Teams
+        public async Task<Team> GetTeamAsync(string name, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<Team>("GET", $"teams/{name}", options).ConfigureAwait(false);
+        }
+
+        public async Task<TeamCollection> GetTeamsAsync(PageOptions paging, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            paging = PageOptions.CreateOrClone(paging);
+            return await SendAsync<TeamCollection>(new GetTeamsRequest(paging), options).ConfigureAwait(false);
+        }
+
         public async Task<TeamCollection> GetChannelTeamsAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
@@ -344,6 +484,25 @@ namespace NTwitch.Rest.API
         {
             options = RequestOptions.CreateOrClone(options);
             return await SendAsync<User>("GET", "user", options).ConfigureAwait(false);
+        }
+
+        public async Task<User> GetUserAsync(ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<User>("GET", $"users/{userId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<UserCollection> GetUsersAsync(string[] usernames, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<UserCollection>(new GetUsersRequest(usernames), options).ConfigureAwait(false);
+        }
+
+        // Videos
+        public async Task<Video> GetVideoAsync(string videoId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<Video>("GET", $"videos/{videoId}", options).ConfigureAwait(false);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace NTwitch.Rest.API
             : base("GET", null)
         {
             if (isName)
-                SetDefaultEndpoint($"communities?name={communityId}");
+                _defaultEndpoint = $"communities?name={communityId}";
             else
-                SetDefaultEndpoint($"communities/{communityId}");
+                _defaultEndpoint = $"communities/{communityId}";
         }
     }
 }
