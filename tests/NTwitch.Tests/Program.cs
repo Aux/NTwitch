@@ -1,5 +1,6 @@
 ﻿using NTwitch.Rest;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -28,9 +29,11 @@ namespace NTwitch.Tests
 
                 await _client.LoginAsync(token);
                 var user = await _client.GetCurrentUserAsync();
+                var users = await _client.GetUsersAsync("wraxu");
 
                 Console.WriteLine($"Current Token: {_client.TokenInfo?.Username}");
                 Console.WriteLine($"Current User: {user?.DisplayName}");
+                Console.WriteLine($"Got User: {users.First().DisplayName} ({user.Id})");
 
             } catch (Exception ex)
             {

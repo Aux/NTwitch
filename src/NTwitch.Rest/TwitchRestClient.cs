@@ -86,8 +86,8 @@ namespace NTwitch.Rest
         public Task<RestCommunity> GetCommunityAsync(string communityId, bool isname = false)
             => ClientHelper.GetCommunityAsync(this, communityId, isname);
         /// <summary> Get the most popular communities on twitch </summary>
-        public Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(uint limit = 10)
-            => ClientHelper.GetTopCommunitiesAsync(this, limit);
+        public Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(PageOptions paging = null)
+            => ClientHelper.GetTopCommunitiesAsync(this, paging);
 
         // Channels
         /// <summary> Get the channel associated with the authorized token </summary>
@@ -97,8 +97,8 @@ namespace NTwitch.Rest
         public Task<RestChannel> GetChannelAsync(ulong channelId)
             => ClientHelper.GetChannelAsync(this, channelId);
         /// <summary> Find channels relating to the specified query </summary>
-        public Task<IReadOnlyCollection<RestChannel>> FindChannelAsync(string query, uint limit = 25, uint offset = 0)
-            => ClientHelper.FindChannelAsync(this, query, limit, offset);
+        public Task<IReadOnlyCollection<RestChannel>> FindChannelAsync(string query, PageOptions paging = null)
+            => ClientHelper.FindChannelAsync(this, query, paging);
 
         // Ingests
         /// <summary> Get information about twitch's ingest servers </summary>
@@ -119,19 +119,19 @@ namespace NTwitch.Rest
         public Task<RestGameSummary> GetGameSummaryAsync(string game)
             => ClientHelper.GetGameSummaryAsync(this, game);
         /// <summary> Get the streams that appear on the front page of twitch </summary>
-        public Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(uint limit = 25, uint offset = 0)
-            => ClientHelper.GetFeaturedStreamsAsync(this, limit, offset);
+        public Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(PageOptions paging = null)
+            => ClientHelper.GetFeaturedStreamsAsync(this, paging);
         /// <summary> Find games relating to the specified query </summary>
         public Task<IReadOnlyCollection<RestGame>> FindGamesAsync(string query, bool islive = false)
             => ClientHelper.FindGamesAsync(this, query, islive);
         /// <summary> Find streams relating to the specified query </summary>
-        public Task<IReadOnlyCollection<RestStream>> FindStreamsAsync(string query, bool? hls = null, uint limit = 25, uint offset = 0)
-            => ClientHelper.FindStreamsAsync(this, query, hls, limit, offset);
+        public Task<IReadOnlyCollection<RestStream>> FindStreamsAsync(string query, bool? hls = null, PageOptions paging = null)
+            => ClientHelper.FindStreamsAsync(this, query, hls, paging);
 
         // Teams
         /// <summary> Get all teams on twitch </summary>
-        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(uint limit = 25, uint offset = 0)
-            => ClientHelper.GetTeamsAsync(this, limit, offset);
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(PageOptions paging = null)
+            => ClientHelper.GetTeamsAsync(this, paging);
         /// <summary> Get a team by name </summary>
         public Task<RestTeam> GetTeamAsync(string name)
             => ClientHelper.GetTeamAsync(this, name);
