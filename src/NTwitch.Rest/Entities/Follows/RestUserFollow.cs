@@ -7,9 +7,9 @@ namespace NTwitch.Rest
         /// <summary> The user associated with this follow </summary>
         public RestUser User { get; private set; }
 
-        internal RestUserFollow(BaseRestClient client) : base(client) { }
+        internal RestUserFollow(TwitchRestClient client) : base(client) { }
 
-        internal new static RestUserFollow Create(BaseRestClient client, Model model)
+        internal new static RestUserFollow Create(TwitchRestClient client, Model model)
         {
             var entity = new RestUserFollow(client);
             entity.Update(model);

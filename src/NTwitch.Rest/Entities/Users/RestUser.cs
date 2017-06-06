@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestUser : RestSimpleUser, IUser
+    public class RestUser : RestSimpleUser
     {
         /// <summary> The date and time this user was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -15,10 +15,10 @@ namespace NTwitch.Rest
         /// <summary> This user's profile description </summary>
         public string Bio { get; private set; }
         
-        internal RestUser(BaseRestClient client, ulong id) 
+        internal RestUser(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestUser Create(BaseRestClient client, Model model)
+        internal new static RestUser Create(TwitchRestClient client, Model model)
         {
             var entity = new RestUser(client, model.Id);
             entity.Update(model);

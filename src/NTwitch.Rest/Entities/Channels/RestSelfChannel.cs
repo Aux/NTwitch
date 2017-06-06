@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
@@ -10,10 +11,10 @@ namespace NTwitch.Rest
         /// <summary> The key used to stream video to twitch as this channel </summary>
         public string StreamKey { get; private set; }
 
-        internal RestSelfChannel(BaseRestClient client, ulong id) 
+        internal RestSelfChannel(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestSelfChannel Create(BaseRestClient client, Model model)
+        internal new static RestSelfChannel Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSelfChannel(client, model.Id);
             entity.Update(model);
@@ -28,11 +29,9 @@ namespace NTwitch.Rest
         }
 
         /// <summary> Get the most recent information for this entity </summary>
-        public override async Task UpdateAsync()
+        public override Task UpdateAsync()
         {
-            TokenHelper.TryGetToken(Client, Id, out RestTokenInfo info);
-            var model = await Client.RestClient.GetSelfChannelInternalAsync(info.Token);
-            Update(model);
+            throw new NotImplementedException();
         }
     }
 }

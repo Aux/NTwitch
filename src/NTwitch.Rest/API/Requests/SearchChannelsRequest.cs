@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    internal class SearchChannelsRequest : RestRequest
+    internal class SearchChannelsRequest : OldRestRequest
     {
         public SearchChannelsRequest(string token, string query, uint limit, uint offset) 
             : base("GET", "search/games", token)

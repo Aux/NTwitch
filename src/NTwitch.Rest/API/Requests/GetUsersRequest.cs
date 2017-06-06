@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetUsersRequest : RestRequest
+    internal class GetUsersRequest : OldRestRequest
     {
         public GetUsersRequest(string token, string[] usernames)
             : base("GET", "users", token)

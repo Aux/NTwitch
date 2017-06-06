@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    internal class ModifyCommunityRequest : RestRequest
+    internal class ModifyCommunityRequest : OldRestRequest
     {
         public ModifyCommunityRequest(string token, string communityId, ModifyCommunityParams changes) 
             : base("PUT", $"communities/{communityId}", token)

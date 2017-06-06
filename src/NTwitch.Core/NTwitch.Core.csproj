@@ -18,8 +18,14 @@
     <FileVersion>0.0.5.0</FileVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="API\ISocketClient.cs" />
+    <Compile Remove="API\SocketClient.cs" />
+  </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
   </ItemGroup>
 

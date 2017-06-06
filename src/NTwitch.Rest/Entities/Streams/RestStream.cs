@@ -26,10 +26,10 @@ namespace NTwitch.Rest
         /// <summary> The channel this stream is associated with </summary>
         public RestChannel Channel { get; private set; }
 
-        internal RestStream(BaseRestClient client, ulong id)
+        internal RestStream(TwitchRestClient client, ulong id)
             : base(client, id) { }
 
-        internal static RestStream Create(BaseRestClient client, Model model)
+        internal static RestStream Create(TwitchRestClient client, Model model)
         {
             var entity = new RestStream(client, model.Id);
             entity.Update(model);
@@ -57,11 +57,9 @@ namespace NTwitch.Rest
             => obj.GetHashCode();
 
         /// <summary> Get the most recent information for this entity </summary>
-        public virtual async Task UpdateAsync()
+        public virtual Task UpdateAsync()
         {
-            var token = TokenHelper.GetSingleToken(Client);
-            var model = await Client.RestClient.GetStreamInternalAsync(token, Id, StreamType.All);
-            Update(model.Stream);
+            throw new NotImplementedException();
         }
     }
 }

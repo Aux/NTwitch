@@ -1,6 +1,5 @@
 ﻿using NTwitch.Rest;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NTwitch.Tests
@@ -14,19 +13,27 @@ namespace NTwitch.Tests
 
         public async Task Start()
         {
-            _client = new TwitchRestClient(new TwitchRestConfig()
+            try
             {
-                LogLevel = LogLevel.Debug
-            });
+                _client = new TwitchRestClient(new TwitchRestConfig()
+                {
+                    ClientId = "",
+                    LogLevel = LogSeverity.Debug
+                });
 
-            _client.Log += OnLogAsync;
+                _client.Log += OnLogAsync;
 
-            await _client.LoginAsync("");
+                await _client.LoginAsync("");
+                var user = await _client.GetCurrentUserAsync();
 
-            var user = (await _client.GetUsersAsync("auxesistv")).FirstOrDefault();
-            var channel1 = await _client.GetChannelAsync(user.Id);
-            var channel2 = await user.GetChannelAsync();
-            
+                Console.WriteLine($"Current Token: {_client.Token?.Username}");
+                Console.WriteLine($"Current User: {user?.DisplayName}");
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
             await Task.Delay(-1);
         }
 

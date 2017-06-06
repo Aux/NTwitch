@@ -36,10 +36,10 @@ namespace NTwitch.Rest
         /// <summary> The total number of views this clip has received </summary>
         public uint Views { get; private set; }
 
-        internal RestClip(BaseRestClient client, string id)
+        internal RestClip(TwitchRestClient client, string id)
             : base(client, id) { }
 
-        internal static RestClip Create(BaseRestClient client, Model model)
+        internal static RestClip Create(TwitchRestClient client, Model model)
         {
             var entity = new RestClip(client, model.Id);
             entity.Update(model);
@@ -70,11 +70,9 @@ namespace NTwitch.Rest
             => obj.GetHashCode();
 
         /// <summary> Get the most recent information for this entity </summary>
-        public virtual async Task UpdateAsync()
+        public virtual Task UpdateAsync()
         {
-            var token = TokenHelper.GetSingleToken(Client);
-            var model = await Client.RestClient.GetClipInternalAsync(token, Id);
-            Update(model);
+            throw new NotImplementedException();
         }
     }
 }

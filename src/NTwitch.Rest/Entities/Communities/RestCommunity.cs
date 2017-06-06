@@ -23,10 +23,10 @@ namespace NTwitch.Rest
         /// <summary> The url of this community's cover image </summary>
         public string CoverUrl { get; private set; }
         
-        internal RestCommunity(BaseRestClient client, string id) 
+        internal RestCommunity(TwitchRestClient client, string id) 
             : base(client, id) { }
 
-        internal new static RestCommunity Create(BaseRestClient client, Model model)
+        internal new static RestCommunity Create(TwitchRestClient client, Model model)
         {
             var entity = new RestCommunity(client, model.Id);
             entity.Update(model);
@@ -60,22 +60,20 @@ namespace NTwitch.Rest
         }
         
         /// <summary> Get the most recent information for this entity </summary>
-        public async Task UpdateAsync()
+        public Task UpdateAsync()
         {
-            var token = TokenHelper.GetSingleToken(Client);
-            var model = await Client.RestClient.GetCommunityInternalAsync(token, Id, false);
-            Update(model);
+            throw new NotImplementedException();
         }
 
-        /// <summary> Get information about the user that owns this community </summary>
-        public Task<RestUser> GetOwnerAsync()
-            => RestHelper.GetUserAsync(Client, OwnerId);
+        ///// <summary> Get information about the user that owns this community </summary>
+        //public Task<RestUser> GetOwnerAsync()
+        //    => RestHelper.GetUserAsync(Client, OwnerId);
 
-        /// <summary> Get this community from the perspective of the specified user </summary>
-        public Task<RestUserCommunity> GetUserCommunityAsync(ulong userId)
-            => CommunityHelper.GetUserCommunityAsync(this, userId);
-        /// <summary> Get this community from the perspective of the specified user </summary>
-        public Task<RestUserCommunity> GetUserCommunityAsync(IUser user)
-            => CommunityHelper.GetUserCommunityAsync(this, user);
+        ///// <summary> Get this community from the perspective of the specified user </summary>
+        //public Task<RestUserCommunity> GetUserCommunityAsync(ulong userId)
+        //    => CommunityHelper.GetUserCommunityAsync(this, userId);
+        ///// <summary> Get this community from the perspective of the specified user </summary>
+        //public Task<RestUserCommunity> GetUserCommunityAsync(IUser user)
+        //    => CommunityHelper.GetUserCommunityAsync(this, user);
     }
 }

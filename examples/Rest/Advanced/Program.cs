@@ -20,7 +20,7 @@ namespace Advanced
         {
             _client = new TwitchRestClient(new TwitchRestConfig()
             {
-                LogLevel = LogLevel.Info
+                LogLevel = LogSeverity.Info
             });
 
             _client.Log += OnLogAsync;

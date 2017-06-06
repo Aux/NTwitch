@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetChannelSubscribersRequest : RestRequest
+    internal class GetChannelSubscribersRequest : OldRestRequest
     {
         public GetChannelSubscribersRequest(string token, ulong channelId, bool ascending, uint limit, uint offset) 
             : base("GET", $"channels/{channelId}/subscriptions", token)

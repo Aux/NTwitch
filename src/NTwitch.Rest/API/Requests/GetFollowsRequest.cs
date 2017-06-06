@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetFollowsRequest : RestRequest
+    internal class GetFollowsRequest : OldRestRequest
     {
         public GetFollowsRequest(string token, ulong userId, SortMode sort, bool ascending, uint limit, uint offset) 
             : base("GET", $"users/{userId}/follows/channels", token)

@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    internal class SearchStreamsRequest : RestRequest
+    internal class SearchStreamsRequest : OldRestRequest
     {
         public SearchStreamsRequest(string token, string query, bool? hls, uint limit, uint offset) 
             : base("GET", "search/streams", token)

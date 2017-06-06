@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class SetCommunityCoverRequest : RestRequest
+    internal class SetCommunityCoverRequest : OldRestRequest
     {
         public SetCommunityCoverRequest(string token, string communityId, string image) 
             : base("POST", $"communities/{communityId}/images/cover", token)

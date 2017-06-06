@@ -23,10 +23,10 @@ namespace NTwitch.Rest
         /// <summary> The date and time this team was last updated </summary>
         public DateTime UpdatedAt { get; private set; }
 
-        internal RestSimpleTeam(BaseRestClient client, ulong id) 
+        internal RestSimpleTeam(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestSimpleTeam Create(BaseRestClient client, Model model)
+        internal static RestSimpleTeam Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSimpleTeam(client, model.Id);
             entity.Update(model);

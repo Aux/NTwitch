@@ -17,10 +17,6 @@
     <FileVersion>0.0.6.0</FileVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />

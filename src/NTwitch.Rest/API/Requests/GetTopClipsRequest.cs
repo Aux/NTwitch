@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest.API
 {
-    internal class GetTopClipsRequest : RestRequest
+    internal class GetTopClipsRequest : OldRestRequest
     {
         public GetTopClipsRequest(string token, TopClipsParams options)
             : base("GET", "clips/top", token)

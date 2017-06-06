@@ -17,10 +17,10 @@ namespace NTwitch.Rest
         /// <summary> The urls for this game's logo images </summary>
         public IReadOnlyDictionary<string, string> Logo { get; private set; }
 
-        internal RestGame(BaseRestClient client, ulong id) 
+        internal RestGame(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestGame Create(BaseRestClient client, Model model)
+        internal static RestGame Create(TwitchRestClient client, Model model)
         {
             var entity = new RestGame(client, model.Id);
             entity.Update(model);

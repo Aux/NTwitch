@@ -8,8 +8,13 @@ namespace NTwitch
             typeof(TwitchConfig).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ??
             typeof(TwitchConfig).GetTypeInfo().Assembly.GetName().Version.ToString(3) ??
             "Unknown";
-        public static string UserAgent { get; } = $"NTwitchApp (https://github.com/Aux/NTwitch, v{Version})";
 
-        public LogLevel LogLevel { get; set; } = LogLevel.Info;
+        public static string UserAgent { get; } = $"NTwitchApp (https://github.com/Aux/NTwitch, v{Version})";
+        public static readonly string APIUrl = $"https://api.twitch.tv/kraken/";
+
+        public const int APIVersion = 5;
+        public const int DefaultRequestTimeout = 15000;
+        
+        public LogSeverity LogLevel { get; set; } = LogSeverity.Info;
     }
 }

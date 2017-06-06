@@ -12,10 +12,10 @@ namespace NTwitch.Rest
         /// <summary> This channel's display username </summary>
         public string DisplayName { get; private set; }
 
-        internal RestSimpleChannel(BaseRestClient client, ulong id) 
+        internal RestSimpleChannel(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestSimpleChannel Create(BaseRestClient client, Model model)
+        internal static RestSimpleChannel Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSimpleChannel(client, model.Id);
             entity.Update(model);
@@ -32,59 +32,5 @@ namespace NTwitch.Rest
             => x.Id == y.Id;
         public int GetHashCode(IChannel obj)
             => obj.GetHashCode();
-
-        // Channels
-        /// <summary> Change properties of this channel </summary>
-        public Task ModifyAsync(Action<ModifyChannelParams> options)
-            => ChannelHelper.ModifyChannelAsync(this, options);
-
-        // Users
-        /// <summary> Get information about this channel's user </summary>
-        public Task<RestUser> GetUserAsync()
-            => RestHelper.GetUserAsync(Client, Id);
-        /// <summary> Get information about this channel's user, if authenticated </summary>
-        public Task<RestSelfUser> GetSelfUserAsync()
-            => RestHelper.GetSelfUserAsync(Client, Id);
-
-        // Streams
-        /// <summary> Get this channel's stream information, if available </summary>
-        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live)
-            => RestHelper.GetStreamAsync(Client, Id, type);
-
-        // Clips
-        /// <summary>  </summary>
-        public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, uint limit = 10)
-            => RestHelper.GetFollowedClipsAsync(Client, Id, istrending, limit);
-
-        // Users
-        /// <summary> Get all users following this channel </summary>
-        public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetFollowersAsync(Client, Id, ascending, limit, offset);
-        /// <summary> Get all users authorized as an editor on this channel </summary>
-        public Task<IReadOnlyCollection<RestUser>> GetEditorsAsync()
-            => ChannelHelper.GetEditorsAsync(Client, Id);
-        /// <summary> Get all users subscribed to this channel </summary>
-        public Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(bool ascending = false, uint limit = 25, uint offset = 0)
-            => ChannelHelper.GetSubscribersAsync(Client, Id, ascending, limit, offset);
-        /// <summary> Get a specific user subscriber by id </summary>
-        public Task<RestUserSubscription> GetSubscriberAsync(ulong userId)
-            => ChannelHelper.GetSubscriberAsync(Client, Id, userId);
-
-        // Chat
-        /// <summary> Get cheer badges for this channel </summary>
-        public Task<IReadOnlyCollection<RestCheerInfo>> GetCheersAsync()
-            => RestHelper.GetCheersAsync(Client, Id);
-        /// <summary> Get chat badges for this channel </summary>
-        public Task<RestChatBadges> GetChatBadgesAsync()
-            => ChannelHelper.GetChatBadgesAsync(Client, Id);
-
-        // Teams
-        /// <summary> Get all teams this channel is a member of </summary>
-        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync()
-            => ChannelHelper.GetTeamsAsync(Client, Id);
-
-        // Videos
-        //public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(uint limit = 25, uint offset = 0)    // Add parameters at some point
-        //    => ChannelHelper.GetVideosAsync(Client, Id, limit, offset);
     }
 }

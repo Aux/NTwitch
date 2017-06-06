@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSelfUser : RestUser
+    public class RestSelfUser : RestUser, ISelfUser
     {
         /// <summary> The email associated with this user account </summary>
         public string Email { get; private set; }
@@ -16,10 +17,10 @@ namespace NTwitch.Rest
         /// <summary> This user's notification settings </summary>
         public RestUserNotifications Notifications { get; private set; }
         
-        public RestSelfUser(BaseRestClient client, ulong id) 
+        public RestSelfUser(TwitchRestClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestSelfUser Create(BaseRestClient client, Model model)
+        internal new static RestSelfUser Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSelfUser(client, model.Id);
             entity.Update(model);
@@ -33,7 +34,12 @@ namespace NTwitch.Rest
             IsVerified = model.IsVerified;
             IsPartner = model.IsPartner;
             IsTwitterConnected = model.IsTwitterConnected;
-            Notifications.Update(model.Notifications);
+            Notifications = RestUserNotifications.Create(model.Notifications);
+        }
+
+        public Task UpdateAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

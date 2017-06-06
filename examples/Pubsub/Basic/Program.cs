@@ -25,7 +25,7 @@ namespace Basic
             _client = new TwitchPubsubClient(new TwitchPubsubConfig()
             {
                 ClientId = clientid,
-                LogLevel = LogLevel.Info
+                LogLevel = LogSeverity.Info
             });
             
             _client.Log += OnLogAsync;

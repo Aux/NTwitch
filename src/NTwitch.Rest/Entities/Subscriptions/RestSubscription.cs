@@ -13,10 +13,10 @@ namespace NTwitch.Rest
         /// <summary> The name of the subscription plan </summary>
         public string PlanName { get; private set; }
 
-        internal RestSubscription(BaseRestClient client, string id) 
+        internal RestSubscription(TwitchRestClient client, string id) 
             : base(client, id) { }
 
-        internal static RestSubscription Create(BaseRestClient client, Model model)
+        internal static RestSubscription Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSubscription(client, model.Id);
             entity.Update(model);

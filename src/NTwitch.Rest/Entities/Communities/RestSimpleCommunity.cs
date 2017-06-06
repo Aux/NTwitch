@@ -10,10 +10,10 @@ namespace NTwitch.Rest
         /// <summary> The url to the avatar image of this community </summary>
         public string AvatarUrl { get; private set; }
 
-        internal RestSimpleCommunity(BaseRestClient client, string id)
+        internal RestSimpleCommunity(TwitchRestClient client, string id)
             : base(client, id) { }
         
-        internal static RestSimpleCommunity Create(BaseRestClient client, Model model)
+        internal static RestSimpleCommunity Create(TwitchRestClient client, Model model)
         {
             var entity = new RestSimpleCommunity(client, model.Id);
             entity.Update(model);

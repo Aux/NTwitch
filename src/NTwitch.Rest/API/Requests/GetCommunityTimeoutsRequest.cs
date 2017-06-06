@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetCommunityTimeoutsRequest : RestRequest
+    internal class GetCommunityTimeoutsRequest : OldRestRequest
     {
         public GetCommunityTimeoutsRequest(string token, string id, uint limit) 
             : base("GET", $"communities/{id}/timeouts", token)

@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class CommunityReportRequest : RestRequest
+    internal class CommunityReportRequest : OldRestRequest
     {
         public CommunityReportRequest(string token, string id, ulong channelId) 
             : base("GET", $"communities/{id}/report_channel", token)

@@ -19,14 +19,14 @@ namespace NTwitch.Rest
         /// <summary> The title of this featured stream </summary>
         public string Title { get; private set; }
         
-        internal static RestFeaturedStream Create(BaseRestClient client, Model model)
+        internal static RestFeaturedStream Create(TwitchRestClient client, Model model)
         {
             var entity = new RestFeaturedStream();
             entity.Update(client, model);
             return entity;
         }
 
-        internal virtual void Update(BaseRestClient client, Model model)
+        internal virtual void Update(TwitchRestClient client, Model model)
         {
             Stream = new RestStream(client, model.Stream.Id);
             Stream.Update(model.Stream);

@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetFollowedStreamsRequest : RestRequest
+    internal class GetFollowedStreamsRequest : OldRestRequest
     {
         public GetFollowedStreamsRequest(string token, StreamType type, uint limit, uint offset)
             : base("GET", "streams/followed", token)

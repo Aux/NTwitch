@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class SetCommunityAvatarRequest : RestRequest
+    internal class SetCommunityAvatarRequest : OldRestRequest
     {
         public SetCommunityAvatarRequest(string token, string communityId, string image) 
             : base("POST", $"communities/{communityId}/images/avatar", token)

@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetStreamsRequest : RestRequest
+    internal class GetStreamsRequest : OldRestRequest
     {
         public GetStreamsRequest(string token, GetStreamsParams options) 
             : base("GET", $"streams", token)

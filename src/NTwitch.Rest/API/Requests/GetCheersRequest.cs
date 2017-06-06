@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    internal class GetCheersRequest : RestRequest
+    internal class GetCheersRequest : OldRestRequest
     {
         public GetCheersRequest(string token, ulong? channelId) 
             : base("GET", "bits/actions", token)

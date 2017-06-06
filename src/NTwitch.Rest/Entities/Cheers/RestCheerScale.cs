@@ -6,13 +6,13 @@ namespace NTwitch.Rest
     public class RestCheerScale
     {
         /// <summary> The instance of the client that created this entity </summary>
-        public BaseRestClient Client { get; }
+        public TwitchRestClient Client { get; }
         /// <summary> The urls for the animated versions of this cheer image </summary>
         public IReadOnlyDictionary<double, string> Animated { get; private set; }
         /// <summary> The urls for the static versions of this cheer image </summary>
         public IReadOnlyDictionary<double, string> Static { get; private set; }
 
-        internal RestCheerScale(BaseRestClient client, Model model)
+        internal RestCheerScale(TwitchRestClient client, Model model)
         {
             Client = client;
             Update(model);
