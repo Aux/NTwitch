@@ -140,7 +140,13 @@ namespace NTwitch.Rest
         /// <summary> Get information about a video by id </summary>
         public Task<RestVideo> GetVideoAsync(string videoId)
             => ClientHelper.GetVideoAsync(this, videoId);
-
+        /// <summary> Get the top videos on twitch based on viewcount </summary>
+        public Task<IReadOnlyCollection<RestVideo>> GetTopVideosAsync(string game = null, string period = null, string broadcastType = null, string language = null, string sort = null, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetTopVideosAsync(this, game, period, broadcastType, language, sort, paging, options);
+        /// <summary> Get videos from channels followed by the current user </summary>
+        public Task<IReadOnlyCollection<RestVideo>> GetFollowedVideosAsync(string broadcastType = null, string language = null, string sort = null, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedVideosAsync(this, broadcastType, language, sort, paging, options);
+        
         // ITwitchClient
         Task<ITokenInfo> ITwitchClient.GetTokenInfo(RequestOptions options)
             => Task.FromResult<ITokenInfo>(null);

@@ -13,9 +13,11 @@ namespace NTwitch.Rest.API
     internal class TwitchRestApiClient : IDisposable
     {
         public event Func<string, string, double, Task> SentRequest { add { _sentRequestEvent.Add(value); } remove { _sentRequestEvent.Remove(value); } }
+
         private readonly AsyncEvent<Func<string, string, double, Task>> _sentRequestEvent = new AsyncEvent<Func<string, string, double, Task>>();
 
         protected readonly JsonSerializer _serializer;
+
         protected readonly SemaphoreSlim _stateLock;
         private readonly RestClientProvider RestClientProvider;
 
@@ -248,8 +250,8 @@ namespace NTwitch.Rest.API
 
         public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<ChannelCollection>(new FindChannelsRequest(query, paging), options).ConfigureAwait(false);
         }
 
@@ -347,8 +349,8 @@ namespace NTwitch.Rest.API
 
         public async Task<CommunityCollection> GetCommunityBansAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
         }
 
@@ -366,8 +368,8 @@ namespace NTwitch.Rest.API
 
         public async Task<CommunityCollection> GetCommunityTimeoutsAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
         }
 
@@ -392,8 +394,8 @@ namespace NTwitch.Rest.API
 
         public async Task<FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<FollowCollection>(new GetFollowsRequest(userId, sort, ascending, paging), options).ConfigureAwait(false);
         }
 
@@ -413,22 +415,22 @@ namespace NTwitch.Rest.API
 
         public async Task<StreamCollection> GetStreamsAsync(GetStreamsParams parameters, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<StreamCollection>(new GetStreamsRequest(parameters, paging), options).ConfigureAwait(false);
         }
 
         public async Task<StreamCollection> GetFeaturedStreamsAsync(PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<StreamCollection>(new GetFeaturedStreamsRequest(paging), options).ConfigureAwait(false);
         }
 
         public async Task<StreamCollection> GetFollowedStreamsAsync(StreamType type, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
         }
 
@@ -440,8 +442,8 @@ namespace NTwitch.Rest.API
 
         public async Task<StreamCollection> FindStreamsAsync(string query, bool? hls, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<StreamCollection>(new FindStreamsRequest(query, hls, paging), options).ConfigureAwait(false);
         }
         
@@ -460,8 +462,8 @@ namespace NTwitch.Rest.API
 
         public async Task<SubscriptionCollection> GetSubscribersAsync(ulong channelId, bool ascending, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<SubscriptionCollection>(new GetSubscribersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
         }
 
@@ -474,8 +476,8 @@ namespace NTwitch.Rest.API
 
         public async Task<TeamCollection> GetTeamsAsync(PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<TeamCollection>(new GetTeamsRequest(paging), options).ConfigureAwait(false);
         }
 
@@ -511,6 +513,32 @@ namespace NTwitch.Rest.API
             return await SendAsync<Video>("GET", $"videos/{videoId}", options).ConfigureAwait(false);
         }
 
+        public async Task<VideoCollection> GetTopVideosAsync(string game, string period, string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
+        {
+            paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<VideoCollection>(new GetTopVideosRequest(game, period, broadcastType, language, sort, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<VideoCollection> GetFollowedVideosAsync(string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
+        {
+            paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<VideoCollection>(new GetFollowedVideosRequest(broadcastType, language, sort, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<Video> ModifyVideoAsync(string videoId, ModifyVideoParams modify, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendJsonAsync<Video>("PUT", $"videos/{videoId}", options).ConfigureAwait(false);
+        }
+
+        public async Task DeleteVideoAsync(string videoId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendAsync("DELETE", $"videos/{videoId}").ConfigureAwait(false);
+        }
+
         public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
@@ -525,8 +553,8 @@ namespace NTwitch.Rest.API
 
         public async Task<ClipCollection> GetFollowedClipsAsync(bool istrending, PageOptions paging, RequestOptions options)
         {
-            options = RequestOptions.CreateOrClone(options);
             paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
             return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
         }
     }

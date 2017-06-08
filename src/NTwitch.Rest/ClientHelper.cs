@@ -144,6 +144,18 @@ namespace NTwitch.Rest
             return RestVideo.Create(client, model);
         }
 
+        public static async Task<IReadOnlyCollection<RestVideo>> GetTopVideosAsync(TwitchRestClient client, string game, string period, string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
+        {
+            var model = await client.ApiClient.GetTopVideosAsync(game, period, broadcastType, language, sort, paging, options).ConfigureAwait(false);
+            return model.Vods.Select(x => RestVideo.Create(client, x)).ToArray();
+        }
+
+        public static async Task<IReadOnlyCollection<RestVideo>> GetFollowedVideosAsync(TwitchRestClient client, string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
+        {
+            var model = await client.ApiClient.GetFollowedVideosAsync(broadcastType, language, sort, paging, options).ConfigureAwait(false);
+            return model.Videos.Select(x => RestVideo.Create(client, x)).ToArray();
+        }
+
         public static async Task<RestClip> GetClipAsync(TwitchRestClient client, string clipId, RequestOptions options = null)
         {
             var model = await client.ApiClient.GetClipAsync(clipId, options).ConfigureAwait(false);
