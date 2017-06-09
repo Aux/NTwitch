@@ -1,7 +1,9 @@
-﻿using NTwitch.Rest;
+﻿using NTwitch.Chat;
+using NTwitch.Rest;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NTwitch.Chat.Queue;
 
 namespace NTwitch.Tests
 {
@@ -10,7 +12,7 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchRestClient _client;
+        private TwitchChatClient _client;
 
         public async Task Start()
         {
@@ -19,21 +21,19 @@ namespace NTwitch.Tests
 
             try
             {
-                _client = new TwitchRestClient(new TwitchRestConfig()
+                _client = new TwitchChatClient(new TwitchChatConfig()
                 {
                     ClientId = clientId,
                     LogLevel = LogSeverity.Debug
                 });
 
                 _client.Log += OnLogAsync;
-
+                
                 await _client.LoginAsync(token);
-                var user = await _client.GetCurrentUserAsync();
-                var users = await _client.GetUsersAsync("wraxu");
+                await _client.ConnectAsync();
 
-                Console.WriteLine($"Current Token: {_client.TokenInfo?.Username}");
-                Console.WriteLine($"Current User: {user?.DisplayName}");
-                Console.WriteLine($"Got User: {users.First().DisplayName} ({user.Id})");
+                await _client.JoinChannelAsync("wraxu");
+                await _client.JoinChannelAsync("timthetatman");
 
             } catch (Exception ex)
             {
@@ -42,7 +42,7 @@ namespace NTwitch.Tests
 
             await Task.Delay(-1);
         }
-
+        
         private Task OnLogAsync(LogMessage msg)
         {
             return Console.Out.WriteLineAsync(msg.ToString());

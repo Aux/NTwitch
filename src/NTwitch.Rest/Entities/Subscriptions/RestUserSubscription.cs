@@ -7,10 +7,10 @@ namespace NTwitch.Rest
         /// <summary> The user associated with this subscription </summary>
         public RestUser User { get; private set; }
 
-        internal RestUserSubscription(TwitchRestClient client, string id) 
+        internal RestUserSubscription(BaseTwitchClient client, string id) 
             : base(client, id) { }
 
-        internal new static RestUserSubscription Create(TwitchRestClient client, Model model)
+        internal new static RestUserSubscription Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestUserSubscription(client, model.Id);
             entity.Update(model);

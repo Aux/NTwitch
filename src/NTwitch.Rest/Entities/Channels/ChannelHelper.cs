@@ -12,37 +12,37 @@ namespace NTwitch.Rest
             throw new NotImplementedException();
         }
 
-        public static Task<RestChatBadges> GetChatBadgesAsync(TwitchRestClient client, ulong id, RequestOptions options)
+        public static Task<RestChatBadges> GetChatBadgesAsync(BaseTwitchClient client, ulong id, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(TwitchRestClient client, ulong id, RequestOptions options)
+        public static Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(BaseTwitchClient client, ulong id, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(TwitchRestClient client, ulong id, bool ascending, uint limit, uint offset, RequestOptions options)
+        public static Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync(BaseTwitchClient client, ulong id, bool ascending, uint limit, uint offset, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(TwitchRestClient client, ulong id, RequestOptions options)
+        public static Task<IReadOnlyCollection<RestUser>> GetEditorsAsync(BaseTwitchClient client, ulong id, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(TwitchRestClient client, ulong id, bool ascending, uint limit, uint offset, RequestOptions options)
+        public static Task<IReadOnlyCollection<RestUserSubscription>> GetSubscribersAsync(BaseTwitchClient client, ulong id, bool ascending, uint limit, uint offset, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<RestUserSubscription> GetSubscriberAsync(TwitchRestClient client, ulong id, ulong userId, RequestOptions options)
+        public static Task<RestUserSubscription> GetSubscriberAsync(BaseTwitchClient client, ulong id, ulong userId, RequestOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public static Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(TwitchRestClient client, ulong id, uint limit, uint offset, RequestOptions options)
+        public static Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(BaseTwitchClient client, ulong id, uint limit, uint offset, RequestOptions options)
         {
             throw new NotImplementedException();
         }

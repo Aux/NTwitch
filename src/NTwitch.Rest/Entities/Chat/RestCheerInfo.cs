@@ -8,7 +8,7 @@ namespace NTwitch.Rest
     public class RestCheerInfo : ICheerInfo
     {
         /// <summary> The instance of the client that created this entity </summary>
-        public TwitchRestClient Client { get; }
+        public BaseTwitchClient Client { get; }
         /// <summary>  </summary>
         public string Prefix { get; private set; }
         /// <summary> Alternate backgrounds for this cheer's image </summary>
@@ -24,7 +24,7 @@ namespace NTwitch.Rest
         /// <summary>  </summary>
         public string Type { get; private set; }
 
-        internal RestCheerInfo(TwitchRestClient client, Model model)
+        internal RestCheerInfo(BaseTwitchClient client, Model model)
         {
             Client = client;
             Update(model);

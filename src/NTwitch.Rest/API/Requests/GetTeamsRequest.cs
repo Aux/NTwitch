@@ -2,13 +2,13 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetTeamsRequest : RequestBuilder
+    public class GetTeamsRequest : RestRequestBuilder
     {
         public GetTeamsRequest(PageOptions paging) 
             : base("GET", "teams")
         {
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

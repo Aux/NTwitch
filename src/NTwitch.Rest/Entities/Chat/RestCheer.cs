@@ -13,10 +13,10 @@ namespace NTwitch.Rest
         /// <summary> The images that appear when this cheer is posted in chat </summary>
         public IReadOnlyCollection<RestCheerImage> Images { get; private set; }
 
-        internal RestCheer(TwitchRestClient client, ulong id)
+        internal RestCheer(BaseTwitchClient client, ulong id)
             : base(client, id) { }
 
-        internal static RestCheer Create(TwitchRestClient client, Model model)
+        internal static RestCheer Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestCheer(client, model.Id);
             entity.Update(model);

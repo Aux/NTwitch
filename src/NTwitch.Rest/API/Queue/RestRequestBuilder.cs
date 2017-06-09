@@ -2,28 +2,29 @@
 
 namespace NTwitch.Rest.Queue
 {
-    public class RequestBuilder
+    public class RestRequestBuilder
     {
-        public string Method { get; }
+        public string Method => _defaultMethod;
         public string Endpoint => _defaultEndpoint + GetParameterString();
-        
-        internal string _defaultEndpoint;
-        internal Dictionary<string, object> _endpointParams;
+        public Dictionary<string, object> Parameters { get; protected set; }
 
-        public RequestBuilder(string method, string endpoint)
+        internal string _defaultMethod;
+        internal string _defaultEndpoint;
+
+        public RestRequestBuilder(string method, string endpoint)
         {
-            Method = method;
+            _defaultMethod = method;
             _defaultEndpoint = endpoint;
-            _endpointParams = new Dictionary<string, object>();
+            Parameters = new Dictionary<string, object>();
         }
         
         public string GetParameterString()
         {
-            if (_endpointParams.Count == 0)
+            if (Parameters.Count == 0)
                 return "";
 
             List<string> paramList = new List<string>();
-            foreach (var p in _endpointParams)
+            foreach (var p in Parameters)
                 if (p.Value != null) paramList.Add($"{p.Key}={p.Value}");
             return $"?{string.Join("&", paramList.ToArray())}";
         }

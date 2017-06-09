@@ -85,7 +85,20 @@ namespace NTwitch.Rest
             await _loggedInEvent.InvokeAsync().ConfigureAwait(false);
         }
 
-        internal virtual Task OnLoginAsync(bool validateToken) => Task.Delay(0);
+        internal virtual async Task OnLoginAsync(bool validateToken)
+        {
+            if (!validateToken) return;
+
+            var tokenInfo = await GetTokenInfo().ConfigureAwait(false);
+            if (!tokenInfo.IsValid)
+            {
+                await RestLogger.ErrorAsync("Token is not valid").ConfigureAwait(false);
+                await LogoutAsync().ConfigureAwait(false);
+                return;
+            }
+
+            TokenInfo = tokenInfo;
+        }
 
         public async Task LogoutAsync()
         {
@@ -99,8 +112,8 @@ namespace NTwitch.Rest
 
         private async Task LogoutInternalAsync()
         {
-            if (LoginState != LoginState.LoggedOut)
-                await LogoutInternalAsync().ConfigureAwait(false);
+            if (LoginState == LoginState.LoggedOut)
+                return;
             LoginState = LoginState.LoggingIn;
 
             await ApiClient.LogoutAsync().ConfigureAwait(false);
@@ -112,7 +125,112 @@ namespace NTwitch.Rest
             await _loggedOutEvent.InvokeAsync().ConfigureAwait(false);
         }
 
-        internal virtual Task OnLogoutAsync() => Task.Delay(0);
+        internal virtual Task OnLogoutAsync()
+        {
+            TokenInfo = null;
+            return Task.Delay(0);
+        }
+        
+        // Tokens
+        /// <summary> Get information about the currently authorized token </summary>
+        public async Task<ITokenInfo> GetTokenInfo(RequestOptions options = null)
+        {
+            if (TokenInfo != null)
+                return TokenInfo;
+            var token = await ClientHelper.GetTokenInfoAsync(this, options).ConfigureAwait(false);
+            TokenInfo = token;
+            return token;
+        }
+
+        // User
+        /// <summary> Get the user associated with the authorized token </summary>
+        public async Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
+        {
+            var user = await ClientHelper.GetCurrentUserAsync(this, options).ConfigureAwait(false);
+            CurrentUser = user;
+            return user;
+        }
+
+        /// <summary> Get information about a user by id </summary>
+        public Task<RestUser> GetUserAsync(ulong userId)
+            => ClientHelper.GetUserAsync(this, userId);
+        /// <summary> Get information about users by name </summary>
+        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(params string[] usernames)
+            => ClientHelper.GetUsersAsync(this, usernames);
+
+        // Clips
+        /// <summary> Get information about a clip by id </summary>
+        public Task<RestClip> GetClipAsync(string clipId)
+            => ClientHelper.GetClipAsync(this, clipId);
+        /// <summary> Get the most popular clips for the specified parameters </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetTopClipsAsync(Action<TopClipsParams> options)
+            => ClientHelper.GetTopClipsAsync(this, options);
+
+        // Community
+        /// <summary> Get information about a community by id </summary>
+        public Task<RestCommunity> GetCommunityAsync(string communityId, bool isname = false)
+            => ClientHelper.GetCommunityAsync(this, communityId, isname);
+        /// <summary> Get the most popular communities on twitch </summary>
+        public Task<IReadOnlyCollection<RestTopCommunity>> GetTopCommunitiesAsync(PageOptions paging = null)
+            => ClientHelper.GetTopCommunitiesAsync(this, paging);
+
+        // Channels
+        /// <summary> Get the channel associated with the authorized token </summary>
+        public Task<RestSelfChannel> GetCurrentChannelAsync()
+            => ClientHelper.GetCurrentChannelAsync(this);
+        /// <summary> Get information about a channel by id </summary>
+        public Task<RestChannel> GetChannelAsync(ulong channelId)
+            => ClientHelper.GetChannelAsync(this, channelId);
+        /// <summary> Find channels relating to the specified query </summary>
+        public Task<IReadOnlyCollection<RestChannel>> FindChannelAsync(string query, PageOptions paging = null)
+            => ClientHelper.FindChannelAsync(this, query, paging);
+
+        // Ingests
+        /// <summary> Get information about twitch's ingest servers </summary>
+        public Task<IReadOnlyCollection<RestIngest>> GetIngestsAsync()
+            => ClientHelper.GetIngestsAsync(this);
+
+        // Streams
+        /// <summary> Get information about a channel's stream </summary>
+        public Task<RestStream> GetStreamAsync(ulong channelId, StreamType type = StreamType.Live)
+            => ClientHelper.GetStreamAsync(this, channelId, type);
+        /// <summary> Get the streams for the specified channels, if available </summary>
+        public Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(params ulong[] channelIds)
+            => ClientHelper.GetStreamsAsync(this, channelIds);
+        /// <summary> Get the top viewed streams on twitch for the specified options </summary>
+        public Task<IReadOnlyCollection<RestStream>> GetStreamsAsync(Action<GetStreamsParams> options)
+            => ClientHelper.GetStreamsAsync(this, options);
+        /// <summary> Get a summary of popularity for the specified game </summary>
+        public Task<RestGameSummary> GetGameSummaryAsync(string game)
+            => ClientHelper.GetGameSummaryAsync(this, game);
+        /// <summary> Get the streams that appear on the front page of twitch </summary>
+        public Task<IReadOnlyCollection<RestFeaturedStream>> GetFeaturedStreamsAsync(PageOptions paging = null)
+            => ClientHelper.GetFeaturedStreamsAsync(this, paging);
+        /// <summary> Find games relating to the specified query </summary>
+        public Task<IReadOnlyCollection<RestGame>> FindGamesAsync(string query, bool islive = false)
+            => ClientHelper.FindGamesAsync(this, query, islive);
+        /// <summary> Find streams relating to the specified query </summary>
+        public Task<IReadOnlyCollection<RestStream>> FindStreamsAsync(string query, bool? hls = null, PageOptions paging = null)
+            => ClientHelper.FindStreamsAsync(this, query, hls, paging);
+
+        // Teams
+        /// <summary> Get all teams on twitch </summary>
+        public Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(PageOptions paging = null)
+            => ClientHelper.GetTeamsAsync(this, paging);
+        /// <summary> Get a team by name </summary>
+        public Task<RestTeam> GetTeamAsync(string name)
+            => ClientHelper.GetTeamAsync(this, name);
+
+        // Videos
+        /// <summary> Get information about a video by id </summary>
+        public Task<RestVideo> GetVideoAsync(string videoId)
+            => ClientHelper.GetVideoAsync(this, videoId);
+        /// <summary> Get the top videos on twitch based on viewcount </summary>
+        public Task<IReadOnlyCollection<RestVideo>> GetTopVideosAsync(string game = null, string period = null, string broadcastType = null, string language = null, string sort = null, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetTopVideosAsync(this, game, period, broadcastType, language, sort, paging, options);
+        /// <summary> Get videos from channels followed by the current user </summary>
+        public Task<IReadOnlyCollection<RestVideo>> GetFollowedVideosAsync(string broadcastType = null, string language = null, string sort = null, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedVideosAsync(this, broadcastType, language, sort, paging, options);
 
         // ITwitchClient
         ConnectionState ITwitchClient.ConnectionState => ConnectionState.Disconnected;

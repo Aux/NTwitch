@@ -2,12 +2,12 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetUsersRequest : RequestBuilder
+    public class GetUsersRequest : RestRequestBuilder
     {
         public GetUsersRequest(string[] usernames) 
             : base("GET", "users")
         {
-            _endpointParams.Add("login", string.Join(",", usernames));
+            Parameters.Add("login", string.Join(",", usernames));
         }
     }
 }

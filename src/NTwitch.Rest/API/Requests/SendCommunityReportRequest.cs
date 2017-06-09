@@ -2,12 +2,12 @@
 
 namespace NTwitch.Rest.API
 {
-    public class SendCommunityReportRequest : RequestBuilder
+    public class SendCommunityReportRequest : RestRequestBuilder
     {
         public SendCommunityReportRequest(string communityId, ulong channelId)
             : base("PUT", $"communities/{communityId}/report_channel")
         {
-            _endpointParams.Add("channel_id", channelId);
+            Parameters.Add("channel_id", channelId);
         }
     }
 }

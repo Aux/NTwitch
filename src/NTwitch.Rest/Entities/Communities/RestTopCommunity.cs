@@ -9,10 +9,10 @@ namespace NTwitch.Rest
         /// <summary> The total number of viewers watching channels in this community </summary>
         public uint Viewers { get; private set; }
 
-        internal RestTopCommunity(TwitchRestClient client, string id) 
+        internal RestTopCommunity(BaseTwitchClient client, string id) 
             : base(client, id) { }
         
-        internal new static RestTopCommunity Create(TwitchRestClient client, Model model)
+        internal new static RestTopCommunity Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestTopCommunity(client, model.Id);
             entity.Update(model);

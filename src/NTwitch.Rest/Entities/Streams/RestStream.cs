@@ -26,10 +26,10 @@ namespace NTwitch.Rest
         /// <summary> The channel this stream is associated with </summary>
         public RestChannel Channel { get; private set; }
 
-        internal RestStream(TwitchRestClient client, ulong id)
+        internal RestStream(BaseTwitchClient client, ulong id)
             : base(client, id) { }
 
-        internal static RestStream Create(TwitchRestClient client, Model model)
+        internal static RestStream Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestStream(client, model.Id);
             entity.Update(model);

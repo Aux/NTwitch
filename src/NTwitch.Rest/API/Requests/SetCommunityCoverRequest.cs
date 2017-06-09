@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class SetCommunityCoverRequest : JsonRequestBuilder
+    public class SetCommunityCoverRequest : JsonRestRequestBuilder
     {
         public SetCommunityCoverRequest(string communityId, string imageBase64) 
             : base("POST", $"communities/{communityId}/images/cover", null)

@@ -2,15 +2,15 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetFollowsRequest : RequestBuilder
+    public class GetFollowsRequest : RestRequestBuilder
     {
         public GetFollowsRequest(ulong userId, SortMode sort, bool ascending, PageOptions paging)
             : base("GET", $"users/{userId}/follows/channels")
         {
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
-            _endpointParams.Add("direction", ascending ? "desc" : "asc");
-            _endpointParams.Add("sortby", "created_at");
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
+            Parameters.Add("direction", ascending ? "desc" : "asc");
+            Parameters.Add("sortby", "created_at");
         }
     }
 }

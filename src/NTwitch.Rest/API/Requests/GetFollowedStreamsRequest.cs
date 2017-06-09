@@ -2,14 +2,14 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetFollowedStreamsRequest : RequestBuilder
+    public class GetFollowedStreamsRequest : RestRequestBuilder
     {
         public GetFollowedStreamsRequest(StreamType type, PageOptions paging)
             : base("GET", "streams/followed")
         {
-            _endpointParams.Add("type", type.ToString().ToLower());
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
+            Parameters.Add("type", type.ToString().ToLower());
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

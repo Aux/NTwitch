@@ -5,13 +5,13 @@ namespace NTwitch.Rest
     public class RestCheerImage : ICheerImage
     {
         /// <summary> An instance of the client that created this entity </summary>
-        public TwitchRestClient Client { get; }
+        public BaseTwitchClient Client { get; }
         /// <summary> The dark theme version of this cheer </summary>
         public RestCheerScale Dark { get; private set; }
         /// <summary> The light theme version of this cheer </summary>
         public RestCheerScale Light { get; private set; }
 
-        internal RestCheerImage(TwitchRestClient client, Model model)
+        internal RestCheerImage(BaseTwitchClient client, Model model)
         {
             Client = client;
         }

@@ -3,16 +3,16 @@ using System;
 
 namespace NTwitch.Rest.API
 {
-    public class FindStreamsRequest : RequestBuilder
+    public class FindStreamsRequest : RestRequestBuilder
     {
         public FindStreamsRequest(string query, bool? hls, PageOptions paging) 
             : base("GET", "search/streams")
         {
-            _endpointParams.Add("query", Uri.EscapeDataString(query));
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
+            Parameters.Add("query", Uri.EscapeDataString(query));
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
             if (hls != null)
-                _endpointParams.Add("hls", hls);
+                Parameters.Add("hls", hls);
         }
     }
 }

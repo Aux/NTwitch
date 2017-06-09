@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class SetCommunityAvatarRequest : JsonRequestBuilder
+    public class SetCommunityAvatarRequest : JsonRestRequestBuilder
     {
         public SetCommunityAvatarRequest(string communityId, string imageBase64) 
             : base("POST", $"communities/{communityId}/images/avatar", null)

@@ -2,24 +2,24 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetTopVideosRequest : RequestBuilder
+    public class GetTopVideosRequest : RestRequestBuilder
     {
         public GetTopVideosRequest(string game, string period, string broadcastType, string language, string sort, PageOptions paging)
             : base("GET", "videos/top")
         {
             if (game != null)
-                _endpointParams.Add("game", game);
+                Parameters.Add("game", game);
             if (period != null)
-                _endpointParams.Add("period", period);
+                Parameters.Add("period", period);
             if (broadcastType != null)
-                _endpointParams.Add("broadcast_type", broadcastType);
+                Parameters.Add("broadcast_type", broadcastType);
             if (language != null)
-                _endpointParams.Add("language", language);
+                Parameters.Add("language", language);
             if (sort != null)
-                _endpointParams.Add("sort", sort);
+                Parameters.Add("sort", sort);
 
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

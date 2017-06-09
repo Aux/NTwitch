@@ -15,10 +15,10 @@ namespace NTwitch.Rest
         /// <summary> This user's profile description </summary>
         public string Bio { get; private set; }
         
-        internal RestUser(TwitchRestClient client, ulong id) 
+        internal RestUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestUser Create(TwitchRestClient client, Model model)
+        internal new static RestUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestUser(client, model.Id);
             entity.Update(model);

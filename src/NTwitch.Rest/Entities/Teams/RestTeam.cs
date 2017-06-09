@@ -11,10 +11,10 @@ namespace NTwitch.Rest
         /// <summary> All channels associated with this team </summary>
         public IReadOnlyCollection<RestChannel> Channels { get; private set; }
 
-        internal RestTeam(TwitchRestClient client, ulong id) 
+        internal RestTeam(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestTeam Create(TwitchRestClient client, Model model)
+        internal new static RestTeam Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestTeam(client, model.Id);
             entity.Update(model);

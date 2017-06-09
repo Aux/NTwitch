@@ -23,10 +23,10 @@ namespace NTwitch.Rest
         /// <summary> The url of this community's cover image </summary>
         public string CoverUrl { get; private set; }
         
-        internal RestCommunity(TwitchRestClient client, string id) 
+        internal RestCommunity(BaseTwitchClient client, string id) 
             : base(client, id) { }
 
-        internal new static RestCommunity Create(TwitchRestClient client, Model model)
+        internal new static RestCommunity Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestCommunity(client, model.Id);
             entity.Update(model);

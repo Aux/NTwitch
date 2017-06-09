@@ -11,10 +11,10 @@ namespace NTwitch.Rest
         /// <summary> The display name of this user </summary>
         public string DisplayName { get; private set; }
 
-        internal RestSimpleUser(TwitchRestClient client, ulong id) 
+        internal RestSimpleUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestSimpleUser Create(TwitchRestClient client, Model model)
+        internal static RestSimpleUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestSimpleUser(client, model.Id);
             entity.Update(model);

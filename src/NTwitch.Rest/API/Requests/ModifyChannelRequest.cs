@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class ModifyChannelRequest : JsonRequestBuilder
+    public class ModifyChannelRequest : JsonRestRequestBuilder
     {
         public ModifyChannelRequest(ulong channelId, ModifyChannelParams changes)
             : base("PUT", $"channels/{channelId}", changes) { }

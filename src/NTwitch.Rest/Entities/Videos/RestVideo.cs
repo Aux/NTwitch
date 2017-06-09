@@ -53,10 +53,10 @@ namespace NTwitch.Rest
         ///// <summary>  </summary>
         //public VideoThumbnail Thumbnail { get; private set; }
         
-        internal RestVideo(TwitchRestClient client, string id) 
+        internal RestVideo(BaseTwitchClient client, string id) 
             : base(client, id) { }
 
-        internal new static RestVideo Create(TwitchRestClient client, Model model)
+        internal new static RestVideo Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestVideo(client, model.Id);
             entity.Update(model);

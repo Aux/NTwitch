@@ -2,15 +2,15 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetTopClipsRequest : RequestBuilder
+    public class GetTopClipsRequest : RestRequestBuilder
     {
         public GetTopClipsRequest(TopClipsParams parameters)
             : base("GET", "clips/top")
         {
-            _endpointParams.Add("trending", parameters.IsTrending);
-            _endpointParams.Add("period", parameters.Period.ToLower());
-            _endpointParams.Add("channel", string.Join(",", parameters.Channels));
-            _endpointParams.Add("game", string.Join(",", parameters.Games));
+            Parameters.Add("trending", parameters.IsTrending);
+            Parameters.Add("period", parameters.Period.ToLower());
+            Parameters.Add("channel", string.Join(",", parameters.Channels));
+            Parameters.Add("game", string.Join(",", parameters.Games));
         }
     }
 }

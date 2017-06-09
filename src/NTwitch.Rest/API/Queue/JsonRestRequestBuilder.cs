@@ -1,12 +1,12 @@
 ﻿namespace NTwitch.Rest.Queue
 {
-    public class JsonRequestBuilder : RequestBuilder
+    public class JsonRestRequestBuilder : RestRequestBuilder
     {
         public object Payload => _payload;
 
         private object _payload;
 
-        public JsonRequestBuilder(string method, string endpoint, object payload) 
+        public JsonRestRequestBuilder(string method, string endpoint, object payload) 
             : base(method, endpoint)
         {
             _payload = payload;

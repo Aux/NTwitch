@@ -13,11 +13,9 @@ namespace NTwitch.Rest.API
     internal class TwitchRestApiClient : IDisposable
     {
         public event Func<string, string, double, Task> SentRequest { add { _sentRequestEvent.Add(value); } remove { _sentRequestEvent.Remove(value); } }
-
         private readonly AsyncEvent<Func<string, string, double, Task>> _sentRequestEvent = new AsyncEvent<Func<string, string, double, Task>>();
 
         protected readonly JsonSerializer _serializer;
-
         protected readonly SemaphoreSlim _stateLock;
         private readonly RestClientProvider RestClientProvider;
 
@@ -31,7 +29,6 @@ namespace NTwitch.Rest.API
         public LoginState LoginState { get; private set; }
         internal IRestClient RestClient { get; private set; }
         internal string AuthToken { get; private set; }
-        internal ulong? CurrentUserId { get; set; }
 
         public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, JsonSerializer serializer = null)
         {
@@ -43,7 +40,7 @@ namespace NTwitch.Rest.API
             
             _stateLock = new SemaphoreSlim(1, 1);
 
-            SetBaseUrl(TwitchConfig.APIUrl);
+            SetBaseUrl(TwitchConfig.DefaultApiUrl);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -124,15 +121,14 @@ namespace NTwitch.Rest.API
 
             RestClient.SetHeader("Authorization", null);
             await DisconnectInternalAsync().ConfigureAwait(false);
-
-            CurrentUserId = null;
+            
             LoginState = LoginState.LoggedOut;
         }
 
         internal virtual Task ConnectInternalAsync() => Task.Delay(0);
         internal virtual Task DisconnectInternalAsync() => Task.Delay(0);
 
-        public Task SendAsync(RequestBuilder builder, RequestOptions options = null)
+        public Task SendAsync(RestRequestBuilder builder, RequestOptions options = null)
             => SendAsync(builder.Method, builder.Endpoint, options);
         public async Task SendAsync(string method, string endpoint, RequestOptions options = null)
         {
@@ -142,7 +138,7 @@ namespace NTwitch.Rest.API
             await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
         }
 
-        public Task<TResponse> SendAsync<TResponse>(RequestBuilder builder, RequestOptions options = null)
+        public Task<TResponse> SendAsync<TResponse>(RestRequestBuilder builder, RequestOptions options = null)
             => SendAsync<TResponse>(builder.Method, builder.Endpoint, options);
         public async Task<TResponse> SendAsync<TResponse>(string method, string endpoint, RequestOptions options = null)
         {
@@ -152,7 +148,7 @@ namespace NTwitch.Rest.API
             return DeserializeJson<TResponse>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
         }
 
-        public Task SendJsonAsync(JsonRequestBuilder builder, RequestOptions options = null)
+        public Task SendJsonAsync(JsonRestRequestBuilder builder, RequestOptions options = null)
             => SendJsonAsync(builder.Method, builder.Endpoint, builder.Payload, options);
         public async Task SendJsonAsync(string method, string endpoint, object payload, RequestOptions options = null)
         {
@@ -163,7 +159,7 @@ namespace NTwitch.Rest.API
             await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
         }
 
-        public Task<TResponse> SendJsonAsync<TResponse>(JsonRequestBuilder builder, RequestOptions options = null)
+        public Task<TResponse> SendJsonAsync<TResponse>(JsonRestRequestBuilder builder, RequestOptions options = null)
             => SendJsonAsync<TResponse>(builder.Method, builder.Endpoint, builder.Payload, options);
         public async Task<TResponse> SendJsonAsync<TResponse>(string method, string endpoint, object payload, RequestOptions options = null)
         {

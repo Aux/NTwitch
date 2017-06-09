@@ -7,10 +7,10 @@ namespace NTwitch.Rest
         /// <summary> The channel associated with this subscription </summary>
         public RestChannel Channel { get; private set; }
 
-        internal RestChannelSubscription(TwitchRestClient client, string id) 
+        internal RestChannelSubscription(BaseTwitchClient client, string id) 
             : base(client, id) { }
 
-        internal new static RestChannelSubscription Create(TwitchRestClient client, Model model)
+        internal new static RestChannelSubscription Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestChannelSubscription(client, model.Id);
             entity.Update(model);

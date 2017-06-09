@@ -2,7 +2,7 @@ using Model = NTwitch.Rest.API.Token;
 
 namespace NTwitch.Rest
 {
-    public class RestToken : ITokenInfo
+    public class RestTokenInfo : ITokenInfo
     {
         /// <summary> The oauth token of this session. </summary>
         public string Token { get; private set; }
@@ -17,14 +17,14 @@ namespace NTwitch.Rest
         /// <summary> Information about the authorized oauth token </summary>
         public RestAuthorization Authorization { get; private set; } = new RestAuthorization();
 
-        internal RestToken(string token)
+        internal RestTokenInfo(string token)
         {
             Token = token;
         }
 
-        internal static RestToken Create(string token, Model model)
+        internal static RestTokenInfo Create(string token, Model model)
         {
-            var entity = new RestToken(token);
+            var entity = new RestTokenInfo(token);
             entity.Update(model);
             return entity;
         }
@@ -35,6 +35,7 @@ namespace NTwitch.Rest
             Username = model.Username;
             UserId = model.UserId;
             ClientId = model.ClientId;
+
             if (model.Authorization != null)
                 Authorization.Update(model.Authorization);
         }

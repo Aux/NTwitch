@@ -2,12 +2,12 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetStreamRequest : RequestBuilder
+    public class GetStreamRequest : RestRequestBuilder
     {
         public GetStreamRequest(ulong channelId, StreamType type)
             : base("GET", $"streams/{channelId}")
         {
-            _endpointParams.Add("stream_type", type.ToString().ToLower());
+            Parameters.Add("stream_type", type.ToString().ToLower());
         }
     }
 }

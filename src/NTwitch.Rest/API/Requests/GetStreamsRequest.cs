@@ -2,21 +2,21 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetStreamsRequest : RequestBuilder
+    public class GetStreamsRequest : RestRequestBuilder
     {
         public GetStreamsRequest(GetStreamsParams parameters, PageOptions paging)
             : base("GET", "streams")
         {
             if (parameters.ChannelIds != null)
-                _endpointParams.Add("channel", string.Join(",", parameters.ChannelIds));
+                Parameters.Add("channel", string.Join(",", parameters.ChannelIds));
             if (parameters.Game != null)
-                _endpointParams.Add("game", parameters.Game);
+                Parameters.Add("game", parameters.Game);
             if (parameters.Language != null)
-                _endpointParams.Add("language", parameters.Language);
+                Parameters.Add("language", parameters.Language);
             
-            _endpointParams.Add("type", parameters.Type.ToString().ToLower());
-            _endpointParams.Add("limit", paging.Limit);
-            _endpointParams.Add("offset", paging.Offset);
+            Parameters.Add("type", parameters.Type.ToString().ToLower());
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

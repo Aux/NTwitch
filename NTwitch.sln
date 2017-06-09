@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53879A91
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.csproj", "{0D0BAD04-28C1-48E7-8F64-533E774A362E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{12AB9B7C-AE54-4678-8024-89701E476283}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,14 @@ Global
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12AB9B7C-AE54-4678-8024-89701E476283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12AB9B7C-AE54-4678-8024-89701E476283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12AB9B7C-AE54-4678-8024-89701E476283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12AB9B7C-AE54-4678-8024-89701E476283}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

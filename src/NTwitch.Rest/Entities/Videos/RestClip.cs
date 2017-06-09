@@ -36,10 +36,10 @@ namespace NTwitch.Rest
         /// <summary> The total number of views this clip has received </summary>
         public uint Views { get; private set; }
 
-        internal RestClip(TwitchRestClient client, string id)
+        internal RestClip(BaseTwitchClient client, string id)
             : base(client, id) { }
 
-        internal static RestClip Create(TwitchRestClient client, Model model)
+        internal static RestClip Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestClip(client, model.Id);
             entity.Update(model);

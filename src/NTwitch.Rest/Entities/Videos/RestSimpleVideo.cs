@@ -7,10 +7,10 @@ namespace NTwitch.Rest
         /// <summary> The url to this video's page </summary>
         public string Url { get; private set; }
 
-        internal RestSimpleVideo(TwitchRestClient client, string id) 
+        internal RestSimpleVideo(BaseTwitchClient client, string id) 
             : base(client, id) { }
 
-        internal static RestVideo Create(TwitchRestClient client, Model model)
+        internal static RestVideo Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestVideo(client, model.Id);
             entity.Update(model);

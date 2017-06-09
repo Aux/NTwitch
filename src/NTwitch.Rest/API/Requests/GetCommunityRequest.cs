@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetCommunityRequest : RequestBuilder
+    public class GetCommunityRequest : RestRequestBuilder
     {
         public GetCommunityRequest(string communityId, bool isName) 
             : base("GET", null)

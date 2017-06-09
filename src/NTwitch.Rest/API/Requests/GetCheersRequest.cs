@@ -2,13 +2,13 @@
 
 namespace NTwitch.Rest.API
 {
-    public class GetCheersRequest : RequestBuilder
+    public class GetCheersRequest : RestRequestBuilder
     {
         public GetCheersRequest(ulong? channelId) 
             : base("GET", "bits/actions")
         {
             if (channelId != null)
-                _endpointParams.Add("channel_id", channelId);
+                Parameters.Add("channel_id", channelId);
         }
     }
 }

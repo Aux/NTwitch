@@ -7,10 +7,10 @@ namespace NTwitch.Rest
         /// <summary>  </summary>
         public string Code { get; private set; }
         
-        internal RestEmote(TwitchRestClient client, uint id) 
+        internal RestEmote(BaseTwitchClient client, uint id) 
             : base(client, id) { }
 
-        internal static RestEmote Create(TwitchRestClient client, Model model)
+        internal static RestEmote Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestEmote(client, model.Id);
             entity.Update(model);

@@ -7,10 +7,10 @@ namespace NTwitch.Rest
         /// <summary> The channel associated with this follow </summary>
         public RestChannel Channel { get; private set; }
 
-        internal RestChannelFollow(TwitchRestClient client) 
+        internal RestChannelFollow(BaseTwitchClient client) 
             : base(client) { }
 
-        internal new static RestChannelFollow Create(TwitchRestClient client, Model model)
+        internal new static RestChannelFollow Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestChannelFollow(client);
             entity.Update(model);

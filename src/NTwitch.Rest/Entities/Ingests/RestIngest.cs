@@ -16,10 +16,10 @@ namespace NTwitch.Rest
         /// <summary> The url template of this ingest server </summary>
         public string UrlTemplate { get; private set; }
 
-        internal RestIngest(TwitchRestClient client, ulong id)
+        internal RestIngest(BaseTwitchClient client, ulong id)
             : base(client, id) { }
         
-        internal static RestIngest Create(TwitchRestClient client, Model model)
+        internal static RestIngest Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestIngest(client, model.Id);
             entity.Update(model);
