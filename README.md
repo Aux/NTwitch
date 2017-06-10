@@ -1,7 +1,7 @@
 # NTwitch
 [![Discord](https://discordapp.com/api/guilds/257698577894080512/widget.png)](https://discord.gg/yd8x2wM)
 
-A .net core implementation of the https://twitch.tv/ version 5 api.
+A .net core implementation of the https://twitch.tv/ version 5 api, strongly based on [Discord.Net](https://github.com/RogueException/Discord.Net).
 
 | Build       | Nuget  | Status  |
 | ----------- |:------:|:-------:|
