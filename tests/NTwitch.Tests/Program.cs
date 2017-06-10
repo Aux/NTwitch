@@ -1,9 +1,7 @@
 ﻿using NTwitch.Chat;
-using NTwitch.Rest;
+using NTwitch.Pubsub;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using NTwitch.Chat.Queue;
 
 namespace NTwitch.Tests
 {
@@ -12,7 +10,7 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchChatClient _client;
+        private TwitchPubsubClient _client;
 
         public async Task Start()
         {
@@ -21,21 +19,37 @@ namespace NTwitch.Tests
 
             try
             {
-                _client = new TwitchChatClient(new TwitchChatConfig()
+                _client = new TwitchPubsubClient(new TwitchPubsubConfig
                 {
                     ClientId = clientId,
                     LogLevel = LogSeverity.Debug
                 });
 
                 _client.Log += OnLogAsync;
-                
+
                 await _client.LoginAsync(token);
-                await _client.ConnectAsync();
 
-                await _client.JoinChannelAsync("wraxu");
-                await _client.JoinChannelAsync("timthetatman");
+                await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
+                await _client.ListenVideoPlaybackAsync(_client.TokenInfo.UserId);
+                
+                //_client = new TwitchChatClient(new TwitchChatConfig
+                //{
+                //    ClientId = clientId,
+                //    LogLevel = LogSeverity.Debug,
+                //    SocketClientProvider = DefaultWebSocketProvider.Instance,
+                //    SocketHost = "wss://irc-ws.chat.twitch.tv"
+                //});
 
-            } catch (Exception ex)
+                //_client.Log += OnLogAsync;
+
+                //await _client.LoginAsync(token);
+                //await _client.ConnectAsync();
+
+                //await _client.JoinChannelAsync("wraxu");
+                //await _client.JoinChannelAsync("timthetatman");
+
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }

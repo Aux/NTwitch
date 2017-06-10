@@ -37,7 +37,7 @@ namespace NTwitch.Rest.API
             ClientId = clientId;
             _serializer = serializer ?? new JsonSerializer { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" };
             //DefaultRetryMode = defaultRetryMode;
-            
+
             _stateLock = new SemaphoreSlim(1, 1);
 
             SetBaseUrl(TwitchConfig.DefaultApiUrl);
@@ -66,6 +66,31 @@ namespace NTwitch.Rest.API
             if (ClientId != null)
                 RestClient.SetHeader("Client-ID", ClientId);
         }
+
+        protected virtual void CheckLoginState()
+        {
+            if (LoginState != LoginState.LoggedIn && string.IsNullOrWhiteSpace(ClientId))
+                throw new InvalidOperationException("Client is not logged in.");
+        }
+
+        protected string SerializeJson(object value)
+        {
+            var sb = new StringBuilder(256);
+            using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
+            using (JsonWriter writer = new JsonTextWriter(text))
+                _serializer.Serialize(writer, value);
+            return sb.ToString();
+        }
+
+        protected T DeserializeJson<T>(System.IO.Stream jsonStream)
+        {
+            using (TextReader text = new StreamReader(jsonStream))
+            using (JsonReader reader = new JsonTextReader(text))
+                return _serializer.Deserialize<T>(reader);
+        }
+
+        protected static double ToMilliseconds(Stopwatch stopwatch)
+            => Math.Round((double)stopwatch.ElapsedTicks / Stopwatch.Frequency * 1000.0, 2);
 
         public async Task LoginAsync(string token, RequestOptions options = null)
         {
@@ -173,7 +198,7 @@ namespace NTwitch.Rest.API
         private async Task<System.IO.Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
         {
             if (!request.Options.IgnoreState)
-                CheckState();
+                CheckLoginState();
             //if (request.Options.RetryMode == null)
             //    request.Options.RetryMode = DefaultRetryMode;
 
@@ -186,31 +211,6 @@ namespace NTwitch.Rest.API
 
             return response.Body;
         }
-
-        protected void CheckState()
-        {
-            if (LoginState != LoginState.LoggedIn)
-                throw new InvalidOperationException("Client is not logged in.");
-        }
-
-        protected string SerializeJson(object value)
-        {
-            var sb = new StringBuilder(256);
-            using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
-            using (JsonWriter writer = new JsonTextWriter(text))
-                _serializer.Serialize(writer, value);
-            return sb.ToString();
-        }
-
-        protected T DeserializeJson<T>(System.IO.Stream jsonStream)
-        {
-            using (TextReader text = new StreamReader(jsonStream))
-            using (JsonReader reader = new JsonTextReader(text))
-                return _serializer.Deserialize<T>(reader);
-        }
-
-        protected static double ToMilliseconds(Stopwatch stopwatch) 
-            => Math.Round((double)stopwatch.ElapsedTicks / Stopwatch.Frequency * 1000.0, 2);
 
         // Tokens
         public async Task<TokenCollection> ValidateTokenAsync(RequestOptions options = null)

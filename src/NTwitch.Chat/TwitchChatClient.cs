@@ -65,6 +65,7 @@ namespace NTwitch.Chat
         public async Task DisconnectAsync()
             => await ApiClient.DisconnectAsync().ConfigureAwait(false);
 
+        // Channels
         public Task JoinChannelAsync(string name, RequestOptions options = null)
             => ApiClient.JoinChannelAsync(name, options);
 

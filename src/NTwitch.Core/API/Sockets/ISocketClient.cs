@@ -12,7 +12,7 @@ namespace NTwitch
         void SetCancelToken(CancellationToken cancelToken);
 
         Task ConnectAsync(string host);
-        Task DisconnectAsync();
+        Task DisconnectAsync(bool disposing = false);
 
         Task SendAsync(string message);
     }

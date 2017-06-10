@@ -116,7 +116,7 @@ namespace NTwitch.Chat
             => SendSocketAsync(builder.Command, builder.Parameters, builder.GetTagString(), options);
         public async Task SendSocketAsync(string command, string parameters, string tags = null, RequestOptions options = null)
         {
-            CheckState();
+            CheckLoginState();
             options = options ?? new RequestOptions();
 
             var request = new ChatRequest(SocketClient, $"{tags}{command} {parameters}".Trim(), options);

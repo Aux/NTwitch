@@ -90,7 +90,7 @@ namespace NTwitch.Chat
             _task = RunAsync(_cancelToken);
         }
 
-        public async Task DisconnectAsync()
+        public async Task DisconnectAsync(bool disposing = false)
         {
             await _lock.WaitAsync().ConfigureAwait(false);
             try
