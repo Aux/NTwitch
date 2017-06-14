@@ -12,7 +12,7 @@ namespace NTwitch.Pubsub
 
         internal static PubsubEmote Create(TwitchPubsubClient client, Model model)
         {
-            var entity = new PubsubEmote(client, id);
+            var entity = new PubsubEmote(client, model.Id);
             entity.Update(model);
             return entity;
         }

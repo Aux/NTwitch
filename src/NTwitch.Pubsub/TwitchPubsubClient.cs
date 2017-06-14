@@ -1,8 +1,7 @@
 ﻿using NTwitch.Pubsub.API;
 using NTwitch.Rest;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,14 +59,14 @@ namespace NTwitch.Pubsub
         }
 
         // General
-        public Task SubscribeAsync(string topic)
+        public async Task ListenAsync(params string[] topics)
         {
-            throw new NotImplementedException();
+            await ApiClient.ListenAsync(topics, null).ConfigureAwait(false);
         }
 
-        public Task UnsubscribeAsync(string topic)
+        public async Task UnlistenAsync(params string[] topics)
         {
-            throw new NotImplementedException();
+            await ApiClient.UnlistenAsync(topics, null).ConfigureAwait(false);
         }
 
         // Channels
@@ -82,9 +81,25 @@ namespace NTwitch.Pubsub
             await ApiClient.ListenWhispersAsync(userIds).ConfigureAwait(false);
         }
 
-        private Task ProcessMessageAsync(PubsubFrame<PubsubInData> msg)
+        private async Task ProcessMessageAsync(PubsubFrame<string> msg)
         {
-            return Console.Out.WriteLineAsync(Newtonsoft.Json.JsonConvert.SerializeObject(msg));
+            var data = msg.GetData<PubsubInData>();
+            string topic = data.Topic.Split('.').First();
+
+            switch (topic)
+            {
+                //case "channel-bits-events-v1":
+                //    break;
+                case "channel-subscribe-events-v1":
+                    var model = data.GetMessage<Subscription>();
+                    await _subscriptionReceived.InvokeAsync(PubsubSubscription.Create(this, model));
+                    break;
+                //case "whispers":
+                //    break;
+                default:
+                    await _anonymousReceivedEvent.InvokeAsync(data.Message);
+                    break;
+            }
         }
     }
 }

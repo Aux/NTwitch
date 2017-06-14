@@ -1,5 +1,4 @@
-﻿using NTwitch.Chat;
-using NTwitch.Pubsub;
+﻿using NTwitch.Pubsub;
 using System;
 using System.Threading.Tasks;
 
@@ -26,12 +25,16 @@ namespace NTwitch.Tests
                 });
 
                 _client.Log += OnLogAsync;
+                _client.AnonymousReceived += AnonymousReceivedAsync;
 
                 await _client.LoginAsync(token);
 
-                await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
-                await _client.ListenVideoPlaybackAsync(_client.TokenInfo.UserId);
-                
+                var id = _client.TokenInfo.UserId;
+                await _client.ListenWhispersAsync(id);
+
+                await Task.Delay(5000);
+                await _client.ListenAsync($"video-playback.{id}", $"video-playback.{_client.TokenInfo.Username}");
+
                 //_client = new TwitchChatClient(new TwitchChatConfig
                 //{
                 //    ClientId = clientId,
@@ -56,7 +59,12 @@ namespace NTwitch.Tests
 
             await Task.Delay(-1);
         }
-        
+
+        private Task AnonymousReceivedAsync(string arg)
+        {
+            return Console.Out.WriteLineAsync(arg);
+        }
+
         private Task OnLogAsync(LogMessage msg)
         {
             return Console.Out.WriteLineAsync(msg.ToString());

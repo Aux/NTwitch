@@ -16,13 +16,13 @@ namespace NTwitch.Pubsub
     {
         public event Func<string, Task> SentPubsubMessage { add { _sentPusbubMessageEvent.Add(value); } remove { _sentPusbubMessageEvent.Remove(value); } }
         private readonly AsyncEvent<Func<string, Task>> _sentPusbubMessageEvent = new AsyncEvent<Func<string, Task>>();
-        public event Func<PubsubFrame<PubsubInData>, Task> ReceivedPubsubEvent { add { _receivedPubsubEvent.Add(value); } remove { _receivedPubsubEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<PubsubFrame<PubsubInData>, Task>> _receivedPubsubEvent = new AsyncEvent<Func<PubsubFrame<PubsubInData>, Task>>();
+        public event Func<PubsubFrame<string>, Task> ReceivedPubsubEvent { add { _receivedPubsubEvent.Add(value); } remove { _receivedPubsubEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<PubsubFrame<string>, Task>> _receivedPubsubEvent = new AsyncEvent<Func<PubsubFrame<string>, Task>>();
 
         public event Func<Exception, Task> Disconnected { add { _disconnectedEvent.Add(value); } remove { _disconnectedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Exception, Task>> _disconnectedEvent = new AsyncEvent<Func<Exception, Task>>();
 
-        private ConcurrentDictionary<string, Func<PubsubFrame<PubsubInData>, Task>> _callbacks;
+        private ConcurrentDictionary<string, Func<PubsubFrame<string>, Task>> _callbacks;
         private CancellationTokenSource _connectCancelToken;
         private string _webSocketUrl;
 
@@ -36,14 +36,14 @@ namespace NTwitch.Pubsub
         {
             _webSocketUrl = webSocketUrl;
             WebSocketClient = socketClientProvider() as IWebSocketClient;
-            _callbacks = new ConcurrentDictionary<string, Func<PubsubFrame<PubsubInData>, Task>>();
+            _callbacks = new ConcurrentDictionary<string, Func<PubsubFrame<string>, Task>>();
 
             WebSocketClient.TextMessage += async text =>
             {
                 using (var reader = new StringReader(text))
                 using (var jsonReader = new JsonTextReader(reader))
                 {
-                    var msg = _serializer.Deserialize<PubsubFrame<PubsubInData>>(jsonReader);
+                    var msg = _serializer.Deserialize<PubsubFrame<string>>(jsonReader);
                     if (msg != null)
                         await _receivedPubsubEvent.InvokeAsync(msg).ConfigureAwait(false);
                 }
@@ -130,7 +130,7 @@ namespace NTwitch.Pubsub
             CheckLoginState();
             if (ConnectionState == ConnectionState.Disconnected)
                 await ConnectAsync().ConfigureAwait(false);
-
+            
             byte[] bytes = null;
             if (payload != null)
                 bytes = Encoding.UTF8.GetBytes(SerializeJson(payload));
@@ -144,6 +144,22 @@ namespace NTwitch.Pubsub
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new PubsubRequestBuilder("PING"), options).ConfigureAwait(false);
+        }
+
+        public async Task ListenAsync(string[] topics, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            var builder = new PubsubRequestBuilder("LISTEN", AuthToken);
+            builder.Topics.AddRange(topics);
+            await SendSocketAsync(builder, options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenAsync(string[] topics, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            var builder = new PubsubRequestBuilder("UNLISTEN", AuthToken);
+            builder.Topics.AddRange(topics);
+            await SendSocketAsync(builder, options).ConfigureAwait(false);
         }
 
         // Channels

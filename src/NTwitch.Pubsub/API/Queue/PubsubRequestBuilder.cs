@@ -15,7 +15,7 @@ namespace NTwitch.Pubsub.Queue
         public PubsubRequestBuilder(string type, string authToken = null)
         {
             Topics = new List<string>();
-            _nonce = new Guid().ToString();
+            _nonce = Guid.NewGuid().ToString();
             _authToken = authToken;
             _defaultType = type;
         }

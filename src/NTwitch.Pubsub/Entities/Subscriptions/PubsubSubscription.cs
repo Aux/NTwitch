@@ -33,9 +33,9 @@ namespace NTwitch.Pubsub
             Client = client;
         }
         
-        internal static PubsubSimpleChannel Create(TwitchPubsubClient client, Model model)
+        internal static PubsubSubscription Create(TwitchPubsubClient client, Model model)
         {
-            var entity = new PubsubSimpleChannel(client, model.ChannelId);
+            var entity = new PubsubSubscription(client);
             entity.Update(model);
             return entity;
         }
