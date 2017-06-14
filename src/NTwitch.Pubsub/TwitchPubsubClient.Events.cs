@@ -14,5 +14,20 @@ namespace NTwitch.Pubsub
 
         public event Func<int, int, Task> LatencyUpdated { add { _latencyUpdatedEvent.Add(value); } remove { _latencyUpdatedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<int, int, Task>> _latencyUpdatedEvent = new AsyncEvent<Func<int, int, Task>>();
+
+        // Anonymous
+        public event Func<string, Task> AnonymousReceived { add { _anonymousReceivedEvent.Add(value); } remove { _anonymousReceivedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, Task>> _anonymousReceivedEvent = new AsyncEvent<Func<string, Task>>();
+
+        // Channels
+        public event Func<PubsubSubscription, Task> SubscriptionReceived { add { _subscriptionReceived.Add(value); } remove { _subscriptionReceived.Remove(value); } }
+        private readonly AsyncEvent<Func<PubsubSubscription, Task>> _subscriptionReceived = new AsyncEvent<Func<PubsubSubscription, Task>>();
+
+        public event Func<string, Task> BitsReceived { add { _bitsReceivedEvent.Add(value); } remove { _bitsReceivedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, Task>> _bitsReceivedEvent = new AsyncEvent<Func<string, Task>>();
+
+        // Messages
+        public event Func<string, Task> WhisperReceived { add { _whisperReceivedEvent.Add(value); } remove { _whisperReceivedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, Task>> _whisperReceivedEvent = new AsyncEvent<Func<string, Task>>();
     }
 }
