@@ -28,8 +28,8 @@ namespace Advanced
             Console.Write("Please enter your oauth token: ");
             string token = Console.ReadLine();
 
-            var info = await _client.LoginAsync(token);
-            var channel = await _client.GetChannelAsync(info.UserId);
+            await _client.LoginAsync(token);
+            var channel = await _client.GetChannelAsync(_client.TokenInfo.UserId);
 
             string previous = channel.Status;
             while (true)
