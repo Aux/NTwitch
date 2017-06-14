@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -208,6 +209,19 @@ namespace NTwitch.Rest.API
 
             double milliseconds = ToMilliseconds(stopwatch);
             await _sentRequestEvent.InvokeAsync(method, endpoint, milliseconds).ConfigureAwait(false);
+            
+            switch ((int)response.StatusCode)
+            {
+                case 200:  // Ok
+                    break;
+                case 400:  // Bad Request
+                case 401:  // Unauthorized
+                case 404:  // Not found
+                case 422:  // Unprocessable Entity
+                default:   // Unrecognized code
+                    var error = DeserializeJson<Error>(response.Body);
+                    throw new HttpException(response.StatusCode, error.GetErrorMessage().Message);
+            }
 
             return response.Body;
         }
@@ -223,25 +237,41 @@ namespace NTwitch.Rest.API
         public async Task<Channel> GetMyChannelAsync(RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<Channel>("GET", "channel", options).ConfigureAwait(false);
+            try
+            {
+                return await SendAsync<Channel>("GET", "channel", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<Channel> GetChannelAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<Channel>("GET", $"channels/{channelId}", options).ConfigureAwait(false);
+            try
+            {
+                return await SendAsync<Channel>("GET", $"channels/{channelId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == (HttpStatusCode)422) { return null; }
         }
 
         public async Task<Channel> ModifyChannelAsync(ulong channelId, ModifyChannelParams changes, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendJsonAsync<Channel>(new ModifyChannelRequest(channelId, changes), options).ConfigureAwait(false);
+            try
+            {
+                return await SendJsonAsync<Channel>(new ModifyChannelRequest(channelId, changes), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<UserCollection> GetChannelEditorsAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<UserCollection>("GET", $"channels/{channelId}/editors", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<UserCollection>("GET", $"channels/{channelId}/editors", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
@@ -292,19 +322,31 @@ namespace NTwitch.Rest.API
         public async Task SendCommunityReportAsync(string communityId, ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync(new SendCommunityReportRequest(communityId, channelId), options).ConfigureAwait(false);
+            try
+            {
+                await SendAsync(new SendCommunityReportRequest(communityId, channelId), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task ModifyCommunityAsync(string communityId, ModifyCommunityParams changes, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendJsonAsync("PUT", $"communitites/{communityId}", changes, options).ConfigureAwait(false);
+            try
+            { 
+                await SendJsonAsync("PUT", $"communitites/{communityId}", changes, options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
         
         public async Task SetCommunityAvatarAsync(string communityId, string imageBase64, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendJsonAsync(new SetCommunityAvatarRequest(communityId, imageBase64), options).ConfigureAwait(false);
+            try
+            { 
+                await SendJsonAsync(new SetCommunityAvatarRequest(communityId, imageBase64), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task RemoveCommunityAvatarAsync(string communityId, RequestOptions options)
@@ -316,69 +358,113 @@ namespace NTwitch.Rest.API
         public async Task SetCommunityCoverAsync(string communityId, string imageBase64, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync(new SetCommunityCoverRequest(communityId, imageBase64), options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync(new SetCommunityCoverRequest(communityId, imageBase64), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task RemoveCommunityCoverAsync(string communityId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("DELETE", $"communities/{communityId}/images/cover", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("DELETE", $"communities/{communityId}/images/cover", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task<CommunityCollection> GetCommunityModeratorsAsync(string communityId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/moderators").ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/moderators").ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task AddCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task RemoveCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task<CommunityCollection> GetCommunityBansAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task AddCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("Put", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("Put", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task RemoveCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task<CommunityCollection> GetCommunityTimeoutsAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task AddCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task RemoveCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         // Follows
@@ -427,7 +513,11 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<Stream> GetStreamSummaryAsync(string game, RequestOptions options)
@@ -453,14 +543,22 @@ namespace NTwitch.Rest.API
         public async Task<Subscription> GetSubscriptionAsync(ulong channelId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<Subscription>("GET", $"channels/{channelId}/subscriptions/{userId}", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<Subscription>("GET", $"channels/{channelId}/subscriptions/{userId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<SubscriptionCollection> GetSubscribersAsync(ulong channelId, bool ascending, PageOptions paging, RequestOptions options)
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<SubscriptionCollection>(new GetSubscribersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<SubscriptionCollection>(new GetSubscribersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         // Teams
@@ -480,14 +578,22 @@ namespace NTwitch.Rest.API
         public async Task<TeamCollection> GetChannelTeamsAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<TeamCollection>("GET", $"channels/{channelId}/teams", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<TeamCollection>("GET", $"channels/{channelId}/teams", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         // Users
         public async Task<User> GetMyUserAsync(RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<User>("GET", "user", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<User>("GET", "user", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<User> GetUserAsync(ulong userId, RequestOptions options)
@@ -520,19 +626,31 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<VideoCollection>(new GetFollowedVideosRequest(broadcastType, language, sort, paging), options).ConfigureAwait(false);
+            try
+            { 
+                return await SendAsync<VideoCollection>(new GetFollowedVideosRequest(broadcastType, language, sort, paging), options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task<Video> ModifyVideoAsync(string videoId, ModifyVideoParams modify, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            return await SendJsonAsync<Video>("PUT", $"videos/{videoId}", options).ConfigureAwait(false);
+            try
+            { 
+                return await SendJsonAsync<Video>("PUT", $"videos/{videoId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
 
         public async Task DeleteVideoAsync(string videoId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendAsync("DELETE", $"videos/{videoId}").ConfigureAwait(false);
+            try
+            { 
+                await SendAsync("DELETE", $"videos/{videoId}").ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { }
         }
 
         public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
@@ -551,7 +669,11 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
+            try
+            { 
+                return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
         }
     }
 }
