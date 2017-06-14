@@ -1,6 +1,4 @@
-﻿using Model = NTwitch.Rest.API.UserNotifications;
-
-namespace NTwitch.Rest
+﻿namespace NTwitch.Rest
 {
     public class RestUserNotifications
     {
@@ -11,14 +9,14 @@ namespace NTwitch.Rest
 
         internal RestUserNotifications() { }
 
-        internal static RestUserNotifications Create(Model model)
+        internal static RestUserNotifications Create(UserNotifications model)
         {
             var entity = new RestUserNotifications();
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(Model model)
+        internal virtual void Update(UserNotifications model)
         {
             IsPushEnabled = model.IsPushEnabled;
             IsEmailEnabled = model.IsEmailEnabled;

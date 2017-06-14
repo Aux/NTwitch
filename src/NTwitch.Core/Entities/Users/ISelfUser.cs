@@ -6,7 +6,7 @@ namespace NTwitch
     {
         string Email { get; }
         bool IsVerified { get; }
-        bool IsPartner { get; }
+        bool IsPartnered { get; }
         bool IsTwitterConnected { get; }
         //IUserNotifications Notifications { get; }
     }

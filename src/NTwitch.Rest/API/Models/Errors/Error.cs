@@ -2,13 +2,16 @@
 
 namespace NTwitch.Rest.API
 {
-    internal abstract class Error
+    internal class Error
     {
         [JsonProperty("error")]
-        public Optional<string> ErrorText { get; set; }
+        public string ErrorText { get; set; }
         [JsonProperty("status")]
-        public Optional<int> ErrorStatus { get; set; }
+        public int? ErrorStatus { get; set; }
         [JsonProperty("message")]
-        public Optional<ErrorMessage> ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public ErrorMessage GetErrorMessage()
+            => JsonConvert.DeserializeObject<ErrorMessage>(ErrorMessage);
     }
 }

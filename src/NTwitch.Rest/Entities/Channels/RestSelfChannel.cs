@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
@@ -29,9 +28,10 @@ namespace NTwitch.Rest
         }
 
         /// <summary> Get the most recent information for this entity </summary>
-        public override Task UpdateAsync()
+        public override async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var model = await Client.ApiClient.GetMyChannelAsync(null).ConfigureAwait(false);
+            Update(model);
         }
     }
 }

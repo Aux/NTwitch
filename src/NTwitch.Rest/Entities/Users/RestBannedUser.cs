@@ -25,8 +25,8 @@ namespace NTwitch.Rest
         internal override void Update(Model model)
         {
             base.Update(model);
-            StartAt = model.StartAt;
-            EndAt = model.EndAt;
+            StartAt = model.StartTimestamp;
+            EndAt = model.EndTimestamp;
             Bio = model.Bio;
         }
     }

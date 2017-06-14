@@ -68,9 +68,10 @@ namespace NTwitch.Rest
         }
 
         /// <summary> Get the most recent information for this entity </summary>
-        public virtual Task UpdateAsync()
+        public virtual async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var model = await Client.ApiClient.GetChannelAsync(Id, null).ConfigureAwait(false);
+            Update(model);
         }
     }
 }

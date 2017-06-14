@@ -11,7 +11,7 @@ namespace NTwitch.Rest
         /// <summary> True if this user's email is verified </summary>
         public bool IsVerified { get; private set; }
         /// <summary> True if this user is a partner </summary>
-        public bool IsPartner { get; private set; }
+        public bool IsPartnered { get; private set; }
         /// <summary> True if this user has connected their twitter account </summary>
         public bool IsTwitterConnected { get; private set; }
         /// <summary> This user's notification settings </summary>
@@ -32,14 +32,16 @@ namespace NTwitch.Rest
             base.Update(model);
             Email = model.Email;
             IsVerified = model.IsVerified;
-            IsPartner = model.IsPartner;
+            IsPartnered = model.IsPartnered;
             IsTwitterConnected = model.IsTwitterConnected;
             Notifications = RestUserNotifications.Create(model.Notifications);
         }
 
-        public Task UpdateAsync()
+        /// <summary> Get the most recent version of this entity </summary>
+        public override async Task UpdateAsync()
         {
-            throw new NotImplementedException();
+            var model = await Client.ApiClient.GetMyUserAsync(null).ConfigureAwait(false);
+            Update(model);
         }
     }
 }

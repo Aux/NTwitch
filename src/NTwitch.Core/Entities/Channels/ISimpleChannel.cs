@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NTwitch
 {
-    public interface ISimpleChannel : IEntity<ulong>, IEqualityComparer<ISimpleChannel>
+    public interface ISimpleChannel : IEntity<ulong>, IEquatable<ISimpleChannel>
     {
         string Name { get; }
         string DisplayName { get; }
