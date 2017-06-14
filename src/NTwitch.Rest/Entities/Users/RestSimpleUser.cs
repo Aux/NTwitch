@@ -45,22 +45,22 @@ namespace NTwitch.Rest
 
         // Follows
         /// <summary> Get all channel follows for this user </summary>
-        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(RequestOptions options = null)
-            => UserHelper.GetFollowsAsync(this, options);
+        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, PageOptions paging = null, RequestOptions options = null)
+            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, paging, options);
         /// <summary> Get a specific channel follow for this user </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
-            => UserHelper.GetFollowAsync(this, channelId, options);
+            => UserHelper.GetFollowAsync(Client, Id, channelId, options);
 
         // Heartbeat
         /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
-        public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
-            => UserHelper.CreateHeartbeatAsync(this, options);
-        /// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
-        public Task<string> GetHeartbeatAsync(RequestOptions options = null)
-            => UserHelper.GetHeartbeatAsync(this, options);
-        /// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
-        public Task DeleteHeartbeatAsync(RequestOptions options = null)
-            => UserHelper.DeleteHeartbeatAsync(this, options);
+        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
+        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
+        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
+        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
+        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
 
         // Streams
         /// <summary> Get this user's stream </summary>
@@ -73,18 +73,18 @@ namespace NTwitch.Rest
         // Subscriptions
         /// <summary> Get a specific channel subscription for this user, requires `user_subscriptions` </summary>
         public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId, RequestOptions options = null)
-            => UserHelper.GetSubscrptionAsync(this, options);
+            => UserHelper.GetSubscrptionAsync(Client, Id, channelId, options);
 
         // Users
-        /// <summary> Block this user, requires `user_blocks_edit` </summary>
-        public Task BlockAsync(RequestOptions options = null)
-            => UserHelper.BlockAsync(this, options);
-        /// <summary> Unblock this user, requires `user_blocks_edit` </summary>
-        public Task UnblockAsync(RequestOptions options = null)
-            => UserHelper.UnblockAsync(this, options);
+        ///// <summary> Block this user, requires `user_blocks_edit` </summary>
+        //public Task BlockAsync(RequestOptions options = null)
+        //    => UserHelper.BlockAsync(Client, Client.CurrentUser.Id, Id, options);
+        ///// <summary> Unblock this user, requires `user_blocks_edit` </summary>
+        //public Task UnblockAsync(RequestOptions options = null)
+        //    => UserHelper.UnblockAsync(Client, Id, options);
         /// <summary> Get all users currently blocked by this user, requires `user_blocks_read` </summary>
         public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(PageOptions paging = null, RequestOptions options = null)
-            => UserHelper.GetBlocksAsync(this, paging, options);
+            => UserHelper.GetBlocksAsync(Client, Id, paging, options);
 
         // Videos
         /// <summary> Get clips from all channels this user is following, requires `user_read` </summary>

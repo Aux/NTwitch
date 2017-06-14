@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 
 namespace NTwitch
 {
     public class HttpException : Exception
     {
-        public HttpRequestException Exception { get; }
         public HttpStatusCode StatusCode { get; }
+        public string Reason { get; }
 
-        public HttpException(HttpStatusCode code, HttpRequestException ex)
+        public HttpException(HttpStatusCode code, string reason = null)
+            : base($"{code} {reason}")
         {
-            Exception = ex;
             StatusCode = code;
+            Reason = reason;
         }
     }
 }
