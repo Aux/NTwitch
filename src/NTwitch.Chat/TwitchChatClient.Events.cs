@@ -16,8 +16,8 @@ namespace NTwitch.Chat
         private readonly AsyncEvent<Func<int, int, Task>> _latencyUpdatedEvent = new AsyncEvent<Func<int, int, Task>>();
 
         // Channels
-        public event Func<Task> MessageReceived { add { _messageReceivedEvent.Add(value); } remove { _messageReceivedEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<Task>> _messageReceivedEvent = new AsyncEvent<Func<Task>>();
+        public event Func<ChatMessage, Task> MessageReceived { add { _messageReceivedEvent.Add(value); } remove { _messageReceivedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<ChatMessage, Task>> _messageReceivedEvent = new AsyncEvent<Func<ChatMessage, Task>>();
 
         public event Func<string, Task> JoinedChannel { add { _joinedChannelEvent.Add(value); } remove { _joinedChannelEvent.Remove(value); } }
         private readonly AsyncEvent<Func<string, Task>> _joinedChannelEvent = new AsyncEvent<Func<string, Task>>();

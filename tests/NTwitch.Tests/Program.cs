@@ -1,4 +1,5 @@
-﻿using NTwitch.Pubsub;
+﻿using NTwitch.Chat;
+using NTwitch.Pubsub;
 using System;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchPubsubClient _client;
+        private TwitchChatClient _client;
 
         public async Task Start()
         {
@@ -18,38 +19,21 @@ namespace NTwitch.Tests
 
             try
             {
-                _client = new TwitchPubsubClient(new TwitchPubsubConfig
+                _client = new TwitchChatClient(new TwitchChatConfig
                 {
                     ClientId = clientId,
-                    LogLevel = LogSeverity.Debug
+                    LogLevel = LogSeverity.Debug,
+                    SocketClientProvider = DefaultWebSocketProvider.Instance,
+                    SocketHost = "wss://irc-ws.chat.twitch.tv"
                 });
 
                 _client.Log += OnLogAsync;
-                _client.AnonymousReceived += AnonymousReceivedAsync;
+                _client.MessageReceived += OnMessageReceivedAsync;
 
                 await _client.LoginAsync(token);
-
-                var id = _client.TokenInfo.UserId;
-                await _client.ListenWhispersAsync(id);
-
-                await Task.Delay(5000);
-                await _client.ListenAsync($"video-playback.{id}", $"video-playback.{_client.TokenInfo.Username}");
-
-                //_client = new TwitchChatClient(new TwitchChatConfig
-                //{
-                //    ClientId = clientId,
-                //    LogLevel = LogSeverity.Debug,
-                //    SocketClientProvider = DefaultWebSocketProvider.Instance,
-                //    SocketHost = "wss://irc-ws.chat.twitch.tv"
-                //});
-
-                //_client.Log += OnLogAsync;
-
-                //await _client.LoginAsync(token);
-                //await _client.ConnectAsync();
-
-                //await _client.JoinChannelAsync("wraxu");
-                //await _client.JoinChannelAsync("timthetatman");
+                await _client.ConnectAsync();
+                
+                await _client.JoinChannelAsync("wraxu");
 
             }
             catch (Exception ex)
@@ -60,9 +44,9 @@ namespace NTwitch.Tests
             await Task.Delay(-1);
         }
 
-        private Task AnonymousReceivedAsync(string arg)
+        private Task OnMessageReceivedAsync(ChatMessage msg)
         {
-            return Console.Out.WriteLineAsync(arg);
+            return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
         }
 
         private Task OnLogAsync(LogMessage msg)

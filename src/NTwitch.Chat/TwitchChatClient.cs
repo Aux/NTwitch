@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using NTwitch.Chat.API;
 
 namespace NTwitch.Chat
 {
@@ -81,32 +82,33 @@ namespace NTwitch.Chat
                         await ApiClient.SendPingAsync(null).ConfigureAwait(false);
                         break;
                     case "JOIN":
-                        await _joinedChannelEvent.InvokeAsync(msg.Parameters.First()).ConfigureAwait(false);
+                        await _joinedChannelEvent.InvokeAsync(msg.Parameters.First().Substring(1)).ConfigureAwait(false);
                         break;
                     case "PART":
-                        await _leftChannelEvent.InvokeAsync(msg.Parameters.First()).ConfigureAwait(false);
+                        await _leftChannelEvent.InvokeAsync(msg.Parameters.First().Substring(1)).ConfigureAwait(false);
                         break;
-                    //case "PRIVMSG":
-                    //    await _messageReceivedEvent.InvokeAsync().ConfigureAwait(false);
-                    //    break;
-                    //case "MODE":
-                    //    break;
-                    //case "NOTICE":
-                    //    break;
-                    //case "CLEARCHAT":
-                    //    break;
-                    //case "USERSTATE":
-                    //    break;
-                    //case "RECONNECT":
-                    //    break;
-                    //case "ROOMSTATE":
-                    //    break;
-                    //case "USERNOTICE":
-                    //    break;
-                    //case "HOSTTARGET":
-                    //    break;
-                    //case "GLOBALUSERSTATE":
-                    //    break;
+                    case "PRIVMSG":
+                        var model = MessageReceivedEvent.Create(msg);
+                        await _messageReceivedEvent.InvokeAsync(ChatMessage.Create(this, model)).ConfigureAwait(false);
+                        break;
+                    case "MODE":
+                        break;
+                    case "NOTICE":
+                        break;
+                    case "CLEARCHAT":
+                        break;
+                    case "USERSTATE":
+                        break;
+                    case "RECONNECT":
+                        break;
+                    case "ROOMSTATE":
+                        break;
+                    case "USERNOTICE":
+                        break;
+                    case "HOSTTARGET":
+                        break;
+                    case "GLOBALUSERSTATE":
+                        break;
                     default:
                         await _chatLogger.WarningAsync($"Unknown command {msg.Command}").ConfigureAwait(false);
                         break;

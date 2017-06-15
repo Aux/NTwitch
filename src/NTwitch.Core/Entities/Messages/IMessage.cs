@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NTwitch
 {
-    public interface IMessage : IEntity<string>
+    public interface IMessage : IEntity<string>, IEquatable<IMessage>
     {
     }
 }
