@@ -124,8 +124,8 @@ namespace NTwitch.Pubsub
         }
 
         public Task SendSocketAsync(PubsubRequestBuilder builder, RequestOptions options = null)
-            => SendSocketAsync(builder.GetPayload(true), builder.GetNonce(), options);
-        public async Task SendSocketAsync(object payload, string nonce = null, RequestOptions options = null)
+            => SendSocketAsync(builder.Type, builder.GetPayload(true), builder.GetNonce(), options);
+        public async Task SendSocketAsync(string type, object payload, string nonce = null, RequestOptions options = null)
         {
             CheckLoginState();
             if (ConnectionState == ConnectionState.Disconnected)
@@ -136,7 +136,7 @@ namespace NTwitch.Pubsub
                 bytes = Encoding.UTF8.GetBytes(SerializeJson(payload));
             var request = new PubsubRequest(WebSocketClient, null, bytes, true, options);
             await request.SendAsync().ConfigureAwait(false);
-            await _sentPusbubMessageEvent.InvokeAsync("").ConfigureAwait(false);
+            await _sentPusbubMessageEvent.InvokeAsync(type).ConfigureAwait(false);
         }
         
         // General

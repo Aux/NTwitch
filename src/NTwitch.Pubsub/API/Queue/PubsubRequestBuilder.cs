@@ -6,6 +6,7 @@ namespace NTwitch.Pubsub.Queue
 {
     public class PubsubRequestBuilder
     {
+        public string Type => _defaultType;
         public List<string> Topics { get; }
 
         private readonly string _nonce;

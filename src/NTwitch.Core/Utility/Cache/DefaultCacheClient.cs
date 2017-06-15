@@ -10,16 +10,18 @@ namespace NTwitch
         private readonly ConcurrentDictionary<ulong, IUser> _users;
         private readonly ConcurrentDictionary<ulong, IChannel> _channels;
         private readonly ConcurrentDictionary<string, IMessage> _messages;
+        private readonly int _msgCacheSize;
 
         public IReadOnlyCollection<IUser> Users => _users.Select(x => x.Value).ToArray();
         public IReadOnlyCollection<IChannel> Channels => _channels.Select(x => x.Value).ToArray();
         public IReadOnlyCollection<IMessage> Messages => _messages.Select(x => x.Value).ToArray();
 
-        public DefaultCacheClient()
+        public DefaultCacheClient(int msgCacheSize)
         {
             _users = new ConcurrentDictionary<ulong, IUser>();
             _channels = new ConcurrentDictionary<ulong, IChannel>();
             _messages = new ConcurrentDictionary<string, IMessage>();
+            _msgCacheSize = msgCacheSize;
         }
 
         public void AddUser(IUser user)

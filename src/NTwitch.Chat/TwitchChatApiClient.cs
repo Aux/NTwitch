@@ -4,6 +4,8 @@ using NTwitch.Chat.Queue;
 using NTwitch.Rest;
 using NTwitch.Rest.API;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,16 +25,18 @@ namespace NTwitch.Chat
         private string _socketUrl;
 
         internal ISocketClient SocketClient { get; }
+        internal ICacheClient CacheClient { get; }
 
         public ConnectionState ConnectionState { get; private set; }
 
-        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, string clientId, string userAgent,
+        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, CacheClientProvider cacheClientProvider, string clientId, string userAgent,
             string socketUrl, RetryMode defaultRetryMode = RetryMode.AlwaysRetry, JsonSerializer serializer = null)
             : base(restClientProvider, clientId, userAgent, serializer)
         {
             _socketUrl = socketUrl;
             SocketClient = socketClientProvider();
-
+            CacheClient = cacheClientProvider(100);
+            
             SocketClient.TextMessage += async text =>
             {
                 var msg = ChatResponse.Parse(text);
@@ -196,6 +200,22 @@ namespace NTwitch.Chat
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync("HOSTTARGET", $"#{hostName} {channelName}").ConfigureAwait(false);
+        }
+
+        // Messages
+        public IReadOnlyCollection<ChatMessage> GetMessages(ulong channelId, int count)
+        {
+            var messages = CacheClient.Messages.OfType<ChatMessage>().Where(x => x.Channel.Id == channelId);
+            if (count >= 0)
+                messages = messages.Take(count);
+            return messages.ToArray();
+        }
+
+        // Users
+        public TUser GetUser<TUser>(ulong userId) where TUser : ISimpleUser
+        {
+            var user = CacheClient.GetUser(userId);
+            return (TUser)user;
         }
     }
 }

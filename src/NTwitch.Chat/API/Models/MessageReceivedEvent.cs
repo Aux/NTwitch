@@ -6,13 +6,16 @@ namespace NTwitch.Chat.API
 {
     internal class MessageReceivedEvent
     {
+        // Prefix
+        public string UserName { get; set; }
+
         // Tags
         // Message
         public string Id { get; set; }
         public DateTime SentTimestamp { get; set; }
         public DateTime TmiSentTimestamp { get; set; }
-        public string Badges { get; set; }
-        public string Emotes { get; set; }
+        public string Badges { get; set; }              // Parse this
+        public string Emotes { get; set; }              // Parse this
 
         // Channel
         public ulong ChannelId { get; set; }
@@ -39,6 +42,9 @@ namespace NTwitch.Chat.API
 
         internal void Update(ChatResponse msg)
         {
+            int nameEndIndex = msg.Prefix.IndexOf('!');
+            UserName = msg.Prefix.Substring(0, nameEndIndex);
+
             Id = msg.Tags["id"];
 
             if (msg.Tags.TryGetValue("sent-ts", out string sentTs))

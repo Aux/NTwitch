@@ -37,7 +37,7 @@ namespace NTwitch.Chat
         }
 
         private static TwitchChatApiClient CreateApiClient(TwitchChatConfig config)
-            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
+            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.CacheClientProvider, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
 
         internal override void Dispose(bool disposing)
         {
@@ -70,6 +70,9 @@ namespace NTwitch.Chat
         public Task JoinChannelAsync(string name, RequestOptions options = null)
             => ApiClient.JoinChannelAsync(name, options);
 
+        // Users
+
+
         private async Task ProcessMessageAsync(ChatResponse msg)
         {
             await Task.Delay(0);
@@ -88,26 +91,35 @@ namespace NTwitch.Chat
                         await _leftChannelEvent.InvokeAsync(msg.Parameters.First().Substring(1)).ConfigureAwait(false);
                         break;
                     case "PRIVMSG":
-                        var model = MessageReceivedEvent.Create(msg);
-                        await _messageReceivedEvent.InvokeAsync(ChatMessage.Create(this, model)).ConfigureAwait(false);
+                        {
+                            var model = MessageReceivedEvent.Create(msg);
+                            var entity = ChatMessage.Create(this, model);
+                            await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
+                            ApiClient.CacheClient.AddMessage(entity);
+                        }
                         break;
-                    case "MODE":
+                    case "MODE":  // missing
                         break;
-                    case "NOTICE":
+                    case "NOTICE":  // missing
                         break;
                     case "CLEARCHAT":
                         break;
                     case "USERSTATE":
+                        {
+                            var model = UserStateEvent.Create(msg);
+                            var entity = ChatSelfUser.Create(this, model);
+                            ApiClient.CacheClient.AddUser(entity);
+                        }
                         break;
-                    case "RECONNECT":
+                    case "RECONNECT":  // missing
                         break;
                     case "ROOMSTATE":
                         break;
                     case "USERNOTICE":
                         break;
-                    case "HOSTTARGET":
+                    case "HOSTTARGET":  // missing
                         break;
-                    case "GLOBALUSERSTATE":
+                    case "GLOBALUSERSTATE":  // missing
                         break;
                     default:
                         await _chatLogger.WarningAsync($"Unknown command {msg.Command}").ConfigureAwait(false);

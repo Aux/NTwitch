@@ -1,4 +1,4 @@
 ﻿namespace NTwitch
 {
-    public delegate ICacheClient CacheClientProvider();
+    public delegate ICacheClient CacheClientProvider(int msgCacheSize);
 }

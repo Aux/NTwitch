@@ -28,7 +28,7 @@ namespace NTwitch.Chat
         {
             Name = model.ChannelName;
         }
-
+        
         // Channels
         ///// <summary> Change properties of this channel </summary>
         //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
