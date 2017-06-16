@@ -23,7 +23,6 @@ namespace NTwitch.Rest
         internal LogManager LogManager { get; }
         internal TwitchRestApiClient ApiClient { get; }
         public LoginState LoginState { get; private set; }
-        public ISelfUser CurrentUser { get; protected set; }
         public ITokenInfo TokenInfo { get; protected set; }
 
         internal BaseTwitchClient(TwitchConfig config, TwitchRestApiClient client)
@@ -34,7 +33,7 @@ namespace NTwitch.Rest
 
             _stateLock = new SemaphoreSlim(1, 1);
             RestLogger = LogManager.CreateLogger("Rest");
-            ApiClient.SentRequest += async (method, endpoint, ms) => await RestLogger.VerboseAsync($"{method} {endpoint}: {ms} ms");
+            ApiClient.SentRequest += async (method, endpoint, ms) => await RestLogger.VerboseAsync($"{method} /{endpoint}: {ms} ms");
         }
 
         internal virtual void Dispose(bool disposing)
@@ -119,7 +118,7 @@ namespace NTwitch.Rest
             await ApiClient.LogoutAsync().ConfigureAwait(false);
 
             await OnLogoutAsync().ConfigureAwait(false);
-            CurrentUser = null;
+            TokenInfo = null;
             LoginState = LoginState.LoggedOut;
 
             await _loggedOutEvent.InvokeAsync().ConfigureAwait(false);
@@ -144,13 +143,9 @@ namespace NTwitch.Rest
 
         // User
         /// <summary> Get the user associated with the authorized token </summary>
-        public async Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
-        {
-            var user = await ClientHelper.GetCurrentUserAsync(this, options).ConfigureAwait(false);
-            CurrentUser = user;
-            return user;
-        }
-
+        public Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
+            => ClientHelper.GetCurrentUserAsync(this, options);
+        
         /// <summary> Get information about a user by id </summary>
         public Task<RestUser> GetUserAsync(ulong userId)
             => ClientHelper.GetUserAsync(this, userId);
@@ -234,7 +229,6 @@ namespace NTwitch.Rest
 
         // ITwitchClient
         ConnectionState ITwitchClient.ConnectionState => ConnectionState.Disconnected;
-        ISelfUser ITwitchClient.CurrentUser => CurrentUser;
         ITokenInfo ITwitchClient.TokenInfo => TokenInfo;
 
         Task ITwitchClient.ConnectAsync()

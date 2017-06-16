@@ -7,7 +7,6 @@ namespace NTwitch
     public interface ITwitchClient : IDisposable
     {
         ITokenInfo TokenInfo { get; }
-        ISelfUser CurrentUser { get; }
         ConnectionState ConnectionState { get; }
 
         Task ConnectAsync();

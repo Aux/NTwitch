@@ -4,7 +4,6 @@ namespace NTwitch.Rest
 {
     public class TwitchRestClient : BaseTwitchClient, ITwitchClient
     {
-        public new RestSelfUser CurrentUser => base.CurrentUser as RestSelfUser;
         public new RestTokenInfo TokenInfo => base.TokenInfo as RestTokenInfo;
 
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
