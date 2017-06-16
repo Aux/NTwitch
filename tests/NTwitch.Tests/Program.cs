@@ -1,5 +1,6 @@
 ﻿using NTwitch.Chat;
 using NTwitch.Pubsub;
+using NTwitch.Rest;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchChatClient _client;
+        private TwitchRestClient _client;
 
         public async Task Start()
         {
@@ -19,26 +20,16 @@ namespace NTwitch.Tests
 
             try
             {
-                _client = new TwitchChatClient(new TwitchChatConfig
+                _client = new TwitchRestClient(new TwitchRestConfig
                 {
                     ClientId = clientId,
                     LogLevel = LogSeverity.Debug,
-                    SocketClientProvider = DefaultWebSocketProvider.Instance,
-                    SocketHost = "wss://irc-ws.chat.twitch.tv"
                 });
 
                 _client.Log += OnLogAsync;
-                _client.MessageReceived += OnMessageReceivedAsync;
-
-                await _client.LoginAsync(token);
-                await _client.ConnectAsync();
-
-                //var streams = await _client.GetStreamsAsync(x => { x.Game = "Overwatch"; });
-                //foreach (var stream in streams)
-                //    await _client.JoinChannelAsync(stream.Channel.Name);
                 
-                await _client.JoinChannelAsync("auxesistv");
-
+                await _client.LoginAsync(token);
+                var user = await _client.GetCurrentUserAsync();
             }
             catch (Exception ex)
             {

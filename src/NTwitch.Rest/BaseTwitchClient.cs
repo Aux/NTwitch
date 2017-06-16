@@ -88,7 +88,7 @@ namespace NTwitch.Rest
         {
             if (!validateToken) return;
 
-            var tokenInfo = await GetTokenInfo().ConfigureAwait(false);
+            var tokenInfo = await GetTokenInfoAsync().ConfigureAwait(false);
             if (!tokenInfo.IsValid)
             {
                 await RestLogger.ErrorAsync("Token is not valid").ConfigureAwait(false);
@@ -132,7 +132,7 @@ namespace NTwitch.Rest
         
         // Tokens
         /// <summary> Get information about the currently authorized token </summary>
-        public async Task<ITokenInfo> GetTokenInfo(RequestOptions options = null)
+        public async Task<ITokenInfo> GetTokenInfoAsync(RequestOptions options = null)
         {
             if (TokenInfo != null)
                 return TokenInfo;
