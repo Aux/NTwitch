@@ -10,10 +10,10 @@ namespace NTwitch.Rest
         /// <summary> The user associated with this block </summary>
         public RestUser User { get; set; }
 
-        internal RestBlockedUser(BaseRestClient client, ulong id) 
+        internal RestBlockedUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal static RestBlockedUser Create(BaseRestClient client, Model model)
+        internal static RestBlockedUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestBlockedUser(client, model.Id);
             entity.Update(model);

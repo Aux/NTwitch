@@ -2,17 +2,17 @@
 
 namespace NTwitch.Rest
 {
-    public class RestTopCommunity : RestSimpleCommunity
+    public class RestTopCommunity : RestSimpleCommunity, ITopCommunity
     {
         /// <summary> The number of channels in this community </summary>
         public uint Channels { get; private set; }
         /// <summary> The total number of viewers watching channels in this community </summary>
         public uint Viewers { get; private set; }
 
-        internal RestTopCommunity(BaseRestClient client, string id) 
+        internal RestTopCommunity(BaseTwitchClient client, string id) 
             : base(client, id) { }
         
-        internal new static RestTopCommunity Create(BaseRestClient client, Model model)
+        internal new static RestTopCommunity Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestTopCommunity(client, model.Id);
             entity.Update(model);

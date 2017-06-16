@@ -1,9 +1,11 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetUsersRequest : RestRequest
+    public class GetUsersRequest : RestRequestBuilder
     {
-        public GetUsersRequest(string token, string[] usernames)
-            : base("GET", "users", token)
+        public GetUsersRequest(string[] usernames) 
+            : base("GET", "users")
         {
             Parameters.Add("login", string.Join(",", usernames));
         }

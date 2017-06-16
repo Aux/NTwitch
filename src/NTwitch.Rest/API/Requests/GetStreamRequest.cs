@@ -1,22 +1,13 @@
-﻿namespace NTwitch.Rest
-{
-    internal class GetStreamRequest : RestRequest
-    {
-        public GetStreamRequest(string token, ulong channelId, StreamType type) 
-            : base("GET", $"streams/{channelId}", token)
-        {
-            string value = null;
-            switch (type)
-            {
-                case StreamType.All:
-                    value = "all"; break;
-                case StreamType.Live:
-                    value = "live"; break;
-                case StreamType.Playlist:
-                    value = "playlist"; break;
-            }
+﻿using NTwitch.Rest.Queue;
 
-            Parameters.Add("stream_type", value);
+namespace NTwitch.Rest.API
+{
+    public class GetStreamRequest : RestRequestBuilder
+    {
+        public GetStreamRequest(ulong channelId, StreamType type)
+            : base("GET", $"streams/{channelId}")
+        {
+            Parameters.Add("stream_type", type.ToString().ToLower());
         }
     }
 }

@@ -12,10 +12,10 @@ namespace NTwitch.Rest
         /// <summary> The description provided for this user </summary>
         public string Bio { get; private set; }
 
-        internal RestBannedUser(BaseRestClient client, ulong id)
+        internal RestBannedUser(BaseTwitchClient client, ulong id)
             : base(client, id) { }
         
-        internal new static RestBannedUser Create(BaseRestClient client, Model model)
+        internal new static RestBannedUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestBannedUser(client, model.Id);
             entity.Update(model);
@@ -25,8 +25,8 @@ namespace NTwitch.Rest
         internal override void Update(Model model)
         {
             base.Update(model);
-            StartAt = model.StartAt;
-            EndAt = model.EndAt;
+            StartAt = model.StartTimestamp;
+            EndAt = model.EndTimestamp;
             Bio = model.Bio;
         }
     }

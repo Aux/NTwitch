@@ -25,11 +25,11 @@ namespace Basic
             _client = new TwitchRestClient(new TwitchRestConfig()
             {
                 ClientId = clientid,
-                LogLevel = LogLevel.Info
+                LogLevel = LogSeverity.Info
             });
 
             _client.Log += OnLogAsync;
-
+            
             while (true)
             {
                 Console.WriteLine();

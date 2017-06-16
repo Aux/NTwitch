@@ -1,31 +1,22 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetStreamsRequest : RestRequest
+    public class GetStreamsRequest : RestRequestBuilder
     {
-        public GetStreamsRequest(string token, GetStreamsParams options) 
-            : base("GET", $"streams", token)
+        public GetStreamsRequest(GetStreamsParams parameters, PageOptions paging)
+            : base("GET", "streams")
         {
-            if (options.ChannelIds != null)
-                Parameters.Add("channel", string.Join(",", options.ChannelIds));
-            if (options.Game != null)
-                Parameters.Add("game", options.Game);
-            if (options.Language != null)
-                Parameters.Add("language", options.Language);
-
-            string value = null;
-            switch (options.Type)
-            {
-                case StreamType.All:
-                    value = "all"; break;
-                case StreamType.Live:
-                    value = "live"; break;
-                case StreamType.Playlist:
-                    value = "playlist"; break;
-            }
-
-            Parameters.Add("type", value);
-            Parameters.Add("limit", options.Limit);
-            Parameters.Add("offset", options.Offset);
+            if (parameters.ChannelIds != null)
+                Parameters.Add("channel", string.Join(",", parameters.ChannelIds));
+            if (parameters.Game != null)
+                Parameters.Add("game", parameters.Game);
+            if (parameters.Language != null)
+                Parameters.Add("language", parameters.Language);
+            
+            Parameters.Add("type", parameters.Type.ToString().ToLower());
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

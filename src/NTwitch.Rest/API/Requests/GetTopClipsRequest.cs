@@ -1,15 +1,16 @@
-﻿namespace NTwitch.Rest.API
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetTopClipsRequest : RestRequest
+    public class GetTopClipsRequest : RestRequestBuilder
     {
-        public GetTopClipsRequest(string token, TopClipsParams options)
-            : base("GET", "clips/top", token)
+        public GetTopClipsRequest(TopClipsParams parameters)
+            : base("GET", "clips/top")
         {
-            Parameters.Add("limit", options.Limit);
-            Parameters.Add("trending", options.IsTrending);
-            Parameters.Add("period", options.Period.ToLower());
-            Parameters.Add("channel", string.Join(",", options.Channels));
-            Parameters.Add("game", string.Join(",", options.Games));
+            Parameters.Add("trending", parameters.IsTrending);
+            Parameters.Add("period", parameters.Period.ToLower());
+            Parameters.Add("channel", string.Join(",", parameters.Channels));
+            Parameters.Add("game", string.Join(",", parameters.Games));
         }
     }
 }

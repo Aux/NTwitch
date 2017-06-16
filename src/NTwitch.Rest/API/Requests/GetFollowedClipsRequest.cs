@@ -1,12 +1,14 @@
-﻿namespace NTwitch.Rest.API
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetFollowedClipsRequest : RestRequest
+    public class GetFollowedClipsRequest : RestRequestBuilder
     {
-        public GetFollowedClipsRequest(string token, bool istrending, uint limit)
-            : base("GET", "clips/followed", token)
+        public GetFollowedClipsRequest(bool istrending, PageOptions paging)
+            : base("GET", "clips/followed")
         {
             Parameters.Add("trending", istrending);
-            Parameters.Add("limit", limit);
+            Parameters.Add("limit", paging.Limit);
         }
     }
 }

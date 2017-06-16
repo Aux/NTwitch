@@ -3,7 +3,7 @@ using Model = NTwitch.Rest.API.ChatBadges;
 
 namespace NTwitch.Rest
 {
-    public class RestChatBadges
+    public class RestChatBadges : IChatBadges
     {
         /// <summary> The badge that appears beside twitch admins in chat </summary>
         public IReadOnlyDictionary<string, string> Admin { get; private set; }

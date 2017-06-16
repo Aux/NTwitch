@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using Model = NTwitch.Rest.API.Community;
+﻿using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleCommunity : RestEntity<string>, IEqualityComparer<RestSimpleCommunity>
+    public class RestSimpleCommunity : RestEntity<string>, ISimpleCommunity
     {
         /// <summary> The name of this community </summary>
         public string Name { get; private set; }
         /// <summary> The url to the avatar image of this community </summary>
         public string AvatarUrl { get; private set; }
 
-        internal RestSimpleCommunity(BaseRestClient client, string id)
+        internal RestSimpleCommunity(BaseTwitchClient client, string id)
             : base(client, id) { }
         
-        internal static RestSimpleCommunity Create(BaseRestClient client, Model model)
+        internal static RestSimpleCommunity Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestSimpleCommunity(client, model.Id);
             entity.Update(model);
@@ -31,10 +30,9 @@ namespace NTwitch.Rest
             Name = community.Name;
             AvatarUrl = community.AvatarUrl;
         }
-        
-        public bool Equals(RestSimpleCommunity x, RestSimpleCommunity y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestSimpleCommunity obj)
-            => obj.GetHashCode();
+
+        // IEqualityComparer
+        public bool Equals(ISimpleCommunity x, ISimpleCommunity y) => x.Id == y.Id;
+        public int GetHashCode(ISimpleCommunity obj) => obj.GetHashCode();
     }
 }

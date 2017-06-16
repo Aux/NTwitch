@@ -4,9 +4,9 @@ namespace NTwitch.Pubsub
 {
     public class TwitchPubsubConfig : TwitchRestConfig
     {
-        /// <summary> Custom client provider for pubsub requests </summary>
-        public SocketClient PubsubProvider { get; set; } = null;
+        /// <summary> Gets or sets the provider used to generate new websocket connections. </summary>
+        public SocketClientProvider WebSocketProvider { get; set; } = DefaultWebSocketProvider.Instance;
         /// <summary> The host to connect to when making pubsub requests </summary>
-        public string PubsubHost { get; set; } = "wss://pubsub-edge.twitch.tv";
+        public string WebSocketHost { get; set; } = "wss://pubsub-edge.twitch.tv";
     }
 }

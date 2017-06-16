@@ -1,13 +1,15 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetChannelFollowersRequest : RestRequest
+    public class GetChannelFollowersRequest : RestRequestBuilder
     {
-        public GetChannelFollowersRequest(string token, ulong channelId, bool ascending, uint limit, uint offset) 
-            : base("GET", $"channels/{channelId}/follows", token)
+        public GetChannelFollowersRequest(ulong channelId, bool ascending, PageOptions paging)
+            : base("GET", $"channels/{channelId}/follows")
         {
-            Parameters.Add("limit", limit);
-            Parameters.Add("offset", offset);
-            Parameters.Add("direction", ascending ? "asc" : "desc");
+            Parameters.Add("direction", ascending ? "desc" : "asc");
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

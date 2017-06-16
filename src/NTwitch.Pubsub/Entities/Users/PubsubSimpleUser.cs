@@ -1,76 +1,95 @@
 ﻿using NTwitch.Rest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BitsModel = NTwitch.Pubsub.API.BitsMessage;
-using SelfModel = NTwitch.Pubsub.API.WhisperUser;
-using WhisperModel = NTwitch.Pubsub.API.WhisperMessage;
+using SubModel = NTwitch.Pubsub.API.Subscription;
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubSimpleUser : PubsubEntity<ulong>, IUser
+    public class PubsubSimpleUser : PubsubEntity<ulong>, ISimpleUser
     {
+        /// <summary> The display name of this user </summary>
+        public string DisplayName { get; private set; }
+        /// <summary> The name of this user </summary>
         public string Name { get; private set; }
 
-        internal PubsubSimpleUser(BasePubsubClient client, ulong id)
+        internal PubsubSimpleUser(TwitchPubsubClient client, ulong id)
             : base(client, id) { }
+        
+        public bool Equals(ISimpleUser other)
+            => Id == other.Id;
 
-        internal static PubsubSimpleUser Create(BasePubsubClient client, BitsModel model)
+        internal static PubsubSimpleUser Create(TwitchPubsubClient client, SubModel model)
         {
             var entity = new PubsubSimpleUser(client, model.UserId);
             entity.Update(model);
             return entity;
         }
 
-        internal static PubsubSimpleUser Create(BasePubsubClient client, WhisperModel model)
+        internal virtual void Update(SubModel model)
         {
-            var entity = new PubsubSimpleUser(client, model.FromId);
-            entity.Update(model);
-            return entity;
-        }
-
-        internal static PubsubSimpleUser Create(BasePubsubClient client, SelfModel model)
-        {
-            var entity = new PubsubSimpleUser(client, model.Id);
-            entity.Update(model);
-            return entity;
-        }
-
-        internal virtual void Update(BitsModel model)
-        {
-            Name = model.ChannelName;
-        }
-
-        internal virtual void Update(WhisperModel model)
-        {
-            Name = model.Tags.Login;
-        }
-
-        internal virtual void Update(SelfModel model)
-        {
+            DisplayName = model.DisplayName;
             Name = model.Username;
         }
+        
+        // Channels
+        /// <summary> Get this user's channel </summary>
+        public Task<RestChannel> GetChannelAsync(RequestOptions options = null)
+            => ClientHelper.GetChannelAsync(Client, Id, options);
+
+        // Chat
+        /// <summary> Get all chat emotes available to this user </summary>
+        public Task<IReadOnlyDictionary<string, IReadOnlyCollection<RestEmote>>> GetEmotesAsync(RequestOptions options = null)
+            => UserHelper.GetEmotesAsync(Client, Id, options);
+
+        // Follows
+        /// <summary> Get all channel follows for this user </summary>
+        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, PageOptions paging = null, RequestOptions options = null)
+            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, paging, options);
+        /// <summary> Get a specific channel follow for this user </summary>
+        public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
+            => UserHelper.GetFollowAsync(Client, Id, channelId, options);
+
+        // Heartbeat
+        /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
+        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
+        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
+        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
+        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
+        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
+
+        // Streams
+        /// <summary> Get this user's stream </summary>
+        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
+            => ClientHelper.GetStreamAsync(Client, Id, type);
+        /// <summary> Get streams this user is following, requires `user_read` </summary>
+        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedStreamsAsync(Client, type, paging, options);
+
+        // Subscriptions
+        /// <summary> Get a specific channel subscription for this user, requires `user_subscriptions` </summary>
+        public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId, RequestOptions options = null)
+            => UserHelper.GetSubscrptionAsync(Client, Id, channelId, options);
 
         // Users
-        /// <summary> Get information about this user </summary>
-        public Task GetUserAsync()
-            => RestHelper.GetUserAsync(Client, Id);
+        ///// <summary> Block this user, requires `user_blocks_edit` </summary>
+        //public Task BlockAsync(RequestOptions options = null)
+        //    => UserHelper.BlockAsync(Client, Client.CurrentUser.Id, Id, options);
+        ///// <summary> Unblock this user, requires `user_blocks_edit` </summary>
+        //public Task UnblockAsync(RequestOptions options = null)
+        //    => UserHelper.UnblockAsync(Client, Id, options);
+        /// <summary> Get all users currently blocked by this user, requires `user_blocks_read` </summary>
+        public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(PageOptions paging = null, RequestOptions options = null)
+            => UserHelper.GetBlocksAsync(Client, Id, paging, options);
 
-        // Channels
-        /// <summary> Get information about this user's channel </summary>
-        public Task<RestChannel> GetChannelAsync()
-            => RestHelper.GetChannelAsync(Client, Id);
+        // Videos
+        /// <summary> Get clips from all channels this user is following, requires `user_read` </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetFollowedClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
         
-        // Emotes
-        /// <summary> Get all emotes available to this user </summary>
-        public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
-            => UserHelper.GetEmotesAsync(Client, Id);
-        
-        // Follows
-        /// <summary> Get all channels this user is following </summary>
-        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
-            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, limit, offset);
-        /// <summary> Get a specific channel follow by id </summary>
-        public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
-            => UserHelper.GetFollowAsync(Client, Id, channelId);
+        // ISimpleUser
+        string ISimpleUser.AvatarUrl => null;
     }
 }

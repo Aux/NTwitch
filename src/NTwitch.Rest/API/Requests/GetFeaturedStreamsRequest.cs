@@ -1,12 +1,14 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetFeaturedStreamsRequest : RestRequest
+    public class GetFeaturedStreamsRequest : RestRequestBuilder
     {
-        public GetFeaturedStreamsRequest(string token, uint limit, uint offset)
-            : base("GET", "streams/featured", token)
+        public GetFeaturedStreamsRequest(PageOptions paging) 
+            : base("GET", "streams/featured")
         {
-            Parameters.Add("limit", limit);
-            Parameters.Add("offset", offset);
+            Parameters.Add("limit", paging.Limit);
+            Parameters.Add("offset", paging.Offset);
         }
     }
 }

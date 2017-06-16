@@ -10,15 +10,15 @@ namespace NTwitch.Rest
         public DateTime CreatedAt { get; private set; }
         /// <summary> The date and time this user was last updated </summary>
         public DateTime UpdatedAt { get; private set; }
-        /// <summary>  </summary>
+        /// <summary> This user's type </summary>
         public string Type { get; private set; }
         /// <summary> This user's profile description </summary>
         public string Bio { get; private set; }
         
-        internal RestUser(BaseRestClient client, ulong id) 
+        internal RestUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestUser Create(BaseRestClient client, Model model)
+        internal new static RestUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestUser(client, model.Id);
             entity.Update(model);
@@ -27,11 +27,18 @@ namespace NTwitch.Rest
 
         internal override void Update(Model model)
         {
+            base.Update(model);
             CreatedAt = model.CreatedAt;
             UpdatedAt = model.UpdatedAt;
             Type = model.Type;
             Bio = model.Bio;
-            base.Update(model);
+        }
+
+        /// <summary> Get the most recent version of this entity </summary>
+        public virtual async Task UpdateAsync()
+        {
+            var model = await Client.ApiClient.GetUserAsync(Id, null);
+            Update(model);
         }
     }
 }

@@ -1,22 +1,22 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using NTwitch.Rest.API;
 
 namespace NTwitch.Rest
 {
-    public class TwitchRestClient : BaseRestClient, ITwitchClient
+    public class TwitchRestClient : BaseTwitchClient, ITwitchClient
     {
+        public new RestTokenInfo TokenInfo => base.TokenInfo as RestTokenInfo;
+
         public TwitchRestClient() : this(new TwitchRestConfig()) { }
-        public TwitchRestClient(TwitchRestConfig config) : base(config) { }
+        public TwitchRestClient(TwitchRestConfig config) 
+            : base(config, CreateApiClient(config)) { }
 
-        /// <summary> Authorize this client with a clientid or oauth token </summary>
-        public Task<RestTokenInfo> LoginAsync(string token)
-            => RestLoginAsync(token);
+        private static TwitchRestApiClient CreateApiClient(TwitchRestConfig config)
+            => new TwitchRestApiClient(config.RestClientProvider, config.ClientId, TwitchConfig.UserAgent);
 
-        Task ITwitchClient.ConnectAsync()
-            => throw new NotSupportedException();
-        Task ITwitchClient.DisconnectAsync()
-            => throw new NotSupportedException();
-        Task ITwitchClient.LoginAsync(string token)
-            => throw new NotImplementedException();
+        internal override void Dispose(bool disposing)
+        {
+            if (disposing)
+                ApiClient.Dispose();
+        }
     }
 }

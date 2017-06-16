@@ -4,19 +4,22 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, IUser, IEqualityComparer<IUser>
+    public class RestSimpleUser : RestEntity<ulong>, ISimpleUser
     {
-        /// <summary> The url for this user's logo </summary>
-        public string LogoUrl { get; private set; }
-        /// <summary> The name of this user </summary>
-        public string Name { get; private set; }
+        /// <summary> The url for this user's avatar </summary>
+        public string AvatarUrl { get; private set; }
         /// <summary> The display name of this user </summary>
         public string DisplayName { get; private set; }
+        /// <summary> The name of this user </summary>
+        public string Name { get; private set; }
 
-        internal RestSimpleUser(BaseRestClient client, ulong id) 
+        internal RestSimpleUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
+        
+        public bool Equals(ISimpleUser other)
+            => Id == other.Id;
 
-        internal static RestSimpleUser Create(BaseRestClient client, Model model)
+        internal static RestSimpleUser Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestSimpleUser(client, model.Id);
             entity.Update(model);
@@ -25,85 +28,67 @@ namespace NTwitch.Rest
 
         internal virtual void Update(Model model)
         {
+            AvatarUrl = model.AvatarUrl;
             DisplayName = model.DisplayName;
             Name = model.Name;
         }
-        
-        public bool Equals(IUser x, IUser y)
-            => x.Id == y.Id;
-        public int GetHashCode(IUser user)
-            => user.GetHashCode();
-
-        // Communities
-        public Task<RestUserCommunity> GetUserCommunityAsync(string communityId, bool isname = false)
-            => CommunityHelper.GetUserCommunityAsync(this, communityId, isname);
 
         // Channels
-        /// <summary> Get information about this user's channel </summary>
-        public Task<RestChannel> GetChannelAsync()
-            => RestHelper.GetChannelAsync(Client, Id);
+        /// <summary> Get this user's channel </summary>
+        public Task<RestChannel> GetChannelAsync(RequestOptions options = null)
+            => ClientHelper.GetChannelAsync(Client, Id, options);
 
-        // Emotes
-        /// <summary> Get all emotes available to this user </summary>
-        public Task<IReadOnlyDictionary<string, IEnumerable<RestEmote>>> GetEmotesAsync()
-            => UserHelper.GetEmotesAsync(Client, Id);
-
-        // Streams
-        /// <summary> Get this user's stream information, if available </summary>
-        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live)
-            => RestHelper.GetStreamAsync(Client, Id, type);
-        /// <summary> Get streams this user is following. </summary>
-        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, uint limit = 25, uint offset = 0)
-            => RestHelper.GetFollowedStreamsAsync(Client, Id, type, limit, offset);
-
-        // Clips
-        /// <summary>  </summary>
-        public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, uint limit = 10)
-            => RestHelper.GetFollowedClipsAsync(Client, Id, istrending, limit);
-
-        //// Subscriptions
-        ///// <summary>  </summary>
-        //public Task<IReadOnlyCollection<RestChannelSubscription>> GetSubscriptionsAsync()
-        //    => UserHelper.GetSubscriptionsAsync(Client, Id);
-        ///// <summary>  </summary>
-        //public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId)
-        //    => UserHelper.GetSubscriptionAsync(Client, Id, channelId);
+        // Chat
+        /// <summary> Get all chat emotes available to this user </summary>
+        public Task<IReadOnlyDictionary<string, IReadOnlyCollection<RestEmote>>> GetEmotesAsync(RequestOptions options = null)
+            => UserHelper.GetEmotesAsync(Client, Id, options);
 
         // Follows
-        /// <summary> Get all channels this user is following </summary>
-        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, uint limit = 25, uint offset = 0)
-            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, limit, offset);
-        /// <summary> Get a specific channel follow by id </summary>
-        public Task<RestChannelFollow> GetFollowAsync(ulong channelId)
-            => UserHelper.GetFollowAsync(Client, Id, channelId);
+        /// <summary> Get all channel follows for this user </summary>
+        public Task<IReadOnlyCollection<RestChannelFollow>> GetFollowsAsync(SortMode sort = SortMode.CreatedAt, bool ascending = false, PageOptions paging = null, RequestOptions options = null)
+            => UserHelper.GetFollowsAsync(Client, Id, sort, ascending, paging, options);
+        /// <summary> Get a specific channel follow for this user </summary>
+        public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
+            => UserHelper.GetFollowAsync(Client, Id, channelId, options);
 
-        ///// <summary>  </summary>
-        //public Task<IReadOnlyCollection<RestUserFollow>> GetFollowersAsync()
-        //    => UserHelper.GetFollowersAsync(Client, Id);
-        ///// <summary>  </summary>
-        //public Task<RestUserFollow> GetFollowerAsync(ulong userId)
-        //    => UserHelper.GetFollowerAsync(Client, Id, userId);
+        // Heartbeat
+        /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
+        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
+        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
+        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
+        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
+        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
+        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
 
-        //// Blocks
-        ///// <summary>  </summary>
-        //public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(int limit, int offset)
-        //    => UserHelper.GetBlocksAsync(Client, Id, limit, offset);
-        ///// <summary>  </summary>
-        //public Task BlockAsync()
-        //    => UserHelper.BlockAsync(Client, Id);
-        ///// <summary>  </summary>
-        //public Task UnblockAsync()
-        //    => UserHelper.UnblockAsync(Client, Id);
+        // Streams
+        /// <summary> Get this user's stream </summary>
+        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
+            => ClientHelper.GetStreamAsync(Client, Id, type);
+        /// <summary> Get streams this user is following, requires `user_read` </summary>
+        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedStreamsAsync(Client, type, paging, options);
 
-        //// VHS
-        ///// <summary>  </summary>
-        //public Task<string> CreateHeartbeatAsync()
-        //    => UserHelper.CreateHeartbeatAsync(Client, Id);
-        ///// <summary>  </summary>
-        //public Task<string> GetHeartbeatAsync()
-        //    => UserHelper.GetHeartbeatAsync(Client, Id);
-        ///// <summary>  </summary>
-        //public Task DeleteHeartbeatAsync()
-        //    => UserHelper.DeleteHeartbeatAsync(Client, Id);
+        // Subscriptions
+        /// <summary> Get a specific channel subscription for this user, requires `user_subscriptions` </summary>
+        public Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId, RequestOptions options = null)
+            => UserHelper.GetSubscrptionAsync(Client, Id, channelId, options);
+
+        // Users
+        ///// <summary> Block this user, requires `user_blocks_edit` </summary>
+        //public Task BlockAsync(RequestOptions options = null)
+        //    => UserHelper.BlockAsync(Client, Client.CurrentUser.Id, Id, options);
+        ///// <summary> Unblock this user, requires `user_blocks_edit` </summary>
+        //public Task UnblockAsync(RequestOptions options = null)
+        //    => UserHelper.UnblockAsync(Client, Id, options);
+        /// <summary> Get all users currently blocked by this user, requires `user_blocks_read` </summary>
+        public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(PageOptions paging = null, RequestOptions options = null)
+            => UserHelper.GetBlocksAsync(Client, Id, paging, options);
+
+        // Videos
+        /// <summary> Get clips from all channels this user is following, requires `user_read` </summary>
+        public Task<IReadOnlyCollection<RestClip>> GetFollowedClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
+            => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
     }
 }

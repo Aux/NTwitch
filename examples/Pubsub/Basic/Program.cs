@@ -1,11 +1,10 @@
 ﻿// 
-// This example is not complete and not compatible with latest NTwitch
+// This example shows how to subscribe to whispers for the current user.
 // 
 
 using NTwitch;
 using NTwitch.Pubsub;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Basic
@@ -19,41 +18,29 @@ namespace Basic
 
         public async Task StartAsync()
         {
-            Console.Write("Please enter your client id: ");
-            string clientid = Console.ReadLine();
-            
             _client = new TwitchPubsubClient(new TwitchPubsubConfig()
             {
-                ClientId = clientid,
-                LogLevel = LogLevel.Info
+                LogLevel = LogSeverity.Info
             });
-            
+
             _client.Log += OnLogAsync;
-            _client.StreamOnline += OnStreamOnlineAsync;
+            _client.WhisperReceived += OnWhisperReceivedAsync;
 
-            while (true)
-            {
-                Console.WriteLine();
-                Console.Write("Enter the name of a stream to watch for: ");
-                string name = Console.ReadLine();
+            Console.Write("Please enter your oauth token: ");
+            string token = Console.ReadLine();
 
-                var user = (await _client.GetUsersAsync(name)).FirstOrDefault();
-                if (user == null)
-                {
-                    Console.WriteLine($"The user `{name}` does not exist!");
-                    continue;
-                }
-
-                await _client.SubscribePlaybackAsync(user.Id);
-            }
-        }
-
-        private Task OnStreamOnlineAsync()
-        {
-            throw new NotImplementedException();
+            await _client.LoginAsync(token);
+            await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
+            
+            await Task.Delay(-1);
         }
 
         private Task OnLogAsync(LogMessage msg)
-            => Console.Out.WriteLineAsync($"[{msg.Level}] {msg.Source}: {msg.Message}");
+            => Console.Out.WriteLineAsync(msg.ToString());
+
+        private Task OnWhisperReceivedAsync(string arg)
+        {
+            return Console.Out.WriteLineAsync(arg);
+        }
     }
 }

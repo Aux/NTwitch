@@ -37,10 +37,10 @@ namespace NTwitch.Rest
         /// <summary> The number of followers on this channel </summary>
         public uint Followers { get; private set; }
 
-        internal RestChannel(BaseRestClient client, ulong id) 
+        internal RestChannel(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
 
-        internal new static RestChannel Create(BaseRestClient client, Model model)
+        internal new static RestChannel Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestChannel(client, model.Id);
             entity.Update(model);
@@ -70,8 +70,7 @@ namespace NTwitch.Rest
         /// <summary> Get the most recent information for this entity </summary>
         public virtual async Task UpdateAsync()
         {
-            var token = TokenHelper.GetSingleToken(Client);
-            var model = await Client.RestClient.GetChannelInternalAsync(token, Id);
+            var model = await Client.ApiClient.GetChannelAsync(Id, null).ConfigureAwait(false);
             Update(model);
         }
     }

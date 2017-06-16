@@ -1,19 +1,12 @@
-﻿using NTwitch.Pubsub;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Advanced
 {
     class Program
     {
-        public static void Main(string[] args)
-            => new Program().StartAsync().GetAwaiter().GetResult();
-
-        private TwitchPubsubClient _client;
-
-        public async Task StartAsync()
+        static void Main(string[] args)
         {
-            await Task.Delay(0);
+            Console.WriteLine("Hello World!");
         }
     }
 }

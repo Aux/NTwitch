@@ -1,9 +1,11 @@
-﻿namespace NTwitch.Rest
+﻿using NTwitch.Rest.Queue;
+
+namespace NTwitch.Rest.API
 {
-    internal class GetStreamSummaryRequest : RestRequest
+    public class GetStreamSummaryRequest : RestRequestBuilder
     {
-        public GetStreamSummaryRequest(string token, string game) 
-            : base("GET", "streams/summary", token)
+        public GetStreamSummaryRequest(string game) 
+            : base("GET", "streams/summary")
         {
             Parameters.Add("game", game);
         }
