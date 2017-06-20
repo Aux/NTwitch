@@ -16,6 +16,6 @@ namespace NTwitch.Chat
         }
 
         ITwitchClient IEntity<T>.Client
-            => throw new NotImplementedException();
+            => Client;
     }
 }

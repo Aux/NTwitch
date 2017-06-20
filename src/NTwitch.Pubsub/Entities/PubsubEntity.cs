@@ -16,6 +16,6 @@ namespace NTwitch.Pubsub
         }
 
         ITwitchClient IEntity<T>.Client
-            => throw new NotImplementedException();
+            => Client;
     }
 }

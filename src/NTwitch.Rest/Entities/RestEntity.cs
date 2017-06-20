@@ -14,8 +14,8 @@ namespace NTwitch.Rest
             Client = client;
             Id = id;
         }
-        
-        ITwitchClient IEntity<T>.Client 
-            => throw new NotImplementedException();
+
+        ITwitchClient IEntity<T>.Client
+            => Client;
     }
 }
