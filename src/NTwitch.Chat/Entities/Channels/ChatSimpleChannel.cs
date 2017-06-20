@@ -1,8 +1,10 @@
 ﻿using NTwitch.Rest;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
+using RoomStateModel = NTwitch.Chat.API.RoomStateEvent;
 
 namespace NTwitch.Chat
 {
@@ -10,6 +12,9 @@ namespace NTwitch.Chat
     {
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
+
+        public IReadOnlyCollection<ChatMessage> Messages 
+            => Client.ApiClient.CacheClient.Messages.Where(x => x.Channel.Id == Id).ToArray();
 
         internal ChatSimpleChannel(TwitchChatClient client, ulong id) 
             : base(client, id) { }
@@ -24,7 +29,19 @@ namespace NTwitch.Chat
             return entity;
         }
 
+        internal static ChatSimpleChannel Create(TwitchChatClient client, RoomStateModel model)
+        {
+            var entity = new ChatSimpleChannel(client, model.ChannelId);
+            entity.Update(model);
+            return entity;
+        }
+
         internal virtual void Update(MsgEventModel model)
+        {
+            Name = model.ChannelName;
+        }
+
+        internal virtual void Update(RoomStateModel model)
         {
             Name = model.ChannelName;
         }

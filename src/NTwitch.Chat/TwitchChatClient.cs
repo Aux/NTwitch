@@ -37,7 +37,7 @@ namespace NTwitch.Chat
         }
 
         private static TwitchChatApiClient CreateApiClient(TwitchChatConfig config)
-            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.CacheClientProvider, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
+            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.CacheClientProvider, config.MessageCacheSize, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
 
         internal override void Dispose(bool disposing)
         {
@@ -71,8 +71,7 @@ namespace NTwitch.Chat
             => ApiClient.JoinChannelAsync(name, options);
 
         // Users
-
-
+        
         private async Task ProcessMessageAsync(ChatResponse msg)
         {
             await Task.Delay(0);
@@ -114,6 +113,11 @@ namespace NTwitch.Chat
                     case "RECONNECT":  // missing
                         break;
                     case "ROOMSTATE":
+                        {
+                            var model = RoomStateEvent.Create(msg);
+                            var entity = ChatChannel.Create(this, model);
+                            ApiClient.CacheClient.AddChannel(entity);
+                        }
                         break;
                     case "USERNOTICE":
                         break;

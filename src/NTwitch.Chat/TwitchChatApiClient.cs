@@ -29,13 +29,13 @@ namespace NTwitch.Chat
 
         public ConnectionState ConnectionState { get; private set; }
 
-        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, CacheClientProvider cacheClientProvider, string clientId, string userAgent,
-            string socketUrl, RetryMode defaultRetryMode = RetryMode.AlwaysRetry, JsonSerializer serializer = null)
+        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, CacheClientProvider cacheClientProvider, uint msgCacheSize,
+            string clientId, string userAgent, string socketUrl, RetryMode defaultRetryMode = RetryMode.AlwaysRetry, JsonSerializer serializer = null)
             : base(restClientProvider, clientId, userAgent, serializer)
         {
             _socketUrl = socketUrl;
             SocketClient = socketClientProvider();
-            CacheClient = cacheClientProvider(100);
+            CacheClient = cacheClientProvider(msgCacheSize);
             
             SocketClient.TextMessage += async text =>
             {
@@ -203,19 +203,12 @@ namespace NTwitch.Chat
         }
 
         // Messages
-        public IReadOnlyCollection<ChatMessage> GetMessages(ulong channelId, int count)
+        public IReadOnlyCollection<ChatMessage> GetMessages(ulong channelId, int? count)
         {
             var messages = CacheClient.Messages.OfType<ChatMessage>().Where(x => x.Channel.Id == channelId);
-            if (count >= 0)
-                messages = messages.Take(count);
+            if (count != null)
+                messages = messages.Take((int)count);
             return messages.ToArray();
-        }
-
-        // Users
-        public TUser GetUser<TUser>(ulong userId) where TUser : ISimpleUser
-        {
-            var user = CacheClient.GetUser(userId);
-            return (TUser)user;
         }
     }
 }

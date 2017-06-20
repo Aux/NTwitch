@@ -33,14 +33,5 @@ namespace NTwitch.Chat
 
             await client.ApiClient.SendChannelMessageAsync(channel.Name, content, options).ConfigureAwait(false);
         }
-
-        public static IReadOnlyCollection<ChatMessage> GetMessages(this ISimpleChannel channel, int count = -1, RequestOptions options = null)
-        {
-            var client = channel.Client as TwitchChatClient;
-            if (client == null)
-                return null;
-
-            return client.ApiClient.GetMessages(channel.Id, count);
-        }
     }
 }
