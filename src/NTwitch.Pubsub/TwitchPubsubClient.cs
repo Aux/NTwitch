@@ -1,6 +1,5 @@
 ﻿using NTwitch.Pubsub.API;
 using NTwitch.Rest;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +25,11 @@ namespace NTwitch.Pubsub
             _stateLock = new SemaphoreSlim(1, 1);
             _pubsubLogger = LogManager.CreateLogger("Pubsub");
 
+            ApiClient.Connected += async () =>
+            {
+                await _pubsubLogger.InfoAsync("Connected");
+                await _connectedEvent.InvokeAsync().ConfigureAwait(false);
+            };
             ApiClient.SentPubsubMessage += async cmd => await _pubsubLogger.DebugAsync($"Sent {cmd}").ConfigureAwait(false);
             ApiClient.ReceivedPubsubEvent += ProcessMessageAsync;
             
@@ -49,7 +53,7 @@ namespace NTwitch.Pubsub
             if (ConnectionState == ConnectionState.Disconnected)
                 await ApiClient.ConnectAsync().ConfigureAwait(false);
         }
-
+        
         public async Task DisconnectAsync()
             => await ApiClient.DisconnectAsync().ConfigureAwait(false);
 
@@ -68,7 +72,7 @@ namespace NTwitch.Pubsub
         {
             await ApiClient.UnlistenAsync(topics, null).ConfigureAwait(false);
         }
-
+        
         // Channels
         public async Task ListenVideoPlaybackAsync(params ulong[] channelIds)
         {
@@ -86,6 +90,12 @@ namespace NTwitch.Pubsub
             var data = msg.GetData<PubsubInData>();
             string topic = data.Topic.Split('.').First();
 
+            if (msg.Type != "MESSAGE")
+            {
+                await _pubsubLogger.DebugAsync($"Received {msg.Type}").ConfigureAwait(false);
+                return;
+            }
+            
             switch (topic)
             {
                 //case "channel-bits-events-v1":

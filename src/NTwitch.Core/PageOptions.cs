@@ -4,8 +4,14 @@
     {
         public static PageOptions Default => new PageOptions();
 
-        public uint Limit { get; set; } = 20;
-        public uint Offset { get; set; } = 0;
+        public uint Limit { get; set; }
+        public uint Offset { get; set; }
+
+        public PageOptions(uint limit = 20, uint offset = 0)
+        {
+            Limit = limit;
+            Offset = offset;
+        }
 
         internal static PageOptions CreateOrClone(PageOptions options)
         {

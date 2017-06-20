@@ -19,10 +19,11 @@ namespace NTwitch.Pubsub
         public event Func<PubsubFrame<string>, Task> ReceivedPubsubEvent { add { _receivedPubsubEvent.Add(value); } remove { _receivedPubsubEvent.Remove(value); } }
         private readonly AsyncEvent<Func<PubsubFrame<string>, Task>> _receivedPubsubEvent = new AsyncEvent<Func<PubsubFrame<string>, Task>>();
 
+        public event Func<Task> Connected { add { _connectedEvent.Add(value); } remove { _connectedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<Task>> _connectedEvent = new AsyncEvent<Func<Task>>();
         public event Func<Exception, Task> Disconnected { add { _disconnectedEvent.Add(value); } remove { _disconnectedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Exception, Task>> _disconnectedEvent = new AsyncEvent<Func<Exception, Task>>();
-
-        private ConcurrentDictionary<string, Func<PubsubFrame<string>, Task>> _callbacks;
+        
         private CancellationTokenSource _connectCancelToken;
         private string _webSocketUrl;
 
@@ -36,7 +37,6 @@ namespace NTwitch.Pubsub
         {
             _webSocketUrl = webSocketUrl;
             WebSocketClient = socketClientProvider() as IWebSocketClient;
-            _callbacks = new ConcurrentDictionary<string, Func<PubsubFrame<string>, Task>>();
 
             WebSocketClient.TextMessage += async text =>
             {
@@ -92,6 +92,7 @@ namespace NTwitch.Pubsub
 
                 await WebSocketClient.ConnectAsync(_webSocketUrl).ConfigureAwait(false);
                 ConnectionState = ConnectionState.Connected;
+                await _connectedEvent.InvokeAsync().ConfigureAwait(false);
             }
             catch
             {
@@ -124,7 +125,7 @@ namespace NTwitch.Pubsub
         }
 
         public Task SendSocketAsync(PubsubRequestBuilder builder, RequestOptions options = null)
-            => SendSocketAsync(builder.Type, builder.GetPayload(true), builder.GetNonce(), options);
+            => SendSocketAsync(builder.Type, builder.GetPayload(), builder.GetNonce(), options);
         public async Task SendSocketAsync(string type, object payload, string nonce = null, RequestOptions options = null)
         {
             CheckLoginState();
@@ -143,7 +144,7 @@ namespace NTwitch.Pubsub
         public async Task SendPingAsync(RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendSocketAsync(new PubsubRequestBuilder("PING"), options).ConfigureAwait(false);
+            await SendSocketAsync(new PubsubRequestBuilder("PING", includeNonce: false), options).ConfigureAwait(false);
         }
 
         public async Task ListenAsync(string[] topics, RequestOptions options = null)

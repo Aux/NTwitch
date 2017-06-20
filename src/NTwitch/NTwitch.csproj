@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
-    <Description>An async compatible implementation of Twitch's version 5 api.</Description>
+    <Description>A .net standard implementation of the https://twitch.tv/ version 5 api</Description>
     <Version>0.1.0.0</Version>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0.0</FileVersion>

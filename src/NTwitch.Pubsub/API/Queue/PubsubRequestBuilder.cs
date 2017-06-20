@@ -11,17 +11,19 @@ namespace NTwitch.Pubsub.Queue
 
         private readonly string _nonce;
         private readonly string _authToken;
+        private readonly bool _includeNonce;
         private string _defaultType;
 
-        public PubsubRequestBuilder(string type, string authToken = null)
+        public PubsubRequestBuilder(string type, string authToken = null, bool includeNonce = true)
         {
             Topics = new List<string>();
             _nonce = Guid.NewGuid().ToString();
             _authToken = authToken;
+            _includeNonce = includeNonce;
             _defaultType = type;
         }
 
-        public object GetPayload(bool includeNonce = false)
+        public object GetPayload()
         {
             var payload = new PubsubFrame<PubsubOutData>
             {
@@ -34,7 +36,7 @@ namespace NTwitch.Pubsub.Queue
 
             if (_authToken != null)
                 payload.Data.AuthToken = _authToken;
-            if (includeNonce)
+            if (_includeNonce)
                 payload.Nonce = _nonce;
             return payload;
         }
