@@ -12,15 +12,12 @@ matrix:
     env: DOTNETCORE=1
     
 script:
-  - sudo apt-get install dotnet-dev-1.0.1
-  - dotnet restore
-  - dotnet build --configuration Release --version-suffix beta-$TRAVIS_BUILDNUMBER
+  - bash build.sh
 
 deploy:
   skip_cleanup: true
   provider: script
   script:
-    - chmod +x deploy.sh
-    - sudo deploy.sh
+    - bash deploy.sh
   on:
     branch: master

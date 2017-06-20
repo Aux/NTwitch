@@ -1,6 +1,8 @@
 #!bin/sh
 
-if [ "$TRAVIS_BRANCH" = "master" ]
+echo "Attempting deploy: "$TRAVIS_BRANCH
+
+if [ "$TRAVIS_BRANCH" = "master" ] || [ "$TRAVIS_BRANCH" = "dev" ]
 then
   dotnet pack "./src/NTwitch/NTwitch.csproj" -c "Release" -o "../../pkgs" --no-build 
   dotnet pack "./src/NTwitch.Core/NTwitch.Core.csproj" -c "Release" -o "../../pkgs" --no-build 
