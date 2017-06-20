@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace NTwitch
+namespace NTwitch.Chat
 {
     public static class DefaultCacheClientProvider
     {
-        public static readonly CacheClientProvider Instance = (int msgCacheSize) =>
+        public static readonly CacheClientProvider Instance = (uint msgCacheSize) =>
         {
             try
             {

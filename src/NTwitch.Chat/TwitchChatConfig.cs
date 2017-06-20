@@ -9,14 +9,18 @@ namespace NTwitch.Chat
         /// <summary> The host to connect to when making chat requests </summary>
         public string SocketHost { get; set; } = "irc.chat.twitch.tv";
 
+        /// <summary> Gets or sets the provider used to cache entities. </summary>
+        public CacheClientProvider CacheClientProvider { get; set; } = DefaultCacheClientProvider.Instance;
+        /// <summary> The number of messages that should be cached for each channel. </summary>
+        public uint MessageCacheSize { get; set; } = 0;
         ///// <summary> Allow the authenticated user to speak in channels without the moderator permission. </summary>
         //public bool CanSpeakWithoutMod { get; set; } = false;
 
-        /// <summary> Include message tags to several commands </summary>
-        public bool RequestTags { get; } = true;
-        /// <summary> Enables several Twitch-specific commands </summary>
-        public bool RequestCommands { get; } = true;
-        /// <summary> Include membership state event data </summary>
-        public bool RequestMembership { get; } = true;
+        ///// <summary> Include message tags to several commands </summary>
+        //public bool RequestTags { get; } = true;
+        ///// <summary> Enables several Twitch-specific commands </summary>
+        //public bool RequestCommands { get; } = true;
+        ///// <summary> Include membership state event data </summary>
+        //public bool RequestMembership { get; } = true;
     }
 }

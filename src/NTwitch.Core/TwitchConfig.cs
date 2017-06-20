@@ -17,8 +17,6 @@ namespace NTwitch
         public const int APIVersion = 5;
         public const int DefaultRequestTimeout = 15000;
 
-        /// <summary> Gets or sets the provider used to cache entities. </summary>
-        public CacheClientProvider CacheClientProvider { get; set; } = DefaultCacheClientProvider.Instance;
         /// <summary> Gets or sets the minimum log level severity that will be sent to the Log event. </summary>
         public LogSeverity LogLevel { get; set; } = LogSeverity.Info;
     }
