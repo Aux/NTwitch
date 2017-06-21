@@ -11,7 +11,7 @@ namespace NTwitch.Chat
         /// <summary>  </summary>
         public string Color { get; private set; }
         /// <summary>  </summary>
-        public string UserType { get; private set; }
+        public UserType Type { get; private set; }
         /// <summary>  </summary>
         public bool IsMod { get; private set; }
         /// <summary>  </summary>
@@ -21,7 +21,24 @@ namespace NTwitch.Chat
         
         internal ChatUser(TwitchChatClient client, ulong id) 
             : base(client, id) { }
-        
+
+        internal static UserType GetUserType(string tag)
+        {
+            switch (tag)
+            {
+                case "mod":
+                    return UserType.Moderator;
+                case "global_mod":
+                    return UserType.GlobalModerator;
+                case "admin":
+                    return UserType.Admin;
+                case "staff":
+                    return UserType.Staff;
+                default:
+                    return UserType.None;
+            }
+        }
+
         internal new static ChatUser Create(TwitchChatClient client, MsgEventModel model)
         {
             var entity = new ChatUser(client, model.UserId);
@@ -47,7 +64,7 @@ namespace NTwitch.Chat
         {
             base.Update(model);
             Color = model.Color;
-            UserType = model.UserType;
+            Type = GetUserType(model.UserType);
             IsMod = model.IsMod;
             IsSubscriber = model.IsSubscriber;
             IsTurbo = model.IsTurbo;
@@ -57,7 +74,7 @@ namespace NTwitch.Chat
         {
             base.Update(model);
             Color = model.Color;
-            UserType = model.UserType;
+            Type = GetUserType(model.UserType);
             IsMod = model.IsMod;
             IsSubscriber = model.IsSubscriber;
             IsTurbo = false;                        // Turbo is found in badges for this model
@@ -67,10 +84,10 @@ namespace NTwitch.Chat
         {
             base.Update(model);
             Color = model.Color;
-            UserType = model.UserType;
+            Type = GetUserType(model.UserType);
             IsMod = model.IsMod;
             IsTurbo = model.IsTurbo;
-            IsSubscriber = false;                   // Subscriber is found in badges for this model
+            IsSubscriber = model.IsSubscriber;
         }
 
         /// <summary>  </summary>

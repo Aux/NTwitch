@@ -24,12 +24,13 @@ namespace NTwitch.Chat.API
         public string Color { get; set; }
         public bool IsMod { get; set; }
         public bool IsTurbo { get; set; }
+        public bool IsSubscriber { get; set; }
 
         // Notice
         public string Type { get; set; }
         public int Months { get; set; }
         public string PlanName { get; set; }
-        public string Plan { get; set; }
+        public SubscriptionType Plan { get; set; }
         public string SystemMessage { get; set; }
 
         // Parameters
@@ -55,16 +56,31 @@ namespace NTwitch.Chat.API
             UserId = ulong.Parse(msg.Tags["user-id"]);
             DisplayName = msg.Tags["display-name"];
             Name = msg.Tags["login"];
-            UserType = msg.Tags["user-type"];
             Color = msg.Tags["color"]?.Substring(1);
             IsMod = msg.Tags["mod"] == "1";
             IsTurbo = msg.Tags["turbo"] == "1";
+            IsSubscriber = msg.Tags["subscriber"] == "1";
 
             Type = msg.Tags["msg-id"];
             Months = int.Parse(msg.Tags["msg-param-months"]);
             PlanName = msg.Tags["msg-param-sub-plan-name"].Replace(@"\s", " ");
-            Plan = msg.Tags["msg-param-sub-plan"];
             SystemMessage = msg.Tags["system-msg"].Replace(@"\s", " ");
+
+            switch ( msg.Tags["msg-param-sub-plan"])
+            {
+                case "Prime":
+                    Plan = SubscriptionType.Prime;
+                    break;
+                case "1000":
+                    Plan = SubscriptionType.LevelOne;
+                    break;
+                case "2000":
+                    Plan = SubscriptionType.LevelTwo;
+                    break;
+                case "3000":
+                    Plan = SubscriptionType.LevelThree;
+                    break;
+            }
 
             ChannelName = msg.Parameters.First().Substring(1);
             Content = msg.Parameters.Last();

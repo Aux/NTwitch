@@ -93,7 +93,7 @@ namespace NTwitch.Chat
                         break;
                     case "PART":
                         {
-                            var model = JoinEvent.Create(msg);
+                            var model = PartEvent.Create(msg);
 
                             if (TokenInfo.Username == model.UserName)
                                 await _currentUserLeftEvent.InvokeAsync(model.ChannelName).ConfigureAwait(false);
@@ -157,7 +157,7 @@ namespace NTwitch.Chat
                     case "376":
                         break;  // Skip all the useless motd stuff
                     default:
-                        await _chatLogger.WarningAsync($"Unknown command {msg.Command}").ConfigureAwait(false);
+                        await _chatLogger.WarningAsync($"Unknown command `{msg.Command}`").ConfigureAwait(false);
                         break;
                 }
             }

@@ -9,7 +9,7 @@ namespace NTwitch.Chat
         /// <summary>  </summary>
         public string Title { get; private set; }
         /// <summary>  </summary>
-        public string Plan { get; private set; }
+        public SubscriptionType Plan { get; private set; }
         /// <summary>  </summary>
         public string SystemMessage { get; private set; }
         /// <summary>  </summary>

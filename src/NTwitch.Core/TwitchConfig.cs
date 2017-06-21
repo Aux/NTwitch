@@ -12,7 +12,7 @@ namespace NTwitch
         public static string UserAgent { get; } = $"NTwitchApp (https://github.com/Aux/NTwitch, v{Version})";
         public static readonly string DefaultApiUrl = "https://api.twitch.tv/kraken/";
         public static readonly string DefaultChatUrl = "irc.chat.twitch.tv";
-        public static readonly string EmoteCdnUrl = "static-cdn.jtvnw.net";
+        public static readonly string EmoteCdnUrl = "https://static-cdn.jtvnw.net/bits/";
 
         public const int APIVersion = 5;
         public const int DefaultRequestTimeout = 15000;
