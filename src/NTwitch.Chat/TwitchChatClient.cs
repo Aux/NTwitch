@@ -106,7 +106,6 @@ namespace NTwitch.Chat
                             var model = MessageReceivedEvent.Create(msg);
                             var entity = ChatMessage.Create(this, model);
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
-                            ApiClient.CacheClient.AddMessage(entity);
                         }
                         break;
                     case "MODE":
@@ -119,7 +118,7 @@ namespace NTwitch.Chat
                                 await _moderatorRemovedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
                         }
                         break;
-                    case "NOTICE":  // missing
+                    case "NOTICE":  // Missing
                         break;
                     case "CLEARCHAT":
                         {
@@ -137,6 +136,11 @@ namespace NTwitch.Chat
                     case "ROOMSTATE":
                         break;
                     case "USERNOTICE":
+                        {
+                            var model = UserNoticeEvent.Create(msg);
+                            var entity = ChatNoticeMessage.Create(this, model);
+                            await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
+                        }
                         break;
                     case "HOSTTARGET":  // missing
                         break;

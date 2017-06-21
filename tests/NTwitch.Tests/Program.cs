@@ -19,35 +19,32 @@ namespace NTwitch.Tests
         {
             string token = "";
             string clientId = "";
-            
-            try
+
+            _client = new TwitchChatClient(new TwitchChatConfig
             {
-                _client = new TwitchChatClient(new TwitchChatConfig
-                {
-                    ClientId = clientId,
-                    LogLevel = LogSeverity.Debug
-                });
+                ClientId = clientId,
+                LogLevel = LogSeverity.Debug
+            });
 
-                _client.Log += OnLogAsync;
-                _client.MessageReceived += OnMessageReceivedAsync;
-                _client.UserBanned += OnUserBannedAsync;
+            _client.Log += OnLogAsync;
+            _client.MessageReceived += OnMessageReceivedAsync;
+            _client.UserBanned += OnUserBannedAsync;
 
-                await _client.LoginAsync(token);
-                await _client.ConnectAsync();
+            await _client.LoginAsync(token);
+            await _client.ConnectAsync();
 
-                await _client.JoinChannelAsync("timthetatman");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            await _client.JoinChannelAsync("timthetatman");
+            await _client.JoinChannelAsync("wraxu");
 
             await Task.Delay(-1);
         }
 
         private Task OnMessageReceivedAsync(ChatMessage msg)
         {
-            return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+            if (msg is ChatNoticeMessage notice)
+                return Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
+            else 
+                return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
         }
 
         private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
 using UserStateModel = NTwitch.Chat.API.UserStateEvent;
+using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
 
 namespace NTwitch.Chat
 {
@@ -35,6 +36,13 @@ namespace NTwitch.Chat
             return entity;
         }
 
+        internal new static ChatUser Create(TwitchChatClient client, NoticeModel model)
+        {
+            var entity = new ChatUser(client, model.UserId);
+            entity.Update(model);
+            return entity;
+        }
+
         internal override void Update(MsgEventModel model)
         {
             base.Update(model);
@@ -53,6 +61,16 @@ namespace NTwitch.Chat
             IsMod = model.IsMod;
             IsSubscriber = model.IsSubscriber;
             IsTurbo = false;                        // Turbo is found in badges for this model
+        }
+
+        internal override void Update(NoticeModel model)
+        {
+            base.Update(model);
+            Color = model.Color;
+            UserType = model.UserType;
+            IsMod = model.IsMod;
+            IsTurbo = model.IsTurbo;
+            IsSubscriber = false;                   // Subscriber is found in badges for this model
         }
 
         /// <summary>  </summary>

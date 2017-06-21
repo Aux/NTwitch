@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
 using UserStateModel = NTwitch.Chat.API.UserStateEvent;
 using ClearChatModel = NTwitch.Chat.API.ClearChatEvent;
+using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
 
 namespace NTwitch.Chat
 {
@@ -41,6 +42,13 @@ namespace NTwitch.Chat
             return entity;
         }
 
+        internal static ChatSimpleUser Create(TwitchChatClient client, NoticeModel model)
+        {
+            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId);
+            entity.Update(model);
+            return entity;
+        }
+
         internal virtual void Update(MsgEventModel model)
         {
             Name = model.UserName;
@@ -57,6 +65,12 @@ namespace NTwitch.Chat
         {
             Name = model.UserName;
             DisplayName = model.UserName;
+        }
+
+        internal virtual void Update(NoticeModel model)
+        {
+            Name = model.Name;
+            DisplayName = model.DisplayName;
         }
 
         // Channels
