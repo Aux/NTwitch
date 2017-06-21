@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
 using RoomStateModel = NTwitch.Chat.API.RoomStateEvent;
+using ClearChatModel = NTwitch.Chat.API.ClearChatEvent;
 
 namespace NTwitch.Chat
 {
@@ -36,6 +37,13 @@ namespace NTwitch.Chat
             return entity;
         }
 
+        internal static ChatSimpleChannel Create(TwitchChatClient client, ClearChatModel model)
+        {
+            var entity = new ChatSimpleChannel(client, model.ChannelId);
+            entity.Update(model);
+            return entity;
+        }
+
         internal virtual void Update(MsgEventModel model)
         {
             Name = model.ChannelName;
@@ -45,7 +53,12 @@ namespace NTwitch.Chat
         {
             Name = model.ChannelName;
         }
-        
+
+        internal virtual void Update(ClearChatModel model)
+        {
+            Name = model.ChannelName;
+        }
+
         // Channels
         ///// <summary> Change properties of this channel </summary>
         //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)

@@ -19,11 +19,21 @@ namespace NTwitch.Chat
         public event Func<ChatMessage, Task> MessageReceived { add { _messageReceivedEvent.Add(value); } remove { _messageReceivedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<ChatMessage, Task>> _messageReceivedEvent = new AsyncEvent<Func<ChatMessage, Task>>();
 
-        public event Func<string, Task> JoinedChannel { add { _joinedChannelEvent.Add(value); } remove { _joinedChannelEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, Task>> _joinedChannelEvent = new AsyncEvent<Func<string, Task>>();
+        public event Func<string, Task> CurrentUserJoined { add { _currentUserJoinedEvent.Add(value); } remove { _currentUserJoinedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, Task>> _currentUserJoinedEvent = new AsyncEvent<Func<string, Task>>();
 
-        public event Func<string, Task> LeftChannel { add { _leftChannelEvent.Add(value); } remove { _leftChannelEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, Task>> _leftChannelEvent = new AsyncEvent<Func<string, Task>>();
+        public event Func<string, string, Task> UserJoined { add { _userJoinedEvent.Add(value); } remove { _userJoinedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, string, Task>> _userJoinedEvent = new AsyncEvent<Func<string, string, Task>>();
+
+        public event Func<string, Task> CurrentUserLeft { add { _currentUserLeftEvent.Add(value); } remove { _currentUserLeftEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, Task>> _currentUserLeftEvent = new AsyncEvent<Func<string, Task>>();
+
+        public event Func<string, string, Task> UserLeft { add { _userLeftEvent.Add(value); } remove { _userLeftEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, string, Task>> _userLeftEvent = new AsyncEvent<Func<string, string, Task>>();
+
+        // Moderation
+        public event Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task> UserBanned { add { _userBannedEvent.Add(value); } remove { _userBannedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>> _userBannedEvent = new AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>>();
 
     }
 }

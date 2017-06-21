@@ -31,8 +31,8 @@ namespace NTwitch.Chat
             ApiClient.SentChatMessage += async cmd => await _chatLogger.DebugAsync($"Sent {cmd}").ConfigureAwait(false);
             ApiClient.ReceivedChatEvent += ProcessMessageAsync;
 
-            LeftChannel += async n => await _chatLogger.InfoAsync($"Left {n}").ConfigureAwait(false);
-            JoinedChannel += async n => await _chatLogger.InfoAsync($"Joined {n}").ConfigureAwait(false);
+            CurrentUserLeft += async n => await _chatLogger.InfoAsync($"Left {n}").ConfigureAwait(false);
+            CurrentUserJoined += async n => await _chatLogger.InfoAsync($"Joined {n}").ConfigureAwait(false);
             LatencyUpdated += async (old, val) => await _chatLogger.InfoAsync($"Latency = {val} ms").ConfigureAwait(false);
         }
 
@@ -74,8 +74,6 @@ namespace NTwitch.Chat
         
         private async Task ProcessMessageAsync(ChatResponse msg)
         {
-            await Task.Delay(0);
-
             try
             {
                 switch (msg.Command)
@@ -84,10 +82,24 @@ namespace NTwitch.Chat
                         await ApiClient.SendPingAsync(null).ConfigureAwait(false);
                         break;
                     case "JOIN":
-                        await _joinedChannelEvent.InvokeAsync(msg.Parameters.First().Substring(1)).ConfigureAwait(false);
+                        {
+                            var model = JoinEvent.Create(msg);
+
+                            if (TokenInfo.Username == model.UserName)
+                                await _currentUserJoinedEvent.InvokeAsync(model.ChannelName).ConfigureAwait(false);
+                            else
+                                await _userJoinedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                        }
                         break;
                     case "PART":
-                        await _leftChannelEvent.InvokeAsync(msg.Parameters.First().Substring(1)).ConfigureAwait(false);
+                        {
+                            var model = JoinEvent.Create(msg);
+
+                            if (TokenInfo.Username == model.UserName)
+                                await _currentUserLeftEvent.InvokeAsync(model.ChannelName).ConfigureAwait(false);
+                            else
+                                await _userLeftEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                        }
                         break;
                     case "PRIVMSG":
                         {
@@ -102,22 +114,19 @@ namespace NTwitch.Chat
                     case "NOTICE":  // missing
                         break;
                     case "CLEARCHAT":
+                        {
+                            var model = ClearChatEvent.Create(msg);
+                            var channel = ChatSimpleChannel.Create(this, model);
+                            var user = ChatSimpleUser.Create(this, model);
+                            var options = new BanOptions(model.Reason, model.Duration);
+                            await _userBannedEvent.InvokeAsync(channel, user, options).ConfigureAwait(false);
+                        }
                         break;
                     case "USERSTATE":
-                        {
-                            var model = UserStateEvent.Create(msg);
-                            var entity = ChatSelfUser.Create(this, model);
-                            ApiClient.CacheClient.AddUser(entity);
-                        }
                         break;
                     case "RECONNECT":  // missing
                         break;
                     case "ROOMSTATE":
-                        {
-                            var model = RoomStateEvent.Create(msg);
-                            var entity = ChatChannel.Create(this, model);
-                            ApiClient.CacheClient.AddChannel(entity);
-                        }
                         break;
                     case "USERNOTICE":
                         break;
@@ -125,6 +134,16 @@ namespace NTwitch.Chat
                         break;
                     case "GLOBALUSERSTATE":  // missing
                         break;
+                    case "CAP": // Request Acks
+                        break;
+                    case "353": // Channel Names
+                        break;
+                    case "366": // End of names
+                        break;
+                    case "001": case "002": case "003":
+                    case "004": case "375": case "372":
+                    case "376":
+                        break;  // Skip all the useless motd stuff
                     default:
                         await _chatLogger.WarningAsync($"Unknown command {msg.Command}").ConfigureAwait(false);
                         break;

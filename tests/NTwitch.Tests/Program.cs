@@ -30,9 +30,12 @@ namespace NTwitch.Tests
 
                 _client.Log += OnLogAsync;
                 _client.MessageReceived += OnMessageReceivedAsync;
+                _client.UserBanned += OnUserBannedAsync;
 
                 await _client.LoginAsync(token);
-                await _client.JoinChannelAsync("wraxu");
+                await _client.ConnectAsync();
+
+                await _client.JoinChannelAsync("timthetatman");
             }
             catch (Exception ex)
             {
@@ -44,7 +47,12 @@ namespace NTwitch.Tests
 
         private Task OnMessageReceivedAsync(ChatMessage msg)
         {
-            return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName}: {msg.Content}");
+            return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+        }
+
+        private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)
+        {
+            return Console.Out.WriteLineAsync($"`{user.DisplayName}` was banned in `{channel.Name}` for `{ban.Reason} ({ban.Duration})`.");
         }
 
         private Task OnLogAsync(LogMessage msg)
