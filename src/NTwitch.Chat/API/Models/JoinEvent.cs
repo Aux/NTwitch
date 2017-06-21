@@ -23,7 +23,7 @@ namespace NTwitch.Chat.API
             int nameEndIndex = msg.Prefix.IndexOf('!');
             UserName = msg.Prefix.Substring(0, nameEndIndex);
 
-            ChannelName = msg.Parameters.First();
+            ChannelName = msg.Parameters.First().Substring(1);
         }
     }
 }

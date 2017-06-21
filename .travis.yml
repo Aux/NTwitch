@@ -17,5 +17,6 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
+  all_branches: true
   script:
     - bash deploy.sh

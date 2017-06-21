@@ -3,27 +3,25 @@ using System.Linq;
 
 namespace NTwitch.Chat.API
 {
-    internal class PartEvent
+    internal class ModeEvent
     {
         // Parameters
         public string ChannelName { get; set; }
-
-        // Prefix
+        public string Type { get; set; }
         public string UserName { get; set; }
 
-        internal static PartEvent Create(ChatResponse msg)
+        internal static ModeEvent Create(ChatResponse msg)
         {
-            var entity = new PartEvent();
+            var entity = new ModeEvent();
             entity.Update(msg);
             return entity;
         }
 
         internal void Update(ChatResponse msg)
         {
-            int nameEndIndex = msg.Prefix.IndexOf('!');
-            UserName = msg.Prefix.Substring(0, nameEndIndex);
-
             ChannelName = msg.Parameters.First().Substring(1);
+            Type = msg.Parameters.Skip(1).First();
+            UserName = msg.Parameters.Last();
         }
     }
 }

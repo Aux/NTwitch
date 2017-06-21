@@ -109,7 +109,15 @@ namespace NTwitch.Chat
                             ApiClient.CacheClient.AddMessage(entity);
                         }
                         break;
-                    case "MODE":  // missing
+                    case "MODE":
+                        {
+                            var model = ModeEvent.Create(msg);
+
+                            if (model.Type == "+o")
+                                await _moderatorAddedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                            else
+                                await _moderatorRemovedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                        }
                         break;
                     case "NOTICE":  // missing
                         break;

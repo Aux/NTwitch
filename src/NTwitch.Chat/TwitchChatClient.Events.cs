@@ -32,6 +32,12 @@ namespace NTwitch.Chat
         private readonly AsyncEvent<Func<string, string, Task>> _userLeftEvent = new AsyncEvent<Func<string, string, Task>>();
 
         // Moderation
+        public event Func<string, string, Task> ModeratorAdded { add { _moderatorAddedEvent.Add(value); } remove { _moderatorAddedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, string, Task>> _moderatorAddedEvent = new AsyncEvent<Func<string, string, Task>>();
+
+        public event Func<string, string, Task> ModeratorRemoved { add { _moderatorRemovedEvent.Add(value); } remove { _moderatorRemovedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<string, string, Task>> _moderatorRemovedEvent = new AsyncEvent<Func<string, string, Task>>();
+
         public event Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task> UserBanned { add { _userBannedEvent.Add(value); } remove { _userBannedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>> _userBannedEvent = new AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>>();
 
