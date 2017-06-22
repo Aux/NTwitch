@@ -11,6 +11,7 @@ namespace Basic
             => new Program().StartAsync().GetAwaiter().GetResult();
 
         private TwitchChatClient _client;
+        private string _chosenChannelName;
 
         public async Task StartAsync()
         {
@@ -20,19 +21,22 @@ namespace Basic
             });
             
             _client.Log += OnLogAsync;
+            _client.Connected += OnConnectedAsync;
             _client.MessageReceived += OnMessageReceivedAsync;
 
             Console.Write("Please enter your oauth token: ");
             string token = Console.ReadLine();
+            Console.Write("Please the name of a channel to join: ");
+            _chosenChannelName = Console.ReadLine();
 
             await _client.LoginAsync(token);
-            await _client.ConnectAsync();
-
-            Console.Write("Please the name of a channel to join: ");
-            string channelName = Console.ReadLine();
-
-            await _client.JoinChannelAsync(channelName);
+            await _client.StartAsync();
             await Task.Delay(-1);
+        }
+
+        private async Task OnConnectedAsync()
+        {
+            await _client.JoinChannelAsync(_chosenChannelName);
         }
 
         private Task OnMessageReceivedAsync(ChatMessage msg)

@@ -13,14 +13,10 @@ namespace NTwitch.Chat
         public CacheClientProvider CacheClientProvider { get; set; } = DefaultCacheClientProvider.Instance;
         /// <summary> The number of messages that should be cached for each channel. </summary>
         public uint MessageCacheSize { get; set; } = 0;
-        ///// <summary> Allow the authenticated user to speak in channels without the moderator permission. </summary>
-        //public bool CanSpeakWithoutMod { get; set; } = false;
 
-        ///// <summary> Include message tags to several commands </summary>
-        //public bool RequestTags { get; } = true;
-        ///// <summary> Enables several Twitch-specific commands </summary>
-        //public bool RequestCommands { get; } = true;
-        ///// <summary> Include membership state event data </summary>
-        //public bool RequestMembership { get; } = true;
+        /// <summary> Gets or sets the time, in milliseconds, to wait for a connection to complete before aborting. </summary>
+        public int ConnectionTimeout { get; set; } = 30000;
+        /// <summary> Gets or sets the time, in milliseconds, between heartbeat requests. </summary>
+        public int HeartbeatInterval { get; set; } = 300000;
     }
 }

@@ -27,16 +27,19 @@ namespace NTwitch.Tests
             });
 
             _client.Log += OnLogAsync;
+            _client.Connected += OnConnectedAsync;
             _client.MessageReceived += OnMessageReceivedAsync;
             _client.UserBanned += OnUserBannedAsync;
 
             await _client.LoginAsync(token);
-            await _client.ConnectAsync();
+            await _client.StartAsync();
+            await Task.Delay(-1);
+        }
 
+        private async Task OnConnectedAsync()
+        {
             await _client.JoinChannelAsync("timthetatman");
             await _client.JoinChannelAsync("wraxu");
-
-            await Task.Delay(-1);
         }
 
         private Task OnMessageReceivedAsync(ChatMessage msg)
