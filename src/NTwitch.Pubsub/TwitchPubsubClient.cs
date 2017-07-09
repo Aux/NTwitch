@@ -28,7 +28,8 @@ namespace NTwitch.Pubsub
 
             ApiClient.SentPubsubMessage += async cmd => await _pubsubLogger.DebugAsync($"Sent {cmd}").ConfigureAwait(false);
             ApiClient.ReceivedPubsubEvent += ProcessMessageAsync;
-            
+            ApiClient.Disconnected += ex => _disconnectedEvent.InvokeAsync(ex);
+
             LatencyUpdated += async (old, val) => await _pubsubLogger.InfoAsync($"Latency = {val} ms").ConfigureAwait(false);
         }
 
@@ -43,15 +44,27 @@ namespace NTwitch.Pubsub
                 ApiClient.Dispose();
             }
         }
-        
-        internal async Task TryConnectAsync()
+
+        public async Task ConnectAsync()
         {
-            if (ConnectionState == ConnectionState.Disconnected)
+            await _stateLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
                 await ApiClient.ConnectAsync().ConfigureAwait(false);
+                await _connectedEvent.InvokeAsync();
+            }
+            finally { _stateLock.Release(); }
         }
 
         public async Task DisconnectAsync()
-            => await ApiClient.DisconnectAsync().ConfigureAwait(false);
+        {
+            await _stateLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                await ApiClient.DisconnectAsync().ConfigureAwait(false);
+            }
+            finally { _stateLock.Release(); }
+        }
 
         internal override async Task OnLogoutAsync()
         {
@@ -83,6 +96,12 @@ namespace NTwitch.Pubsub
 
         private async Task ProcessMessageAsync(PubsubFrame<string> msg)
         {
+            if (msg.Type == "RESPONSE")
+            {
+                //TODO: Handle Error responses
+                return;
+            }
+
             var data = msg.GetData<PubsubInData>();
             string topic = data.Topic.Split('.').First();
 
