@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NTwitch.Chat
+namespace NTwitch
 {
     internal class ConnectionManager
     {

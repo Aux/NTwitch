@@ -13,14 +13,14 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchChatClient _client;
+        private TwitchPubsubClient _client;
 
         public async Task Start()
         {
             string token = "";
             string clientId = "";
 
-            _client = new TwitchChatClient(new TwitchChatConfig
+            _client = new TwitchPubsubClient(new TwitchPubsubConfig
             {
                 ClientId = clientId,
                 LogLevel = LogSeverity.Debug
@@ -28,8 +28,7 @@ namespace NTwitch.Tests
 
             _client.Log += OnLogAsync;
             _client.Connected += OnConnectedAsync;
-            _client.MessageReceived += OnMessageReceivedAsync;
-            _client.UserBanned += OnUserBannedAsync;
+            _client.AnonymousReceived += OnAnonymousReceivedAsync;
 
             await _client.LoginAsync(token);
             await _client.StartAsync();
@@ -38,22 +37,26 @@ namespace NTwitch.Tests
 
         private async Task OnConnectedAsync()
         {
-            await _client.JoinChannelAsync("timthetatman");
-            await _client.JoinChannelAsync("wraxu");
+            await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
         }
 
-        private Task OnMessageReceivedAsync(ChatMessage msg)
+        private Task OnAnonymousReceivedAsync(string json)
         {
-            if (msg is ChatNoticeMessage notice)
-                return Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
-            else 
-                return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+            return Console.Out.WriteLineAsync(json);
         }
 
-        private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)
-        {
-            return Console.Out.WriteLineAsync($"`{user.DisplayName}` was banned in `{channel.Name}` for `{ban.Reason} ({ban.Duration})`.");
-        }
+        //private Task OnMessageReceivedAsync(ChatMessage msg)
+        //{
+        //    if (msg is ChatNoticeMessage notice)
+        //        return Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
+        //    else 
+        //        return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+        //}
+
+        //private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)
+        //{
+        //    return Console.Out.WriteLineAsync($"`{user.DisplayName}` was banned in `{channel.Name}` for `{ban.Reason} ({ban.Duration})`.");
+        //}
 
         private Task OnLogAsync(LogMessage msg)
         {

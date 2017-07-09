@@ -5,6 +5,7 @@ using NTwitch.Rest;
 using NTwitch.Rest.API;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -16,11 +17,9 @@ namespace NTwitch.Pubsub
     {
         public event Func<string, Task> SentPubsubMessage { add { _sentPusbubMessageEvent.Add(value); } remove { _sentPusbubMessageEvent.Remove(value); } }
         private readonly AsyncEvent<Func<string, Task>> _sentPusbubMessageEvent = new AsyncEvent<Func<string, Task>>();
-        public event Func<PubsubFrame<string>, Task> ReceivedPubsubEvent { add { _receivedPubsubEvent.Add(value); } remove { _receivedPubsubEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<PubsubFrame<string>, Task>> _receivedPubsubEvent = new AsyncEvent<Func<PubsubFrame<string>, Task>>();
+        public event Func<PubsubFrame<PubsubInData>, Task> ReceivedPubsubEvent { add { _receivedPubsubEvent.Add(value); } remove { _receivedPubsubEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<PubsubFrame<PubsubInData>, Task>> _receivedPubsubEvent = new AsyncEvent<Func<PubsubFrame<PubsubInData>, Task>>();
 
-        public event Func<Task> Connected { add { _connectedEvent.Add(value); } remove { _connectedEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<Task>> _connectedEvent = new AsyncEvent<Func<Task>>();
         public event Func<Exception, Task> Disconnected { add { _disconnectedEvent.Add(value); } remove { _disconnectedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Exception, Task>> _disconnectedEvent = new AsyncEvent<Func<Exception, Task>>();
         
@@ -43,7 +42,7 @@ namespace NTwitch.Pubsub
                 using (var reader = new StringReader(text))
                 using (var jsonReader = new JsonTextReader(reader))
                 {
-                    var msg = _serializer.Deserialize<PubsubFrame<string>>(jsonReader);
+                    var msg = _serializer.Deserialize<PubsubFrame<PubsubInData>>(jsonReader);
                     if (msg != null)
                         await _receivedPubsubEvent.InvokeAsync(msg).ConfigureAwait(false);
                 }
@@ -92,7 +91,6 @@ namespace NTwitch.Pubsub
 
                 await WebSocketClient.ConnectAsync(_webSocketUrl).ConfigureAwait(false);
                 ConnectionState = ConnectionState.Connected;
-                await _connectedEvent.InvokeAsync().ConfigureAwait(false);
             }
             catch
             {
@@ -147,7 +145,7 @@ namespace NTwitch.Pubsub
             await SendSocketAsync(new PubsubRequestBuilder("PING", includeNonce: false), options).ConfigureAwait(false);
         }
 
-        public async Task ListenAsync(string[] topics, RequestOptions options = null)
+        public async Task ListenAsync(IEnumerable<string> topics, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             var builder = new PubsubRequestBuilder("LISTEN", AuthToken);
@@ -155,7 +153,7 @@ namespace NTwitch.Pubsub
             await SendSocketAsync(builder, options).ConfigureAwait(false);
         }
 
-        public async Task UnlistenAsync(string[] topics, RequestOptions options = null)
+        public async Task UnlistenAsync(IEnumerable<string> topics, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             var builder = new PubsubRequestBuilder("UNLISTEN", AuthToken);
@@ -164,26 +162,26 @@ namespace NTwitch.Pubsub
         }
 
         // Channels
-        public async Task ListenBitsAsync(ulong[] channelIds, RequestOptions options = null)
+        public async Task ListenBitsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new ListenBitsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
         }
 
-        public async Task ListenSubscriptionsAsync(ulong[] channelIds, RequestOptions options = null)
+        public async Task ListenSubscriptionsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new ListenSubscriptionsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
         }
 
-        public async Task ListenVideoPlaybackAsync(ulong[] channelIds, RequestOptions options = null)
+        public async Task ListenVideoPlaybackAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new ListenVideoPlaybackRequest(channelIds, AuthToken), options).ConfigureAwait(false);
         }
 
         // Chat
-        public async Task ListenWhispersAsync(ulong[] userIds, RequestOptions options = null)
+        public async Task ListenWhispersAsync(IEnumerable<ulong> userIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new ListenWhispersRequest(userIds, AuthToken), options).ConfigureAwait(false);

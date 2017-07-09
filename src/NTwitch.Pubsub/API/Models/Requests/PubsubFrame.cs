@@ -12,8 +12,5 @@ namespace NTwitch.Pubsub.API
         public string Error { get; set; }
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
         public T Data { get; set; }
-
-        public TMessage GetData<TMessage>()
-            => JsonConvert.DeserializeObject<TMessage>(Data.ToString());
     }
 }
