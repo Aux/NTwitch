@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using NTwitch.Rest.Queue;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -22,13 +24,13 @@ namespace NTwitch.Rest.API
 
         protected bool _disposed;
         private CancellationTokenSource _loginCancelToken;
-
-        //public RetryMode DefaultRetryMode { get; }
+        
         public string UserAgent { get; }
         public string ClientId { get; }
 
         public LoginState LoginState { get; private set; }
         internal IRestClient RestClient { get; private set; }
+        internal ITokenInfo TokenInfo { get; private set; }
         internal string AuthToken { get; private set; }
 
         public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, JsonSerializer serializer = null)
@@ -37,7 +39,6 @@ namespace NTwitch.Rest.API
             UserAgent = userAgent;
             ClientId = clientId;
             _serializer = serializer ?? new JsonSerializer { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" };
-            //DefaultRetryMode = defaultRetryMode;
 
             _stateLock = new SemaphoreSlim(1, 1);
 
@@ -68,10 +69,24 @@ namespace NTwitch.Rest.API
                 RestClient.SetHeader("Client-ID", ClientId);
         }
 
-        protected virtual void CheckLoginState()
+        protected virtual void CheckLoginState(bool checkClientId = false)
         {
-            if (LoginState != LoginState.LoggedIn && string.IsNullOrWhiteSpace(ClientId))
-                throw new InvalidOperationException("Client is not logged in.");
+            if (checkClientId)
+            {
+                if (string.IsNullOrWhiteSpace(ClientId))
+                    throw new InvalidOperationException("ClientId must be specified in the client config for unauthenticated requests.");
+            }
+            else
+            {
+                if (LoginState != LoginState.LoggedIn)
+                    throw new InvalidOperationException("Client is not logged in.");
+            }
+        }
+
+        protected virtual void CheckScopes(IEnumerable<string> requiredScopes)
+        {
+            if (!requiredScopes.Intersect(TokenInfo.Authorization.Scopes).Any())
+                throw new MissingScopeException(requiredScopes);
         }
 
         protected string SerializeJson(object value)
@@ -199,9 +214,9 @@ namespace NTwitch.Rest.API
         private async Task<System.IO.Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
         {
             if (!request.Options.IgnoreState)
-                CheckLoginState();
-            //if (request.Options.RetryMode == null)
-            //    request.Options.RetryMode = DefaultRetryMode;
+                CheckLoginState(request.Options.AllowUnauthenticated);
+            if (request.Options.RequiredScopes.Any())
+                CheckScopes(request.Options.RequiredScopes);
 
             var stopwatch = Stopwatch.StartNew();
             var response = await request.SendAsync().ConfigureAwait(false);
@@ -238,6 +253,7 @@ namespace NTwitch.Rest.API
         public async Task<Channel> GetMyChannelAsync(RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.RequiredScopes.Add("channel_read");
             try
             {
                 return await SendAsync<Channel>("GET", "channel", options).ConfigureAwait(false);
@@ -248,6 +264,7 @@ namespace NTwitch.Rest.API
         public async Task<Channel> GetChannelAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             {
                 return await SendAsync<Channel>("GET", $"channels/{channelId}", options).ConfigureAwait(false);
@@ -258,12 +275,14 @@ namespace NTwitch.Rest.API
         public async Task<Channel> ModifyChannelAsync(ulong channelId, ModifyChannelParams changes, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
             return await SendJsonAsync<Channel>(new ModifyChannelRequest(channelId, changes), options).ConfigureAwait(false);
         }
 
         public async Task<UserCollection> GetChannelEditorsAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_read");
             return await SendAsync<UserCollection>("GET", $"channels/{channelId}/editors", options).ConfigureAwait(false);
         }
 
@@ -271,32 +290,70 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<FollowCollection>(new GetChannelFollowersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
         }
 
-        public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
+        public async Task<VideoCollection> GetChannelVideosAsync(ulong channelId, PageOptions paging, RequestOptions options)
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<ChannelCollection>(new FindChannelsRequest(query, paging), options).ConfigureAwait(false);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<VideoCollection>("GET", $"channels/{channelId}/videos", options).ConfigureAwait(false);
+        }
+
+        public async Task<Community> GetChannelCommunityAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+            try
+            {
+                return await SendAsync<Community>("GET", $"channels/{channelId}/community", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
+        }
+
+        public async Task SetChannelCommunityAsync(ulong channelId, string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+            try
+            {
+                await SendAsync("PUT", $"channels/{channelId}/community/{communityId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { return; }
+        }
+
+        public async Task RemoveChannelCommunityAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+            try
+            {
+                await SendAsync("DELETE", $"channels/{channelId}/community", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { return; }
         }
 
         // Chat
         public async Task<CheerCollection> GetCheersAsync(ulong? channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<CheerCollection>(new GetCheersRequest(channelId), options).ConfigureAwait(false);
         }
 
         public async Task<ChatBadges> GetChatBadgesAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<ChatBadges>("GET", $"chat/{channelId}/badges", options).ConfigureAwait(false);
         }
 
         public async Task<EmoteSet> GetEmotesAsync(ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_subscriptions");
             return await SendAsync<EmoteSet>("GET", $"users/{userId}/emotes", options).ConfigureAwait(false);
         }
 
@@ -304,6 +361,7 @@ namespace NTwitch.Rest.API
         public async Task<Community> GetCommunityAsync(string communityId, bool isName, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             { 
                 return await SendAsync<Community>(new GetCommunityRequest(communityId, isName), options).ConfigureAwait(false);
@@ -314,6 +372,7 @@ namespace NTwitch.Rest.API
         public async Task<CommunityCollection> GetTopCommunitiesAsync(PageOptions paging, RequestOptions options)       // Paging is unused
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<CommunityCollection>("GET", "communities/top", options).ConfigureAwait(false);
         }
 
@@ -326,6 +385,7 @@ namespace NTwitch.Rest.API
         public async Task SendCommunityReportAsync(string communityId, ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             {
                 await SendAsync(new SendCommunityReportRequest(communityId, channelId), options).ConfigureAwait(false);
@@ -336,12 +396,14 @@ namespace NTwitch.Rest.API
         public async Task ModifyCommunityAsync(string communityId, ModifyCommunityParams changes, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             await SendJsonAsync("PUT", $"communitites/{communityId}", changes, options).ConfigureAwait(false);
         }
         
         public async Task SetCommunityAvatarAsync(string communityId, string imageBase64, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendJsonAsync(new SetCommunityAvatarRequest(communityId, imageBase64), options).ConfigureAwait(false);
@@ -352,6 +414,7 @@ namespace NTwitch.Rest.API
         public async Task RemoveCommunityAvatarAsync(string communityId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendAsync("DELETE", $"communities/{communityId}/images/avatar", options).ConfigureAwait(false);
@@ -362,6 +425,7 @@ namespace NTwitch.Rest.API
         public async Task SetCommunityCoverAsync(string communityId, string imageBase64, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendAsync(new SetCommunityCoverRequest(communityId, imageBase64), options).ConfigureAwait(false);
@@ -372,6 +436,7 @@ namespace NTwitch.Rest.API
         public async Task RemoveCommunityCoverAsync(string communityId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendAsync("DELETE", $"communities/{communityId}/images/cover", options).ConfigureAwait(false);
@@ -382,12 +447,14 @@ namespace NTwitch.Rest.API
         public async Task<CommunityCollection> GetCommunityModeratorsAsync(string communityId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/moderators").ConfigureAwait(false);
         }
 
         public async Task AddCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
@@ -398,6 +465,7 @@ namespace NTwitch.Rest.API
         public async Task RemoveCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
             try
             { 
                 await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
@@ -409,12 +477,14 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
         }
 
         public async Task AddCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             try
             { 
                 await SendAsync("Put", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
@@ -425,6 +495,7 @@ namespace NTwitch.Rest.API
         public async Task RemoveCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             try
             { 
                 await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
@@ -436,12 +507,14 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
         }
 
         public async Task AddCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             try
             { 
                 await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
@@ -452,6 +525,7 @@ namespace NTwitch.Rest.API
         public async Task RemoveCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
             try
             { 
                 await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
@@ -460,23 +534,11 @@ namespace NTwitch.Rest.API
         }
 
         // Follows
-        public async Task<Follow> GetFollowAsync(ulong userId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<Follow>("GET", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
-        }
-
-        public async Task<FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<FollowCollection>(new GetFollowsRequest(userId, sort, ascending, paging), options).ConfigureAwait(false);
-        }
-
         // Ingests
         public async Task<IngestCollection> GetIngestsAsync(RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<IngestCollection>("GET", "ingests", options).ConfigureAwait(false);
         }
         
@@ -484,6 +546,7 @@ namespace NTwitch.Rest.API
         public async Task<StreamCollection> GetStreamAsync(ulong channelId, StreamType type, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             {
                 return await SendAsync<StreamCollection>(new GetStreamRequest(channelId, type), options).ConfigureAwait(false);
@@ -495,6 +558,7 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<StreamCollection>(new GetStreamsRequest(parameters, paging), options).ConfigureAwait(false);
         }
 
@@ -502,6 +566,7 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<StreamCollection>(new GetFeaturedStreamsRequest(paging), options).ConfigureAwait(false);
         }
 
@@ -509,12 +574,14 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_read");
             return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
         }
 
         public async Task<Stream> GetStreamSummaryAsync(string game, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             {
                 return await SendAsync<Stream>(new GetStreamSummaryRequest(game), options).ConfigureAwait(false);
@@ -522,23 +589,35 @@ namespace NTwitch.Rest.API
             catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
         }
 
+        // Search
+        public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
+        {
+            paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<ChannelCollection>(new FindChannelsRequest(query, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<GameCollection> FindGamesAsync(string query, bool islive, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<GameCollection>(new FindGamesRequest(query, islive), options).ConfigureAwait(false);
+        }
+
         public async Task<StreamCollection> FindStreamsAsync(string query, bool? hls, PageOptions paging, RequestOptions options)
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<StreamCollection>(new FindStreamsRequest(query, hls, paging), options).ConfigureAwait(false);
         }
         
-        public async Task<GameCollection> FindGamesAsync(string query, bool islive, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<GameCollection>(new FindGamesRequest(query, islive), options).ConfigureAwait(false);
-        }
-
         // Subscribers
         public async Task<Subscription> GetChannelSubscriberAsync(ulong channelId, ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_subscriptions");
             try
             { 
                 return await SendAsync<Subscription>("GET", $"channels/{channelId}/subscriptions/{userId}", options).ConfigureAwait(false);
@@ -550,12 +629,14 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_check_subscription");
             return await SendAsync<SubscriptionCollection>(new GetSubscribersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
         }
 
         public async Task<Subscription> GetUserSubscriptionAsync(ulong userId, ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_subscriptions");
             try
             {
                 return await SendAsync<Subscription>("GET" , $"users/{userId}/subscriptions/{channelId}", options).ConfigureAwait(false);
@@ -567,6 +648,7 @@ namespace NTwitch.Rest.API
         public async Task<Team> GetTeamAsync(string name, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             { 
                 return await SendAsync<Team>("GET", $"teams/{name}", options).ConfigureAwait(false);
@@ -578,12 +660,14 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<TeamCollection>(new GetTeamsRequest(paging), options).ConfigureAwait(false);
         }
 
         public async Task<TeamCollection> GetChannelTeamsAsync(ulong channelId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<TeamCollection>("GET", $"channels/{channelId}/teams", options).ConfigureAwait(false);
         }
 
@@ -591,6 +675,7 @@ namespace NTwitch.Rest.API
         public async Task<User> GetMyUserAsync(RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_read");
             try
             { 
                 return await SendAsync<User>("GET", "user", options).ConfigureAwait(false);
@@ -601,6 +686,7 @@ namespace NTwitch.Rest.API
         public async Task<User> GetUserAsync(ulong userId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             { 
                 return await SendAsync<User>("GET", $"users/{userId}", options).ConfigureAwait(false);
@@ -611,35 +697,73 @@ namespace NTwitch.Rest.API
         public async Task<UserCollection> GetUsersAsync(string[] usernames, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<UserCollection>(new GetUsersRequest(usernames), options).ConfigureAwait(false);
+        }
+
+        public async Task<Follow> GetFollowAsync(ulong userId, ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<Follow>("GET", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
+        }
+
+        public async Task<FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, PageOptions paging, RequestOptions options)
+        {
+            paging = PageOptions.CreateOrClone(paging);
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<FollowCollection>(new GetFollowsRequest(userId, sort, ascending, paging), options).ConfigureAwait(false);
+        }
+
+        public async Task<Follow> FollowChannelAsync(ulong userId, ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_follows_edit");
+            return await SendAsync<Follow>("PUT", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
+        }
+
+        public async Task UnfollowChannelAsync(ulong userId, ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_follows_edit");
+            try
+            { 
+                await SendAsync<Follow>("DELETE", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
+        }
+
+        public async Task<BlockCollection> GetUserBlocksAsync(ulong userId, PageOptions paging, RequestOptions options)  // Paging is unused
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_blocks_read");
+            return await SendAsync<BlockCollection>("GET", $"users/{userId}/blocks", options).ConfigureAwait(false);
+        }
+
+        public async Task<BlockedUser> BlockUserAsync(ulong userId, ulong victimId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_blocks_read");
+            return await SendAsync<BlockedUser>("DELETE", $"users/{userId}/blocks/{victimId}", options).ConfigureAwait(false);
         }
 
         public async Task UnblockUserAsync(ulong userId, ulong victimId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_blocks_read");
             try
             { 
                 await SendAsync("PUT", $"users/{userId}/blocks/{victimId}", options).ConfigureAwait(false);
             }
             catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
         }
-
-        public async Task<BlockedUser> BlockUserAsync(ulong userId, ulong victimId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<BlockedUser>("DELETE", $"users/{userId}/blocks/{victimId}", options).ConfigureAwait(false);
-        }
-
-        public async Task<BlockCollection> GetUserBlocksAsync(ulong userId, PageOptions paging, RequestOptions options)  // Paging is unused
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<BlockCollection>("GET", $"users/{userId}/blocks", options).ConfigureAwait(false);
-        }
-
+        
         // Videos
         public async Task<Video> GetVideoAsync(string videoId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             { 
                 return await SendAsync<Video>("GET", $"videos/{videoId}", options).ConfigureAwait(false);
@@ -647,17 +771,11 @@ namespace NTwitch.Rest.API
             catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
         }
 
-        public async Task<VideoCollection> GetChannelVideosAsync(ulong channelId, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<VideoCollection>("GET", $"channels/{channelId}/videos", options).ConfigureAwait(false);
-        }
-
         public async Task<VideoCollection> GetTopVideosAsync(string game, string period, string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<VideoCollection>(new GetTopVideosRequest(game, period, broadcastType, language, sort, paging), options).ConfigureAwait(false);
         }
 
@@ -665,24 +783,47 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_read");
             return await SendAsync<VideoCollection>(new GetFollowedVideosRequest(broadcastType, language, sort, paging), options).ConfigureAwait(false);
+        }
+
+        public Task CreateVideoAsync(RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+            throw new NotImplementedException();
+        }
+
+        public Task UploadVideoPartAsync(RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            throw new NotImplementedException();
+        }
+
+        public Task CompleteVideoUploadAsync(RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            throw new NotImplementedException();
         }
 
         public async Task<Video> ModifyVideoAsync(string videoId, ModifyVideoParams modify, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
             return await SendJsonAsync<Video>("PUT", $"videos/{videoId}", options).ConfigureAwait(false);
         }
 
         public async Task DeleteVideoAsync(string videoId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
             await SendAsync("DELETE", $"videos/{videoId}").ConfigureAwait(false);
         }
 
         public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             try
             { 
                 return await SendAsync<Clip>("GET", $"clips/{clipId}", options);
@@ -693,6 +834,7 @@ namespace NTwitch.Rest.API
         public async Task<ClipCollection> GetTopClipsAsync(TopClipsParams parameters, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
             return await SendAsync<ClipCollection>(new GetTopClipsRequest(parameters), options);
         }
 
@@ -700,6 +842,7 @@ namespace NTwitch.Rest.API
         {
             paging = PageOptions.CreateOrClone(paging);
             options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_read");
             return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
         }
     }
