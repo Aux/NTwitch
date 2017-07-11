@@ -101,8 +101,8 @@ namespace NTwitch.Chat
         // Channels
         public Task JoinChannelAsync(string name, RequestOptions options = null)
             => ApiClient.JoinChannelAsync(name, options);
-
-        // Users
+        public Task LeaveChannelAsync(string name, RequestOptions options = null)
+            => ApiClient.LeaveChannelAsync(name, options);
         
         private async Task ProcessMessageAsync(ChatResponse msg)
         {

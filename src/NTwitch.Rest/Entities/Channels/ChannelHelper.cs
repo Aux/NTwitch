@@ -8,14 +8,12 @@ namespace NTwitch.Rest
     internal static class ChannelHelper
     {
         // Channel
-        public static async Task ModifyAsync(RestSimpleChannel channel, Action<ModifyChannelParams> changes, RequestOptions options = null)
+        public static async Task<API.Channel> ModifyAsync(BaseTwitchClient client, ISimpleChannel channel, Action<ModifyChannelParams> changes, RequestOptions options = null)
         {
             var filledParams = new ModifyChannelParams();
             changes.Invoke(filledParams);
             
-            var model = await channel.Client.ApiClient.ModifyChannelAsync(channel.Id, filledParams, options).ConfigureAwait(false);
-            if (model != null)
-                channel.Update(model);
+            return await client.ApiClient.ModifyChannelAsync(channel.Id, filledParams, options).ConfigureAwait(false);
         }
 
         // Chat

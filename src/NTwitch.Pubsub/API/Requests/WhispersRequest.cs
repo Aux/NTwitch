@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace NTwitch.Pubsub.API
 {
-    public class ListenWhispersRequest : PubsubRequestBuilder
+    public class WhispersRequest : PubsubRequestBuilder
     {
-        public ListenWhispersRequest(IEnumerable<ulong> userIds, string authtoken) 
-            : base("LISTEN", authtoken)
+        public WhispersRequest(IEnumerable<ulong> userIds, string authtoken, bool listen = true) 
+            : base(listen ? "LISTEN" : "UNLISTEN", authtoken)
         {
             foreach (var userId in userIds)
                 Topics.Add($"whispers.{userId}");

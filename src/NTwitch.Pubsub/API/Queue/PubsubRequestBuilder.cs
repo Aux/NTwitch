@@ -43,5 +43,8 @@ namespace NTwitch.Pubsub.Queue
 
         public string GetNonce()
             => _nonce;
+
+        public override string ToString()
+            => $"{_defaultType} {string.Join(", ", Topics)}";
     }
 }

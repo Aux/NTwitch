@@ -1,5 +1,5 @@
 ﻿// 
-// This example shows how to subscribe to whispers for the current user.
+// This example shows how to subscribe to bits for the current user.
 // 
 
 using NTwitch;
@@ -24,23 +24,23 @@ namespace Basic
             });
 
             _client.Log += OnLogAsync;
-            _client.WhisperReceived += OnWhisperReceivedAsync;
+            _client.BitsReceived += OnBitsReceivedAsync;
 
             Console.Write("Please enter your oauth token: ");
             string token = Console.ReadLine();
 
             await _client.LoginAsync(token);
-            await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
+            await _client.ListenBitsAsync(_client.TokenInfo.UserId);
             
             await Task.Delay(-1);
         }
 
+        private Task OnBitsReceivedAsync(PubsubBitsMessage msg)
+        {
+            return Console.Out.WriteLineAsync($"{msg.User.Name} sent {msg.BitsUsed} bits to {msg.Channel.Name}");
+        }
+
         private Task OnLogAsync(LogMessage msg)
             => Console.Out.WriteLineAsync(msg.ToString());
-
-        private Task OnWhisperReceivedAsync(string arg)
-        {
-            return Console.Out.WriteLineAsync(arg);
-        }
     }
 }

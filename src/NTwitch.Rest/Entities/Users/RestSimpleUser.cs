@@ -50,18 +50,7 @@ namespace NTwitch.Rest
         /// <summary> Get a specific channel follow for this user </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
             => UserHelper.GetFollowAsync(Client, Id, channelId, options);
-
-        // Heartbeat
-        /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
-        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
-        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
-        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
-
+        
         // Streams
         /// <summary> Get this user's stream </summary>
         public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)

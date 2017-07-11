@@ -3,12 +3,10 @@ using System;
 
 namespace NTwitch.Pubsub.API
 {
-    internal class Subscription
+    internal class BitsMessageData
     {
         [JsonProperty("user_name")]
-        public string Username { get; set; }
-        [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
+        public string UserName { get; set; }
         [JsonProperty("channel_name")]
         public string ChannelName { get; set; }
         [JsonProperty("user_id")]
@@ -17,15 +15,15 @@ namespace NTwitch.Pubsub.API
         public ulong ChannelId { get; set; }
         [JsonProperty("time")]
         public DateTime Timestamp { get; set; }
-        [JsonProperty("sub_plan")]
-        public string SubPlan { get; set; }
-        [JsonProperty("sub_plan_name")]
-        public string SubPlanName { get; set; }
-        [JsonProperty("months")]
-        public int Months { get; set; }
+        [JsonProperty("chat_message")]
+        public string Content { get; set; }
+        [JsonProperty("bits_used")]
+        public uint BitsUsed { get; set; }
+        [JsonProperty("total_bits_used")]
+        public uint TotalBitsUsed { get; set; }
         [JsonProperty("context")]
         public string Context { get; set; }
-        [JsonProperty("sub_message")]
-        public Message Message { get; set; }
+        [JsonProperty("badge_entitlement")]
+        public BitsBadge Badge { get; set; }
     }
 }

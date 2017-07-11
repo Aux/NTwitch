@@ -33,8 +33,11 @@ namespace NTwitch.Rest
 
         // Channels
         /// <summary> Change properties of this channel </summary>
-        public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
-            => ChannelHelper.ModifyAsync(this, changes, options);
+        public async Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
+        {
+            var model = await ChannelHelper.ModifyAsync(Client, this, changes, options);
+            Update(model);
+        }
 
         // Chat
         /// <summary> Get cheer badges for this channel </summary>

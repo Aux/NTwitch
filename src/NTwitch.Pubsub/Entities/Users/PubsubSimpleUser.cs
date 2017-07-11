@@ -1,14 +1,13 @@
 ﻿using NTwitch.Rest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SubModel = NTwitch.Pubsub.API.Subscription;
+using BitsModel = NTwitch.Pubsub.API.BitsMessageEvent;
+using EventModel = NTwitch.Pubsub.API.BaseEvent;
 
 namespace NTwitch.Pubsub
 {
     public class PubsubSimpleUser : PubsubEntity<ulong>, ISimpleUser
     {
-        /// <summary> The display name of this user </summary>
-        public string DisplayName { get; private set; }
         /// <summary> The name of this user </summary>
         public string Name { get; private set; }
 
@@ -18,19 +17,30 @@ namespace NTwitch.Pubsub
         public bool Equals(ISimpleUser other)
             => Id == other.Id;
 
-        internal static PubsubSimpleUser Create(TwitchPubsubClient client, SubModel model)
+        internal static PubsubSimpleUser Create(TwitchPubsubClient client, EventModel model)
         {
             var entity = new PubsubSimpleUser(client, model.UserId);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(SubModel model)
+        internal static PubsubSimpleUser Create(TwitchPubsubClient client, BitsModel model)
         {
-            DisplayName = model.DisplayName;
-            Name = model.Username;
+            var entity = new PubsubSimpleUser(client, model.Data.UserId);
+            entity.Update(model);
+            return entity;
         }
-        
+
+        internal virtual void Update(EventModel model)
+        {
+            Name = model.UserName;
+        }
+
+        internal virtual void Update(BitsModel model)
+        {
+            Name = model.Data.UserName;
+        }
+
         // Channels
         /// <summary> Get this user's channel </summary>
         public Task<RestChannel> GetChannelAsync(RequestOptions options = null)
@@ -48,18 +58,7 @@ namespace NTwitch.Pubsub
         /// <summary> Get a specific channel follow for this user </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
             => UserHelper.GetFollowAsync(Client, Id, channelId, options);
-
-        // Heartbeat
-        /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
-        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
-        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
-        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
-
+        
         // Streams
         /// <summary> Get this user's stream </summary>
         public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
@@ -88,8 +87,8 @@ namespace NTwitch.Pubsub
         /// <summary> Get clips from all channels this user is following, requires `user_read` </summary>
         public Task<IReadOnlyCollection<RestClip>> GetFollowedClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
             => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
-        
         // ISimpleUser
         string ISimpleUser.AvatarUrl => null;
+        string ISimpleUser.DisplayName => null;
     }
 }

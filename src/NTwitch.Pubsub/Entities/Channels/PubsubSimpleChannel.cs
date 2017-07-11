@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SubModel = NTwitch.Pubsub.API.Subscription;
+using BitsModel = NTwitch.Pubsub.API.BitsMessageEvent;
+using EventModel = NTwitch.Pubsub.API.BaseEvent;
 
 namespace NTwitch.Pubsub
 {
@@ -10,29 +11,48 @@ namespace NTwitch.Pubsub
     {
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
-        
+
+        string ISimpleChannel.Name => throw new NotImplementedException();
+
+        string ISimpleChannel.DisplayName => throw new NotImplementedException();
+
         internal PubsubSimpleChannel(TwitchPubsubClient client, ulong id)
             : base(client, id) { }
 
         public bool Equals(ISimpleChannel other)
             => Id == other.Id;
 
-        internal static PubsubSimpleChannel Create(TwitchPubsubClient client, SubModel model)
+        internal static PubsubSimpleChannel Create(TwitchPubsubClient client, EventModel model)
         {
             var entity = new PubsubSimpleChannel(client, model.ChannelId);
             entity.Update(model);
             return entity;
         }
 
-        internal virtual void Update(SubModel model)
+        internal static PubsubSimpleChannel Create(TwitchPubsubClient client, BitsModel model)
+        {
+            var entity = new PubsubSimpleChannel(client, model.Data.ChannelId);
+            entity.Update(model);
+            return entity;
+        }
+
+        internal virtual void Update(EventModel model)
         {
             Name = model.ChannelName;
         }
 
+        internal virtual void Update(BitsModel model)
+        {
+            Name = model.Data.ChannelName;
+        }
+
         // Channels
         /// <summary> Change properties of this channel </summary>
-        //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
-        //    => ChannelHelper.ModifyAsync(this, changes, options);
+        public async Task<RestChannel> ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
+        {
+            var model = await ChannelHelper.ModifyAsync(Client, this, changes, options);
+            return RestChannel.Create(Client, model);
+        }
 
         // Chat
         /// <summary> Get cheer badges for this channel </summary>
@@ -83,8 +103,6 @@ namespace NTwitch.Pubsub
             => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
 
         // ISimpleChannel
-        string ISimpleChannel.DisplayName 
-            => null;
         Task ISimpleChannel.ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options)
             => Task.CompletedTask;
         Task<IReadOnlyCollection<ICheerInfo>> ISimpleChannel.GetCheersAsync(RequestOptions options)

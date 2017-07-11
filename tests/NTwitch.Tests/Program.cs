@@ -37,14 +37,14 @@ namespace NTwitch.Tests
 
         private async Task OnConnectedAsync()
         {
-            await _client.ListenWhispersAsync(_client.TokenInfo.UserId);
+            await _client.ListenAsync($"video-playback.{_client.TokenInfo.UserId}");
         }
 
         private Task OnAnonymousReceivedAsync(string json)
         {
             return Console.Out.WriteLineAsync(json);
         }
-
+        
         //private Task OnMessageReceivedAsync(ChatMessage msg)
         //{
         //    if (msg is ChatNoticeMessage notice)

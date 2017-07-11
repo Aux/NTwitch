@@ -22,11 +22,12 @@ namespace NTwitch.Pubsub
 
         public event Func<Exception, Task> Disconnected { add { _disconnectedEvent.Add(value); } remove { _disconnectedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Exception, Task>> _disconnectedEvent = new AsyncEvent<Func<Exception, Task>>();
-        
+
         private CancellationTokenSource _connectCancelToken;
         private string _webSocketUrl;
 
         internal IWebSocketClient WebSocketClient { get; }
+        internal ConcurrentDictionary<string, string> RequestNonces { get; }
 
         public ConnectionState ConnectionState { get; private set; }
         
@@ -36,6 +37,7 @@ namespace NTwitch.Pubsub
         {
             _webSocketUrl = webSocketUrl;
             WebSocketClient = socketClientProvider() as IWebSocketClient;
+            RequestNonces = new ConcurrentDictionary<string, string>();
 
             WebSocketClient.TextMessage += async text =>
             {
@@ -123,19 +125,19 @@ namespace NTwitch.Pubsub
         }
 
         public Task SendSocketAsync(PubsubRequestBuilder builder, RequestOptions options = null)
-            => SendSocketAsync(builder.Type, builder.GetPayload(), builder.GetNonce(), options);
-        public async Task SendSocketAsync(string type, object payload, string nonce = null, RequestOptions options = null)
+            => SendSocketAsync(builder.ToString(), builder.GetPayload(), builder.GetNonce(), options);
+        public async Task SendSocketAsync(string value, object payload, string nonce = null, RequestOptions options = null)
         {
             CheckLoginState();
-            if (ConnectionState == ConnectionState.Disconnected)
-                await ConnectAsync().ConfigureAwait(false);
-            
+            if (nonce == null)
+                RequestNonces.TryAdd(nonce, value);
+
             byte[] bytes = null;
             if (payload != null)
                 bytes = Encoding.UTF8.GetBytes(SerializeJson(payload));
             var request = new PubsubRequest(WebSocketClient, null, bytes, true, options);
             await request.SendAsync().ConfigureAwait(false);
-            await _sentPusbubMessageEvent.InvokeAsync(type).ConfigureAwait(false);
+            await _sentPusbubMessageEvent.InvokeAsync(value).ConfigureAwait(false);
         }
         
         // General
@@ -165,26 +167,66 @@ namespace NTwitch.Pubsub
         public async Task ListenBitsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendSocketAsync(new ListenBitsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+            options.AllowAnyScope = true;
+            await SendSocketAsync(new BitsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenBitsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendSocketAsync(new BitsRequest(channelIds, AuthToken, false), options).ConfigureAwait(false);
         }
 
         public async Task ListenSubscriptionsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendSocketAsync(new ListenSubscriptionsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+            options.AddRequiredScopes("channel_subscriptions");
+            await SendSocketAsync(new SubscriptionsRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenSubscriptionsAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendSocketAsync(new SubscriptionsRequest(channelIds, AuthToken, false), options).ConfigureAwait(false);
+        }
+
+        public async Task ListenCommerceAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowAnyScope = true;
+            await SendSocketAsync(new CommerceRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenCommerceAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendSocketAsync(new CommerceRequest(channelIds, AuthToken, false), options).ConfigureAwait(false);
         }
 
         public async Task ListenVideoPlaybackAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendSocketAsync(new ListenVideoPlaybackRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+            await SendSocketAsync(new VideoPlaybackRequest(channelIds, AuthToken), options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenVideoPlaybackAsync(IEnumerable<ulong> channelIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendSocketAsync(new VideoPlaybackRequest(channelIds, AuthToken, false), options).ConfigureAwait(false);
         }
 
         // Chat
         public async Task ListenWhispersAsync(IEnumerable<ulong> userIds, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-            await SendSocketAsync(new ListenWhispersRequest(userIds, AuthToken), options).ConfigureAwait(false);
+            options.AddRequiredScopes("chat_login");
+            await SendSocketAsync(new WhispersRequest(userIds, AuthToken), options).ConfigureAwait(false);
+        }
+
+        public async Task UnlistenWhispersAsync(IEnumerable<ulong> userIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            await SendSocketAsync(new WhispersRequest(userIds, AuthToken, false), options).ConfigureAwait(false);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace NTwitch
 
         internal bool IgnoreState { get; set; }
         internal bool AllowUnauthenticated { get; set; }
+        internal bool AllowAnyScope { get; set; }
         internal HashSet<string> RequiredScopes { get; set; } = new HashSet<string>();
 
         internal void AddRequiredScopes(params string[] scopes)

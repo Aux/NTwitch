@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace NTwitch.Pubsub.API
 {
-    public class ListenSubscriptionsRequest : PubsubRequestBuilder
+    public class SubscriptionsRequest : PubsubRequestBuilder
     {
-        public ListenSubscriptionsRequest(IEnumerable<ulong> channelIds, string authtoken) 
-            : base("LISTEN", authtoken)
+        public SubscriptionsRequest(IEnumerable<ulong> channelIds, string authtoken, bool listen = true) 
+            : base(listen ? "LISTEN" : "UNLISTEN", authtoken)
         {
             foreach (var channelId in channelIds)
                 Topics.Add($"channel-subscribe-events-v1.{channelId}");

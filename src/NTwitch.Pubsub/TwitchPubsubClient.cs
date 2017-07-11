@@ -93,38 +93,37 @@ namespace NTwitch.Pubsub
         }
 
         // General
-        public async Task ListenAsync(string topic, params string[] topics)
+        public async Task ListenAsync(params string[] topics)
         {
-            var all = GetEnumerable(topic, topics);
-            await ApiClient.ListenAsync(all, null).ConfigureAwait(false);
+            await ApiClient.ListenAsync(topics, null).ConfigureAwait(false);
         }
 
-        public async Task UnlistenAsync(string topic, params string[] topics)
+        public async Task UnlistenAsync(params string[] topics)
         {
-            var all = GetEnumerable(topic, topics);
-            await ApiClient.UnlistenAsync(all, null).ConfigureAwait(false);
+            await ApiClient.UnlistenAsync(topics, null).ConfigureAwait(false);
         }
 
         // Channels
-        public async Task ListenBitsAsync(ulong channelId, params ulong[] channelIds)
+        public async Task ListenBitsAsync(params ulong[] channelIds)
         {
-            var all = GetEnumerable(channelId, channelIds);
-            await ApiClient.ListenBitsAsync(all).ConfigureAwait(false);
+            await ApiClient.ListenBitsAsync(channelIds).ConfigureAwait(false);
         }
 
-        public async Task ListenVideoPlaybackAsync(ulong channelId, params ulong[] channelIds)
+        public async Task UnlistenBitsAsync(params ulong[] channelIds)
         {
-            var all = GetEnumerable(channelId, channelIds);
-            await ApiClient.ListenVideoPlaybackAsync(all).ConfigureAwait(false);
+            await ApiClient.UnlistenBitsAsync(channelIds).ConfigureAwait(false);
         }
 
-        // Users
-        public async Task ListenWhispersAsync(ulong userId, params ulong[] userIds)
+        public async Task ListenCommerceAsync(params ulong[] channelIds)
         {
-            var all = GetEnumerable(userId, userIds);
-            await ApiClient.ListenWhispersAsync(all).ConfigureAwait(false);
+            await ApiClient.ListenCommerceAsync(channelIds).ConfigureAwait(false);
         }
 
+        public async Task UnlistenCommerceAsync(params ulong[] channelIds)
+        {
+            await ApiClient.UnlistenCommerceAsync(channelIds).ConfigureAwait(false);
+        }
+        
         private async Task ProcessMessageAsync(PubsubFrame<PubsubInData> msg)
         {
             switch (msg.Type)
@@ -146,23 +145,36 @@ namespace NTwitch.Pubsub
                     await _pubsubLogger.DebugAsync("Received Reconnect").ConfigureAwait(false);
                     _connection.Error(new Exception("Server requested a reconnect"));
                     break;
+                case "RESPONSE":
+                    {
+
+                    }
+                    break;
                 case "MESSAGE":
                     string topic = msg.Data.Topic.Split('.').First();
 
                     switch (topic)
                     {
-                        //case "channel-bits-events-v1":
-                        //    break;
-                        case "channel-subscribe-events-v1":
-                            var model = msg.Data.GetMessage<Subscription>();
-                            await _subscriptionReceived.InvokeAsync(PubsubSubscription.Create(this, model));
+                        case "channel-bits-events-v1":
+                            {
+                                var model = msg.Data.GetMessage<BitsMessageEvent>();
+                                await _bitsReceivedEvent.InvokeAsync(PubsubBitsMessage.Create(this, model)).ConfigureAwait(false);
+                            }
                             break;
-                        //case "channel-commerce-events-v1":
-                        //    break;
-                        //case "whispers":
-                        //    break;
+                        case "channel-commerce-events-v1":
+                            {
+                                var model = msg.Data.GetMessage<CommerceEvent>();
+                                await _commerceReceieved.InvokeAsync(PubsubCommerceEvent.Create(this, model)).ConfigureAwait(false);
+                            }
+                            break;
+                        case "channel-subscribe-events-v1":
+                            {
+                                var model = msg.Data.GetMessage<SubscriptionEvent>();
+                                await _subscriptionReceived.InvokeAsync(PubsubSubscriptionEvent.Create(this, model)).ConfigureAwait(false);
+                            }
+                            break;
                         default:
-                            await _anonymousReceivedEvent.InvokeAsync(msg.Data.Message);
+                            await _anonymousReceivedEvent.InvokeAsync(msg.Data.Message).ConfigureAwait(false);
                             break;
                     }
                     break;
