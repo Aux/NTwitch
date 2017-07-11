@@ -24,15 +24,20 @@ namespace Basic
             });
 
             _client.Log += OnLogAsync;
+            _client.Connected += OnConnectedAsync;
             _client.BitsReceived += OnBitsReceivedAsync;
 
             Console.Write("Please enter your oauth token: ");
             string token = Console.ReadLine();
 
             await _client.LoginAsync(token);
-            await _client.ListenBitsAsync(_client.TokenInfo.UserId);
-            
+            await _client.StartAsync();
             await Task.Delay(-1);
+        }
+
+        private async Task OnConnectedAsync()
+        {
+            await _client.ListenBitsAsync(_client.TokenInfo.UserId);
         }
 
         private Task OnBitsReceivedAsync(PubsubBitsMessage msg)
