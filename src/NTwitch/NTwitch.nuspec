@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>NTwitch</id>
+    <version>0.1.2$suffix$</version>
+    <title>NTwitch</title>
+    <authors>Auxesis</authors>
+    <description>A .net standard implementation of the https://twitch.tv/ api</description>
+    <tags>twitch,tv,dot,net,core,rest,api,lib,library,socket,websocket,chat,irc,tcp</tags>
+	<iconUrl>http://i.imgur.com/kcL6nG0.png</iconUrl>
+    <projectUrl>https://github.com/Aux/NTwitch</projectUrl>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+        <group targetFramework="netstandard1.4">
+            <dependency id="NTwitch.Core" version="0.1.2$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.1.2$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.1.2$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.1.2$suffix$" />
+        </group>
+    </dependencies>
+  </metadata>
+</package>

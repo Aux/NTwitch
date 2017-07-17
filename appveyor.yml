@@ -1,0 +1,39 @@
+version: build-{build}
+branches:
+  only:
+  - dev
+image: Visual Studio 2017
+
+nuget:
+  disable_publish_on_pr: true
+pull_requests:
+  do_not_increment_build_number: true
+clone_folder: C:\Projects\NTwitch
+
+init:
+- ps: $Env:BUILD = "$($Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0"))"
+
+build_script:
+- ps: appveyor-retry dotnet restore NTwitch.sln -v Minimal /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet build NTwitch.sln -c "Release" /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+after_build:
+- ps: dotnet pack "src\NTwitch.Core\NTwitch.Core.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Rest\NTwitch.Rest.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Chat\NTwitch.Chat.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: >-
+    if ($Env:APPVEYOR_REPO_TAG -eq "true") {
+      nuget pack src\NTwitch\NTwitch.nuspec -OutputDirectory "artifacts" -properties suffix=""
+    } else {
+      nuget pack src\NTwitch\NTwitch.nuspec -OutputDirectory "artifacts" -properties suffix="-build-$Env:BUILD"
+    }
+- ps: Get-ChildItem artifacts\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/aux/api/v2/package
+  api_key:
+    secure: cvyGx8IRAmYWl3Gj9Hr2UKglr5W2t3PxMrO2lhkWI7ntGUo0FFbcgz706bC1OQSd
+  symbol_server: https://www.myget.org/F/aux/symbols/api/v2/package
+  on:
+    branch: dev

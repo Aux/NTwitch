@@ -1,0 +1,29 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <VersionPrefix>0.1.2</VersionPrefix>
+        <VersionSuffix></VersionSuffix>
+        <Authors>Auxesis</Authors>
+        <PackageTags>twitch,tv,dot,net,core,rest,api,lib,library,socket,websocket,chat,irc,tcp</PackageTags>
+        <PackageProjectUrl>https://github.com/Aux/NTwitch</PackageProjectUrl>
+        <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+		<PackageIconUrl>http://i.imgur.com/kcL6nG0.png</PackageIconUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>git://github.com/Aux/NTwitch</RepositoryUrl>
+    </PropertyGroup>
+	
+    <PropertyGroup Condition=" '$(BuildNumber)' == '' ">
+        <VersionSuffix Condition=" '$(VersionSuffix)' != ''">$(VersionSuffix)-dev</VersionSuffix>
+        <VersionSuffix Condition=" '$(VersionSuffix)' == ''">dev</VersionSuffix>
+    </PropertyGroup>
+	
+    <PropertyGroup Condition=" '$(BuildNumber)' != '' And $(IsTagBuild) != 'true' ">
+        <VersionSuffix Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
+        <VersionSuffix Condition=" '$(VersionSuffix)' == '' ">build-$(BuildNumber)</VersionSuffix>
+    </PropertyGroup>
+	
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+</Project>
