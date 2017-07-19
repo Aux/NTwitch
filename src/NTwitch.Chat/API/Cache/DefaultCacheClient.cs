@@ -5,103 +5,49 @@ using System.Linq;
 
 namespace NTwitch.Chat
 {
-    internal sealed class DefaultCacheClient : ICacheClient
+    internal sealed class DefaultCacheClient<TKey, TEntity> : ICacheClient<TKey, TEntity>
     {
-        private readonly ConcurrentDictionary<ulong, ChatSimpleUser> _users;
-        private readonly ConcurrentDictionary<ulong, ChatSimpleChannel> _channels;
-        private readonly ConcurrentDictionary<string, ChatMessage> _messages;
-        private readonly ConcurrentQueue<string> _orderedMessages;
-        private readonly uint _msgCacheSize;
+        private readonly ConcurrentDictionary<TKey, TEntity> _entities;
+        private readonly ConcurrentQueue<TKey> _orderedEntities;
+        private readonly int _cacheSize;
 
-        public IReadOnlyCollection<ChatSimpleUser> Users => _users.Select(x => x.Value).ToArray();
-        public IReadOnlyCollection<ChatSimpleChannel> Channels => _channels.Select(x => x.Value).ToArray();
-        public IReadOnlyCollection<ChatMessage> Messages => _messages.Select(x => x.Value).ToArray();
+        public IReadOnlyCollection<TEntity> Entities => _entities.Select(x => x.Value).ToArray();
 
-        public DefaultCacheClient(uint msgCacheSize)
+        public DefaultCacheClient(int cacheSize)
         {
-            _users = new ConcurrentDictionary<ulong, ChatSimpleUser>();
-            _channels = new ConcurrentDictionary<ulong, ChatSimpleChannel>();
-            _messages = new ConcurrentDictionary<string, ChatMessage>();
-            _orderedMessages = new ConcurrentQueue<string>();
-            _msgCacheSize = msgCacheSize;
+            _entities = new ConcurrentDictionary<TKey, TEntity>();
+            _orderedEntities = new ConcurrentQueue<TKey>();
+            _cacheSize = cacheSize;
         }
-
-        public void AddUser(ChatSimpleUser user)
+        
+        public void Add(TKey id, TEntity entity)
         {
-            _users[user.Id] = user;
-        }
-
-        public void AddChannel(ChatSimpleChannel channel)
-        {
-            _channels[channel.Id] = channel;
-        }
-
-        public void AddMessage(ChatMessage message)
-        {
-            if (_messages.TryAdd(message.Id, message))
+            if (_entities.TryAdd(id, entity) && _cacheSize >= 0)
             {
-                _orderedMessages.Enqueue(message.Id);
+                _orderedEntities.Enqueue(id);
 
-                while (_orderedMessages.Count > _msgCacheSize && _orderedMessages.TryDequeue(out string msgId))
-                    _messages.TryRemove(msgId, out ChatMessage msg);
+                while (_orderedEntities.Count > _cacheSize && _orderedEntities.TryDequeue(out TKey entityId))
+                    _entities.TryRemove(entityId, out TEntity msg);
             }
         }
         
-        public ChatSimpleUser RemoveUser(ulong userId)
+        public TEntity Remove(TKey id)
         {
-            if (_users.TryRemove(userId, out ChatSimpleUser user))
-                return user;
-            return null;
-        }
-
-        public ChatSimpleChannel RemoveChannel(ulong channelId)
-        {
-            if (_channels.TryRemove(channelId, out ChatSimpleChannel channel))
-                return channel;
-            return null;
-        }
-
-        public ChatMessage RemoveMessage(string messageId)
-        {
-            if (_messages.TryRemove(messageId, out ChatMessage message))
-                return message;
-            return null;
-        }
-
-        public ChatSimpleUser GetUser(ulong userId)
-        {
-            if (_users.TryGetValue(userId, out ChatSimpleUser user))
-                return user;
-            return null;
+            if (_entities.TryRemove(id, out TEntity entity))
+                return entity;
+            return default(TEntity);
         }
         
-        public ChatSimpleChannel GetChannel(ulong channelId)
+        public TEntity Get(TKey id)
         {
-            if (_channels.TryGetValue(channelId, out ChatSimpleChannel channel))
-                return channel;
-            return null;
+            if (_entities.TryGetValue(id, out TEntity entity))
+                return entity;
+            return default(TEntity);
         }
         
-        public ChatMessage GetMessage(string messageId)
+        public TEntity GetOrAdd(TKey id, Func<TKey, TEntity> entityFactory)
         {
-            if (_messages.TryGetValue(messageId, out ChatMessage message))
-                return message;
-            return null;
-        }
-        
-        public ChatSimpleUser GetOrAddUser(ulong userId, Func<ulong, ChatSimpleUser> userFactory)
-        {
-            return _users.GetOrAdd(userId, userFactory);
-        }
-        
-        public ChatSimpleChannel GetOrAddChannel(ulong channelId, Func<ulong, ChatSimpleChannel> channelFactory)
-        {
-            return _channels.GetOrAdd(channelId, channelFactory);
-        }
-        
-        public ChatMessage GetOrAddMessage(string messageId, Func<string, ChatMessage> messageFactory)
-        {
-            return _messages.GetOrAdd(messageId, messageFactory);
+            return _entities.GetOrAdd(id, entityFactory);
         }
     }
 }

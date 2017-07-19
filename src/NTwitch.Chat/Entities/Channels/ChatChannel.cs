@@ -4,12 +4,13 @@ namespace NTwitch.Chat
 {
     public class ChatChannel : ChatSimpleChannel//, IChannel
     {
-        public string BroadcasterLanguage { get; private set; }
-        public int FollowersOnlyMode { get; private set; }
-        public bool IsFollowersOnly { get; private set; }
-        public bool IsR9k { get; private set; }
-        public bool IsSlow { get; private set; }
-        public bool IsSubsOnly { get; private set; }
+        public string BroadcasterLanguage { get; internal set; }
+        public int FollowersOnlyMode { get; internal set; }
+        public bool IsFollowersOnly { get; internal set; }
+        public bool IsEmoteOnly { get; internal set; }
+        public bool IsR9k { get; internal set; }
+        public bool IsSlow { get; internal set; }
+        public bool IsSubsOnly { get; internal set; }
 
         public ChatChannel(TwitchChatClient client, ulong id)
             : base(client, id) { }

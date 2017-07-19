@@ -10,9 +10,9 @@ namespace NTwitch.Chat
         public string SocketHost { get; set; } = "irc.chat.twitch.tv";
 
         /// <summary> Gets or sets the provider used to cache entities. </summary>
-        public CacheClientProvider CacheClientProvider { get; set; } = DefaultCacheClientProvider.Instance;
+        public ICacheClientProvider CacheClientProvider = DefaultCacheClientProvider.Instance;
         /// <summary> The number of messages that should be cached for each channel. </summary>
-        public uint MessageCacheSize { get; set; } = 0;
+        public int MessageCacheSize { get; set; } = 0;
 
         /// <summary> Gets or sets the time, in milliseconds, to wait for a connection to complete before aborting. </summary>
         public int ConnectionTimeout { get; set; } = 30000;

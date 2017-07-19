@@ -13,22 +13,23 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private TwitchPubsubClient _client;
+        private TwitchChatClient _client;
 
         public async Task Start()
         {
             string token = "";
             string clientId = "";
 
-            _client = new TwitchPubsubClient(new TwitchPubsubConfig
+            _client = new TwitchChatClient(new TwitchChatConfig
             {
                 ClientId = clientId,
-                LogLevel = LogSeverity.Debug
+                LogLevel = LogSeverity.Debug,
+                MessageCacheSize = 100
             });
 
             _client.Log += OnLogAsync;
             _client.Connected += OnConnectedAsync;
-            _client.AnonymousReceived += OnAnonymousReceivedAsync;
+            _client.MessageReceived += OnMessageReceivedAsync;
 
             await _client.LoginAsync(token);
             await _client.StartAsync();
@@ -37,21 +38,16 @@ namespace NTwitch.Tests
 
         private async Task OnConnectedAsync()
         {
-            await _client.ListenAsync($"video-playback.{_client.TokenInfo.UserId}");
-        }
-
-        private Task OnAnonymousReceivedAsync(string json)
-        {
-            return Console.Out.WriteLineAsync(json);
+            await _client.JoinChannelAsync("emongg");
         }
         
-        //private Task OnMessageReceivedAsync(ChatMessage msg)
-        //{
-        //    if (msg is ChatNoticeMessage notice)
-        //        return Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
-        //    else 
-        //        return Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
-        //}
+        private async Task OnMessageReceivedAsync(ChatMessage msg)
+        {
+            if (msg is ChatNoticeMessage notice)
+                await Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
+            else
+                await Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+        }
 
         //private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)
         //{

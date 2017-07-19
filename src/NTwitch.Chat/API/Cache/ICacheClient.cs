@@ -3,26 +3,14 @@ using System.Collections.Generic;
 
 namespace NTwitch.Chat
 {
-    public interface ICacheClient
+    public interface ICacheClient<TKey, TEntity>
     {
-        IReadOnlyCollection<ChatSimpleUser> Users { get; }
-        IReadOnlyCollection<ChatSimpleChannel> Channels { get; }
-        IReadOnlyCollection<ChatMessage> Messages { get; }
+        IReadOnlyCollection<TEntity> Entities { get; }
+        
+        void Add(TKey id, TEntity entity);
 
-        void AddUser(ChatSimpleUser user);
-        void AddChannel(ChatSimpleChannel channel);
-        void AddMessage(ChatMessage message);
-
-        ChatSimpleUser RemoveUser(ulong userId);
-        ChatSimpleChannel RemoveChannel(ulong channelId);
-        ChatMessage RemoveMessage(string messageId);
-
-        ChatSimpleUser GetUser(ulong userId);
-        ChatSimpleChannel GetChannel(ulong channelId);
-        ChatMessage GetMessage(string messageId);
-
-        ChatSimpleUser GetOrAddUser(ulong userId, Func<ulong, ChatSimpleUser> userFactory);
-        ChatSimpleChannel GetOrAddChannel(ulong channelId, Func<ulong, ChatSimpleChannel> channelFactory);
-        ChatMessage GetOrAddMessage(string messageId, Func<string, ChatMessage> messageFactory);
+        TEntity Remove(TKey id);
+        TEntity Get(TKey id);
+        TEntity GetOrAdd(TKey id, Func<TKey, TEntity> factory);
     }
 }
