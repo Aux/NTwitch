@@ -25,18 +25,24 @@ namespace NTwitch.Chat
         public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task> UserJoined { add { _userJoinedEvent.Add(value); } remove { _userJoinedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>> _userJoinedEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>>();
 
-        public event Func<string, Task> CurrentUserLeft { add { _currentUserLeftEvent.Add(value); } remove { _currentUserLeftEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, Task>> _currentUserLeftEvent = new AsyncEvent<Func<string, Task>>();
+        public event Func<Cacheable<string, ChatSimpleChannel>, Task> CurrentUserLeft { add { _currentUserLeftEvent.Add(value); } remove { _currentUserLeftEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Task>> _currentUserLeftEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Task>>();
 
-        public event Func<string, string, Task> UserLeft { add { _userLeftEvent.Add(value); } remove { _userLeftEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, string, Task>> _userLeftEvent = new AsyncEvent<Func<string, string, Task>>();
+        public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task> UserLeft { add { _userLeftEvent.Add(value); } remove { _userLeftEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>> _userLeftEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>>();
 
+        public event Func<Task> UserUpdated { add { _userUpdated.Add(value); } remove { _userUpdated.Remove(value); } }
+        private readonly AsyncEvent<Func<Task>> _userUpdated = new AsyncEvent<Func<Task>>();
+
+        public event Func<ChatChannel, Task> ChannelUpdated { add { _channelUpdated.Add(value); } remove { _channelUpdated.Remove(value); } }
+        private readonly AsyncEvent<Func<ChatChannel, Task>> _channelUpdated = new AsyncEvent<Func<ChatChannel, Task>>();
+        
         // Moderation
-        public event Func<string, string, Task> ModeratorAdded { add { _moderatorAddedEvent.Add(value); } remove { _moderatorAddedEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, string, Task>> _moderatorAddedEvent = new AsyncEvent<Func<string, string, Task>>();
+        public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task> ModeratorAdded { add { _moderatorAddedEvent.Add(value); } remove { _moderatorAddedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>> _moderatorAddedEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>>();
 
-        public event Func<string, string, Task> ModeratorRemoved { add { _moderatorRemovedEvent.Add(value); } remove { _moderatorRemovedEvent.Remove(value); } }
-        private readonly AsyncEvent<Func<string, string, Task>> _moderatorRemovedEvent = new AsyncEvent<Func<string, string, Task>>();
+        public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task> ModeratorRemoved { add { _moderatorRemovedEvent.Add(value); } remove { _moderatorRemovedEvent.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>> _moderatorRemovedEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task>>();
 
         public event Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task> UserBanned { add { _userBannedEvent.Add(value); } remove { _userBannedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>> _userBannedEvent = new AsyncEvent<Func<ChatSimpleChannel, ChatSimpleUser, BanOptions, Task>>();

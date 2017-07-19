@@ -92,7 +92,7 @@ namespace NTwitch.Chat
             => UserHelper.GetFollowAsync(Client, Id, channelId, options);
 
         // Heartbeat
-        /// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
+        ///// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
         //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
         //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
         ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>

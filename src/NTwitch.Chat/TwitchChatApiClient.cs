@@ -186,7 +186,7 @@ namespace NTwitch.Chat
         {
             throw new NotImplementedException();
         }
-
+        
         public async Task ClearChatAsync(string channelName, string userName, string reason, uint? duration, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);

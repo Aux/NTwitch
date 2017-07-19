@@ -151,10 +151,20 @@ namespace NTwitch.Chat
                         {
                             var model = PartEvent.Create(msg);
 
+                            var channel = _cache.GetChannel(model.ChannelName);
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+
+                            var user = _cache.GetUser(model.UserName);
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
+
+                            _cache.RemoveChannel(channel.Id);
+                            _cache.RemoveUser(user.Id);
+                            _cache.RemoveUserState(channel.Name);
+
                             if (TokenInfo.Username == model.UserName)
-                                await _currentUserLeftEvent.InvokeAsync(model.ChannelName).ConfigureAwait(false);
+                                await _currentUserLeftEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
                             else
-                                await _userLeftEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                                await _userLeftEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
                         }
                         break;
                     case "PRIVMSG":
@@ -162,7 +172,10 @@ namespace NTwitch.Chat
                             var model = MessageReceivedEvent.Create(msg);
                             var entity = ChatMessage.Create(this, model);
 
+                            _cache.AddChannel(entity.Channel);
+                            _cache.AddUser(entity.User);
                             _cache.AddMessage(entity);
+
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
                         }
                         break;
@@ -171,24 +184,135 @@ namespace NTwitch.Chat
                             var model = UserNoticeEvent.Create(msg);
                             var entity = ChatNoticeMessage.Create(this, model);
 
+                            _cache.AddChannel(entity.Channel);
+                            _cache.AddUser(entity.User);
                             _cache.AddMessage(entity);
+
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
                         }
                         break;
-                    case "NOTICE":  // Missing
+                    case "NOTICE":
+                        {
+                            var model = NoticeEvent.Create(msg);
+                            var channel = _cache.GetChannel(model.ChannelName) as ChatChannel;
+                            
+                            switch (model.Id)
+                            {
+                                //case "already_banned":
+                                //    break;
+                                //case "already_emote_only_off":
+                                //    break;
+                                //case "already_emote_only_on":
+                                //    break;
+                                //case "already_r9k_off":
+                                //    break;
+                                //case "already_r9k_on":
+                                //    break;
+                                //case "already_subs_off":
+                                //    break;
+                                //case "already_subs_on":
+                                    //break;
+                                //case "bad_host_hosting":
+                                //    break;
+                                //case "bad_unban_no_ban":
+                                //    break;
+                                //case "ban_success":
+                                //    break;
+                                case "emote_only_off":
+                                    channel.IsEmoteOnly = false;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "emote_only_on":
+                                    channel.IsEmoteOnly = true;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                //case "host_off":
+                                //    break;
+                                //case "host_on":
+                                //    break;
+                                //case "hosts_remaining":
+                                //    break;
+                                //case "msg_channel_suspended":
+                                //    break;
+                                case "r9k_off":
+                                    channel.IsR9k = false;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "r9k_on":
+                                    channel.IsR9k = true;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "slow_off":
+                                    channel.IsSlow = false;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "slow_on":
+                                    channel.IsSlow = true;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "subs_off":
+                                    channel.IsSubsOnly = false;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                case "subs_on":
+                                    channel.IsSubsOnly = true;
+                                    _cache.AddChannel(channel);
+                                    await _channelUpdated.InvokeAsync(channel).ConfigureAwait(false);
+                                    break;
+                                //case "timeout_success":
+                                //    break;
+                                //case "unban_success":
+                                //    break;
+                                //case "unrecognized_cmd":
+                                //    break;
+                                default:
+                                    await _chatLogger.WarningAsync($"Unhandled NOTICE id `{model.Id}`").ConfigureAwait(false);
+                                    break;
+                            }
+                        }
                         break;
                     case "USERSTATE":
+                        {
+                            var model = UserStateEvent.Create(msg);
+                            _cache.AddUserState(model);
+                        }
                         break;
                     case "ROOMSTATE":
+                        {
+                            var model = RoomStateEvent.Create(msg);
+                            var channel = ChatChannel.Create(this, model);
+
+                            _cache.AddChannel(channel);
+                        }
                         break;
                     case "MODE":
                         {
                             var model = ModeEvent.Create(msg);
 
+                            var userState = _cache.GetUserState(model.ChannelName);
+                            if (userState != null)
+                            {
+                                userState.IsMod = model.Type == "+o";
+                                _cache.AddUserState(userState);
+                            }
+
+                            var channel = _cache.GetChannel(model.ChannelName);
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+
+                            var user = _cache.GetUser(model.UserName);
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
+
                             if (model.Type == "+o")
-                                await _moderatorAddedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                                await _moderatorAddedEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
                             else
-                                await _moderatorRemovedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                                await _moderatorRemovedEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
                         }
                         break;
                     case "CLEARCHAT":
@@ -197,6 +321,10 @@ namespace NTwitch.Chat
                             var channel = ChatSimpleChannel.Create(this, model);
                             var user = ChatSimpleUser.Create(this, model);
                             var options = new BanOptions(model.Reason, model.Duration);
+
+                            _cache.AddChannel(channel);
+                            _cache.AddUser(user);
+
                             await _userBannedEvent.InvokeAsync(channel, user, options).ConfigureAwait(false);
                         }
                         break;
