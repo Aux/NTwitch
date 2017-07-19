@@ -1,19 +1,10 @@
-﻿using System;
-
-namespace NTwitch.Chat
+﻿namespace NTwitch.Chat
 {
-    public static class DefaultCacheClientProvider
+    internal sealed class DefaultCacheClientProvider : ICacheClientProvider
     {
-        public static readonly CacheClientProvider Instance = (uint msgCacheSize) =>
-        {
-            try
-            {
-                return new DefaultCacheClient(msgCacheSize);
-            }
-            catch (PlatformNotSupportedException ex)
-            {
-                throw new PlatformNotSupportedException("The default CacheProvider is not supported on this platform.", ex);
-            }
-        };
+        public static ICacheClientProvider Instance = new DefaultCacheClientProvider();
+
+        public ICacheClient<TKey, TEntity> Create<TKey, TEntity>(int cacheSize)
+            => new DefaultCacheClient<TKey, TEntity>(cacheSize);
     }
 }

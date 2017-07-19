@@ -16,7 +16,7 @@ namespace NTwitch.Chat
         public string Name { get; private set; }
 
         public IReadOnlyCollection<ChatMessage> Messages 
-            => Client.ApiClient.CacheClient.Messages.Where(x => x.Channel.Id == Id).ToArray();
+            => Client.Cache.Messages.Where(x => x.Channel.Id == Id).ToArray();
 
         internal ChatSimpleChannel(TwitchChatClient client, ulong id) 
             : base(client, id) { }

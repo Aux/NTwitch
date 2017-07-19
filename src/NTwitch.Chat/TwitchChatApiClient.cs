@@ -25,17 +25,14 @@ namespace NTwitch.Chat
         private string _socketUrl;
 
         internal ISocketClient SocketClient { get; }
-        internal ICacheClient CacheClient { get; }
-
         public ConnectionState ConnectionState { get; private set; }
 
-        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, CacheClientProvider cacheClientProvider, uint msgCacheSize,
+        public TwitchChatApiClient(RestClientProvider restClientProvider, SocketClientProvider socketClientProvider, 
             string clientId, string userAgent, string socketUrl, RetryMode defaultRetryMode = RetryMode.AlwaysRetry, JsonSerializer serializer = null)
             : base(restClientProvider, clientId, userAgent, serializer)
         {
             _socketUrl = socketUrl;
             SocketClient = socketClientProvider();
-            CacheClient = cacheClientProvider(msgCacheSize);
             
             SocketClient.TextMessage += async text =>
             {
@@ -200,15 +197,6 @@ namespace NTwitch.Chat
         {
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync("HOSTTARGET", $"#{hostName} {channelName}").ConfigureAwait(false);
-        }
-
-        // Messages
-        public IReadOnlyCollection<ChatMessage> GetMessages(ulong channelId, int? count)
-        {
-            var messages = CacheClient.Messages.OfType<ChatMessage>().Where(x => x.Channel.Id == channelId);
-            if (count != null)
-                messages = messages.Take((int)count);
-            return messages.ToArray();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace NTwitch.Chat
     public partial class TwitchChatClient : BaseTwitchClient, ITwitchClient
     {
         private readonly SemaphoreSlim _stateLock;
+        private readonly CacheManager _cache;
         private readonly ConnectionManager _connection;
         private readonly ConcurrentQueue<long> _heartbeatTimes;
         private readonly Logger _chatLogger;
@@ -20,6 +21,7 @@ namespace NTwitch.Chat
         private int _heartbeatInterval;
 
         internal new TwitchChatApiClient ApiClient => base.ApiClient as TwitchChatApiClient;
+        internal CacheManager Cache => _cache;
 
         /// <summary> Gets the current connection state of this client. </summary>
         public ConnectionState ConnectionState => _connection.State;
@@ -35,6 +37,8 @@ namespace NTwitch.Chat
             _heartbeatTimes = new ConcurrentQueue<long>();
             _heartbeatInterval = config.HeartbeatInterval;
 
+            _cache = new CacheManager(config.MessageCacheSize, config.CacheClientProvider);
+
             _connection = new ConnectionManager(_stateLock, _chatLogger, config.ConnectionTimeout, 
                 OnConnectingAsync, OnDisconnectingAsync, x => ApiClient.Disconnected += x);
             _connection.Connected += async () => await _connectedEvent.InvokeAsync().ConfigureAwait(false);
@@ -44,12 +48,12 @@ namespace NTwitch.Chat
             ApiClient.ReceivedChatEvent += ProcessMessageAsync;
 
             CurrentUserLeft += async n => await _chatLogger.InfoAsync($"Left {n}").ConfigureAwait(false);
-            CurrentUserJoined += async n => await _chatLogger.InfoAsync($"Joined {n}").ConfigureAwait(false);
+            CurrentUserJoined += async n => await _chatLogger.InfoAsync($"Joined {n.Key}").ConfigureAwait(false);
             LatencyUpdated += async (old, val) => await _chatLogger.InfoAsync($"Latency = {val} ms").ConfigureAwait(false);
         }
 
         private static TwitchChatApiClient CreateApiClient(TwitchChatConfig config)
-            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.CacheClientProvider, config.MessageCacheSize, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
+            => new TwitchChatApiClient(config.RestClientProvider, config.SocketClientProvider, config.ClientId, TwitchConfig.UserAgent, config.SocketHost);
 
         internal override void Dispose(bool disposing)
         {
@@ -130,11 +134,17 @@ namespace NTwitch.Chat
                     case "JOIN":
                         {
                             var model = JoinEvent.Create(msg);
+                            
+                            var channel = _cache.GetChannel(model.ChannelName);
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+
+                            var user = _cache.GetUser(model.UserName);
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
 
                             if (TokenInfo.Username == model.UserName)
-                                await _currentUserJoinedEvent.InvokeAsync(model.ChannelName).ConfigureAwait(false);
+                                await _currentUserJoinedEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
                             else
-                                await _userJoinedEvent.InvokeAsync(model.ChannelName, model.UserName).ConfigureAwait(false);
+                                await _userJoinedEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
                         }
                         break;
                     case "PART":
@@ -151,6 +161,8 @@ namespace NTwitch.Chat
                         {
                             var model = MessageReceivedEvent.Create(msg);
                             var entity = ChatMessage.Create(this, model);
+
+                            _cache.AddMessage(entity);
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
                         }
                         break;
@@ -158,6 +170,8 @@ namespace NTwitch.Chat
                         {
                             var model = UserNoticeEvent.Create(msg);
                             var entity = ChatNoticeMessage.Create(this, model);
+
+                            _cache.AddMessage(entity);
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
                         }
                         break;
