@@ -38,7 +38,7 @@ namespace NTwitch.Tests
 
         private async Task OnConnectedAsync()
         {
-            await _client.JoinChannelAsync("emongg");
+            await _client.JoinChannelAsync("auxesistv");
         }
         
         private async Task OnMessageReceivedAsync(ChatMessage msg)
@@ -48,12 +48,7 @@ namespace NTwitch.Tests
             else
                 await Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
         }
-
-        //private Task OnUserBannedAsync(ChatSimpleChannel channel, ChatSimpleUser user, BanOptions ban)
-        //{
-        //    return Console.Out.WriteLineAsync($"`{user.DisplayName}` was banned in `{channel.Name}` for `{ban.Reason} ({ban.Duration})`.");
-        //}
-
+        
         private Task OnLogAsync(LogMessage msg)
         {
             return Console.Out.WriteLineAsync(msg.ToString());

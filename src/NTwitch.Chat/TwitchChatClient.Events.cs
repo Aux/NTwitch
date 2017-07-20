@@ -18,7 +18,7 @@ namespace NTwitch.Chat
         // Channels
         public event Func<ChatMessage, Task> MessageReceived { add { _messageReceivedEvent.Add(value); } remove { _messageReceivedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<ChatMessage, Task>> _messageReceivedEvent = new AsyncEvent<Func<ChatMessage, Task>>();
-
+        
         public event Func<Cacheable<string, ChatSimpleChannel>, Task> CurrentUserJoined { add { _currentUserJoinedEvent.Add(value); } remove { _currentUserJoinedEvent.Remove(value); } }
         private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Task>> _currentUserJoinedEvent = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Task>>();
 
@@ -36,6 +36,12 @@ namespace NTwitch.Chat
 
         public event Func<ChatChannel, Task> ChannelUpdated { add { _channelUpdated.Add(value); } remove { _channelUpdated.Remove(value); } }
         private readonly AsyncEvent<Func<ChatChannel, Task>> _channelUpdated = new AsyncEvent<Func<ChatChannel, Task>>();
+
+        public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleChannel>, int, Task> HostingStarted { add { _hostingStarted.Add(value); } remove { _hostingStarted.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleChannel>, int, Task>> _hostingStarted = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleChannel>, int, Task>>();
+
+        public event Func<Cacheable<string, ChatSimpleChannel>, int, Task> HostingStopped { add { _hostingStopped.Add(value); } remove { _hostingStopped.Remove(value); } }
+        private readonly AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, int, Task>> _hostingStopped = new AsyncEvent<Func<Cacheable<string, ChatSimpleChannel>, int, Task>>();
         
         // Moderation
         public event Func<Cacheable<string, ChatSimpleChannel>, Cacheable<string, ChatSimpleUser>, Task> ModeratorAdded { add { _moderatorAddedEvent.Add(value); } remove { _moderatorAddedEvent.Remove(value); } }

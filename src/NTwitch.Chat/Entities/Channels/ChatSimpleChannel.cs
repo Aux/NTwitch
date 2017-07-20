@@ -72,6 +72,16 @@ namespace NTwitch.Chat
             Name = model.ChannelName;
         }
 
+        // Chat
+        public IReadOnlyCollection<string> GetNames()
+            => Client.Cache.GetNames(Name);
+
+        public Task SendMessageAsync(string content, RequestOptions options = null)
+            => Client.ApiClient.SendChannelMessageAsync(Name, content, options);
+
+        public Task LeaveAsync(RequestOptions options = null)
+            => Client.ApiClient.LeaveChannelAsync(Name, options);
+        
         // Channels
         ///// <summary> Change properties of this channel </summary>
         //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
@@ -127,7 +137,7 @@ namespace NTwitch.Chat
 
         // ISimpleChannel
         string ISimpleChannel.DisplayName
-            => null;
+            => Name;
         Task ISimpleChannel.ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options)
             => Task.CompletedTask;
         Task<IReadOnlyCollection<ICheerInfo>> ISimpleChannel.GetCheersAsync(RequestOptions options)

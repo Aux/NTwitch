@@ -3,6 +3,7 @@ using NTwitch.Chat.Queue;
 using NTwitch.Rest;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,10 +24,12 @@ namespace NTwitch.Chat
         internal new TwitchChatApiClient ApiClient => base.ApiClient as TwitchChatApiClient;
         internal CacheManager Cache => _cache;
 
-        /// <summary> Gets the current connection state of this client. </summary>
-        public ConnectionState ConnectionState => _connection.State;
         /// <summary> Gets the estimated round-trip latency, in milliseconds, to the chat server. </summary>
         public int Latency { get; private set; }
+        /// <summary> Gets the current connection state of this client. </summary>
+        public ConnectionState ConnectionState => _connection.State;
+        /// <summary> All of the channels the current user is connected to. </summary>
+        public IReadOnlyCollection<ChatSimpleChannel> Channels => _cache.Channels;
 
         public TwitchChatClient() : this(new TwitchChatConfig()) { }
         public TwitchChatClient(TwitchChatConfig config) 
@@ -136,10 +139,10 @@ namespace NTwitch.Chat
                             var model = JoinEvent.Create(msg);
                             
                             var channel = _cache.GetChannel(model.ChannelName);
-                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
 
                             var user = _cache.GetUser(model.UserName);
-                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
                             if (TokenInfo.Username == model.UserName)
                                 await _currentUserJoinedEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
@@ -152,10 +155,10 @@ namespace NTwitch.Chat
                             var model = PartEvent.Create(msg);
 
                             var channel = _cache.GetChannel(model.ChannelName);
-                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
 
                             var user = _cache.GetUser(model.UserName);
-                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
                             _cache.RemoveChannel(channel.Id);
                             _cache.RemoveUser(user.Id);
@@ -211,7 +214,7 @@ namespace NTwitch.Chat
                                 //case "already_subs_off":
                                 //    break;
                                 //case "already_subs_on":
-                                    //break;
+                                //    break;
                                 //case "bad_host_hosting":
                                 //    break;
                                 //case "bad_unban_no_ban":
@@ -304,10 +307,10 @@ namespace NTwitch.Chat
                             }
 
                             var channel = _cache.GetChannel(model.ChannelName);
-                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null, () => Task.FromResult(default(ChatSimpleChannel)));
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
 
                             var user = _cache.GetUser(model.UserName);
-                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null, () => Task.FromResult(default(ChatSimpleUser)));
+                            var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
                             if (model.Type == "+o")
                                 await _moderatorAddedEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
@@ -328,19 +331,35 @@ namespace NTwitch.Chat
                             await _userBannedEvent.InvokeAsync(channel, user, options).ConfigureAwait(false);
                         }
                         break;
-                    case "HOSTTARGET":  // missing
+                    case "HOSTTARGET":
+                        {
+                            var model = HostEvent.Create(msg);
+
+                            var host = _cache.GetChannel(model.HostName);
+                            var cacheHost = new Cacheable<string, ChatSimpleChannel>(host, model.HostName, host != null);
+
+                            if (model.ChannelName == null)
+                            {
+                                await _hostingStopped.InvokeAsync(cacheHost, model.Viewers).ConfigureAwait(false);
+                            } else
+                            {
+                                var channel = _cache.GetChannel(model.ChannelName);
+                                var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
+
+                                await _hostingStarted.InvokeAsync(cacheHost, cacheChannel, model.Viewers).ConfigureAwait(false);
+                            }
+                        }
                         break;
-                    case "GLOBALUSERSTATE":  // missing
+                    case "353":
+                        {
+                            var model = NamesEvent.Create(msg);
+                            _cache.AddNames(model.ChannelName, model.Names);
+                        }
                         break;
-                    case "CAP": // Request Acks
-                        break;
-                    case "353": // Channel Names
-                        break;
-                    case "366": // End of channel names
-                        break;
+                    case "GLOBALUSERSTATE": // Is never received
                     case "001": case "002": case "003":
-                    case "004": case "375": case "372":
-                    case "376":
+                    case "004": case "366": case "375":
+                    case "372": case "376": case "CAP":
                         await _chatLogger.DebugAsync($"Ignored command `{msg.Command}`").ConfigureAwait(false);
                         break;
                     default:
