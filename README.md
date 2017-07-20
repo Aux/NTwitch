@@ -7,15 +7,15 @@ A .net core implementation of the https://twitch.tv/ version 5 api, strongly bas
 Release and pre-release builds can be found on Nuget under [NTwitch](https://www.nuget.org/packages/NTwitch/).
 
 #### Releases
-Stable builds can be found on NTwitch. The contents of these packages reflect what is shown in the [master](https://github.com/Aux/NTwitch/tree/master) branch.
+Stable builds can be found on Nuget. The contents of these packages reflect what is shown in the [master](https://github.com/Aux/NTwitch/tree/master) branch.
 - [NTwitch](https://www.nuget.org/packages/NTwitch/)
 - [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
 - [NTwitch.Chat](https://www.nuget.org/packages/NTwitch.Chat/)
 - [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.Pubsub/)
 #### Pre-Release
-Unstable builds of NTwitch can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
+Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
 #### Indev
-You can access the latest builds of NTwitch via the myget feed listed below. The contents of these packages are built automatically as new code is committed to the [dev](https://github.com/Aux/NTwitch/tree/dev) branch.
+You can access the latest builds via the myget feed listed below. The contents of these packages are built automatically as new code is committed to the [dev](https://github.com/Aux/NTwitch/tree/dev) branch.
 - `https://www.myget.org/F/aux/api/v3/index.json`
 
 ## Documentation
