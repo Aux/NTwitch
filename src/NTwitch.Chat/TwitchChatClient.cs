@@ -4,6 +4,7 @@ using NTwitch.Rest;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,9 +67,19 @@ namespace NTwitch.Chat
                 ApiClient.Dispose();
             }
         }
-        
+
+        internal override async Task OnLoginAsync(bool validateToken)
+        {
+            await base.OnLoginAsync(validateToken).ConfigureAwait(false);
+
+            if (!validateToken) return;
+            if (TokenInfo.Authorization.Scopes.Contains("chat_login"))
+                throw new MissingScopeException("chat_login");
+        }
+
         internal override async Task OnLogoutAsync()
         {
+            await base.OnLogoutAsync().ConfigureAwait(false);
             await StopAsync().ConfigureAwait(false);
         }
         
