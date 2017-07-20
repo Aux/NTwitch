@@ -73,7 +73,7 @@ namespace NTwitch.Chat
             await base.OnLoginAsync(validateToken).ConfigureAwait(false);
 
             if (!validateToken) return;
-            if (TokenInfo.Authorization.Scopes.Contains("chat_login"))
+            if (!TokenInfo.Authorization.Scopes.Contains("chat_login"))
                 throw new MissingScopeException("chat_login");
         }
 
