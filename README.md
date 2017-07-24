@@ -19,7 +19,7 @@ You can access the latest builds of NTwitch via the myget feed listed below. The
 - `https://www.myget.org/F/aux/api/v3/index.json`
 
 ## Documentation
-There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM).
+Currently, no documentation for NTwitch exists. If you have any questions or want status updates about the library, please join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM).
 
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
