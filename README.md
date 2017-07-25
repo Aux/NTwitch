@@ -1,7 +1,7 @@
 # NTwitch
 [![NuGet](https://img.shields.io/nuget/v/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) [![MyGet Pre Release](https://img.shields.io/myget/aux/vpre/NTwitch.svg)](https://www.myget.org/feed/Packages/aux) [![Discord](https://discordapp.com/api/guilds/257698577894080512/widget.png)](https://discord.gg/yd8x2wM)
 
-A .net core implementation of the https://twitch.tv/ version 5 api, strongly based on [Discord.Net](https://github.com/RogueException/Discord.Net).
+A .Net Core implementation of the https://twitch.tv/ version 5 API, strongly based on [Discord.Net](https://github.com/RogueException/Discord.Net).
 
 ## Builds
 Release and pre-release builds can be found on Nuget under [NTwitch](https://www.nuget.org/packages/NTwitch/).
