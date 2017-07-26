@@ -1,0 +1,3 @@
+---
+permalink: /docs/configuring/:title
+---
