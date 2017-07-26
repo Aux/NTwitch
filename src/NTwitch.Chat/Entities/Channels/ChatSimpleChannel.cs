@@ -15,8 +15,8 @@ namespace NTwitch.Chat
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
 
-        public IReadOnlyCollection<ChatMessage> Messages 
-            => Client.Cache.Messages.Where(x => x.Channel.Id == Id).ToArray();
+        public ChatSelfUser CurrentUser => ChatChannelHelper.GetMyUser(Client, this);
+        public IReadOnlyCollection<ChatMessage> Messages => Client.Cache.Messages.Where(x => x.Channel.Id == Id).ToArray();
 
         internal ChatSimpleChannel(TwitchChatClient client, ulong id) 
             : base(client, id) { }
@@ -77,7 +77,7 @@ namespace NTwitch.Chat
             => Client.Cache.GetNames(Name);
 
         public Task SendMessageAsync(string content, RequestOptions options = null)
-            => Client.ApiClient.SendChannelMessageAsync(Name, content, options);
+            => ChatChannelHelper.SendMessageAsync(Client, Name, content, options);
 
         public Task LeaveAsync(RequestOptions options = null)
             => Client.ApiClient.LeaveChannelAsync(Name, options);

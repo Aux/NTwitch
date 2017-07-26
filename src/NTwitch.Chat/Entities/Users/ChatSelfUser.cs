@@ -10,9 +10,9 @@ namespace NTwitch.Chat
         public ChatSelfUser(TwitchChatClient client, ulong id)
             : base(client, id) { }
 
-        internal new static ChatUser Create(TwitchChatClient client, UserStateModel model)
+        internal new static ChatSelfUser Create(TwitchChatClient client, UserStateModel model)
         {
-            var entity = new ChatUser(client, client.TokenInfo.UserId);
+            var entity = new ChatSelfUser(client, client.TokenInfo.UserId);
             entity.Update(model);
             return entity;
         }
