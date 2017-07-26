@@ -15,8 +15,8 @@ exclude:
 
 collections:
   projects:
-    title: Projects
-    permalink: /projects/:slug
+    title: Documentation
+    permalink: /docs/:slug
     output: true
 
 defaults:
