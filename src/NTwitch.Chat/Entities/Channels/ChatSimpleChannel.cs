@@ -75,13 +75,16 @@ namespace NTwitch.Chat
         // Chat
         public IReadOnlyCollection<string> GetNames()
             => Client.Cache.GetNames(Name);
-
-        public Task SendMessageAsync(string content, RequestOptions options = null)
-            => ChatChannelHelper.SendMessageAsync(Client, Name, content, options);
-
-        public Task LeaveAsync(RequestOptions options = null)
-            => Client.ApiClient.LeaveChannelAsync(Name, options);
         
+        public Task ClearChatAsync(IUser user, RequestOptions options = null)
+            => ClearChatAsync(user.Name, options);
+        public Task ClearChatAsync(string userName, RequestOptions options = null)
+            => ClearChatAsync(userName, null, null, options);
+        public Task ClearChatAsync(IUser user, string reason, uint? duration = null, RequestOptions options = null)
+            => ClearChatAsync(user.Name, reason, duration, options);
+        public Task ClearChatAsync(string userName, string reason, uint? duration = null, RequestOptions options = null)
+            => ChatChannelHelper.ClearChatAsync(Client, this, userName, reason, duration, options);
+
         // Channels
         ///// <summary> Change properties of this channel </summary>
         //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)

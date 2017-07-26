@@ -24,6 +24,15 @@ namespace NTwitch.Chat
             await client.ApiClient.LeaveChannelAsync(channel.Name, options).ConfigureAwait(false);
         }
 
+        public static async Task HostAsync(this ISimpleChannel channel, RequestOptions options = null)
+        {
+            var client = channel.Client as TwitchChatClient;
+            if (client == null)
+                return;
+
+            await client.ApiClient.HostChannelAsync(client.TokenInfo.Username, channel.Name, options);
+        }
+
         // Messages
         public static async Task SendMessageAsync(this ISimpleChannel channel, string content, RequestOptions options = null)
         {
@@ -31,7 +40,7 @@ namespace NTwitch.Chat
             if (client == null)
                 return;
 
-            await client.ApiClient.SendChannelMessageAsync(channel.Name, content, options).ConfigureAwait(false);
+            await ChatChannelHelper.SendMessageAsync(client, channel, content, options).ConfigureAwait(false);
         }
     }
 }

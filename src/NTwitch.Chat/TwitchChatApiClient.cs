@@ -181,11 +181,6 @@ namespace NTwitch.Chat
             options = RequestOptions.CreateOrClone(options);
             await SendSocketAsync(new SetUserModeRequest(channelName, userName, isOp)).ConfigureAwait(false);
         }
-
-        public Task RequestNamesAsync(string channelName, RequestOptions options)
-        {
-            throw new NotImplementedException();
-        }
         
         public async Task ClearChatAsync(string channelName, string userName, string reason, uint? duration, RequestOptions options)
         {
