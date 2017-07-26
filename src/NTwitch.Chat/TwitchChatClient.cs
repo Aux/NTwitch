@@ -187,7 +187,7 @@ namespace NTwitch.Chat
                             var entity = ChatMessage.Create(this, model);
 
                             _cache.AddChannel(entity.Channel);
-                            _cache.AddUser(entity.User);
+                            _cache.AddUser(entity.Author);
                             _cache.AddMessage(entity);
 
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);
@@ -199,7 +199,7 @@ namespace NTwitch.Chat
                             var entity = ChatNoticeMessage.Create(this, model);
 
                             _cache.AddChannel(entity.Channel);
-                            _cache.AddUser(entity.User);
+                            _cache.AddUser(entity.Author);
                             _cache.AddMessage(entity);
 
                             await _messageReceivedEvent.InvokeAsync(entity).ConfigureAwait(false);

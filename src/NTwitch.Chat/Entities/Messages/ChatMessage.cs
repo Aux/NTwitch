@@ -17,7 +17,7 @@ namespace NTwitch.Chat
         /// <summary>  </summary>
         public ChatSimpleChannel Channel { get; private set; }
         /// <summary>  </summary>
-        public ChatUser User { get; private set; }
+        public ChatUser Author { get; private set; }
 
         internal ChatMessage(TwitchChatClient client, string id)
             : base(client, id) { }
@@ -47,7 +47,7 @@ namespace NTwitch.Chat
             Content = model.Content;
 
             Channel = ChatSimpleChannel.Create(Client, model);
-            User = ChatUser.Create(Client, model);
+            Author = ChatUser.Create(Client, model);
         }
 
         internal virtual void Update(NoticeModel model)
@@ -58,7 +58,7 @@ namespace NTwitch.Chat
             Content = model.Content;
 
             Channel = ChatSimpleChannel.Create(Client, model);
-            User = ChatUser.Create(Client, model);
+            Author = ChatUser.Create(Client, model);
         }
     }
 }

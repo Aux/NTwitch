@@ -46,7 +46,7 @@ namespace NTwitch.Tests
             if (msg is ChatNoticeMessage notice)
                 await Console.Out.WriteLineAsync($"[{notice.Channel.Name}] {notice.SystemMessage}");
             else
-                await Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.User.DisplayName ?? msg.User.Name}: {msg.Content}");
+                await Console.Out.WriteLineAsync($"[{msg.Channel.Name}] {msg.Author.DisplayName ?? msg.Author.Name}: {msg.Content}");
         }
         
         private Task OnLogAsync(LogMessage msg)
