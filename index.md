@@ -1,3 +1,7 @@
+---
+title_override: true
+---
+
 {% include header.html %}
 <body class="landing-page">
     <div class="page-wrapper">

@@ -1,0 +1,164 @@
+
+<head>
+    <title>Intro</title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">    
+    <link rel="shortcut icon" href="favicon.ico">  
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">   
+    <!-- Plugins CSS -->    
+    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/plugins/elegant_font/css/style.css">
+    
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
+	<!-- Begin Jekyll SEO tag v2.2.3 -->
+<meta property="og:title" content="Intro" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Intro to using the NTwitch library" />
+<meta property="og:description" content="Intro to using the NTwitch library" />
+<link rel="canonical" href="https://aux.github.io/NTwitch//NTwitch/docs/" />
+<meta property="og:url" content="https://aux.github.io/NTwitch//NTwitch/docs/" />
+<meta property="og:site_name" content="NTwitch Documentation" />
+<script type="application/ld+json">
+{"@context":"http://schema.org","@type":"WebPage","headline":"Intro","description":"Intro to using the NTwitch library","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://aux.github.io/NTwitch//NTwitch/logo.png"}},"url":"https://aux.github.io/NTwitch//NTwitch/docs/"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body class="body-green">
+    <div class="page-wrapper">
+        <header id="header" class="header">
+            <div class="container">
+				<div class="branding">
+                    <h1 class="logo">
+                        <span aria-hidden="true" class="icon_documents_alt icon"></span>
+                        <span class="text-highlight">N</span>Twitch
+                    </h1>
+                </div>
+                <ol class="breadcrumb">
+                    <li><a href="./docs/">Home</a></li>
+                    <li class="/docs/">Intro</li>
+                </ol>
+            </div><!--//container-->
+        </header><!--//header-->
+        <div class="doc-wrapper">
+            <div class="container">
+                <div id="doc-header" class="doc-header text-center">
+                    <h1 class="doc-title"><i class="icon fa "></i> Intro</h1>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: Wed, 26 Jul 2017 17:00:00 +0000</div>
+                </div><!--//doc-header-->
+                <div class="doc-body">
+                    <div class="doc-content">
+						<h1 id="ntwitch">NTwitch</h1>
+<p><a href="https://www.nuget.org/packages/NTwitch"><img src="https://img.shields.io/nuget/v/NTwitch.svg?label=release" alt="NuGet" /></a> <a href="https://www.nuget.org/packages/NTwitch"><img src="https://img.shields.io/nuget/vpre/NTwitch.svg?label=pre-release" alt="NuGet Pre Release" /></a> <a href="https://www.myget.org/feed/Packages/aux"><img src="https://img.shields.io/myget/aux/vpre/NTwitch.svg?label=dev" alt="MyGet Pre Release" /></a> <a href="https://ci.appveyor.com/project/Aux/ntwitch/branch/dev"><img src="https://ci.appveyor.com/api/projects/status/3druvy47ds3uld47/branch/dev?svg=true" alt="Build status" /></a> <a href="https://discord.gg/yd8x2wM"><img src="https://discordapp.com/api/guilds/257698577894080512/widget.png" alt="Discord" /></a></p>
+
+<p>A .net core implementation of the https://twitch.tv/ version 5 api, strongly based on <a href="https://github.com/RogueException/Discord.Net">Discord.Net</a>.</p>
+
+<h2 id="builds">Builds</h2>
+<p>Release and pre-release builds can be found on Nuget under <a href="https://www.nuget.org/packages/NTwitch/">NTwitch</a>.</p>
+
+<h4 id="releases">Releases</h4>
+<p>Stable builds can be found on Nuget. The contents of these packages reflect what is shown in the <a href="https://github.com/Aux/NTwitch/tree/master">master</a> branch.</p>
+<ul>
+  <li><a href="https://www.nuget.org/packages/NTwitch/">NTwitch</a></li>
+  <li><a href="https://www.nuget.org/packages/NTwitch.Rest/">NTwitch.Rest</a></li>
+  <li><a href="https://www.nuget.org/packages/NTwitch.Chat/">NTwitch.Chat</a></li>
+  <li><a href="https://www.nuget.org/packages/NTwitch.Pubsub/">NTwitch.Pubsub</a></li>
+</ul>
+
+<h4 id="pre-release">Pre-Release</h4>
+<p>Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the <a href="https://github.com/Aux/NTwitch/tree/nightly">nightly</a> branch, and are updated from the dev branch once a week.</p>
+
+<h4 id="indev">Indev</h4>
+<p>You can access the latest builds via the myget feed listed below. The contents of these packages are built automatically as new code is committed to the <a href="https://github.com/Aux/NTwitch/tree/dev">dev</a> branch.</p>
+<ul>
+  <li><code class="highlighter-rouge">https://www.myget.org/F/aux/api/v3/index.json</code></li>
+</ul>
+
+<h2 id="documentation">Documentation</h2>
+<p>There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the <a href="https://discord.gg/yd8x2wM">NTwitch Discord Guild</a>.</p>
+
+<h2 id="compiling">Compiling</h2>
+<p>To compile NTwitch yourself, you will need either of the following:</p>
+
+<h5 id="visual-studio">Visual Studio</h5>
+<ul>
+  <li><a href="https://www.microsoft.com/net/core#windowsvs2017">Visual Studio 2017</a></li>
+</ul>
+
+<h5 id="command-line-tools">Command Line Tools</h5>
+<ul>
+  <li><a href="https://www.microsoft.com/net/download/core">.Net Core 1.1 SDK</a></li>
+</ul>
+
+                    </div><!--//doc-content--> 
+					<div class="doc-sidebar hidden-xs">
+                        <nav id="doc-nav">
+                            <ul id="doc-menu" class="nav doc-menu" data-spy="affix">
+                                <li><a href="./docs/">Intro</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a href="./docs/">Intro</a></li>
+                                        <li><a href="./docs/quick-start">Quick Start</a></li>
+                                        <li><a href="./docs/examples">Examples</a></li>
+                                        <li><a href="./docs/links">Links</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="./docs/clients/">Clients</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a href="./docs/clients/">Intro</a></li>
+                                        <li><a href="./docs/clients/rest">Rest</a></li>
+                                        <li><a href="./docs/clients/pubsub">Pubsub</a></li>
+                                        <li><a href="./docs/clients/chat">Chat</a></li>
+                                        <!--<li><a href="./docs/clients/managed">Managed</a></li>-->
+                                    </ul>
+                                </li>
+                                <li><a href="./docs/configuring/">Configuring</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a href="./docs/configuring/">Intro</a></li>
+                                        <li><a href="./docs/configuring/providers">Providers</a></li>
+                                        <li><a href="./docs/configuring/caching">Caching</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="./docs/entities/">Entities</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a href="./docs/entities/">Intro</a></li>
+                                        <li><a href="./docs/entities/getting">Getting</a></li>
+                                        <li><a href="./docs/entities/creating">Creating</a></li>
+                                        <li><a href="./docs/entities/modifying">Modifying</a></li>
+                                        <!--<li><a href="./docs/entities/">Helpers</a></li>-->
+                                    </ul>
+                                </li>
+                                <li><a href="./docs/events/">Events</a>
+                                    <ul class="nav doc-sub-menu">
+                                        <li><a href="./docs/events/">Intro</a></li>
+                                        <li><a href="./docs/events/cacheables">Cacheables</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="https://github.com/Aux/NTwitch">Github</a></li>
+                                <li><a href="https://discord.gg/yd8x2wM">Discord</a></li>
+                            </ul><!--//doc-menu-->
+                        </nav>
+                    </div><!--//doc-sidebar-->  
+				</div><!--//doc-body-->
+            </div><!--//container-->    
+        </div><!--//doc-wrapper-->
+	</div><!--//page-wrapper-->
+</body>
+    <footer class="footer text-center">
+        <div class="container">
+			<small class="copyright">NTwitch documentation by <a href="https://auxesis.tv/">Auxesis</a></small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+    
+    <!-- Main Javascript -->          
+    <script type="text/javascript" src="assets/plugins/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>                                                                     
+    <script type="text/javascript" src="assets/plugins/jquery-match-height/jquery.matchHeight-min.js"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
+</body>
+</html> 
