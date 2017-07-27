@@ -1,8 +1,6 @@
 {% include header.html %}
 <body class="landing-page">
     <div class="page-wrapper">
-        
-        <!-- ******Header****** -->
         <header class="header text-center">
             <div class="container">
 				{% include logo.html %}

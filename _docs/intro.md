@@ -1,5 +1,6 @@
 ---
-permalink: /docs
+layout: doc_page
+permalink: /docs/
 title: Intro
 description: Intro to using the NTwitch library
 updated: 2017-07-26 11:00 -0600
