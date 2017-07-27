@@ -1,3 +1,0 @@
----
-permalink: /docs/clients/:title
----

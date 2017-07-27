@@ -1,7 +1,8 @@
 ---
 layout: doc_page
-title: Examples
-description: Links to any recommended example projects made using NTwitch
+permalink: docs/configuring/providers
+title: Providers
+description: Something about providers
 updated: 2017-07-26 11:00 -0600
 ---
 
