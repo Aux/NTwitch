@@ -2,6 +2,10 @@
 # Site
 
 google_analytics_key:
+title: NTwitch Documentation
+description: A .net core implementation of the https://twitch.tv/ version 5 api, strongly based on Discord.Net.
+url: https://aux.github.io/NTwitch/
+logo: logo.png
 permalink: pretty
 
 gems:

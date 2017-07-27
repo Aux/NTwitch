@@ -1,0 +1,25 @@
+{% include header.html %}
+    <div class="page-wrapper">
+        <header id="header" class="header">
+            <div class="container">
+				{% include logo.html %}
+                <ol class="breadcrumb">
+                    <li><a href="./docs/">Home</a></li>
+                    <li class="{{ page.url }}">{{ page.title }}</li>
+                </ol>
+            </div><!--//container-->
+        </header><!--//header-->
+        <div class="doc-wrapper">
+            <div class="container">
+                <div id="doc-header" class="doc-header text-center">
+                    <h1 class="doc-title">{% if page.fa_icon != '' %}<i class="icon fa {{ page.fa_icon }}"></i>{% endif %} {{ page.title }}</h1>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: {{ page.updated }}</div>
+                </div><!--//doc-header-->
+                <div class="doc-body">
+					{{ page.content }}
+				</div><!--//doc-body-->              
+            </div><!--//container-->
+        </div><!--//doc-wrapper-->
+	</div><!--//page-wrapper-->
+{% include toc.html %}
+{% include footer.html %}
