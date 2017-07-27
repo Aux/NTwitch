@@ -1,4 +1,5 @@
 ---
+layout: doc_page
 title: Quick Start
 description: A quick and basic tutorial on using NTwitch
 fa_icon: fa-paper-plane

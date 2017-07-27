@@ -20,8 +20,10 @@ Stable builds can be found on Nuget. The contents of these packages reflect what
 - [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
 - [NTwitch.Chat](https://www.nuget.org/packages/NTwitch.Chat/)
 - [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.Pubsub/)
+
 #### Pre-Release
 Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
+
 #### Indev
 You can access the latest builds via the myget feed listed below. The contents of these packages are built automatically as new code is committed to the [dev](https://github.com/Aux/NTwitch/tree/dev) branch.
 - `https://www.myget.org/F/aux/api/v3/index.json`
