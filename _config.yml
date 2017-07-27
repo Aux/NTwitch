@@ -14,7 +14,7 @@ exclude:
   - LICENCE
 
 collections:
-  projects:
+  docs:
     title: Documentation
     permalink: /docs/:slug
     output: true
