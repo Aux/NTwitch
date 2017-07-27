@@ -1,4 +1,5 @@
 {% include header.html %}
+<body class="body-green">
     <div class="page-wrapper">
         <header id="header" class="header">
             <div class="container">
@@ -17,9 +18,10 @@
                 </div><!--//doc-header-->
                 <div class="doc-body">
 					{{ page.content }}
-				</div><!--//doc-body-->              
+				</div><!--//doc-body-->
             </div><!--//container-->
+			{% include toc.html %}      
         </div><!--//doc-wrapper-->
 	</div><!--//page-wrapper-->
-{% include toc.html %}
+</body>
 {% include footer.html %}
