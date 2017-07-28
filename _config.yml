@@ -10,6 +10,7 @@ permalink: pretty
 
 gems:
   - jekyll-seo-tag
+  - jekyll-last-modified-at
 
 exclude:
   - Gemfile

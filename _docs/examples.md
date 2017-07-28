@@ -20,7 +20,7 @@ title="Testing callouts"
 content="This is just a placeholder content while testing some includes" 
 %}
 
-{% 
+<!--{% 
 include code.html
 title="Code title test"
 lang="cs"
@@ -28,4 +28,4 @@ content="var client = new TwitchChatClient(new TwitchChatConfig
 {
 	LogLevel = LogSeverity.Info
 });" 
-%}
+%}-->
