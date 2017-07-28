@@ -21,11 +21,6 @@ content="This is just a placeholder content while testing some includes"
 %}
 
 {% 
-include section.html
-id = "code-test"
-title="Testing codeblocks"
-content="
-{% 
 include code.html
 title="Code title test"
 lang="cs"
@@ -33,15 +28,4 @@ content="var client = new TwitchChatClient(new TwitchChatConfig
 {
 	LogLevel = LogSeverity.Info
 });" 
-%}
-
-{% 
-include code.html
-lang="cs"
-content="var client = new TwitchChatClient(new TwitchChatConfig
-{
-	LogLevel = LogSeverity.Info
-});" 
-%}
-" 
 %}
