@@ -14,7 +14,7 @@
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
                     <h1 class="doc-title">{% if page.fa_icon != '' %}<i class="icon fa {{ page.fa_icon }}"></i>{% endif %} {{ page.title }}</h1>
-                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: {{ page.last_modified_at | date_to_rfc822 }}</div>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: {{ page.last_modified_at | date: '%a, %d %b %Y' }}</div>
                 </div><!--//doc-header-->
                 <div class="doc-body">
                     <div class="doc-content">
