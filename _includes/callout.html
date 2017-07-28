@@ -1,0 +1,9 @@
+                                    <div class="callout-block callout-{{ include.type }}">{% if include.icon != '' %}
+                                        <div class="icon-holder">
+                                            <i class="fa fa-{{ include.icon }}"></i>
+                                        </div><!--//icon-holder-->{% endif %}
+                                        <div class="content">{% if include.title != '' %}
+                                            <h4 class="callout-title">{{ include.title }}</h4>{% endif %}
+                                            <p>{{ include.content}}</p>
+                                        </div><!--//content-->
+                                    </div><!--//callout-block-->

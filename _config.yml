@@ -27,5 +27,5 @@ defaults:
     scope:
       path: ""
     values:
-      images: /logo.png
+      images: logo.png
       layout: null
