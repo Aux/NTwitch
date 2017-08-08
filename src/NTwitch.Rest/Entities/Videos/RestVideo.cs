@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestVideo : RestSimpleVideo, IVideo, IUpdateable
+    public class RestVideo : RestSimpleVideo, IUpdateable
     {
         /// <summary> The title of this video </summary>
         public string Title { get; private set; }
@@ -47,11 +47,6 @@ namespace NTwitch.Rest
         public IReadOnlyDictionary<string, string> Resolutions { get; private set; }
         /// <summary> The channel associated with this video </summary>
         public RestSimpleChannel Channel { get; private set; }
-        
-        ///// <summary>  </summary>
-        //public PreviewImage Preview { get; private set; }
-        ///// <summary>  </summary>
-        //public VideoThumbnail Thumbnail { get; private set; }
         
         internal RestVideo(BaseTwitchClient client, string id) 
             : base(client, id) { }

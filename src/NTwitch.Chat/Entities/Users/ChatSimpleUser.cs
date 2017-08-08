@@ -5,10 +5,11 @@ using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
 using UserStateModel = NTwitch.Chat.API.UserStateEvent;
 using ClearChatModel = NTwitch.Chat.API.ClearChatEvent;
 using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
+using System;
 
 namespace NTwitch.Chat
 {
-    public class ChatSimpleUser : ChatEntity<ulong>, ISimpleUser
+    public class ChatSimpleUser : ChatEntity<ulong>, IRestSimpleUser
     {
         /// <summary> The display name of this user </summary>
         public string DisplayName { get; private set; }
@@ -20,6 +21,8 @@ namespace NTwitch.Chat
 
         public bool Equals(ISimpleUser other)
             => Id == other.Id;
+        public override string ToString()
+            => DisplayName;
 
         internal static ChatSimpleUser Create(TwitchChatClient client, MsgEventModel model)
         {
@@ -90,18 +93,7 @@ namespace NTwitch.Chat
         /// <summary> Get a specific channel follow for this user </summary>
         public Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null)
             => UserHelper.GetFollowAsync(Client, Id, channelId, options);
-
-        // Heartbeat
-        ///// <summary> Creates a connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task<string> CreateHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.CreateHeartbeatAsync(Client, Id, options);
-        ///// <summary> Checks whether this user is connected to VHS, requires `user_read` </summary>
-        //public Task<string> GetHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.GetHeartbeatAsync(Client, Id, options);
-        ///// <summary> Deletes the connection between this user and VHS, requires `viewing_activity_read` </summary>
-        //public Task DeleteHeartbeatAsync(RequestOptions options = null)
-        //    => UserHelper.DeleteHeartbeatAsync(Client, Id, options);
-
+        
         // Streams
         /// <summary> Get this user's stream </summary>
         public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
@@ -116,12 +108,6 @@ namespace NTwitch.Chat
             => UserHelper.GetSubscrptionAsync(Client, Id, channelId, options);
 
         // Users
-        ///// <summary> Block this user, requires `user_blocks_edit` </summary>
-        //public Task BlockAsync(RequestOptions options = null)
-        //    => UserHelper.BlockAsync(Client, Client.CurrentUser.Id, Id, options);
-        ///// <summary> Unblock this user, requires `user_blocks_edit` </summary>
-        //public Task UnblockAsync(RequestOptions options = null)
-        //    => UserHelper.UnblockAsync(Client, Id, options);
         /// <summary> Get all users currently blocked by this user, requires `user_blocks_read` </summary>
         public Task<IReadOnlyCollection<RestBlockedUser>> GetBlocksAsync(PageOptions paging = null, RequestOptions options = null)
             => UserHelper.GetBlocksAsync(Client, Id, paging, options);
@@ -133,5 +119,11 @@ namespace NTwitch.Chat
 
         // IUser
         string ISimpleUser.AvatarUrl => null;
+
+        // Unimplemented
+        Task IRestSimpleUser.BlockAsync(RequestOptions options)
+            => throw new NotImplementedException();
+        Task IRestSimpleUser.UnblockAsync(RequestOptions options)
+            => throw new NotImplementedException();
     }
 }

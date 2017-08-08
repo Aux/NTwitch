@@ -1,8 +1,9 @@
-﻿using Model = NTwitch.Rest.API.Community;
+﻿using System;
+using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleCommunity : RestEntity<string>, ISimpleCommunity
+    public class RestSimpleCommunity : RestEntity<string>, IEquatable<RestSimpleCommunity>
     {
         /// <summary> The name of this community </summary>
         public string Name { get; private set; }
@@ -11,7 +12,12 @@ namespace NTwitch.Rest
 
         internal RestSimpleCommunity(BaseTwitchClient client, string id)
             : base(client, id) { }
-        
+
+        public bool Equals(RestSimpleCommunity other)
+            => Id == other.Id;
+        public override string ToString()
+            => Name;
+
         internal static RestSimpleCommunity Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestSimpleCommunity(client, model.Id);
@@ -30,9 +36,5 @@ namespace NTwitch.Rest
             Name = community.Name;
             AvatarUrl = community.AvatarUrl;
         }
-
-        // IEqualityComparer
-        public bool Equals(ISimpleCommunity x, ISimpleCommunity y) => x.Id == y.Id;
-        public int GetHashCode(ISimpleCommunity obj) => obj.GetHashCode();
     }
 }

@@ -3,7 +3,7 @@ using Model = NTwitch.Rest.API.Follow;
 
 namespace NTwitch.Rest
 {
-    public class RestFollow : IFollow
+    public class RestFollow
     {
         /// <summary> The instance of the client that created this entity </summary>
         public BaseTwitchClient Client { get; }

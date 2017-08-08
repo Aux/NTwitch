@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestTopCommunity : RestSimpleCommunity, ITopCommunity
+    public class RestTopCommunity : RestSimpleCommunity
     {
         /// <summary> The number of channels in this community </summary>
         public uint Channels { get; private set; }

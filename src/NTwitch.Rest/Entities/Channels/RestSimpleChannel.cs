@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleChannel : RestEntity<ulong>, ISimpleChannel
+    public class RestSimpleChannel : RestEntity<ulong>, IRestSimpleChannel
     {
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
@@ -17,6 +17,8 @@ namespace NTwitch.Rest
 
         public bool Equals(ISimpleChannel other)
             => Id == other.Id;
+        public override string ToString()
+            => DisplayName;
 
         internal static RestSimpleChannel Create(BaseTwitchClient client, Model model)
         {
@@ -86,33 +88,5 @@ namespace NTwitch.Rest
         /// <summary>  </summary>
         public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
             => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
-
-        // ISimpleChannel
-        Task ISimpleChannel.ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options)
-            => Task.CompletedTask;
-        Task<IReadOnlyCollection<ICheerInfo>> ISimpleChannel.GetCheersAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<ICheerInfo>>(null);
-        Task<IChatBadges> ISimpleChannel.GetChatBadgesAsync(RequestOptions options)
-            => Task.FromResult<IChatBadges>(null);
-        Task<IStream> ISimpleChannel.GetStreamAsync(StreamType type, RequestOptions options)
-            => Task.FromResult<IStream>(null);
-        Task<IReadOnlyCollection<ISimpleTeam>> ISimpleChannel.GetTeamsAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<ISimpleTeam>>(null);
-        Task<IUser> ISimpleChannel.GetUserAsync(RequestOptions options)
-            => Task.FromResult<IUser>(null);
-        Task<ISelfUser> ISimpleChannel.GetSelfUserAsync(RequestOptions options)
-            => Task.FromResult<ISelfUser>(null);
-        Task<IReadOnlyCollection<IUser>> ISimpleChannel.GetEditorsAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUser>>(null);
-        Task<IUserSubscription> ISimpleChannel.GetSubscriberAsync(ulong userId, RequestOptions options)
-            => Task.FromResult<IUserSubscription>(null);
-        Task<IReadOnlyCollection<IUserFollow>> ISimpleChannel.GetFollowersAsync(bool ascending, uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUserFollow>>(null);
-        Task<IReadOnlyCollection<IUserSubscription>> ISimpleChannel.GetSubscribersAsync(bool ascending, uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUserSubscription>>(null);
-        Task<IReadOnlyCollection<IVideo>> ISimpleChannel.GetVideosAsync(uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IVideo>>(null);
-        Task<IReadOnlyCollection<IClip>> ISimpleChannel.GetClipsAsync(bool istrending, uint limit, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IClip>>(null);
     }
 }

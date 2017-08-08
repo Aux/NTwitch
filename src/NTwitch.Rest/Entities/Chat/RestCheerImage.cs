@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestCheerImage : ICheerImage
+    public class RestCheerImage
     {
         /// <summary> An instance of the client that created this entity </summary>
         public BaseTwitchClient Client { get; }
@@ -11,15 +11,22 @@ namespace NTwitch.Rest
         /// <summary> The light theme version of this cheer </summary>
         public RestCheerScale Light { get; private set; }
 
-        internal RestCheerImage(BaseTwitchClient client, Model model)
+        internal RestCheerImage(BaseTwitchClient client)
         {
             Client = client;
         }
         
+        internal static RestCheerImage Create(BaseTwitchClient client, Model model)
+        {
+            var entity = new RestCheerImage(client);
+            entity.Update(model);
+            return entity;
+        }
+
         internal virtual void Update(Model model)
         {
-            Dark = new RestCheerScale(Client, model.Dark);
-            Light = new RestCheerScale(Client, model.Light);
+            Dark = RestCheerScale.Create(Client, model.Dark);
+            Light = RestCheerScale.Create(Client, model.Light);
         }
     }
 }

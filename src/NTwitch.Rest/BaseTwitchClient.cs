@@ -1,6 +1,7 @@
 ﻿using NTwitch.Rest.API;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,8 +24,9 @@ namespace NTwitch.Rest
         internal LogManager LogManager { get; }
         internal TwitchRestApiClient ApiClient { get; }
         public LoginState LoginState { get; private set; }
-        public ITokenInfo TokenInfo { get; protected set; }
-
+        public RestTokenInfo TokenInfo { get; protected set; }
+        public ISelfUser CurrentUser { get; protected set; }
+        
         internal BaseTwitchClient(TwitchConfig config, TwitchRestApiClient client)
         {
             ApiClient = client;
@@ -97,6 +99,8 @@ namespace NTwitch.Rest
             }
 
             TokenInfo = tokenInfo;
+            if (TokenInfo.Authorization.Scopes.Contains("user_read"))
+                CurrentUser = await GetCurrentUserAsync().ConfigureAwait(false);
         }
 
         public async Task LogoutAsync()
@@ -132,7 +136,7 @@ namespace NTwitch.Rest
         
         // Tokens
         /// <summary> Get information about the currently authorized token </summary>
-        public async Task<ITokenInfo> GetTokenInfoAsync(RequestOptions options = null)
+        public async Task<RestTokenInfo> GetTokenInfoAsync(RequestOptions options = null)
         {
             if (TokenInfo != null)
                 return TokenInfo;
@@ -229,56 +233,8 @@ namespace NTwitch.Rest
 
         // ITwitchClient
         ConnectionState ITwitchClient.ConnectionState => ConnectionState.Disconnected;
-        ITokenInfo ITwitchClient.TokenInfo => TokenInfo;
 
-        Task ITwitchClient.ConnectAsync()
-            => Task.Delay(0);
-        Task ITwitchClient.DisconnectAsync()
-            => Task.Delay(0);
-
-        Task<ITokenInfo> ITwitchClient.GetTokenInfo(RequestOptions options)
-            => Task.FromResult<ITokenInfo>(null);
-        Task<IClip> ITwitchClient.GetClipAsync(string clipId)
-            => Task.FromResult<IClip>(null);
-        Task<IReadOnlyCollection<IClip>> ITwitchClient.GetTopClipsAsync(Action<TopClipsParams> options)
-            => Task.FromResult<IReadOnlyCollection<IClip>>(null);
-        Task<ICommunity> ITwitchClient.GetCommunityAsync(string communityId, bool isname)
-            => Task.FromResult<ICommunity>(null);
-        Task<IReadOnlyCollection<ITopCommunity>> ITwitchClient.GetTopCommunitiesAsync(uint limit)
-            => Task.FromResult<IReadOnlyCollection<ITopCommunity>>(null);
-        Task<ISelfChannel> ITwitchClient.GetCurrentChannelAsync()
-            => Task.FromResult<ISelfChannel>(null);
-        Task<IChannel> ITwitchClient.GetChannelAsync(ulong channelId)
-            => Task.FromResult<IChannel>(null);
-        Task<IReadOnlyCollection<IChannel>> ITwitchClient.FindChannelAsync(string query, uint limit, uint offset)
-            => Task.FromResult<IReadOnlyCollection<IChannel>>(null);
-        Task<IReadOnlyCollection<IIngest>> ITwitchClient.GetIngestsAsync()
-            => Task.FromResult<IReadOnlyCollection<IIngest>>(null);
-        Task<IStream> ITwitchClient.GetStreamAsync(ulong channelId, StreamType type)
-            => Task.FromResult<IStream>(null);
-        Task<IReadOnlyCollection<IStream>> ITwitchClient.GetStreamsAsync(params ulong[] channelIds)
-            => Task.FromResult<IReadOnlyCollection<IStream>>(null);
-        Task<IReadOnlyCollection<IStream>> ITwitchClient.GetStreamsAsync(Action<GetStreamsParams> options)
-            => Task.FromResult<IReadOnlyCollection<IStream>>(null);
-        Task<IGameSummary> ITwitchClient.GetGameSummaryAsync(string game)
-            => Task.FromResult<IGameSummary>(null);
-        Task<IReadOnlyCollection<IFeaturedStream>> ITwitchClient.GetFeaturedStreamsAsync(uint limit, uint offset)
-            => Task.FromResult<IReadOnlyCollection<IFeaturedStream>>(null);
-        Task<IReadOnlyCollection<IGame>> ITwitchClient.FindGamesAsync(string query, bool islive)
-            => Task.FromResult<IReadOnlyCollection<IGame>>(null);
-        Task<IReadOnlyCollection<IStream>> ITwitchClient.FindStreamsAsync(string query, bool? hls, uint limit, uint offset)
-            => Task.FromResult<IReadOnlyCollection<IStream>>(null);
-        Task<IReadOnlyCollection<ISimpleTeam>> ITwitchClient.GetTeamsAsync(uint limit, uint offset)
-            => Task.FromResult<IReadOnlyCollection<ISimpleTeam>>(null);
-        Task<ITeam> ITwitchClient.GetTeamAsync(string name)
-            => Task.FromResult<ITeam>(null);
-        Task<ISelfUser> ITwitchClient.GetCurrentUserAsync()
-            => Task.FromResult<ISelfUser>(null);
-        Task<IUser> ITwitchClient.GetUserAsync(ulong userId)
-            => Task.FromResult<IUser>(null);
-        Task<IReadOnlyCollection<IUser>> ITwitchClient.GetUsersAsync(params string[] usernames)
-            => Task.FromResult<IReadOnlyCollection<IUser>>(null);
-        Task<IVideo> ITwitchClient.GetVideoAsync(string videoId)
-            => Task.FromResult<IVideo>(null);
+        Task ITwitchClient.StartAsync() => Task.Delay(0);
+        Task ITwitchClient.StopAsync() => Task.Delay(0);
     }
 }

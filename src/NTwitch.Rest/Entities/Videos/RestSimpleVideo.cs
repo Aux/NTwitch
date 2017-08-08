@@ -1,14 +1,18 @@
-﻿using Model = NTwitch.Rest.API.Video;
+﻿using System;
+using Model = NTwitch.Rest.API.Video;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleVideo : RestEntity<string>, ISimpleVideo
+    public class RestSimpleVideo : RestEntity<string>, IEquatable<RestSimpleVideo>
     {
         /// <summary> The url to this video's page </summary>
         public string Url { get; private set; }
 
         internal RestSimpleVideo(BaseTwitchClient client, string id) 
             : base(client, id) { }
+
+        public bool Equals(RestSimpleVideo other)
+            => Id == other.Id;
 
         internal static RestVideo Create(BaseTwitchClient client, Model model)
         {
@@ -21,9 +25,5 @@ namespace NTwitch.Rest
         {
             Url = model.Url;
         }
-
-        // IEqualityComparer
-        public bool Equals(ISimpleVideo x, ISimpleVideo y) => x.Id == y.Id;
-        public int GetHashCode(ISimpleVideo obj) => obj.GetHashCode();
     }
 }

@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Authorization;
 
 namespace NTwitch.Rest
 {
-    public class RestAuthorization : IAuthorization
+    public class RestAuthorization
     {
         /// <summary> A collection of scopes authorized by the user </summary>
         public IReadOnlyCollection<string> Scopes { get; private set; }

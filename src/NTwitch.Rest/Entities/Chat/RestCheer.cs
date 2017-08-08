@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Model = NTwitch.Rest.API.Cheer;
 
 namespace NTwitch.Rest
 {
-    public class RestCheer : RestEntity<ulong>, ICheer
+    public class RestCheer : RestEntity<ulong>, IEquatable<RestCheer>
     {
         /// <summary> The hexadecimal color of this cheer </summary>
         public string Color { get; private set; }
@@ -15,6 +16,9 @@ namespace NTwitch.Rest
 
         internal RestCheer(BaseTwitchClient client, ulong id)
             : base(client, id) { }
+
+        public bool Equals(RestCheer other)
+            => Id == other.Id;
 
         internal static RestCheer Create(BaseTwitchClient client, Model model)
         {
@@ -27,11 +31,7 @@ namespace NTwitch.Rest
         {
             Color = model.Color;
             MinimumBits = model.MinimumBits;
-            Images = model.Images.Select(x => new RestCheerImage(Client, x)).ToArray();
+            Images = model.Images.Select(x => RestCheerImage.Create(Client, x)).ToArray();
         }
-
-        // IEqualityComparer
-        public bool Equals(ICheer x, ICheer y) => x.Id == y.Id;
-        public int GetHashCode(ICheer obj) => obj.GetHashCode();
     }
 }

@@ -30,7 +30,7 @@ namespace NTwitch.Rest.API
 
         public LoginState LoginState { get; private set; }
         internal IRestClient RestClient { get; private set; }
-        internal ITokenInfo TokenInfo { get; private set; }
+        internal RestTokenInfo TokenInfo { get; private set; }
         internal string AuthToken { get; private set; }
 
         public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, JsonSerializer serializer = null)

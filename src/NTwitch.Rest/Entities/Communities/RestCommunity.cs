@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Community;
 
 namespace NTwitch.Rest
 {
-    public class RestCommunity : RestSimpleCommunity, ICommunity
+    public class RestCommunity : RestSimpleCommunity
     {
         /// <summary> The id of the user that owns this community </summary>
         public ulong OwnerId { get; private set; }

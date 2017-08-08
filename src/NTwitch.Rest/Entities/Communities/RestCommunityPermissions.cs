@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestCommunityPermissions : ICommunityPermissions
+    public class RestCommunityPermissions
     {
         /// <summary> True if the authorized user can ban users from this community </summary>
         public bool CanBan { get; private set; }

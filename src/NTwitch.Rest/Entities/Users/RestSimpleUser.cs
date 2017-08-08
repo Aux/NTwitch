@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, ISimpleUser
+    public class RestSimpleUser : RestEntity<ulong>, IRestSimpleUser
     {
         /// <summary> The url for this user's avatar </summary>
         public string AvatarUrl { get; private set; }
@@ -12,7 +13,7 @@ namespace NTwitch.Rest
         public string DisplayName { get; private set; }
         /// <summary> The name of this user </summary>
         public string Name { get; private set; }
-
+        
         internal RestSimpleUser(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
         
@@ -79,5 +80,11 @@ namespace NTwitch.Rest
         /// <summary> Get clips from all channels this user is following, requires `user_read` </summary>
         public Task<IReadOnlyCollection<RestClip>> GetFollowedClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
             => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
+
+        // Unimplemented
+        Task IRestSimpleUser.BlockAsync(RequestOptions options)
+            => throw new NotImplementedException();
+        Task IRestSimpleUser.UnblockAsync(RequestOptions options)
+            => throw new NotImplementedException();
     }
 }

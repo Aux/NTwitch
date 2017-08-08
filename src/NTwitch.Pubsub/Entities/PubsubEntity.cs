@@ -2,20 +2,21 @@
 
 namespace NTwitch.Pubsub
 {
-    public class PubsubEntity<T> : IEntity<T>
+    public class PubsubEntity<TId> : IEntity<TId>
+        where TId : IEquatable<TId>
     {
         /// <summary> An instance of the client that created this entity </summary>
         public TwitchPubsubClient Client { get; }
         /// <summary> The unique identifier for this entity </summary>
-        public T Id { get; }
+        public TId Id { get; }
 
-        public PubsubEntity(TwitchPubsubClient client, T id)
+        public PubsubEntity(TwitchPubsubClient client, TId id)
         {
             Client = client;
             Id = id;
         }
 
-        ITwitchClient IEntity<T>.Client
+        ITwitchClient IEntity<TId>.Client
             => Client;
     }
 }

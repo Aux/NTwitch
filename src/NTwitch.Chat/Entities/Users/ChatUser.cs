@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
-using UserStateModel = NTwitch.Chat.API.UserStateEvent;
 using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
+using UserStateModel = NTwitch.Chat.API.UserStateEvent;
 
 namespace NTwitch.Chat
 {
@@ -90,13 +89,7 @@ namespace NTwitch.Chat
             IsSubscriber = model.IsSubscriber;
         }
 
-        /// <summary>  </summary>
-        public Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         // IUser
-        string ISimpleUser.AvatarUrl => null;
+        Task IUpdateable.UpdateAsync() => Task.CompletedTask;
     }
 }

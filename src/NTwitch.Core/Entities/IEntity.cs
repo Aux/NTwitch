@@ -1,8 +1,11 @@
-﻿namespace NTwitch
+﻿using System;
+
+namespace NTwitch
 {
-    public interface IEntity<T>
+    public interface IEntity<TId>
+        where TId : IEquatable<TId>
     {
         ITwitchClient Client { get; }
-        T Id { get; }
+        TId Id { get; }
     }
 }

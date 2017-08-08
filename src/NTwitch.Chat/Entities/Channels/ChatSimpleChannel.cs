@@ -10,7 +10,7 @@ using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
 
 namespace NTwitch.Chat
 {
-    public class ChatSimpleChannel : ChatEntity<ulong>, ISimpleChannel
+    public class ChatSimpleChannel : ChatEntity<ulong>, IRestSimpleChannel
     {
         /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
@@ -23,6 +23,8 @@ namespace NTwitch.Chat
 
         public bool Equals(ISimpleChannel other)
             => Id == other.Id;
+        public override string ToString()
+            => Name;
 
         internal static ChatSimpleChannel Create(TwitchChatClient client, MsgEventModel model)
         {
@@ -87,11 +89,11 @@ namespace NTwitch.Chat
             => ClearChatAsync(user.Name, reason, duration, options);
         public Task ClearChatAsync(string userName, string reason, uint? duration = null, RequestOptions options = null)
             => ChatChannelHelper.ClearChatAsync(Client, this, userName, reason, duration, options);
-
+        
         // Channels
-        ///// <summary> Change properties of this channel </summary>
-        //public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
-        //    => ChannelHelper.ModifyAsync(this, changes, options);
+        /// <summary> Change properties of this channel </summary>
+        public Task ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options = null)
+            => ChannelHelper.ModifyAsync(Client, this, changes, options);
 
         // Chat
         /// <summary> Get cheer badges for this channel </summary>
@@ -144,31 +146,5 @@ namespace NTwitch.Chat
         // ISimpleChannel
         string ISimpleChannel.DisplayName
             => Name;
-        Task ISimpleChannel.ModifyAsync(Action<ModifyChannelParams> changes, RequestOptions options)
-            => Task.CompletedTask;
-        Task<IReadOnlyCollection<ICheerInfo>> ISimpleChannel.GetCheersAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<ICheerInfo>>(null);
-        Task<IChatBadges> ISimpleChannel.GetChatBadgesAsync(RequestOptions options)
-            => Task.FromResult<IChatBadges>(null);
-        Task<IStream> ISimpleChannel.GetStreamAsync(StreamType type, RequestOptions options)
-            => Task.FromResult<IStream>(null);
-        Task<IReadOnlyCollection<ISimpleTeam>> ISimpleChannel.GetTeamsAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<ISimpleTeam>>(null);
-        Task<IUser> ISimpleChannel.GetUserAsync(RequestOptions options)
-            => Task.FromResult<IUser>(null);
-        Task<ISelfUser> ISimpleChannel.GetSelfUserAsync(RequestOptions options)
-            => Task.FromResult<ISelfUser>(null);
-        Task<IReadOnlyCollection<IUser>> ISimpleChannel.GetEditorsAsync(RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUser>>(null);
-        Task<IUserSubscription> ISimpleChannel.GetSubscriberAsync(ulong userId, RequestOptions options)
-            => Task.FromResult<IUserSubscription>(null);
-        Task<IReadOnlyCollection<IUserFollow>> ISimpleChannel.GetFollowersAsync(bool ascending, uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUserFollow>>(null);
-        Task<IReadOnlyCollection<IUserSubscription>> ISimpleChannel.GetSubscribersAsync(bool ascending, uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IUserSubscription>>(null);
-        Task<IReadOnlyCollection<IVideo>> ISimpleChannel.GetVideosAsync(uint limit, uint offset, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IVideo>>(null);
-        Task<IReadOnlyCollection<IClip>> ISimpleChannel.GetClipsAsync(bool istrending, uint limit, RequestOptions options)
-            => Task.FromResult<IReadOnlyCollection<IClip>>(null);
     }
 }

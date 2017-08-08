@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Clip;
 
 namespace NTwitch.Rest
 {
-    public class RestClip : RestEntity<string>, IClip
+    public class RestClip : RestEntity<string>, IEquatable<RestClip>
     {
         /// <summary> The date and time this clip was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -39,6 +39,9 @@ namespace NTwitch.Rest
         internal RestClip(BaseTwitchClient client, string id)
             : base(client, id) { }
 
+        public bool Equals(RestClip other)
+            => Id == other.Id;
+
         internal static RestClip Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestClip(client, model.Id);
@@ -63,11 +66,7 @@ namespace NTwitch.Rest
             Duration = model.Duration;
             Views = model.Views;
         }
-
-        // IEqualityComparer
-        public bool Equals(IClip x, IClip y) => x.Id == y.Id;
-        public int GetHashCode(IClip obj) => obj.GetHashCode();
-
+        
         /// <summary> Get the most recent information for this entity </summary>
         public virtual Task UpdateAsync()
         {

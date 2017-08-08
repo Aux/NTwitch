@@ -1,14 +1,20 @@
-﻿using Model = NTwitch.Rest.API.Emote;
+﻿using System;
+using Model = NTwitch.Rest.API.Emote;
 
 namespace NTwitch.Rest
 {
-    public class RestEmote : RestEntity<ulong>, IEmote
+    public class RestEmote : RestEntity<ulong>, IEquatable<RestEmote>
     {
         /// <summary>  </summary>
         public string Code { get; private set; }
         
         internal RestEmote(BaseTwitchClient client, uint id) 
             : base(client, id) { }
+
+        public bool Equals(RestEmote other)
+            => Id == other.Id;
+        public override string ToString()
+            => Code;
 
         internal static RestEmote Create(BaseTwitchClient client, Model model)
         {
@@ -21,10 +27,5 @@ namespace NTwitch.Rest
         {
             Code = model.Code;
         }
-
-        public bool Equals(IEmote x, IEmote y)
-            => x.Id == y.Id;
-        public int GetHashCode(IEmote obj)
-            => obj.GetHashCode();
     }
 }

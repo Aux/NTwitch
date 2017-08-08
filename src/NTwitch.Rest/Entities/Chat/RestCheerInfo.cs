@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.CheerInfo;
 
 namespace NTwitch.Rest
 {
-    public class RestCheerInfo : ICheerInfo
+    public class RestCheerInfo
     {
         /// <summary> The instance of the client that created this entity </summary>
         public BaseTwitchClient Client { get; }
@@ -27,7 +27,6 @@ namespace NTwitch.Rest
         internal RestCheerInfo(BaseTwitchClient client, Model model)
         {
             Client = client;
-            Update(model);
         }
         
         internal virtual void Update(Model model)

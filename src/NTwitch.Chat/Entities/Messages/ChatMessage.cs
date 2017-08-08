@@ -24,6 +24,8 @@ namespace NTwitch.Chat
 
         public bool Equals(IMessage other)
             => Id == other.Id;
+        public override string ToString()
+            => Content;
 
         internal static ChatMessage Create(TwitchChatClient client, MessageModel model)
         {

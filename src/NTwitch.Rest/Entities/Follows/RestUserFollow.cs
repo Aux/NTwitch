@@ -2,7 +2,7 @@
 
 namespace NTwitch.Rest
 {
-    public class RestUserFollow : RestFollow, IUserFollow
+    public class RestUserFollow : RestFollow
     {
         /// <summary> The user associated with this follow </summary>
         public RestUser User { get; private set; }

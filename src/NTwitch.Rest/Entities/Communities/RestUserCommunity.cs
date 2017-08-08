@@ -1,6 +1,6 @@
 ﻿namespace NTwitch.Rest
 {
-    public class RestUserCommunity : RestCommunity, IUserCommunity
+    public class RestUserCommunity : RestCommunity
     {
         /// <summary> The user used to access this community </summary>
         public IUser CurrentUser { get; private set; }

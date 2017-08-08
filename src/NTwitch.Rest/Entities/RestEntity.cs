@@ -2,20 +2,21 @@
 
 namespace NTwitch.Rest
 {
-    public class RestEntity<T> : IEntity<T>
+    public class RestEntity<TId> : IEntity<TId>
+        where TId : IEquatable<TId>
     {
         /// <summary> An instance of the client that created this entity </summary>
         public BaseTwitchClient Client { get; }
         /// <summary> The unique identifier for this entity </summary>
-        public T Id { get; }
+        public TId Id { get; }
 
-        public RestEntity(BaseTwitchClient client, T id)
+        public RestEntity(BaseTwitchClient client, TId id)
         {
             Client = client;
             Id = id;
         }
 
-        ITwitchClient IEntity<T>.Client
+        ITwitchClient IEntity<TId>.Client
             => Client;
     }
 }
