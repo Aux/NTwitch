@@ -36,8 +36,13 @@ namespace NTwitch.Chat
             
             SocketClient.TextMessage += async text =>
             {
-                var msg = ChatResponse.Parse(text);
-                await _receivedChatEvent.InvokeAsync(msg).ConfigureAwait(false);
+                var batchText = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var item in batchText)
+                {
+                    var msg = ChatResponse.Parse(item);
+                    await _receivedChatEvent.InvokeAsync(msg).ConfigureAwait(false);
+                }
             };
             SocketClient.Closed += async ex =>
             {

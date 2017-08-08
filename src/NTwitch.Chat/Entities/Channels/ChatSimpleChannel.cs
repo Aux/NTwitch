@@ -75,7 +75,10 @@ namespace NTwitch.Chat
         // Chat
         public IReadOnlyCollection<string> GetNames()
             => Client.Cache.GetNames(Name);
-        
+
+        public Task SendMessageAsync(string content, RequestOptions options = null)
+            => ChatChannelHelper.SendMessageAsync(Client, this, content, options);
+
         public Task ClearChatAsync(IUser user, RequestOptions options = null)
             => ClearChatAsync(user.Name, options);
         public Task ClearChatAsync(string userName, RequestOptions options = null)

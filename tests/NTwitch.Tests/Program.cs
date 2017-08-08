@@ -24,21 +24,31 @@ namespace NTwitch.Tests
             {
                 ClientId = clientId,
                 LogLevel = LogSeverity.Debug,
-                MessageCacheSize = 100
+                MessageCacheSize = 100,
+                SocketClientProvider = DefaultWebSocketProvider.Instance,
+                SocketHost = "wss://irc-ws.chat.twitch.tv"
             });
 
             _client.Log += OnLogAsync;
             _client.Connected += OnConnectedAsync;
             _client.MessageReceived += OnMessageReceivedAsync;
+            _client.UserJoined += OnUserJoinedAsync;
+            _client.UserLeft += OnUserLeftAsync;
 
             await _client.LoginAsync(token);
             await _client.StartAsync();
             await Task.Delay(-1);
         }
 
+        private Task OnUserJoinedAsync(Cacheable<string, ChatSimpleChannel> channel, Cacheable<string, ChatSimpleUser> user)
+            => Console.Out.WriteLineAsync($"`{user.Key}` joined `{channel.Key}`");
+
+        private Task OnUserLeftAsync(Cacheable<string, ChatSimpleChannel> channel, Cacheable<string, ChatSimpleUser> user)
+            => Console.Out.WriteLineAsync($"`{user.Key}` left `{channel.Key}`");
+
         private async Task OnConnectedAsync()
         {
-            await _client.JoinChannelAsync("auxesistv");
+            await _client.JoinChannelAsync("emongg");
         }
         
         private async Task OnMessageReceivedAsync(ChatMessage msg)

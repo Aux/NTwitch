@@ -171,14 +171,21 @@ namespace NTwitch.Chat
                             var user = _cache.GetUser(model.UserName);
                             var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
-                            _cache.RemoveChannel(channel.Id);
-                            _cache.RemoveUser(user.Id);
-                            _cache.RemoveUserState(channel.Name);
-
                             if (TokenInfo.Username == model.UserName)
+                            {
+                                if (channel != null)
+                                {
+                                    _cache.RemoveChannel(channel.Id);
+                                    _cache.RemoveUserState(channel.Name);
+                                }
                                 await _currentUserLeftEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
+                            }
                             else
+                            {
+                                if (user != null)
+                                    _cache.RemoveUser(user.Id);
                                 await _userLeftEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
+                            }
                         }
                         break;
                     case "PRIVMSG":
