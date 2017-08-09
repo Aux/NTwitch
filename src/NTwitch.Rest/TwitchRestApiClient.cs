@@ -85,6 +85,7 @@ namespace NTwitch.Rest.API
 
         protected virtual void CheckScopes(IEnumerable<string> requiredScopes)
         {
+            if (TokenInfo == null) return;
             if (!requiredScopes.Intersect(TokenInfo.Authorization.Scopes).Any())
                 throw new MissingScopeException(requiredScopes);
         }

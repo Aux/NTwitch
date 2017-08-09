@@ -147,8 +147,12 @@ namespace NTwitch.Rest
 
         // User
         /// <summary> Get the user associated with the authorized token </summary>
-        public Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
-            => ClientHelper.GetCurrentUserAsync(this, options);
+        public async Task<RestSelfUser> GetCurrentUserAsync(RequestOptions options = null)
+        {
+            var user = await ClientHelper.GetCurrentUserAsync(this, options);
+            CurrentUser = user;
+            return user;
+        }
         
         /// <summary> Get information about a user by id </summary>
         public Task<RestUser> GetUserAsync(ulong userId, RequestOptions options = null)
