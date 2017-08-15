@@ -31,6 +31,13 @@ after_build:
 
 deploy:
 - provider: NuGet
+  server: https://www.myget.org/F/ntwitch/api/v2/package
+  api_key:
+    secure: NOFWWxo8OlI3VaZs68zqGdaZ3ED02k4fvSM8GkAn9qB2Go6Ji4ANGpR/9lJKrWTY
+  symbol_server: https://www.myget.org/F/ntwitch/symbols/api/v2/package
+  on:
+    branch: dev
+- provider: NuGet
   server: https://www.myget.org/F/aux/api/v2/package
   api_key:
     secure: cvyGx8IRAmYWl3Gj9Hr2UKglr5W2t3PxMrO2lhkWI7ntGUo0FFbcgz706bC1OQSd
