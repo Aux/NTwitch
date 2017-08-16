@@ -16,7 +16,7 @@ Stable builds can be found on Nuget. The contents of these packages reflect what
 Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
 #### Indev
 You can access the latest builds via the myget feed listed below. The contents of these packages are built automatically as new code is committed to the [dev](https://github.com/Aux/NTwitch/tree/dev) branch.
-- `https://www.myget.org/F/aux/api/v3/index.json`
+- `https://www.myget.org/F/ntwitch/api/v3/index.json`
 
 ## Documentation
 There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM).
