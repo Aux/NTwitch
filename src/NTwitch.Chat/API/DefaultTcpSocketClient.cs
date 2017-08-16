@@ -119,7 +119,11 @@ namespace NTwitch.Chat
             {
                 try
                 {
+#if NET45
+                    _client.Close();
+#else
                     _client.Dispose();
+#endif
                     _stream.Dispose();
                     _writer.Dispose();
                 }

@@ -201,10 +201,14 @@ namespace NTwitch.Pubsub
                             while (socketResult == null || !socketResult.EndOfMessage);
                             
                             resultCount = (int)stream.Length;
+#if !NET45
                             if (stream.TryGetBuffer(out var streamBuffer))
                                 result = streamBuffer.Array;
                             else
                                 result = stream.ToArray();
+#else
+                                result = stream.GetBuffer();
+#endif
                         }
                     }
                     else

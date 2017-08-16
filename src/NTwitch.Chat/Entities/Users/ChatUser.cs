@@ -90,6 +90,6 @@ namespace NTwitch.Chat
         }
 
         // IUser
-        Task IUpdateable.UpdateAsync() => Task.CompletedTask;
+        Task IUpdateable.UpdateAsync() => Task.Delay(0);
     }
 }

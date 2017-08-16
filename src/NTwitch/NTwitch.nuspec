@@ -12,11 +12,29 @@
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-        <group targetFramework="netstandard1.4">
-            <dependency id="NTwitch.Core" version="0.2.0$suffix$" />
-            <dependency id="NTwitch.Rest" version="0.2.0$suffix$" />
-            <dependency id="NTwitch.Pubsub" version="0.2.0$suffix$" />
-            <dependency id="NTwitch.Chat" version="0.2.0$suffix$" />
+        <group targetFramework="net45">
+            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+        </group>
+        <group targetFramework="net46">
+            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+        </group>
+        <group targetFramework="netstandard1.3">
+            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+        </group>
+        <group targetFramework="netstandard2.0">
+            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
         </group>
     </dependencies>
   </metadata>
