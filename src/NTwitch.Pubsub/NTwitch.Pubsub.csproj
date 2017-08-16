@@ -9,7 +9,6 @@
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
     <ProjectReference Include="..\NTwitch.Rest\NTwitch.Rest.csproj" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.1" />
   </ItemGroup>
