@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <VersionPrefix>0.2.0</VersionPrefix>
+        <VersionPrefix>0.2.1</VersionPrefix>
         <VersionSuffix></VersionSuffix>
         <Authors>Auxesis</Authors>
         <PackageTags>twitch,tv,dot,net,core,rest,api,lib,library,socket,websocket,chat,irc,tcp</PackageTags>
