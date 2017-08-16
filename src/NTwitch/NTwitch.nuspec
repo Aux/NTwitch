@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>NTwitch</id>
-    <version>0.2.0$suffix$</version>
+    <version>0.2.1$suffix$</version>
     <title>NTwitch</title>
     <authors>Auxesis</authors>
     <description>A .net standard implementation of the https://twitch.tv/ api</description>
