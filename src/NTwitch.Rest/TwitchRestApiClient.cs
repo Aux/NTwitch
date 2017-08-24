@@ -71,15 +71,12 @@ namespace NTwitch.Rest.API
 
         protected virtual void CheckLoginState(bool checkClientId = false)
         {
-            if (checkClientId)
+            if (LoginState != LoginState.LoggedIn)
             {
-                if (string.IsNullOrWhiteSpace(ClientId))
+                if (checkClientId && string.IsNullOrWhiteSpace(ClientId))
                     throw new InvalidOperationException("ClientId must be specified in the client config for unauthenticated requests.");
-            }
-            else
-            {
-                if (LoginState != LoginState.LoggedIn)
-                    throw new InvalidOperationException("Client is not logged in.");
+
+                throw new InvalidOperationException("Client is not logged in.");
             }
         }
 
