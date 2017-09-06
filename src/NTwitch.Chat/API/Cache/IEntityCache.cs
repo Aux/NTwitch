@@ -3,10 +3,12 @@ using System.Collections.Generic;
 
 namespace NTwitch.Chat
 {
-    public interface ICacheClient<TKey, TEntity>
+    public interface IEntityCache<TKey, TEntity>
+        where TKey : IEquatable<TKey>
+        where TEntity : IEntity<TKey>
     {
         IReadOnlyCollection<TEntity> Entities { get; }
-        
+
         void Add(TKey id, TEntity entity);
 
         TEntity Remove(TKey id);

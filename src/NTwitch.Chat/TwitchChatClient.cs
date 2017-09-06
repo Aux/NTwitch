@@ -121,7 +121,21 @@ namespace NTwitch.Chat
             => ApiClient.JoinChannelAsync(name, options);
         public Task LeaveChannelAsync(string name, RequestOptions options = null)
             => ApiClient.LeaveChannelAsync(name, options);
-        
+
+        // Cache
+        /// <summary> Get a cached channel </summary>
+        public ChatSimpleChannel GetChannel(ulong id)
+            => _cache.GetChannel(id);
+        /// <summary> Get a cached channel </summary>
+        public ChatSimpleChannel GetChannel(string name)
+            => _cache.GetChannel(name);
+        /// <summary> Get a cached user </summary>
+        public ChatSimpleUser GetUser(ulong id)
+            => _cache.GetUser(id);
+        /// <summary> Get a cached user </summary>
+        public ChatSimpleUser GetUser(string name)
+            => _cache.GetUser(name);
+
         private async Task ProcessMessageAsync(ChatResponse msg)
         {
             try
@@ -150,9 +164,9 @@ namespace NTwitch.Chat
                             var model = JoinEvent.Create(msg);
                             
                             var channel = _cache.GetChannel(model.ChannelName);
-                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
-
                             var user = _cache.GetUser(model.UserName);
+
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
                             var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
                             if (TokenInfo.Username == model.UserName)
@@ -165,27 +179,16 @@ namespace NTwitch.Chat
                         {
                             var model = PartEvent.Create(msg);
 
-                            var channel = _cache.GetChannel(model.ChannelName);
-                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
+                            var channel = _cache.RemoveChannel(model.ChannelName);
+                            var user = _cache.RemoveUser(model.UserName);
 
-                            var user = _cache.GetUser(model.UserName);
+                            var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
                             var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
-                            if (TokenInfo.Username == model.UserName)
-                            {
-                                if (channel != null)
-                                {
-                                    _cache.RemoveChannel(channel.Id);
-                                    _cache.RemoveUserState(channel.Name);
-                                }
+                            if (CurrentUser.Name == model.UserName)
                                 await _currentUserLeftEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
-                            }
                             else
-                            {
-                                if (user != null)
-                                    _cache.RemoveUser(user.Id);
                                 await _userLeftEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
-                            }
                         }
                         break;
                     case "PRIVMSG":

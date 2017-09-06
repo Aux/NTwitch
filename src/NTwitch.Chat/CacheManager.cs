@@ -1,32 +1,29 @@
-﻿using NTwitch.Chat.API;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace NTwitch.Chat
 {
     internal class CacheManager
     {
-        private readonly ICacheClient<ulong, ChatSimpleUser> _users;
-        private readonly ICacheClient<ulong, ChatSimpleChannel> _channels;
-        private readonly ICacheClient<string, ChatMessage> _messages;
-        private readonly ICacheClient<string, UserStateEvent> _userStates;
+        private readonly INamedEntityCache<ulong, ChatSimpleUser> _users;
+        private readonly INamedEntityCache<ulong, ChatSimpleChannel> _channels;
+        private readonly IEntityCache<string, ChatMessage> _messages;
 
         private readonly ConcurrentDictionary<string, List<string>> _names;
+        private readonly ConcurrentDictionary<string, API.UserStateEvent> _userStates;
         
         public IReadOnlyCollection<ChatSimpleUser> Users => _users.Entities;
         public IReadOnlyCollection<ChatSimpleChannel> Channels => _channels.Entities;
         public IReadOnlyCollection<ChatMessage> Messages => _messages.Entities;
-        public IReadOnlyCollection<UserStateEvent> UserStates => _userStates.Entities;
 
-        public CacheManager(int msgCacheSize, ICacheClientProvider cacheProvider)
+        public CacheManager(int msgCacheSize, IEntityCacheProvider cacheProvider)
         {
-            _users = cacheProvider.Create<ulong, ChatSimpleUser>(-1);
-            _channels = cacheProvider.Create<ulong, ChatSimpleChannel>(-1);
-            _messages = cacheProvider.Create<string, ChatMessage>(msgCacheSize);
-            _userStates = cacheProvider.Create<string, UserStateEvent>(-1);
+            _users = cacheProvider.CreateNamedCache<ulong, ChatSimpleUser>(-1);
+            _channels = cacheProvider.CreateNamedCache<ulong, ChatSimpleChannel>(-1);
+            _messages = cacheProvider.CreateCache<string, ChatMessage>(msgCacheSize);
             _names = new ConcurrentDictionary<string, List<string>>();
+            _userStates = new ConcurrentDictionary<string, API.UserStateEvent>();
         }
 
         public void AddUser(ChatSimpleUser user)
@@ -35,48 +32,56 @@ namespace NTwitch.Chat
             => _channels.Add(channel.Id, channel);
         public void AddMessage(ChatMessage message)
             => _messages.Add(message.Id, message);
-        public void AddUserState(UserStateEvent userState)
-            => _userStates.Add(userState.ChannelName, userState);
+
+        public ChatSimpleUser RemoveUser(ulong userId)
+            => _users.Remove(userId);
+        public ChatSimpleUser RemoveUser(string name)
+            => _users.Remove(name);
+        public ChatSimpleChannel RemoveChannel(ulong channelId)
+            => _channels.Remove(channelId);
+        public ChatSimpleChannel RemoveChannel(string name)
+            => _channels.Remove(name);
+        public ChatMessage RemoveMessage(string messageId)
+            => _messages.Remove(messageId);
+
+        public ChatSimpleUser GetUser(ulong userId)
+            => _users.Get(userId);
+        public ChatSimpleUser GetUser(string name)
+            => _users.Get(name);
+        public ChatSimpleChannel GetChannel(ulong channelId)
+            => _channels.Get(channelId);
+        public ChatSimpleChannel GetChannel(string name)
+            => _channels.Get(name);
+        public ChatMessage GetMessage(string messageId)
+            => _messages.Get(messageId);
+        
+        public ChatSimpleUser GetOrAddUser(ulong userId, Func<ulong, ChatSimpleUser> userFactory)
+            => _users.GetOrAdd(userId, userFactory);
+        public ChatSimpleChannel GetOrAddChannel(ulong channelId, Func<ulong, ChatSimpleChannel> channelFactory)
+            => _channels.GetOrAdd(channelId, channelFactory);
+        public ChatMessage GetOrAddMessage(string messageId, Func<string, ChatMessage> messageFactory)
+            => _messages.GetOrAdd(messageId, messageFactory);
+
+        // pls fix
+
         public void AddNames(string channelName, string[] names)
         {
             if (_names.TryGetValue(channelName, out List<string> existing))
             {
                 existing.AddRange(names);
                 _names.AddOrUpdate(channelName, existing, (n, l) => l);
-            } else
+            }
+            else
             {
                 _names.TryAdd(channelName, new List<string>(names));
             }
         }
-
-        public ChatSimpleUser RemoveUser(ulong userId)
-            => _users.Remove(userId);
-        public ChatSimpleChannel RemoveChannel(ulong channelId)
-            => _channels.Remove(channelId);
-        public ChatMessage RemoveMessage(string messageId)
-            => _messages.Remove(messageId);
-        public UserStateEvent RemoveUserState(string channelName)
-            => _userStates.Remove(channelName);
         public List<string> RemoveNames(string channelName)
         {
             if (_names.TryRemove(channelName, out List<string> value))
                 return value;
             return null;
         }
-
-        public ChatSimpleUser GetUser(ulong userId)
-            => _users.Get(userId);
-        public ChatSimpleChannel GetChannel(ulong channelId)
-            => _channels.Get(channelId);
-        public ChatMessage GetMessage(string messageId)
-            => _messages.Get(messageId);
-
-        public ChatSimpleUser GetUser(string userName)
-            => Users.SingleOrDefault(x => x.Name == userName);
-        public ChatSimpleChannel GetChannel(string channelName)
-            => Channels.SingleOrDefault(x => x.Name == channelName);
-        public UserStateEvent GetUserState(string channelName)
-            => _userStates.Get(channelName);
         public List<string> GetNames(string channelName)
         {
             if (_names.TryGetValue(channelName, out List<string> value))
@@ -84,11 +89,21 @@ namespace NTwitch.Chat
             return null;
         }
 
-        public ChatSimpleUser GetOrAddUser(ulong userId, Func<ulong, ChatSimpleUser> userFactory)
-            => _users.GetOrAdd(userId, userFactory);
-        public ChatSimpleChannel GetOrAddChannel(ulong channelId, Func<ulong, ChatSimpleChannel> channelFactory)
-            => _channels.GetOrAdd(channelId, channelFactory);
-        public ChatMessage GetOrAddMessage(string messageId, Func<string, ChatMessage> messageFactory)
-            => _messages.GetOrAdd(messageId, messageFactory);
+        public void AddUserState(API.UserStateEvent userState)
+        {
+            _userStates.TryAdd(userState.ChannelName, userState);
+        }
+        public API.UserStateEvent RemoveUserState(string channelName)
+        {
+            if (_userStates.TryRemove(channelName, out API.UserStateEvent value))
+                return value;
+            return null;
+        }
+        public API.UserStateEvent GetUserState(string channelName)
+        {
+            if (_userStates.TryGetValue(channelName, out API.UserStateEvent value))
+                return value;
+            return null;
+        }
     }
 }

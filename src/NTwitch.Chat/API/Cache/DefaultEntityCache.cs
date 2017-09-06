@@ -5,7 +5,9 @@ using System.Linq;
 
 namespace NTwitch.Chat
 {
-    internal sealed class DefaultCacheClient<TKey, TEntity> : ICacheClient<TKey, TEntity>
+    internal class DefaultEntityCache<TKey, TEntity> : IEntityCache<TKey, TEntity>
+        where TKey : IEquatable<TKey>
+        where TEntity : IEntity<TKey>
     {
         private readonly ConcurrentDictionary<TKey, TEntity> _entities;
         private readonly ConcurrentQueue<TKey> _orderedEntities;
@@ -13,39 +15,43 @@ namespace NTwitch.Chat
 
         public IReadOnlyCollection<TEntity> Entities => _entities.Select(x => x.Value).ToArray();
 
-        public DefaultCacheClient(int cacheSize)
+        public DefaultEntityCache(int cacheSize)
         {
             _entities = new ConcurrentDictionary<TKey, TEntity>();
             _orderedEntities = new ConcurrentQueue<TKey>();
             _cacheSize = cacheSize;
         }
-        
-        public void Add(TKey id, TEntity entity)
+
+        public virtual void Add(TKey id, TEntity entity)
         {
             if (_entities.TryAdd(id, entity) && _cacheSize >= 0)
             {
                 _orderedEntities.Enqueue(id);
 
                 while (_orderedEntities.Count > _cacheSize && _orderedEntities.TryDequeue(out TKey entityId))
-                    _entities.TryRemove(entityId, out TEntity msg);
+                {
+                    if (_entities.TryRemove(entityId, out TEntity queueEntity))
+                        OnDequeue(queueEntity);
+                }
             }
         }
-        
-        public TEntity Remove(TKey id)
+        protected virtual void OnDequeue(TEntity entity) { }
+
+        public virtual TEntity Remove(TKey id)
         {
             if (_entities.TryRemove(id, out TEntity entity))
                 return entity;
             return default(TEntity);
         }
-        
-        public TEntity Get(TKey id)
+
+        public virtual TEntity Get(TKey id)
         {
             if (_entities.TryGetValue(id, out TEntity entity))
                 return entity;
             return default(TEntity);
         }
-        
-        public TEntity GetOrAdd(TKey id, Func<TKey, TEntity> entityFactory)
+
+        public virtual TEntity GetOrAdd(TKey id, Func<TKey, TEntity> entityFactory)
         {
             return _entities.GetOrAdd(id, entityFactory);
         }
