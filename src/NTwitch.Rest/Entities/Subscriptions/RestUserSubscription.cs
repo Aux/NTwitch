@@ -19,9 +19,8 @@ namespace NTwitch.Rest
 
         internal override void Update(Model model)
         {
-            User = new RestUser(Client, model.User.Id);
-            User.Update(model.User);
             base.Update(model);
+            User = RestUser.Create(Client, model.User);
         }
     }
 }

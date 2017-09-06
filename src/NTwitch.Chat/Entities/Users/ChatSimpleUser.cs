@@ -9,15 +9,13 @@ using System;
 
 namespace NTwitch.Chat
 {
-    public class ChatSimpleUser : ChatEntity<ulong>, IRestSimpleUser
+    public class ChatSimpleUser : ChatNamedEntity<ulong>, IRestSimpleUser
     {
         /// <summary> The display name of this user </summary>
         public string DisplayName { get; private set; }
-        /// <summary> The name of this user </summary>
-        public string Name { get; private set; }
 
-        internal ChatSimpleUser(TwitchChatClient client, ulong id)
-            : base(client, id) { }
+        internal ChatSimpleUser(TwitchChatClient client, ulong id, string name)
+            : base(client, id, name) { }
 
         public bool Equals(ISimpleUser other)
             => Id == other.Id;
@@ -26,53 +24,49 @@ namespace NTwitch.Chat
 
         internal static ChatSimpleUser Create(TwitchChatClient client, MsgEventModel model)
         {
-            var entity = new ChatSimpleUser(client, model.UserId);
+            var entity = new ChatSimpleUser(client, model.UserId, model.UserName);
             entity.Update(model);
             return entity;
         }
 
         internal static ChatSimpleUser Create(TwitchChatClient client, UserStateModel model)
         {
-            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId);
+            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId, model.DisplayName);
             entity.Update(model);
             return entity;
         }
 
         internal static ChatSimpleUser Create(TwitchChatClient client, ClearChatModel model)
         {
-            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId);
+            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId, model.UserName);
             entity.Update(model);
             return entity;
         }
 
         internal static ChatSimpleUser Create(TwitchChatClient client, NoticeModel model)
         {
-            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId);
+            var entity = new ChatSimpleUser(client, client.TokenInfo.UserId, model.Name);
             entity.Update(model);
             return entity;
         }
 
         internal virtual void Update(MsgEventModel model)
         {
-            Name = model.UserName;
             DisplayName = model.DisplayName;
         }
 
         internal virtual void Update(UserStateModel model)
         {
-            Name = model.DisplayName.ToLower();
             DisplayName = model.DisplayName;
         }
 
         internal virtual void Update(ClearChatModel model)
         {
-            Name = model.UserName;
             DisplayName = model.UserName;
         }
 
         internal virtual void Update(NoticeModel model)
         {
-            Name = model.Name;
             DisplayName = model.DisplayName;
         }
 

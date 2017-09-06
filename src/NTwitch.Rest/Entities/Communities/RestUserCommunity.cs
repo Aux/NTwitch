@@ -6,7 +6,7 @@
         public IUser CurrentUser { get; private set; }
 
         internal RestUserCommunity(RestCommunity community)
-            : base(community.Client, community.Id) { }
+            : base(community.Client, community.Id, community.Name) { }
 
         internal static RestUserCommunity Create(RestCommunity community, IUser user)
         {

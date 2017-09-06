@@ -2,9 +2,8 @@
 
 namespace NTwitch
 {
-    public interface ISimpleChannel : IEntity<ulong>, IEquatable<ISimpleChannel>
+    public interface ISimpleChannel : INamedEntity<ulong>, IEquatable<ISimpleChannel>
     {
-        string Name { get; }
         string DisplayName { get; }
     }
 }

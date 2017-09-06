@@ -10,12 +10,12 @@ namespace NTwitch.Rest
         /// <summary> The key used to stream video to twitch as this channel </summary>
         public string StreamKey { get; private set; }
 
-        internal RestSelfChannel(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        internal RestSelfChannel(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
         internal new static RestSelfChannel Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestSelfChannel(client, model.Id);
+            var entity = new RestSelfChannel(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }

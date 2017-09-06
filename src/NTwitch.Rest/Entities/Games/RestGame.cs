@@ -4,7 +4,7 @@ using Model = NTwitch.Rest.API.Game;
 
 namespace NTwitch.Rest
 {
-    public class RestGame : RestEntity<ulong>, IEqualityComparer<RestGame>
+    public class RestGame : RestEntity<ulong>, IEquatable<RestGame>
     {
         /// <summary> The name of this game </summary>
         public string Name { get; private set; }
@@ -19,6 +19,11 @@ namespace NTwitch.Rest
 
         internal RestGame(BaseTwitchClient client, ulong id) 
             : base(client, id) { }
+        
+        public bool Equals(RestGame other)
+            => Id == other.Id;
+        public override string ToString()
+            => Name;
 
         internal static RestGame Create(BaseTwitchClient client, Model model)
         {
@@ -35,10 +40,5 @@ namespace NTwitch.Rest
             Box = model.Box;
             Logo = model.Logo;
         }
-
-        public bool Equals(RestGame x, RestGame y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestGame obj)
-            => obj.GetHashCode();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NTwitch.Chat
 {
-    public class ChatChannel : ChatSimpleChannel//, IChannel
+    public class ChatChannel : ChatSimpleChannel
     {
         /// <summary>  </summary>
         public string BroadcasterLanguage { get; internal set; }
@@ -19,19 +19,18 @@ namespace NTwitch.Chat
         /// <summary>  </summary>
         public bool IsSubsOnly { get; internal set; }
 
-        public ChatChannel(TwitchChatClient client, ulong id)
-            : base(client, id) { }
+        public ChatChannel(TwitchChatClient client, ulong id, string name)
+            : base(client, id, name) { }
 
         internal new static ChatChannel Create(TwitchChatClient client, RoomStateModel model)
         {
-            var entity = new ChatChannel(client, model.ChannelId);
+            var entity = new ChatChannel(client, model.ChannelId, model.ChannelName);
             entity.Update(model);
             return entity;
         }
 
-        internal override void Update(RoomStateModel model)
+        internal virtual void Update(RoomStateModel model)
         {
-            base.Update(model);
             BroadcasterLanguage = model.BroadcasterLang;
             FollowersOnlyMode = model.FollowersOnlyMode;
             IsFollowersOnly = model.FollowersOnlyMode > 0;

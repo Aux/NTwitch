@@ -5,15 +5,13 @@ using Model = NTwitch.Rest.API.Channel;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleChannel : RestEntity<ulong>, IRestSimpleChannel
+    public class RestSimpleChannel : RestNamedEntity<ulong>, IRestSimpleChannel
     {
-        /// <summary> This channel's internal twitch username </summary>
-        public string Name { get; private set; }
         /// <summary> This channel's display username </summary>
         public string DisplayName { get; private set; }
         
-        internal RestSimpleChannel(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        internal RestSimpleChannel(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
         public bool Equals(ISimpleChannel other)
             => Id == other.Id;
@@ -22,7 +20,7 @@ namespace NTwitch.Rest
 
         internal static RestSimpleChannel Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestSimpleChannel(client, model.Id);
+            var entity = new RestSimpleChannel(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }
@@ -30,7 +28,6 @@ namespace NTwitch.Rest
         internal virtual void Update(Model model)
         {
             DisplayName = model.DisplayName;
-            Name = model.Name;
         }
 
         // Channels

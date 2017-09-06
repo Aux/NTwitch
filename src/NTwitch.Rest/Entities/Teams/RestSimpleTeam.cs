@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using Model = NTwitch.Rest.API.Team;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleTeam : RestEntity<ulong>, IEqualityComparer<RestSimpleTeam>
+    public class RestSimpleTeam : RestNamedEntity<ulong>, IEquatable<RestSimpleTeam>
     {
         /// <summary> The hexadecimal color of this team's background </summary>
         public string Background { get; private set; }
@@ -18,17 +17,20 @@ namespace NTwitch.Rest
         public string Info { get; private set; }
         /// <summary> The url to this team's logo image </summary>
         public string LogoUrl { get; private set; }
-        /// <summary> The name of this team </summary>
-        public string Name { get; private set; }
         /// <summary> The date and time this team was last updated </summary>
         public DateTime UpdatedAt { get; private set; }
 
-        internal RestSimpleTeam(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        internal RestSimpleTeam(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
+        
+        public bool Equals(RestSimpleTeam other)
+            => Id == other.Id;
+        public override string ToString()
+            => Name;
 
         internal static RestSimpleTeam Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestSimpleTeam(client, model.Id);
+            var entity = new RestSimpleTeam(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }
@@ -41,13 +43,7 @@ namespace NTwitch.Rest
             DisplayName = model.DisplayName;
             Info = model.Info;
             LogoUrl = model.LogoUrl;
-            Name = model.Name;
             UpdatedAt = model.UpdatedAt;
         }
-
-        public bool Equals(RestSimpleTeam x, RestSimpleTeam y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestSimpleTeam obj)
-            => obj.GetHashCode();
     }
 }

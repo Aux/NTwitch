@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MsgEventModel = NTwitch.Chat.API.MessageReceivedEvent;
 using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
 using UserStateModel = NTwitch.Chat.API.UserStateEvent;
@@ -18,12 +19,12 @@ namespace NTwitch.Chat
         /// <summary>  </summary>
         public bool IsTurbo { get; private set; }
         
-        internal ChatUser(TwitchChatClient client, ulong id) 
-            : base(client, id) { }
+        internal ChatUser(TwitchChatClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
-        internal static UserType GetUserType(string tag)
+        private UserType GetUserType(string value)
         {
-            switch (tag)
+            switch (value)
             {
                 case "mod":
                     return UserType.Moderator;
@@ -37,24 +38,23 @@ namespace NTwitch.Chat
                     return UserType.None;
             }
         }
-
         internal new static ChatUser Create(TwitchChatClient client, MsgEventModel model)
         {
-            var entity = new ChatUser(client, model.UserId);
+            var entity = new ChatUser(client, model.UserId, model.UserName);
             entity.Update(model);
             return entity;
         }
 
         internal new static ChatUser Create(TwitchChatClient client, UserStateModel model)
         {
-            var entity = new ChatUser(client, client.TokenInfo.UserId);
+            var entity = new ChatUser(client, client.TokenInfo.UserId, model.DisplayName);
             entity.Update(model);
             return entity;
         }
 
         internal new static ChatUser Create(TwitchChatClient client, NoticeModel model)
         {
-            var entity = new ChatUser(client, model.UserId);
+            var entity = new ChatUser(client, model.UserId, model.DisplayName);
             entity.Update(model);
             return entity;
         }

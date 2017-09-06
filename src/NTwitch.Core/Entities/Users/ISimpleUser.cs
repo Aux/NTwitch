@@ -2,10 +2,9 @@
 
 namespace NTwitch
 {
-    public interface ISimpleUser : IEntity<ulong>, IEquatable<ISimpleUser>
+    public interface ISimpleUser : INamedEntity<ulong>, IEquatable<ISimpleUser>
     {
         string AvatarUrl { get; }
-        string Name { get; }
         string DisplayName { get; }
     }
 }

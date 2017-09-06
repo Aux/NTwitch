@@ -5,24 +5,24 @@ using Model = NTwitch.Rest.API.User;
 
 namespace NTwitch.Rest
 {
-    public class RestSimpleUser : RestEntity<ulong>, IRestSimpleUser
+    public class RestSimpleUser : RestNamedEntity<ulong>, IRestSimpleUser
     {
         /// <summary> The url for this user's avatar </summary>
         public string AvatarUrl { get; private set; }
         /// <summary> The display name of this user </summary>
         public string DisplayName { get; private set; }
-        /// <summary> The name of this user </summary>
-        public string Name { get; private set; }
         
-        internal RestSimpleUser(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        internal RestSimpleUser(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
         
         public bool Equals(ISimpleUser other)
             => Id == other.Id;
+        public override string ToString()
+            => Name;
 
         internal static RestSimpleUser Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestSimpleUser(client, model.Id);
+            var entity = new RestSimpleUser(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }
@@ -31,7 +31,6 @@ namespace NTwitch.Rest
         {
             AvatarUrl = model.AvatarUrl;
             DisplayName = model.DisplayName;
-            Name = model.Name;
         }
 
         // Channels

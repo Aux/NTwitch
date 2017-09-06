@@ -9,13 +9,9 @@ namespace NTwitch.Pubsub
 {
     public class PubsubSimpleChannel : PubsubEntity<ulong>, ISimpleChannel
     {
-        /// <summary> This channel's internal twitch username </summary>
         public string Name { get; private set; }
-
-        string ISimpleChannel.Name => throw new NotImplementedException();
-
-        string ISimpleChannel.DisplayName => throw new NotImplementedException();
-
+        public string DisplayName => Name;
+        
         internal PubsubSimpleChannel(TwitchPubsubClient client, ulong id)
             : base(client, id) { }
 
@@ -103,5 +99,7 @@ namespace NTwitch.Pubsub
         /// <summary>  </summary>
         public Task<IReadOnlyCollection<RestClip>> GetClipsAsync(bool istrending = false, PageOptions paging = null, RequestOptions options = null)
             => ClientHelper.GetFollowedClipsAsync(Client, Id, istrending, paging, options);
+
+
     }
 }

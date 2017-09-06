@@ -37,12 +37,12 @@ namespace NTwitch.Rest
         /// <summary> The number of followers on this channel </summary>
         public uint Followers { get; private set; }
 
-        internal RestChannel(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        internal RestChannel(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
         internal new static RestChannel Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestChannel(client, model.Id);
+            var entity = new RestChannel(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }

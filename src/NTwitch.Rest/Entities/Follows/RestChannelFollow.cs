@@ -19,9 +19,8 @@ namespace NTwitch.Rest
 
         internal override void Update(Model model)
         {
-            Channel = new RestChannel(Client, model.Channel.Id);
-            Channel.Update(model.Channel);
             base.Update(model);
+            Channel = RestChannel.Create(Client, model.Channel);
         }
     }
 }

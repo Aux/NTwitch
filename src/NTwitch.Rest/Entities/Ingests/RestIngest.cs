@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Model = NTwitch.Rest.API.Ingest;
 
 namespace NTwitch.Rest
 {
-    public class RestIngest : RestEntity<ulong>, IEqualityComparer<RestIngest>
+    public class RestIngest : RestEntity<ulong>, IEquatable<RestIngest>
     {
         /// <summary> The percentage availability of this ingest server </summary>
         public double Availability { get; private set; }
@@ -18,7 +16,12 @@ namespace NTwitch.Rest
 
         internal RestIngest(BaseTwitchClient client, ulong id)
             : base(client, id) { }
-        
+
+        public bool Equals(RestIngest other)
+            => Id == other.Id;
+        public override string ToString()
+            => Name;
+
         internal static RestIngest Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestIngest(client, model.Id);
@@ -33,10 +36,5 @@ namespace NTwitch.Rest
             Name = model.Name;
             UrlTemplate = model.UrlTemplate;
         }
-
-        public bool Equals(RestIngest x, RestIngest y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestIngest obj)
-            => obj.GetHashCode();
     }
 }

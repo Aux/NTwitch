@@ -12,12 +12,12 @@ namespace NTwitch.Rest
         /// <summary> The description provided for this user </summary>
         public string Bio { get; private set; }
 
-        internal RestBannedUser(BaseTwitchClient client, ulong id)
-            : base(client, id) { }
+        internal RestBannedUser(BaseTwitchClient client, ulong id, string name)
+            : base(client, id, name) { }
         
         internal new static RestBannedUser Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestBannedUser(client, model.Id);
+            var entity = new RestBannedUser(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }

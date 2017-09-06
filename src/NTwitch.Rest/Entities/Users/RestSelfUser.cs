@@ -17,12 +17,12 @@ namespace NTwitch.Rest
         /// <summary> This user's notification settings </summary>
         public RestUserNotifications Notifications { get; private set; }
         
-        public RestSelfUser(BaseTwitchClient client, ulong id) 
-            : base(client, id) { }
+        public RestSelfUser(BaseTwitchClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
         internal new static RestSelfUser Create(BaseTwitchClient client, Model model)
         {
-            var entity = new RestSelfUser(client, model.Id);
+            var entity = new RestSelfUser(client, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }

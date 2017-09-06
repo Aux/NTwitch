@@ -5,7 +5,7 @@ using Model = NTwitch.Rest.API.Stream;
 
 namespace NTwitch.Rest
 {
-    public class RestStream : RestEntity<ulong>, IUpdateable, IEqualityComparer<RestStream>
+    public class RestStream : RestEntity<ulong>, IUpdateable, IEquatable<RestStream>
     {
         /// <summary> Date and time when this stream was created </summary>
         public DateTime CreatedAt { get; private set; }
@@ -29,6 +29,11 @@ namespace NTwitch.Rest
         internal RestStream(BaseTwitchClient client, ulong id)
             : base(client, id) { }
 
+        public bool Equals(RestStream other)
+            => Id == other.Id;
+        public override string ToString()
+            => Channel.ToString();
+
         internal static RestStream Create(BaseTwitchClient client, Model model)
         {
             var entity = new RestStream(client, model.Id);
@@ -38,8 +43,7 @@ namespace NTwitch.Rest
 
         internal virtual void Update(Model model)
         {
-            Channel = new RestChannel(Client, model.Channel.Id);
-            Channel.Update(model.Channel);
+            Channel = RestChannel.Create(Client, model.Channel);
 
             CreatedAt = model.CreatedAt;
             Game = model.Game;
@@ -50,12 +54,7 @@ namespace NTwitch.Rest
             IsPlaylist = model.IsPlaylist;
             Previews = model.Previews;
         }
-
-        public bool Equals(RestStream x, RestStream y)
-            => x.Id == y.Id;
-        public int GetHashCode(RestStream obj)
-            => obj.GetHashCode();
-
+        
         /// <summary> Get the most recent information for this entity </summary>
         public virtual Task UpdateAsync()
         {

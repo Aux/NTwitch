@@ -10,73 +10,41 @@ using NoticeModel = NTwitch.Chat.API.UserNoticeEvent;
 
 namespace NTwitch.Chat
 {
-    public class ChatSimpleChannel : ChatEntity<ulong>, IRestSimpleChannel
+    public class ChatSimpleChannel : ChatNamedEntity<ulong>, IRestSimpleChannel
     {
-        /// <summary> This channel's internal twitch username </summary>
-        public string Name { get; private set; }
-
         public ChatSelfUser CurrentUser => ChatChannelHelper.GetMyUser(Client, this);
-        public IReadOnlyCollection<ChatMessage> Messages => Client.Cache.Messages.Where(x => x.Channel.Id == Id).ToArray();
 
-        internal ChatSimpleChannel(TwitchChatClient client, ulong id) 
-            : base(client, id) { }
+        internal ChatSimpleChannel(TwitchChatClient client, ulong id, string name) 
+            : base(client, id, name) { }
 
         public bool Equals(ISimpleChannel other)
             => Id == other.Id;
-        public override string ToString()
-            => Name;
 
         internal static ChatSimpleChannel Create(TwitchChatClient client, MsgEventModel model)
         {
-            var entity = new ChatSimpleChannel(client, model.ChannelId);
-            entity.Update(model);
-            return entity;
+            return new ChatSimpleChannel(client, model.ChannelId, model.ChannelName);
         }
 
         internal static ChatSimpleChannel Create(TwitchChatClient client, RoomStateModel model)
         {
-            var entity = new ChatSimpleChannel(client, model.ChannelId);
-            entity.Update(model);
-            return entity;
+            return new ChatSimpleChannel(client, model.ChannelId, model.ChannelName);
         }
 
         internal static ChatSimpleChannel Create(TwitchChatClient client, ClearChatModel model)
         {
-            var entity = new ChatSimpleChannel(client, model.ChannelId);
-            entity.Update(model);
-            return entity;
+            return new ChatSimpleChannel(client, model.ChannelId, model.ChannelName);
         }
 
         internal static ChatSimpleChannel Create(TwitchChatClient client, NoticeModel model)
         {
-            var entity = new ChatSimpleChannel(client, model.ChannelId);
-            entity.Update(model);
-            return entity;
+            return new ChatSimpleChannel(client, model.ChannelId, model.ChannelName);
         }
-
-        internal virtual void Update(MsgEventModel model)
-        {
-            Name = model.ChannelName;
-        }
-
-        internal virtual void Update(RoomStateModel model)
-        {
-            Name = model.ChannelName;
-        }
-
-        internal virtual void Update(ClearChatModel model)
-        {
-            Name = model.ChannelName;
-        }
-
-        internal virtual void Update(NoticeModel model)
-        {
-            Name = model.ChannelName;
-        }
-
-        // Chat
+        
+        // Cache
         public IReadOnlyCollection<string> GetNames()
             => Client.Cache.GetNames(Name);
+        public IReadOnlyCollection<ChatMessage> GetMessages()
+            => Client.Cache.Messages.Where(x => x.Channel.Id == Id).ToArray();
 
         public Task SendMessageAsync(string content, RequestOptions options = null)
             => ChatChannelHelper.SendMessageAsync(Client, this, content, options);
