@@ -22,7 +22,8 @@ namespace NTwitch.Chat.API
             HostName = msg.Parameters.First().Substring(1).Trim();
 
             var split = msg.Parameters.Last().Split(' ');
-            Viewers = int.Parse(split.Last());
+            if (int.TryParse(split.Last(), out var viewers))
+                Viewers = viewers;
 
             if (split.First() != "-")
                 ChannelName = split.First();
