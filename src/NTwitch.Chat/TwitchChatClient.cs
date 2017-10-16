@@ -185,7 +185,7 @@ namespace NTwitch.Chat
                             var cacheChannel = new Cacheable<string, ChatSimpleChannel>(channel, model.ChannelName, channel != null);
                             var cacheUser = new Cacheable<string, ChatSimpleUser>(user, model.UserName, user != null);
 
-                            if (CurrentUser.Name == model.UserName)
+                            if (TokenInfo.Username == model.UserName)
                                 await _currentUserLeftEvent.InvokeAsync(cacheChannel).ConfigureAwait(false);
                             else
                                 await _userLeftEvent.InvokeAsync(cacheChannel, cacheUser).ConfigureAwait(false);
