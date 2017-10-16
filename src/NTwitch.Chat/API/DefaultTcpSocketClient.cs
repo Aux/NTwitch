@@ -158,6 +158,7 @@ namespace NTwitch.Chat
 
             try
             {
+                string incompleteMessage = "";
                 while (!cancelToken.IsCancellationRequested)
                 {
                     var buffer = new byte[_client.ReceiveBufferSize];
@@ -168,9 +169,31 @@ namespace NTwitch.Chat
                         break;
 
                     var result = receiveTask.Result;
-                    var msgs = Encoding.UTF8.GetString(buffer, 0, result).Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var msg in msgs)
-                        await TextMessage(msg).ConfigureAwait(false);
+                    var message = Encoding.UTF8.GetString(buffer, 0, result);
+
+                    int currentPos = 0;
+                    while (currentPos < message.Length)
+                    {
+                        var msgBoundary = message.IndexOf("\r\n", currentPos);
+                        if (msgBoundary == -1) // we received an incomplete message from Twitch
+                        {
+                            incompleteMessage = message.Substring(currentPos);
+                            break;
+                        }
+
+                        var msg = message.Substring(currentPos, msgBoundary - currentPos);
+                        currentPos = msgBoundary + 2; // \r\n is 2 chars
+
+                        if (incompleteMessage != "")
+                        {
+                            await TextMessage(incompleteMessage + msg).ConfigureAwait(false);
+                            incompleteMessage = "";
+                        }
+                        else
+                        {
+                            await TextMessage(msg).ConfigureAwait(false);
+                        }
+                    }
                 }
             }
             catch (OperationCanceledException) { }
