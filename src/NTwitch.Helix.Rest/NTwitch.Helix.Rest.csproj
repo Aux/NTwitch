@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="API\Rest\" />
+  </ItemGroup>
+
+</Project>

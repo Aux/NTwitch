@@ -15,6 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Chat", "src\NTwitch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{12AB9B7C-AE54-4678-8024-89701E476283}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "helix", "helix", "{A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Rest", "src\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj", "{EE62429E-3D13-4D3D-BDC6-2E96332125B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Webhook", "src\NTwitch.Helix.Webhook\NTwitch.Helix.Webhook.csproj", "{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Core", "src\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj", "{4964D332-4796-4227-B1C5-21F6BB9486E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,11 +49,26 @@ Global
 		{12AB9B7C-AE54-4678-8024-89701E476283}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12AB9B7C-AE54-4678-8024-89701E476283}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12AB9B7C-AE54-4678-8024-89701E476283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E} = {53879A91-FB4C-4A04-B26D-DD2F0CD2EA55}
+		{EE62429E-3D13-4D3D-BDC6-2E96332125B1} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
+		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
+		{4964D332-4796-4227-B1C5-21F6BB9486E3} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
 	EndGlobalSection
 EndGlobal
