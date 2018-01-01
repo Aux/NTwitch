@@ -12,6 +12,7 @@ namespace NTwitch.Helix
 
         public static string UserAgent { get; } = $"NTwitch (https://github.com/auxlabs/NTwitch, v{Version})";
         public static readonly string APIUrl = "https://api.twitch.tv/helix";
+        public static readonly string ClipsUrl = "https://clips.twitch.tv/";
         public static readonly string Encoding = "ISO-8859-1";
 
         public const int DefaultRequestTimeout = 15000;
