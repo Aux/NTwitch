@@ -20,7 +20,7 @@ namespace NTwitch.Helix.Rest
 
         internal API.TwitchRestApiClient ApiClient { get; }
         internal LogManager LogManager { get; }
-        //public ISelfUser CurrentUser { get; protected set; }
+        public IUser CurrentUser { get; protected set; }
         public LoginState LoginState { get; private set; }
 
         /// <summary> Creates a new REST-only twitch client. </summary>
@@ -33,14 +33,7 @@ namespace NTwitch.Helix.Rest
             _stateLock = new SemaphoreSlim(1, 1);
             _restLogger = LogManager.CreateLogger("Rest");
             _isFirstLogin = config.DisplayInitialLog;
-
-            ApiClient.RequestQueue.RateLimitTriggered += async (id, info) =>
-            {
-                if (info == null)
-                    await _restLogger.VerboseAsync($"Preemptive Rate limit triggered: {id ?? "null"}").ConfigureAwait(false);
-                else
-                    await _restLogger.WarningAsync($"Rate limit triggered: {id ?? "null"}").ConfigureAwait(false);
-            };
+            
             ApiClient.SentRequest += async (method, endpoint, millis) => await _restLogger.VerboseAsync($"{method} {endpoint}: {millis} ms").ConfigureAwait(false);
         }
 
@@ -120,7 +113,7 @@ namespace NTwitch.Helix.Rest
         /// <inheritdoc />
         public void Dispose() => Dispose(true);
 
-        // IGithubClient
+        // ITwitchClient
         ConnectionState ITwitchClient.ConnectionState => throw new NotImplementedException();
 
         Task ITwitchClient.StartAsync()

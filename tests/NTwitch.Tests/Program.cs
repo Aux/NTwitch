@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NTwitch.Helix.Rest;
 
 namespace NTwitch.Tests
 {
@@ -8,14 +9,22 @@ namespace NTwitch.Tests
         public static void Main(string[] args)
             => new Program().Start().GetAwaiter().GetResult();
 
-        private object _client;
+        private TwitchRestClient _client;
 
         public async Task Start()
         {
             string token = "";
             string clientId = "";
 
+            _client = new TwitchRestClient(new TwitchRestConfig
+            {
+                ClientId = clientId,
+                LogLevel = Helix.LogSeverity.Debug
+            });
 
+            await _client.LoginAsync(token);
+
+            var user = await _client.GetUsersAsync("auxesistv");
 
             await Task.Delay(-1);
         }

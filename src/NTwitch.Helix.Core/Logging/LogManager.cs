@@ -65,7 +65,7 @@ namespace NTwitch.Helix
 
         public async Task WriteInitialLog()
         {
-            await _logger.InfoAsync($"Github.Net v{GithubConfig.Version} (API v{GithubConfig.APIVersion})").ConfigureAwait(false);
+            await _logger.InfoAsync($"NTwitch v{TwitchConfig.Version} (API v{TwitchConfig.APIVersion})").ConfigureAwait(false);
         }
     }
 }

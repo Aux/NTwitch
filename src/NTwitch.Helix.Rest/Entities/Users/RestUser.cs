@@ -4,7 +4,7 @@ using Model = NTwitch.Helix.API.User;
 
 namespace NTwitch.Helix.Rest
 {
-    public class RestUser : RestEntity<ulong>
+    public class RestUser : RestEntity<ulong>, IUser
     {
         public string Name { get; private set; }
         public string Username { get; private set; }
