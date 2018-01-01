@@ -6,7 +6,6 @@ namespace NTwitch.Helix.Rest
 {
     public class RestClip : RestSimpleClip
     {
-        public string Url { get; private set; }
         public string EmbedUrl { get; private set; }
         public ulong BroadcasterId { get; private set; }
         public ulong CreatorId { get; private set; }
@@ -17,19 +16,19 @@ namespace NTwitch.Helix.Rest
         public int ViewCount { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public string ThumbnailImageUrl { get; private set; }
-
-        internal RestClip(BaseTwitchClient twitch, Model model) 
-            : base(twitch, model) { }
+        
+        internal RestClip(BaseTwitchClient twitch, string id) 
+            : base(twitch, id) { }
         internal new static RestClip Create(BaseTwitchClient twitch, Model model)
         {
-            var entity = new RestClip(twitch, model);
+            var entity = new RestClip(twitch, model.Id);
             entity.Update(model);
             return entity;
         }
         internal override void Update(Model model)
         {
-            if (model.Url.IsSpecified)
-                Url = model.Url.Value;
+            base.Update(model);
+
             if (model.EmbedUrl.IsSpecified)
                 EmbedUrl = model.EmbedUrl.Value;
             if (model.BroadcasterId.IsSpecified)
@@ -51,18 +50,16 @@ namespace NTwitch.Helix.Rest
             if (model.ThumbnailImageUrl.IsSpecified)
                 ThumbnailImageUrl = model.ThumbnailImageUrl.Value;
         }
-
-        public override string GetUrl() => Url;
-
-        // Get RestUser
-        public async Task GetBroadcasterAsync() => throw new NotImplementedException();
-        // Get RestBroadcast
-        public async Task GetBroadcastAsync() => throw new NotImplementedException();
-        // Get RestUser
-        public async Task GetCreatorAsync() => throw new NotImplementedException();
-        // Get RestVideo
+        
+        // Get Users
+        public async Task<RestUser> GetBroadcasterAsync() => throw new NotImplementedException();
+        // Get Streams
+        public async Task<RestBroadcast> GetBroadcastAsync() => throw new NotImplementedException();
+        // Get Users
+        public async Task<RestUser> GetCreatorAsync() => throw new NotImplementedException();
+        // Get Videos <RestVideo>
         public async Task GetVideoAsync() => throw new NotImplementedException();
-        // Get RestGame
+        // Get Games <RestGame>
         public async Task GetGameAsync() => throw new NotImplementedException();
     }
 }

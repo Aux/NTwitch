@@ -4,9 +4,10 @@ namespace NTwitch.Helix.API
 {
     internal class User
     {
-        // User
         [JsonProperty("id")]
         public ulong Id { get; set; }
+
+        // User
         [JsonProperty("login")]
         public Optional<string> Name { get; set; }
         [JsonProperty("display_name")]

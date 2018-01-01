@@ -23,8 +23,8 @@ namespace NTwitch.Helix.Rest
         //public ISelfUser CurrentUser { get; protected set; }
         public LoginState LoginState { get; private set; }
 
-        /// <summary> Creates a new REST-only github client. </summary>
-        internal BaseGithubClient(TwitchRestConfig config, API.TwitchRestApiClient client)
+        /// <summary> Creates a new REST-only twitch client. </summary>
+        internal BaseTwitchClient(TwitchRestConfig config, API.TwitchRestApiClient client)
         {
             ApiClient = client;
             LogManager = new LogManager(config.LogLevel);
