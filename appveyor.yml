@@ -19,13 +19,19 @@ build_script:
 after_build:
 - ps: dotnet pack "src\NTwitch.Core\NTwitch.Core.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
 - ps: dotnet pack "src\NTwitch.Rest\NTwitch.Rest.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
-- ps: dotnet pack "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
 - ps: dotnet pack "src\NTwitch.Chat\NTwitch.Chat.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Helix.Chat\NTwitch.Helix.Chat.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
+- ps: dotnet pack "src\NTwitch.Helix.Pubsub\NTwitch.Helix.Pubsub.csproj" -c "Release" -o "../../artifacts" --no-build /p:BuildNumber="$Env:BUILD" /p:IsTagBuild="$Env:APPVEYOR_REPO_TAG"
 - ps: >-
     if ($Env:APPVEYOR_REPO_TAG -eq "true") {
       nuget pack src\NTwitch\NTwitch.nuspec -OutputDirectory "artifacts" -properties suffix=""
+      nuget pack src\NTwitch\NTwitch.Helix.nuspec -OutputDirectory "artifacts" -properties suffix=""
     } else {
       nuget pack src\NTwitch\NTwitch.nuspec -OutputDirectory "artifacts" -properties suffix="-build-$Env:BUILD"
+      nuget pack src\NTwitch\NTwitch.Helix.nuspec -OutputDirectory "artifacts" -properties suffix="-build-$Env:BUILD"
     }
 - ps: Get-ChildItem artifacts\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 

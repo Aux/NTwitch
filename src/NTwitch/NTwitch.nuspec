@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>NTwitch</id>
-    <version>0.2.1$suffix$</version>
+    <version>0.3.0$suffix$</version>
     <title>NTwitch</title>
     <authors>Auxesis</authors>
-    <description>A .net standard implementation of the https://twitch.tv/ api</description>
+    <description>A .net standard implementation of the https://twitch.tv/ kraken api</description>
     <tags>twitch,tv,dot,net,core,rest,api,lib,library,socket,websocket,chat,irc,tcp</tags>
 	<iconUrl>http://i.imgur.com/kcL6nG0.png</iconUrl>
     <projectUrl>https://github.com/Aux/NTwitch</projectUrl>
@@ -13,28 +13,34 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
         <group targetFramework="net45">
-            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Core" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.3.0$suffix$" />
         </group>
         <group targetFramework="net46">
-            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Core" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.3.0$suffix$" />
         </group>
         <group targetFramework="netstandard1.3">
-            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Core" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.3.0$suffix$" />
         </group>
         <group targetFramework="netstandard2.0">
-            <dependency id="NTwitch.Core" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Rest" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Pubsub" version="0.2.1$suffix$" />
-            <dependency id="NTwitch.Chat" version="0.2.1$suffix$" />
+            <dependency id="NTwitch.Core" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.3.0$suffix$" />
+        </group>
+        <group targetFramework="netcoreapp2.0">
+            <dependency id="NTwitch.Core" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Rest" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Pubsub" version="0.3.0$suffix$" />
+            <dependency id="NTwitch.Chat" version="0.3.0$suffix$" />
         </group>
     </dependencies>
   </metadata>

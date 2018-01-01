@@ -12,6 +12,10 @@ Stable builds can be found on Nuget. The contents of these packages reflect what
 - [NTwitch.Rest](https://www.nuget.org/packages/NTwitch.Rest/)
 - [NTwitch.Chat](https://www.nuget.org/packages/NTwitch.Chat/)
 - [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.Pubsub/)
+- [NTwitch.Helix](https://www.nuget.org/packages/NTwitch.Helix/)
+- [NTwitch.Helix.Rest](https://www.nuget.org/packages/NTwitch.Helix.Rest/)
+- [NTwitch.Helix.Chat](https://www.nuget.org/packages/NTwitch.Helix.Chat/)
+- [NTwitch.Helix.Pubsub](https://www.nuget.org/packages/NTwitch.Helix.Pubsub/)
 #### Pre-Release
 Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
 #### Indev
@@ -19,7 +23,7 @@ You can access the latest builds via the myget feed listed below. The contents o
 - `https://www.myget.org/F/ntwitch/api/v3/index.json`
 
 ## Documentation
-There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the [NTwitch Discord Guild](https://discord.gg/yd8x2wM).
+There is not currently any documentation for NTwitch. If you have any questions or want status updates about the library, please join the [Auxlabs Discord Guild](https://discord.gg/h8sfyau) and ask a question in the ntwitch channels.
 
 ## Compiling
 To compile NTwitch yourself, you will need either of the following:
@@ -28,4 +32,4 @@ To compile NTwitch yourself, you will need either of the following:
 - [Visual Studio 2017](https://www.microsoft.com/net/core#windowsvs2017)
 
 ##### Command Line Tools
-- [.Net Core 1.1 SDK](https://www.microsoft.com/net/download/core)
+- [.Net Core 2.1 SDK](https://www.microsoft.com/net/download/core)
