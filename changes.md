@@ -21,3 +21,5 @@
 ##### Broadcasts
 - Channel and Game information reduced to their respective Ids.
 - No longer able to view a broadcast's delay, fps value, or video height.
+##### Channels
+- This entity type no longer exists (split into User and Broadcast).

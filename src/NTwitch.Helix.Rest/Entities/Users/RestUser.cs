@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model = NTwitch.Helix.API.User;
 
@@ -52,6 +53,6 @@ namespace NTwitch.Helix.Rest
         // Get User Following <RestFollow[]>
         public async Task GetFollowingAsync() => throw new NotImplementedException();
         // Get User Videos <RestVideo>
-        public async Task GetVideosAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyCollection<RestVideo>> GetVideosAsync() => throw new NotImplementedException();
     }
 }

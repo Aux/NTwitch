@@ -48,11 +48,10 @@ namespace NTwitch.Helix.Rest
         }
         
         // Get Users
-        public async Task<RestClip> GetUserAsync() => throw new NotImplementedException();
+        public async Task<RestUser> GetUserAsync() => throw new NotImplementedException();
         // Get Games <RestGame>
-        public async Task GetGameAsync() => throw new NotImplementedException();
+        public async Task<RestGame> GetGameAsync() => throw new NotImplementedException();
         // Create Clip
-        public async Task<RestClip> CreateClipAsync() => throw new NotImplementedException();
-
+        public async Task<RestSimpleClip> CreateClipAsync() => throw new NotImplementedException();
     }
 }
