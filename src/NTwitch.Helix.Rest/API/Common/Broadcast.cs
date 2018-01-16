@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace NTwitch.Helix.API
 {
-    public class Broadcast
+    internal class Broadcast
     {
         [JsonProperty("id")]
         public ulong Id { get; set; }
