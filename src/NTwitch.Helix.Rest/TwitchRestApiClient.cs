@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NTwitch.Helix.API;
 using NTwitch.Helix.Queue;
 using System;
 using System.Collections.Generic;
@@ -165,23 +166,23 @@ namespace NTwitch.Helix.Rest.API
             await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
         }
 
-        internal Task<TResponse> SendAsync<TResponse>(string method, Expression<Func<string>> endpointExpr,
+        internal Task<RestData<TResponse>> SendAsync<TResponse>(string method, Expression<Func<string>> endpointExpr,
              ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null) where TResponse : class
             => SendAsync<TResponse>(method, GetEndpoint(endpointExpr), clientBucket, options);
-        public async Task<TResponse> SendAsync<TResponse>(string method, string endpoint,
+        public async Task<RestData<TResponse>> SendAsync<TResponse>(string method, string endpoint,
             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null) where TResponse : class
         {
             options = options ?? new RequestOptions();
             options.BucketId = ClientBucket.Get(clientBucket).Id;
 
             var request = new RestRequest(RestClient, method, endpoint, options);
-            return DeserializeJson<TResponse>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
+            return DeserializeJson<RestData<TResponse>>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
         }
 
-        internal Task<TResponse> SendJsonAsync<TResponse>(string method, Expression<Func<string>> endpointExpr, object payload,
+        internal Task<RestData<TResponse>> SendJsonAsync<TResponse>(string method, Expression<Func<string>> endpointExpr, object payload,
              ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null) where TResponse : class
             => SendJsonAsync<TResponse>(method, GetEndpoint(endpointExpr), payload, clientBucket, options);
-        public async Task<TResponse> SendJsonAsync<TResponse>(string method, string endpoint, object payload,
+        public async Task<RestData<TResponse>> SendJsonAsync<TResponse>(string method, string endpoint, object payload,
             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null) where TResponse : class
         {
             options = options ?? new RequestOptions();
@@ -189,7 +190,7 @@ namespace NTwitch.Helix.Rest.API
 
             string json = payload != null ? SerializeJson(payload) : null;
             var request = new JsonRestRequest(RestClient, method, endpoint, json, options);
-            return DeserializeJson<TResponse>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
+            return DeserializeJson<RestData<TResponse>>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
         }
 
         private async Task<Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
@@ -209,10 +210,46 @@ namespace NTwitch.Helix.Rest.API
             return responseStream;
         }
 
-        // Requests
+        // Users
+        public async Task<IReadOnlyCollection<User>> GetUsersAsync(ulong[] userIds, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
 
+            var ids = new StringBuilder($"?id={userIds.First()}");
+            foreach (var user in userIds.Skip(1))
+                ids.Append($"&id={user}");
 
+            var response = await SendAsync<User>("GET", () => "users" + ids.ToString(), options: options).ConfigureAwait(false);
+            return response.Data.ToReadOnlyCollection(() => response.Data.Count());
+        }
+        public async Task<IReadOnlyCollection<User>> GetUsersAsync(string[] userNames, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
 
+            var names = new StringBuilder($"?login={userNames.First()}");
+            foreach (var user in userNames.Skip(1))
+                names.Append($"&login={user}");
+
+            var response = await SendAsync<User>("GET", () => "users" + names.ToString(), options: options).ConfigureAwait(false);
+            return response.Data.ToReadOnlyCollection(() => response.Data.Count());
+        }
+
+        // Followers
+        public async Task<RestData<Follower>> GetFollowersAsync(GetFollowersParams args, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+
+            var query = new Dictionary<string, object>
+            {
+                { "from_id", args.FromId.GetValueOrDefault() },
+                { "to_id", args.FromId.GetValueOrDefault() },
+                { "first", args.First.GetValueOrDefault() },
+                { "from_id", args.FromId.GetValueOrDefault() }
+            };
+            
+            return await SendAsync<Follower>("GET", () => $"users/follows{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        
         //Helpers
         protected void CheckState(bool validateClientId = false)
         {
@@ -261,6 +298,21 @@ namespace NTwitch.Helix.Rest.API
                 throw new InvalidOperationException("Unsupported expression");
 
             return (expr as MemberExpression).Member.Name;
+        }
+        private static string GetQueryParameters(Dictionary<string, object> args)
+        {
+            var builder = new StringBuilder();
+            foreach (var arg in args)
+            {
+                if (builder.Length == 0)
+                    builder.Append("?");
+                else
+                    builder.Append("&");
+
+                if (arg.Value != null)
+                    builder.Append($"{arg.Key}={arg.Value}");
+            }
+            return builder.ToString();
         }
     }
 }

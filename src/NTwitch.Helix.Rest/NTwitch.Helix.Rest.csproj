@@ -8,8 +8,4 @@
     <ProjectReference Include="..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="API\Rest\" />
-  </ItemGroup>
-
 </Project>

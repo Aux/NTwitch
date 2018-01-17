@@ -7,6 +7,7 @@
         public int? Count { get; set; }
         public int PageSize { get; set; }
         public int? Remaining { get; set; }
+        public string Cursor { get; set; }
 
         internal PageInfo(ulong? pos, int? count, int pageSize)
         {

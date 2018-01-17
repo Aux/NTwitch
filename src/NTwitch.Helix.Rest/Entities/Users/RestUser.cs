@@ -54,5 +54,7 @@ namespace NTwitch.Helix.Rest
         public async Task GetFollowingAsync() => throw new NotImplementedException();
         // Get User Videos <RestVideo>
         public async Task<IReadOnlyCollection<RestVideo>> GetVideosAsync() => throw new NotImplementedException();
+        // Get User (Id)
+        public Task UpdateAsync(RequestOptions options = null) => throw new NotImplementedException();
     }
 }
