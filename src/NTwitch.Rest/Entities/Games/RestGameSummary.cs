@@ -1,4 +1,4 @@
-﻿using Model = NTwitch.Rest.API.Stream;
+﻿using Model = NTwitch.Rest.API.Broadcast;
 
 namespace NTwitch.Rest
 {

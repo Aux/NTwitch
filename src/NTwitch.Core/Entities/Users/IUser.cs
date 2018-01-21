@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace NTwitch
+﻿namespace NTwitch
 {
-    public interface IUser : ISimpleUser, IUpdateable
+    public interface IUser : IEntity<ulong>, IUpdateable
     {
-
+        string Name { get; }
+        string Username { get; }
     }
 }

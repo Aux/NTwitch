@@ -1,15 +1,17 @@
-﻿using Newtonsoft.Json;
-using NTwitch.Rest.Queue;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using NTwitch.Queue;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NTwitch.Rest.API
 {
@@ -20,91 +22,58 @@ namespace NTwitch.Rest.API
 
         protected readonly JsonSerializer _serializer;
         protected readonly SemaphoreSlim _stateLock;
-        private readonly RestClientProvider RestClientProvider;
+        private readonly RestClientProvider _restClientProvider;
 
-        protected bool _disposed;
+        protected bool _isDisposed;
         private CancellationTokenSource _loginCancelToken;
-        
+
+        public RetryMode DefaultRetryMode { get; }
         public string UserAgent { get; }
         public string ClientId { get; }
+        internal RequestQueue RequestQueue { get; }
 
         public LoginState LoginState { get; private set; }
-        internal IRestClient RestClient { get; private set; }
-        internal RestTokenInfo TokenInfo { get; private set; }
         internal string AuthToken { get; private set; }
+        internal IRestClient RestClient { get; private set; }
+        internal ulong? CurrentUserId { get; set; }
+        internal RestTokenInfo TokenInfo { get; private set; }
 
-        public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, JsonSerializer serializer = null)
+        public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, RetryMode defaultRetryMode = RetryMode.AlwaysRetry,
+            JsonSerializer serializer = null)
         {
-            RestClientProvider = restClientProvider;
+            _restClientProvider = restClientProvider;
             UserAgent = userAgent;
-            ClientId = clientId;
+            DefaultRetryMode = defaultRetryMode;
             _serializer = serializer ?? new JsonSerializer { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" };
 
+            RequestQueue = new RequestQueue();
             _stateLock = new SemaphoreSlim(1, 1);
 
-            SetBaseUrl(TwitchConfig.DefaultApiUrl);
+            SetBaseUrl(TwitchConfig.APIUrl);
         }
-
-        protected virtual void Dispose(bool disposing)
+        internal void SetBaseUrl(string baseUrl)
         {
-            if (!_disposed)
+            RestClient = _restClientProvider(baseUrl);
+            RestClient.SetHeader("accept", $"application/vnd.twitchtv.v{TwitchConfig.APIVersion}+json");
+            RestClient.SetHeader("useragent", UserAgent);
+            if (AuthToken != null)
+                RestClient.SetHeader("authorization", AuthToken);
+            if (ClientId != null)
+                RestClient.SetHeader("client-id", ClientId);
+        }
+        internal virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
             {
                 if (disposing)
                 {
                     _loginCancelToken?.Dispose();
                     (RestClient as IDisposable)?.Dispose();
                 }
-                _disposed = true;
+                _isDisposed = true;
             }
         }
-
         public void Dispose() => Dispose(true);
-
-        internal void SetBaseUrl(string baseUrl)
-        {
-            RestClient = RestClientProvider(baseUrl);
-            RestClient.SetHeader("Accept", $"application/vnd.twitchtv.v{TwitchConfig.APIVersion}+json");
-            RestClient.SetHeader("UserAgent", UserAgent);
-            if (ClientId != null)
-                RestClient.SetHeader("Client-ID", ClientId);
-        }
-
-        protected virtual void CheckLoginState(bool checkClientId = false)
-        {
-            if (LoginState != LoginState.LoggedIn)
-            {
-                if (checkClientId && string.IsNullOrWhiteSpace(ClientId))
-                    throw new InvalidOperationException("ClientId must be specified in the client config for unauthenticated requests.");
-
-                throw new InvalidOperationException("Client is not logged in.");
-            }
-        }
-
-        protected virtual void CheckScopes(IEnumerable<string> requiredScopes)
-        {
-            if (TokenInfo == null) return;
-            if (!requiredScopes.Intersect(TokenInfo.Authorization.Scopes).Any())
-                throw new MissingScopeException(requiredScopes);
-        }
-
-        protected string SerializeJson(object value)
-        {
-            var sb = new StringBuilder(256);
-            using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
-            using (JsonWriter writer = new JsonTextWriter(text))
-                _serializer.Serialize(writer, value);
-            return sb.ToString();
-        }
-        
-        protected T DeserializeJson<T>(System.IO.Stream jsonStream)
-        {
-            using (TextReader text = new StreamReader(jsonStream))
-            using (JsonReader reader = new JsonTextReader(text))
-                return _serializer.Deserialize<T>(reader);
-        }
-
-        protected static double ToMilliseconds(Stopwatch stopwatch)
-            => Math.Round((double)stopwatch.ElapsedTicks / Stopwatch.Frequency * 1000.0, 2);
 
         public async Task LoginAsync(string token, RequestOptions options = null)
         {
@@ -115,7 +84,6 @@ namespace NTwitch.Rest.API
             }
             finally { _stateLock.Release(); }
         }
-
         private async Task LoginInternalAsync(string token, RequestOptions options = null)
         {
             if (LoginState != LoginState.LoggedOut)
@@ -125,12 +93,13 @@ namespace NTwitch.Rest.API
             try
             {
                 _loginCancelToken = new CancellationTokenSource();
-                AuthToken = null;
 
-                RestClient.SetHeader("Authorization", $"OAuth {token}");
+                AuthToken = null;
+                await RequestQueue.SetCancelTokenAsync(_loginCancelToken.Token).ConfigureAwait(false);
                 RestClient.SetCancelToken(_loginCancelToken.Token);
 
                 AuthToken = token;
+
                 LoginState = LoginState.LoggedIn;
             }
             catch (Exception)
@@ -149,7 +118,6 @@ namespace NTwitch.Rest.API
             }
             finally { _stateLock.Release(); }
         }
-
         private async Task LogoutInternalAsync()
         {
             if (LoginState == LoginState.LoggedOut) return;
@@ -158,690 +126,143 @@ namespace NTwitch.Rest.API
             try { _loginCancelToken?.Cancel(false); }
             catch { }
 
-            RestClient.SetHeader("Authorization", null);
             await DisconnectInternalAsync().ConfigureAwait(false);
-            
+            await RequestQueue.ClearAsync().ConfigureAwait(false);
+
+            await RequestQueue.SetCancelTokenAsync(CancellationToken.None).ConfigureAwait(false);
+            RestClient.SetCancelToken(CancellationToken.None);
+
+            CurrentUserId = null;
             LoginState = LoginState.LoggedOut;
         }
 
         internal virtual Task ConnectInternalAsync() => Task.Delay(0);
         internal virtual Task DisconnectInternalAsync() => Task.Delay(0);
-
-        public Task SendAsync(RestRequestBuilder builder, RequestOptions options = null)
-            => SendAsync(builder.Method, builder.Endpoint, options);
-        public async Task SendAsync(string method, string endpoint, RequestOptions options = null)
+        
+        //Core
+        internal Task SendAsync(string method, Expression<Func<string>> endpointExpr,
+             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null)
+            => SendAsync(method, GetEndpoint(endpointExpr), clientBucket, options);
+        public async Task SendAsync(string method, string endpoint,
+            ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null)
         {
             options = options ?? new RequestOptions();
+            options.HeaderOnly = true;
+            options.BucketId = ClientBucket.Get(clientBucket).Id;
 
             var request = new RestRequest(RestClient, method, endpoint, options);
             await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
         }
 
-        public Task<TResponse> SendAsync<TResponse>(RestRequestBuilder builder, RequestOptions options = null)
-            => SendAsync<TResponse>(builder.Method, builder.Endpoint, options);
-        public async Task<TResponse> SendAsync<TResponse>(string method, string endpoint, RequestOptions options = null)
+        internal Task SendJsonAsync(string method, Expression<Func<string>> endpointExpr, object payload,
+             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null)
+            => SendJsonAsync(method, GetEndpoint(endpointExpr), payload, clientBucket, options);
+        public async Task SendJsonAsync(string method, string endpoint, object payload,
+            ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null)
         {
             options = options ?? new RequestOptions();
+            options.HeaderOnly = true;
+            options.BucketId = ClientBucket.Get(clientBucket).Id;
+
+            string json = payload != null ? SerializeJson(payload) : null;
+            var request = new JsonRestRequest(RestClient, method, endpoint, json, options);
+            await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
+        }
+
+        internal Task<TResponse> SendAsync<TResponse>(string method, Expression<Func<string>> endpointExpr,
+             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null) where TResponse : class
+            => SendAsync<TResponse>(method, GetEndpoint(endpointExpr), clientBucket, options);
+        public async Task<TResponse> SendAsync<TResponse>(string method, string endpoint,
+            ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null) where TResponse : class
+        {
+            options = options ?? new RequestOptions();
+            options.BucketId = ClientBucket.Get(clientBucket).Id;
 
             var request = new RestRequest(RestClient, method, endpoint, options);
             return DeserializeJson<TResponse>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
         }
 
-        public Task SendJsonAsync(JsonRestRequestBuilder builder, RequestOptions options = null)
-            => SendJsonAsync(builder.Method, builder.Endpoint, builder.Payload, options);
-        public async Task SendJsonAsync(string method, string endpoint, object payload, RequestOptions options = null)
+        internal Task<TResponse> SendJsonAsync<TResponse>(string method, Expression<Func<string>> endpointExpr, object payload,
+             ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null, [CallerMemberName] string funcName = null) where TResponse : class
+            => SendJsonAsync<TResponse>(method, GetEndpoint(endpointExpr), payload, clientBucket, options);
+        public async Task<TResponse> SendJsonAsync<TResponse>(string method, string endpoint, object payload,
+            ClientBucketType clientBucket = ClientBucketType.Unbucketed, RequestOptions options = null) where TResponse : class
         {
             options = options ?? new RequestOptions();
+            options.BucketId = ClientBucket.Get(clientBucket).Id;
 
-            var json = payload != null ? SerializeJson(payload) : null;
-            var request = new JsonRestRequest(RestClient, method, endpoint, json, options);
-            await SendInternalAsync(method, endpoint, request).ConfigureAwait(false);
-        }
-
-        public Task<TResponse> SendJsonAsync<TResponse>(JsonRestRequestBuilder builder, RequestOptions options = null)
-            => SendJsonAsync<TResponse>(builder.Method, builder.Endpoint, builder.Payload, options);
-        public async Task<TResponse> SendJsonAsync<TResponse>(string method, string endpoint, object payload, RequestOptions options = null)
-        {
-            options = options ?? new RequestOptions();
-
-            var json = payload != null ? SerializeJson(payload) : null;
+            string json = payload != null ? SerializeJson(payload) : null;
             var request = new JsonRestRequest(RestClient, method, endpoint, json, options);
             return DeserializeJson<TResponse>(await SendInternalAsync(method, endpoint, request).ConfigureAwait(false));
         }
 
-        private async Task<System.IO.Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
+        private async Task<Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
         {
             if (!request.Options.IgnoreState)
-                CheckLoginState(request.Options.AllowUnauthenticated);
-            if (request.Options.RequiredScopes.Any())
-                CheckScopes(request.Options.RequiredScopes);
+                CheckState();
+            if (request.Options.RetryMode == null)
+                request.Options.RetryMode = DefaultRetryMode;
 
             var stopwatch = Stopwatch.StartNew();
-            var response = await request.SendAsync().ConfigureAwait(false);
+            var responseStream = await RequestQueue.SendAsync(request).ConfigureAwait(false);
             stopwatch.Stop();
 
             double milliseconds = ToMilliseconds(stopwatch);
             await _sentRequestEvent.InvokeAsync(method, endpoint, milliseconds).ConfigureAwait(false);
-            
-            switch ((int)response.StatusCode)
+
+            return responseStream;
+        }
+
+        //
+        // Entity blah blah goes here
+        //
+
+        //Helpers
+        protected void CheckState(bool validateClientId = false)
+        {
+            if (LoginState != LoginState.LoggedIn && string.IsNullOrWhiteSpace(ClientId))
             {
-                case 200:  // Ok
-                    break;
-                case 204:  // No Content
-                case 400:  // Bad Request
-                case 401:  // Unauthorized
-                case 404:  // Not found
-                case 422:  // Unprocessable Entity
-                default:   // Unrecognized code
-                    var error = DeserializeJson<Error>(response.Body);
-                    throw new HttpException(response.StatusCode, error.GetErrorMessage().Message);
+                if (validateClientId && string.IsNullOrWhiteSpace(ClientId))
+                    throw new InvalidOperationException("ClientId must be specified in the client config for unauthenticated requests.");
+
+                throw new InvalidOperationException("Client is not logged in.");
             }
-
-            return response.Body;
-        }
-
-        // Tokens
-        public async Task<TokenCollection> ValidateTokenAsync(RequestOptions options = null)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<TokenCollection>("GET", "", options).ConfigureAwait(false);
-        }
-
-        // Channels
-        public async Task<Channel> GetMyChannelAsync(RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.RequiredScopes.Add("channel_read");
-            try
-            {
-                return await SendAsync<Channel>("GET", "channel", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
-        }
-
-        public async Task<Channel> GetChannelAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            {
-                return await SendAsync<Channel>("GET", $"channels/{channelId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == (HttpStatusCode)422) { return null; }
-        }
-
-        public async Task<Channel> ModifyChannelAsync(ulong channelId, ModifyChannelParams changes, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            return await SendJsonAsync<Channel>(new ModifyChannelRequest(channelId, changes), options).ConfigureAwait(false);
-        }
-
-        public async Task<UserCollection> GetChannelEditorsAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_read");
-            return await SendAsync<UserCollection>("GET", $"channels/{channelId}/editors", options).ConfigureAwait(false);
-        }
-
-        public async Task<FollowCollection> GetChannelFollowersAsync(ulong channelId, bool ascending, PageOptions paging = null, RequestOptions options = null)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<FollowCollection>(new GetChannelFollowersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<VideoCollection> GetChannelVideosAsync(ulong channelId, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<VideoCollection>("GET", $"channels/{channelId}/videos", options).ConfigureAwait(false);
-        }
-
-        public async Task<Community> GetChannelCommunityAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            try
-            {
-                return await SendAsync<Community>("GET", $"channels/{channelId}/community", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task SetChannelCommunityAsync(ulong channelId, string communityId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            try
-            {
-                await SendAsync("PUT", $"channels/{channelId}/community/{communityId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { return; }
-        }
-
-        public async Task RemoveChannelCommunityAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            try
-            {
-                await SendAsync("DELETE", $"channels/{channelId}/community", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { return; }
-        }
-
-        // Chat
-        public async Task<CheerCollection> GetCheersAsync(ulong? channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<CheerCollection>(new GetCheersRequest(channelId), options).ConfigureAwait(false);
-        }
-
-        public async Task<ChatBadges> GetChatBadgesAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<ChatBadges>("GET", $"chat/{channelId}/badges", options).ConfigureAwait(false);
-        }
-
-        public async Task<EmoteSet> GetEmotesAsync(ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_subscriptions");
-            return await SendAsync<EmoteSet>("GET", $"users/{userId}/emotes", options).ConfigureAwait(false);
-        }
-
-        // Communities
-        public async Task<Community> GetCommunityAsync(string communityId, bool isName, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            { 
-                return await SendAsync<Community>(new GetCommunityRequest(communityId, isName), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<CommunityCollection> GetTopCommunitiesAsync(PageOptions paging, RequestOptions options)       // Paging is unused
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<CommunityCollection>("GET", "communities/top", options).ConfigureAwait(false);
-        }
-
-        public async Task<CommunityPermissions> GetCommunityPermissionsAsync(string communityId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            return await SendAsync<CommunityPermissions>("GET", $"communities/{communityId}/permissions", options).ConfigureAwait(false);
-        }
-
-        public async Task SendCommunityReportAsync(string communityId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            {
-                await SendAsync(new SendCommunityReportRequest(communityId, channelId), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task ModifyCommunityAsync(string communityId, ModifyCommunityParams changes, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            await SendJsonAsync("PUT", $"communitites/{communityId}", changes, options).ConfigureAwait(false);
-        }
-        
-        public async Task SetCommunityAvatarAsync(string communityId, string imageBase64, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendJsonAsync(new SetCommunityAvatarRequest(communityId, imageBase64), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task RemoveCommunityAvatarAsync(string communityId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendAsync("DELETE", $"communities/{communityId}/images/avatar", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task SetCommunityCoverAsync(string communityId, string imageBase64, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendAsync(new SetCommunityCoverRequest(communityId, imageBase64), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task RemoveCommunityCoverAsync(string communityId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendAsync("DELETE", $"communities/{communityId}/images/cover", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task<CommunityCollection> GetCommunityModeratorsAsync(string communityId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/moderators").ConfigureAwait(false);
-        }
-
-        public async Task AddCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task RemoveCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_edit");
-            try
-            { 
-                await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task<CommunityCollection> GetCommunityBansAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/bans", options).ConfigureAwait(false);
-        }
-
-        public async Task AddCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            try
-            { 
-                await SendAsync("Put", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task RemoveCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            try
-            { 
-                await SendAsync("DELETE", $"communities/{communityId}/bans/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task<CommunityCollection> GetCommunityTimeoutsAsync(string communityId, PageOptions paging, RequestOptions options)        // Paging is unused
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            return await SendAsync<CommunityCollection>("GET", $"communities/{communityId}/timeouts", options).ConfigureAwait(false);
-        }
-
-        public async Task AddCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            try
-            { 
-                await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task RemoveCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("communities_moderate");
-            try
-            { 
-                await SendAsync("DELETE", $"communities/{communityId}/timeouts/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        // Follows
-        // Ingests
-        public async Task<IngestCollection> GetIngestsAsync(RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<IngestCollection>("GET", "ingests", options).ConfigureAwait(false);
-        }
-        
-        // Streams
-        public async Task<StreamCollection> GetStreamAsync(ulong channelId, StreamType type, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            {
-                return await SendAsync<StreamCollection>(new GetStreamRequest(channelId, type), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<StreamCollection> GetStreamsAsync(GetStreamsParams parameters, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<StreamCollection>(new GetStreamsRequest(parameters, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<StreamCollection> GetFeaturedStreamsAsync(PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<StreamCollection>(new GetFeaturedStreamsRequest(paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<StreamCollection> GetFollowedStreamsAsync(StreamType type, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_read");
-            return await SendAsync<StreamCollection>(new GetFollowedStreamsRequest(type, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<Stream> GetStreamSummaryAsync(string game, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            {
-                return await SendAsync<Stream>(new GetStreamSummaryRequest(game), options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        // Search
-        public async Task<ChannelCollection> FindChannelsAsync(string query, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<ChannelCollection>(new FindChannelsRequest(query, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<GameCollection> FindGamesAsync(string query, bool islive, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<GameCollection>(new FindGamesRequest(query, islive), options).ConfigureAwait(false);
-        }
-
-        public async Task<StreamCollection> FindStreamsAsync(string query, bool? hls, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<StreamCollection>(new FindStreamsRequest(query, hls, paging), options).ConfigureAwait(false);
-        }
-        
-        // Subscribers
-        public async Task<Subscription> GetChannelSubscriberAsync(ulong channelId, ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_subscriptions");
-            try
-            { 
-                return await SendAsync<Subscription>("GET", $"channels/{channelId}/subscriptions/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<SubscriptionCollection> GetChannelSubscribersAsync(ulong channelId, bool ascending, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_check_subscription");
-            return await SendAsync<SubscriptionCollection>(new GetSubscribersRequest(channelId, ascending, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<Subscription> GetUserSubscriptionAsync(ulong userId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_subscriptions");
-            try
-            {
-                return await SendAsync<Subscription>("GET" , $"users/{userId}/subscriptions/{channelId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        // Teams
-        public async Task<Team> GetTeamAsync(string name, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            { 
-                return await SendAsync<Team>("GET", $"teams/{name}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<TeamCollection> GetTeamsAsync(PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<TeamCollection>(new GetTeamsRequest(paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<TeamCollection> GetChannelTeamsAsync(ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<TeamCollection>("GET", $"channels/{channelId}/teams", options).ConfigureAwait(false);
-        }
-
-        // Users
-        public async Task<User> GetMyUserAsync(RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_read");
-            try
-            { 
-                return await SendAsync<User>("GET", "user", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) { return null; }
-        }
-
-        public async Task<User> GetUserAsync(ulong userId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            { 
-                return await SendAsync<User>("GET", $"users/{userId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<UserCollection> GetUsersAsync(string[] usernames, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<UserCollection>(new GetUsersRequest(usernames), options).ConfigureAwait(false);
-        }
-
-        public async Task<Follow> GetFollowAsync(ulong userId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<Follow>("GET", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
-        }
-
-        public async Task<FollowCollection> GetFollowsAsync(ulong userId, SortMode sort, bool ascending, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<FollowCollection>(new GetFollowsRequest(userId, sort, ascending, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<Follow> FollowChannelAsync(ulong userId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_follows_edit");
-            return await SendAsync<Follow>("PUT", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
-        }
-
-        public async Task UnfollowChannelAsync(ulong userId, ulong channelId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_follows_edit");
-            try
-            { 
-                await SendAsync<Follow>("DELETE", $"users/{userId}/follows/channels/{channelId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-
-        public async Task<BlockCollection> GetUserBlocksAsync(ulong userId, PageOptions paging, RequestOptions options)  // Paging is unused
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_blocks_read");
-            return await SendAsync<BlockCollection>("GET", $"users/{userId}/blocks", options).ConfigureAwait(false);
-        }
-
-        public async Task<BlockedUser> BlockUserAsync(ulong userId, ulong victimId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_blocks_read");
-            return await SendAsync<BlockedUser>("DELETE", $"users/{userId}/blocks/{victimId}", options).ConfigureAwait(false);
-        }
-
-        public async Task UnblockUserAsync(ulong userId, ulong victimId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_blocks_read");
-            try
-            { 
-                await SendAsync("PUT", $"users/{userId}/blocks/{victimId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NoContent) { }
-        }
-        
-        // Videos
-        public async Task<Video> GetVideoAsync(string videoId, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            { 
-                return await SendAsync<Video>("GET", $"videos/{videoId}", options).ConfigureAwait(false);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
-
-        public async Task<VideoCollection> GetTopVideosAsync(string game, string period, string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<VideoCollection>(new GetTopVideosRequest(game, period, broadcastType, language, sort, paging), options).ConfigureAwait(false);
-        }
-
-        public async Task<VideoCollection> GetFollowedVideosAsync(string broadcastType, string language, string sort, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_read");
-            return await SendAsync<VideoCollection>(new GetFollowedVideosRequest(broadcastType, language, sort, paging), options).ConfigureAwait(false);
-        }
-
-        public Task CreateVideoAsync(RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            throw new NotImplementedException();
         }
-
-        public Task UploadVideoPartAsync(RequestOptions options)
+        protected virtual void CheckScopes(IEnumerable<string> requiredScopes)
         {
-            options = RequestOptions.CreateOrClone(options);
-            throw new NotImplementedException();
+            if (TokenInfo == null) return;
+            if (!requiredScopes.Intersect(TokenInfo.Authorization.Scopes).Any())
+                throw new MissingScopeException(requiredScopes);
         }
-
-        public Task CompleteVideoUploadAsync(RequestOptions options)
+        protected static double ToMilliseconds(Stopwatch stopwatch) => Math.Round(stopwatch.ElapsedTicks / (double)Stopwatch.Frequency * 1000.0, 2);
+        protected string SerializeJson(object value)
         {
-            options = RequestOptions.CreateOrClone(options);
-            throw new NotImplementedException();
+            var sb = new StringBuilder(256);
+            using (TextWriter text = new StringWriter(sb, CultureInfo.InvariantCulture))
+            using (JsonWriter writer = new JsonTextWriter(text))
+                _serializer.Serialize(writer, value);
+            return sb.ToString();
         }
-
-        public async Task<Video> ModifyVideoAsync(string videoId, ModifyVideoParams modify, RequestOptions options)
+        protected T DeserializeJson<T>(System.IO.Stream jsonStream)
         {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            return await SendJsonAsync<Video>("PUT", $"videos/{videoId}", options).ConfigureAwait(false);
+            using (TextReader text = new StreamReader(jsonStream))
+            using (JsonReader reader = new JsonTextReader(text))
+                return _serializer.Deserialize<T>(reader);
         }
 
-        public async Task DeleteVideoAsync(string videoId, RequestOptions options)
+        private static string GetEndpoint(Expression<Func<string>> endpointExpr)
         {
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("channel_editor");
-            await SendAsync("DELETE", $"videos/{videoId}").ConfigureAwait(false);
+            return endpointExpr.Compile()();
         }
-
-        public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
+        private static string GetFieldName(Expression expr)
         {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            try
-            { 
-                return await SendAsync<Clip>("GET", $"clips/{clipId}", options);
-            }
-            catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
-        }
+            if (expr.NodeType == ExpressionType.Convert)
+                expr = (expr as UnaryExpression).Operand;
 
-        public async Task<ClipCollection> GetTopClipsAsync(TopClipsParams parameters, RequestOptions options)
-        {
-            options = RequestOptions.CreateOrClone(options);
-            options.AllowUnauthenticated = true;
-            return await SendAsync<ClipCollection>(new GetTopClipsRequest(parameters), options);
-        }
+            if (expr.NodeType != ExpressionType.MemberAccess)
+                throw new InvalidOperationException("Unsupported expression");
 
-        public async Task<ClipCollection> GetFollowedClipsAsync(bool istrending, PageOptions paging, RequestOptions options)
-        {
-            paging = PageOptions.CreateOrClone(paging);
-            options = RequestOptions.CreateOrClone(options);
-            options.AddRequiredScopes("user_read");
-            return await SendAsync<ClipCollection>(new GetFollowedClipsRequest(istrending, paging), options);
+            return (expr as MemberExpression).Member.Name;
         }
     }
 }

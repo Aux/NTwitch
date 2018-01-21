@@ -1,4 +1,6 @@
-﻿namespace NTwitch.Helix.Rest
+﻿using NTwitch.Rest;
+
+namespace NTwitch.Helix.Rest
 {
     public class TwitchRestConfig : TwitchConfig
     {

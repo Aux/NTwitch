@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using NTwitch.Helix.API;
-using NTwitch.Helix.Utility.Paging;
+using NTwitch.Utility.Paging;
 
 namespace NTwitch.Helix.Rest
 {

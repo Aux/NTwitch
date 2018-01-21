@@ -1,6 +1,4 @@
-﻿using NTwitch.Rest.API;
-
-namespace NTwitch.Rest
+﻿namespace NTwitch.Rest
 {
     public class TwitchRestConfig : TwitchConfig
     {

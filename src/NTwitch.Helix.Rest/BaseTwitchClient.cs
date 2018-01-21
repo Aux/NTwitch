@@ -20,7 +20,7 @@ namespace NTwitch.Helix.Rest
 
         internal API.TwitchRestApiClient ApiClient { get; }
         internal LogManager LogManager { get; }
-        public IUser CurrentUser { get; protected set; }
+        public RestSelfUser CurrentUser { get; protected set; }
         public LoginState LoginState { get; private set; }
 
         /// <summary> Creates a new REST-only twitch client. </summary>

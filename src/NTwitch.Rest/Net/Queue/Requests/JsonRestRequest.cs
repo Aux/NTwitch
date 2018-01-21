@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NTwitch.Rest;
 
-namespace NTwitch.Helix.Queue
+namespace NTwitch.Queue
 {
     public class JsonRestRequest : RestRequest
     {

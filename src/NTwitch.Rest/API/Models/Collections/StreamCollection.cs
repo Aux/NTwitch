@@ -8,9 +8,9 @@ namespace NTwitch.Rest.API
         [JsonProperty("_total")]
         public uint Total { get; set; }
         [JsonProperty("stream")]
-        public Stream Stream { get; set; }
+        public Broadcast Stream { get; set; }
         [JsonProperty("streams")]
-        public IEnumerable<Stream> Streams { get; set; }
+        public IEnumerable<Broadcast> Streams { get; set; }
         [JsonProperty("featured")]
         public IEnumerable<FeaturedStream> Featured { get; set; }
     }

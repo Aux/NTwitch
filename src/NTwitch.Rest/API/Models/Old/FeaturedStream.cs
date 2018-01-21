@@ -5,7 +5,7 @@ namespace NTwitch.Rest.API
     internal class FeaturedStream
     {
         [JsonProperty("stream")]
-        public Stream Stream { get; set; }
+        public Broadcast Stream { get; set; }
         [JsonProperty("image")]
         public string Image { get; set; }
         [JsonProperty("priority")]

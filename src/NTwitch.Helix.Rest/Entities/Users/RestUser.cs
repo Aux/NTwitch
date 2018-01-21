@@ -5,7 +5,7 @@ using Model = NTwitch.Helix.API.User;
 
 namespace NTwitch.Helix.Rest
 {
-    public class RestUser : RestEntity<ulong>, IUser
+    public class RestUser : RestEntity<ulong>
     {
         public string Name { get; private set; }
         public string Username { get; private set; }
@@ -43,17 +43,17 @@ namespace NTwitch.Helix.Rest
             if (model.ViewCount.IsSpecified)
                 ViewCount = model.ViewCount.Value;
         }
-
+        
         // Update User
-        public async Task<RestUser> ModifyAsync() => throw new NotImplementedException();
+        public async Task<RestUser> ModifyAsync(RequestOptions options = null) => throw new NotImplementedException();
         // Get Streams
-        public async Task<RestBroadcast> GetBroadcastAsync() => throw new NotImplementedException();
+        public async Task<RestBroadcast> GetBroadcastAsync(RequestOptions options = null) => throw new NotImplementedException();
         // Get User Followers <RestFollow[]>
-        public async Task GetFollowersAsync() => throw new NotImplementedException();
+        public async Task GetFollowersAsync(RequestOptions options = null) => throw new NotImplementedException();
         // Get User Following <RestFollow[]>
-        public async Task GetFollowingAsync() => throw new NotImplementedException();
+        public async Task GetFollowingAsync(RequestOptions options = null) => throw new NotImplementedException();
         // Get User Videos <RestVideo>
-        public async Task<IReadOnlyCollection<RestVideo>> GetVideosAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(RequestOptions options = null) => throw new NotImplementedException();
         // Get User (Id)
         public Task UpdateAsync(RequestOptions options = null) => throw new NotImplementedException();
     }

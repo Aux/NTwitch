@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NTwitch.Helix.API;
 using NTwitch.Helix.Queue;
+using NTwitch.Rest;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

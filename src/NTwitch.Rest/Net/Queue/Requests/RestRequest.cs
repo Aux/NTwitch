@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NTwitch.Rest;
 
-namespace NTwitch.Helix.Queue
+namespace NTwitch.Queue
 {
     public class RestRequest
     {
