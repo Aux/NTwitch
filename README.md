@@ -14,8 +14,7 @@ Stable builds can be found on Nuget. The contents of these packages reflect what
 - [NTwitch.Pubsub](https://www.nuget.org/packages/NTwitch.Pubsub/)
 - [NTwitch.Helix](https://www.nuget.org/packages/NTwitch.Helix/)
 - [NTwitch.Helix.Rest](https://www.nuget.org/packages/NTwitch.Helix.Rest/)
-- [NTwitch.Helix.Chat](https://www.nuget.org/packages/NTwitch.Helix.Chat/)
-- [NTwitch.Helix.Pubsub](https://www.nuget.org/packages/NTwitch.Helix.Pubsub/)
+
 #### Pre-Release
 Unstable builds can also be found on Nuget with the pre-release option checked. The contents of these packages reflect what is shown in the [nightly](https://github.com/Aux/NTwitch/tree/nightly) branch, and are updated from the dev branch once a week.
 #### Indev
