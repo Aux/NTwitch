@@ -211,28 +211,101 @@ namespace NTwitch.Helix.Rest.API
             return responseStream;
         }
 
-        // Users
-        public async Task<IReadOnlyCollection<User>> GetUsersAsync(ulong[] userIds, RequestOptions options = null)
+        // Clips
+        public async Task<Clip> CreateClipAsync(ulong broadcastId, RequestOptions options)
         {
             options = RequestOptions.CreateOrClone(options);
 
-            var ids = new StringBuilder($"?id={userIds.First()}");
-            foreach (var user in userIds.Skip(1))
-                ids.Append($"&id={user}");
+            var response = await SendAsync<Clip>("GET", () => $"clips?broadcaster_id={broadcastId}", options: options).ConfigureAwait(false);
+            return response.Data.SingleOrDefault();
+        }
+        public async Task<Clip> GetClipAsync(string clipId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
 
-            var response = await SendAsync<User>("GET", () => "users" + ids.ToString(), options: options).ConfigureAwait(false);
+            var response = await SendAsync<Clip>("GET", () => $"clips?id={clipId}", options: options).ConfigureAwait(false);
+            return response.Data.SingleOrDefault();
+        }
+
+        // Games
+        public async Task<IReadOnlyCollection<Game>> GetGamesAsync(ulong[] gameIds, string[] gameNames, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+
+            var queryParams = new StringBuilder("?");
+            if (gameIds.Count() > 0)
+                queryParams.Append(string.Join("&", gameIds.Select(x => $"id={x}")));
+            if (gameNames.Count() > 0)
+            {
+                if (queryParams.Length > 0) queryParams.Append("&");
+                queryParams.Append(string.Join("&", gameNames.Select(x => $"name={x}")));
+            }
+
+            var response = await SendAsync<Game>("GET", () => "games" + queryParams , options: options).ConfigureAwait(false);
             return response.Data.ToReadOnlyCollection(() => response.Data.Count());
         }
-        public async Task<IReadOnlyCollection<User>> GetUsersAsync(string[] userNames, RequestOptions options = null)
+        public async Task<IReadOnlyCollection<Game>> GetTopGamesAsync(RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            var response = await SendAsync<Game>("GET", () => "games/top", options: options).ConfigureAwait(false);
+            return response.Data.ToReadOnlyCollection(() => response.Data.Count());
+        }
+
+        // Broadcasts
+        public async Task<RestData<Broadcast>> GetBroadcastsAsync(GetBroadcastsParams args, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
 
-            var names = new StringBuilder($"?login={userNames.First()}");
-            foreach (var user in userNames.Skip(1))
-                names.Append($"&login={user}");
+            var queryParams = new StringBuilder("?");
+            if (args.CommunityIds.IsSpecified)
+                queryParams.Append(string.Join("&", args.CommunityIds.Value.Select(x => $"community_id={x}")));
+            if (args.Languages.IsSpecified)
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
+                queryParams.Append(string.Join("&", args.Languages.Value.Select(x => $"language={x}")));
+            }
+            if (args.UserIds.IsSpecified)
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
+                queryParams.Append(string.Join("&", args.UserIds.Value.Select(x => $"user_id={x}")));
+            }
+            if (args.UserNames.IsSpecified)
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
+                queryParams.Append(string.Join("&", args.UserNames.Value.Select(x => $"user_login={x}")));
+            }
+            if (args.Type.IsSpecified)
+                queryParams.Append($"type={args.Type.ToString()}");
+            if (args.First.IsSpecified)
+                queryParams.Append($"first={args.First.ToString()}");
+            if (args.After.IsSpecified)
+                queryParams.Append($"after={args.After.ToString()}");
 
-            var response = await SendAsync<User>("GET", () => "users" + names.ToString(), options: options).ConfigureAwait(false);
+            return await SendAsync<Broadcast>("GET", () => "streams" + queryParams, options: options).ConfigureAwait(false);
+        }
+
+        // Users
+        public async Task<IReadOnlyCollection<User>> GetUsersAsync(ulong[] userIds, string[] userNames, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+
+            var queryParams = new StringBuilder("?");
+            if (userIds.Count() > 0)
+                queryParams.Append(string.Join("&", userIds.Select(x => $"id={x}")));
+            if (userNames.Count() > 0)
+            {
+                if (queryParams.Length > 0) queryParams.Append("&");
+                queryParams.Append(string.Join("&", userNames.Select(x => $"login={x}")));
+            }
+
+            var response = await SendAsync<User>("GET", () => "users" + queryParams, options: options).ConfigureAwait(false);
             return response.Data.ToReadOnlyCollection(() => response.Data.Count());
+        }
+        public async Task<User> ModifyMyUserAsync(string description, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            var response = await SendAsync<User>("PUT", () => $"users?description={description}", options: options).ConfigureAwait(false);
+            return response.Data.SingleOrDefault();
         }
 
         // Followers
@@ -251,6 +324,13 @@ namespace NTwitch.Helix.Rest.API
             return await SendAsync<Follower>("GET", () => $"users/follows{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
         }
         
+        // Videos
+        public async Task<Video> GetVideosAsync(GetVideosParams args, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+
+        }
+
         //Helpers
         protected void CheckState(bool validateClientId = false)
         {

@@ -9,7 +9,6 @@
     <ProjectReference Include="..\..\src\NTwitch.Core\NTwitch.Core.csproj" />
     <ProjectReference Include="..\..\src\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
     <ProjectReference Include="..\..\src\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj" />
-    <ProjectReference Include="..\..\src\NTwitch.Helix.Webhook\NTwitch.Helix.Webhook.csproj" />
   </ItemGroup>
 
 </Project>

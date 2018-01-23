@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Model = NTwitch.Helix.API.Clip;
 
@@ -50,16 +51,23 @@ namespace NTwitch.Helix.Rest
             if (model.ThumbnailImageUrl.IsSpecified)
                 ThumbnailImageUrl = model.ThumbnailImageUrl.Value;
         }
-        
-        // Get Users
-        public async Task<RestUser> GetBroadcasterAsync() => throw new NotImplementedException();
-        // Get Streams
-        public async Task<RestBroadcast> GetBroadcastAsync() => throw new NotImplementedException();
-        // Get Users
-        public async Task<RestUser> GetCreatorAsync() => throw new NotImplementedException();
-        // Get Videos <RestVideo>
-        public async Task<RestVideo> GetVideoAsync() => throw new NotImplementedException();
-        // Get Games <RestGame>
-        public async Task<RestGame> GetGameAsync() => throw new NotImplementedException();
+
+        public async Task UpdateAsync(RequestOptions options = null)
+        {
+            var model = await Twitch.ApiClient.GetClipAsync(Id, options).ConfigureAwait(false);
+            Update(model);
+        }
+
+        public async Task<RestUser> GetBroadcasterAsync(RequestOptions options = null)
+            => (await ClientHelper.GetUsersAsync(Twitch, new[] { BroadcasterId }, options: options).ConfigureAwait(false)).SingleOrDefault();
+
+        public async Task<RestUser> GetCreatorAsync(RequestOptions options = null)
+            => (await ClientHelper.GetUsersAsync(Twitch, new[] { CreatorId }, options: options).ConfigureAwait(false)).SingleOrDefault();
+
+        public Task<RestVideo> GetVideoAsync(RequestOptions options = null) 
+            => throw new NotImplementedException();
+
+        public async Task<RestGame> GetGameAsync(RequestOptions options = null)
+            => (await ClientHelper.GetGamesAsync(Twitch, new[] { GameId }, options: options).ConfigureAwait(false)).SingleOrDefault();
     }
 }

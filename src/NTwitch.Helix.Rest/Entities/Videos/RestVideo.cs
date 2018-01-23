@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Model = NTwitch.Helix.API.Video;
 
@@ -36,8 +37,8 @@ namespace NTwitch.Helix.Rest
             Language = model.Language;
             Duration = model.Duration;
         }
-
-        // Get Users
-        public async Task<RestClip> GetUserAsync() => throw new NotImplementedException();
+        
+        public async Task<RestUser> GetUserAsync(RequestOptions options = null)
+            => (await ClientHelper.GetUsersAsync(Twitch, new[] { UserId }, options: options).ConfigureAwait(false)).SingleOrDefault();
     }
 }

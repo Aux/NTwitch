@@ -1,4 +1,6 @@
-﻿using Model = NTwitch.Helix.API.Game;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Model = NTwitch.Helix.API.Game;
 
 namespace NTwitch.Helix.Rest
 {
@@ -19,6 +21,12 @@ namespace NTwitch.Helix.Rest
         {
             Name = model.Name;
             BoxArtUrl = model.BoxArtUrl;
+        }
+
+        public async Task UpdateAsync(RequestOptions options = null)
+        {
+            var models = await Twitch.ApiClient.GetGamesAsync(new[] { Id }, null, options: options).ConfigureAwait(false);
+            Update(models.SingleOrDefault());
         }
     }
 }

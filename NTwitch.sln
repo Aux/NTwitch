@@ -1,27 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Core", "src\NTwitch.Core\NTwitch.Core.csproj", "{EB9DAD6D-DC5E-4A0A-985A-06FB6992A878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Core", "src\NTwitch.Core\NTwitch.Core.csproj", "{EB9DAD6D-DC5E-4A0A-985A-06FB6992A878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Rest", "src\NTwitch.Rest\NTwitch.Rest.csproj", "{C5805534-11A6-41FB-B594-2C5F8E89361D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Rest", "src\NTwitch.Rest\NTwitch.Rest.csproj", "{C5805534-11A6-41FB-B594-2C5F8E89361D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53879A91-FB4C-4A04-B26D-DD2F0CD2EA55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Tests", "tests\NTwitch.Tests\NTwitch.Tests.csproj", "{0D0BAD04-28C1-48E7-8F64-533E774A362E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Chat", "src\NTwitch.Chat\NTwitch.Chat.csproj", "{B5AE8356-C1DC-4AA0-A131-03E57EC3C2CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{12AB9B7C-AE54-4678-8024-89701E476283}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Pubsub", "src\NTwitch.Pubsub\NTwitch.Pubsub.csproj", "{12AB9B7C-AE54-4678-8024-89701E476283}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "helix", "helix", "{A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Rest", "src\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj", "{EE62429E-3D13-4D3D-BDC6-2E96332125B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Helix.Rest", "src\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj", "{EE62429E-3D13-4D3D-BDC6-2E96332125B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Webhook", "src\NTwitch.Helix.Webhook\NTwitch.Helix.Webhook.csproj", "{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTwitch.Helix.Core", "src\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj", "{4964D332-4796-4227-B1C5-21F6BB9486E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTwitch.Helix.Core", "src\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj", "{4964D332-4796-4227-B1C5-21F6BB9486E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +51,6 @@ Global
 		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE62429E-3D13-4D3D-BDC6-2E96332125B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4964D332-4796-4227-B1C5-21F6BB9486E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -68,7 +62,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0D0BAD04-28C1-48E7-8F64-533E774A362E} = {53879A91-FB4C-4A04-B26D-DD2F0CD2EA55}
 		{EE62429E-3D13-4D3D-BDC6-2E96332125B1} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
-		{DA0A3093-0C0F-416C-A8DA-6B17DC227B2B} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
 		{4964D332-4796-4227-B1C5-21F6BB9486E3} = {A889EF8F-B3D4-49E1-ACD3-6B4B51C76B90}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC67EC7D-E941-47EA-9488-1BBD3F0A0462}
 	EndGlobalSection
 EndGlobal

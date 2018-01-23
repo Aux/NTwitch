@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Model = NTwitch.Helix.API.User;
 
@@ -43,18 +44,26 @@ namespace NTwitch.Helix.Rest
             if (model.ViewCount.IsSpecified)
                 ViewCount = model.ViewCount.Value;
         }
-        
-        // Update User
-        public async Task<RestUser> ModifyAsync(RequestOptions options = null) => throw new NotImplementedException();
-        // Get Streams
-        public async Task<RestBroadcast> GetBroadcastAsync(RequestOptions options = null) => throw new NotImplementedException();
-        // Get User Followers <RestFollow[]>
-        public async Task GetFollowersAsync(RequestOptions options = null) => throw new NotImplementedException();
-        // Get User Following <RestFollow[]>
-        public async Task GetFollowingAsync(RequestOptions options = null) => throw new NotImplementedException();
-        // Get User Videos <RestVideo>
-        public async Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(RequestOptions options = null) => throw new NotImplementedException();
-        // Get User (Id)
-        public Task UpdateAsync(RequestOptions options = null) => throw new NotImplementedException();
+
+        public async Task UpdateAsync(RequestOptions options = null)
+        {
+            var models = await Twitch.ApiClient.GetUsersAsync(new[] { Id }, null, options: options).ConfigureAwait(false);
+            Update(models.SingleOrDefault());
+        }
+
+        public async Task<RestUser> ModifyAsync(string description, RequestOptions options = null)
+            => await ClientHelper.ModifyMyUserAsync(Twitch, description, options).ConfigureAwait(false);
+
+        public async Task<RestBroadcast> GetBroadcastAsync(RequestOptions options = null)
+            => (await ClientHelper.GetBroadcastsAsync(Twitch, userIds: new[] { Id }, options: options).Flatten().ConfigureAwait(false)).SingleOrDefault();
+
+        public async Task GetFollowersAsync(int limit = 20, RequestOptions options = null)
+            => (await ClientHelper.GetFollowersAsync(Twitch, Id, options: options).Flatten().ConfigureAwait(false)).SingleOrDefault();
+
+        public async Task GetFollowingAsync(RequestOptions options = null)
+            => (await ClientHelper.GetFollowersAsync(Twitch, followerId: Id, options: options).Flatten().ConfigureAwait(false)).SingleOrDefault();
+
+        public Task<IReadOnlyCollection<RestVideo>> GetVideosAsync(RequestOptions options = null) 
+            => throw new NotImplementedException();
     }
 }

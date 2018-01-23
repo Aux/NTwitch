@@ -16,6 +16,7 @@ namespace NTwitch.Helix
         public static readonly string Encoding = "ISO-8859-1";
 
         public const int DefaultRequestTimeout = 15000;
+        public const int MaxBroadcastsPerBatch = 100;
         public const int MaxFollowersPerBatch = 100;
 
         /// <summary> Gets or sets how a request should act in the case of an error, by default. </summary>
