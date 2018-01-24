@@ -9,14 +9,14 @@ namespace NTwitch.Helix.Rest
     public class RestBroadcast : RestEntity<ulong>
     {
         public ulong UserId { get; private set; }
-        public ulong GameId { get; private set; }
-        public IReadOnlyCollection<ulong> CommunityIds { get; private set; }
+        public ulong? GameId { get; private set; }
+        public IReadOnlyCollection<string> CommunityIds { get; private set; }
         public string Type { get; private set; }
         public string Title { get; private set; }
         public int ViewerCount { get; private set; }
         public DateTime StartedAt { get; private set; }
         public string Language { get; private set; }
-        public string ThumbnailImageUrl { get; private set; }
+        internal string ThumbnailImageUrl { get; private set; }
 
         internal RestBroadcast(BaseTwitchClient twitch, ulong id)
             : base(twitch, id) { }
@@ -31,7 +31,12 @@ namespace NTwitch.Helix.Rest
             if (model.UserId.IsSpecified)
                 UserId = model.UserId.Value;
             if (model.GameId.IsSpecified)
-                GameId = model.GameId.Value;
+            {
+                if (ulong.TryParse(model.GameId.Value, out ulong gameId))
+                    GameId = gameId;
+                else
+                    GameId = null;
+            }
             if (model.CommunityIds.IsSpecified)
                 CommunityIds = model.CommunityIds.Value.ToReadOnlyCollection();
             if (model.Type.IsSpecified)
@@ -63,9 +68,15 @@ namespace NTwitch.Helix.Rest
             => (await ClientHelper.GetUsersAsync(Twitch, new[] { UserId }, options: options).ConfigureAwait(false)).SingleOrDefault();
 
         public async Task<RestGame> GetGameAsync(RequestOptions options = null)
-            => (await ClientHelper.GetGamesAsync(Twitch, new[] { GameId }, options: options).ConfigureAwait(false)).SingleOrDefault();
-
+        {
+            if (!GameId.HasValue) return null;
+            return (await ClientHelper.GetGamesAsync(Twitch, new[] { GameId.Value }, options: options).ConfigureAwait(false)).SingleOrDefault();
+        }
+        
         public Task<RestSimpleClip> CreateClipAsync(RequestOptions options = null)
             => ClientHelper.CreateClipAsync(Twitch, Id, options);
+
+        public string GetThumbnailUrl(int width, int height)
+            => ThumbnailImageUrl.Replace("{width}", width.ToString()).Replace("{height}", height.ToString());
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NTwitch.Helix.API;
+using NTwitch.Helix.Net.Converters;
 using NTwitch.Helix.Queue;
 using NTwitch.Rest;
 using System;
@@ -38,13 +39,14 @@ namespace NTwitch.Helix.Rest.API
         internal IRestClient RestClient { get; private set; }
         internal ulong? CurrentUserId { get; set; }
 
-        public TwitchRestApiClient(RestClientProvider restClientProvider, string userAgent, RetryMode defaultRetryMode = RetryMode.AlwaysRetry,
+        public TwitchRestApiClient(RestClientProvider restClientProvider, string clientId, string userAgent, RetryMode defaultRetryMode = RetryMode.AlwaysRetry,
             JsonSerializer serializer = null)
         {
             _restClientProvider = restClientProvider;
+            ClientId = clientId;
             UserAgent = userAgent;
             DefaultRetryMode = defaultRetryMode;
-            _serializer = serializer ?? new JsonSerializer { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" };
+            _serializer = serializer ?? new JsonSerializer { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ", ContractResolver = new TwitchContractResolver() };
 
             RequestQueue = new RequestQueue();
             _stateLock = new SemaphoreSlim(1, 1);
@@ -54,10 +56,9 @@ namespace NTwitch.Helix.Rest.API
         internal void SetBaseUrl(string baseUrl)
         {
             RestClient = _restClientProvider(baseUrl);
-            RestClient.SetHeader("accept", $"application/vnd.twitchtv.v{TwitchConfig.APIVersion}+json");
-            RestClient.SetHeader("authorization", $"Bearer: {AuthToken}");
+            RestClient.SetHeader("Accept", $"application/vnd.twitchtv.v{TwitchConfig.APIVersion}+json");
             if (ClientId != null)
-                RestClient.SetHeader("client-id", ClientId);
+                RestClient.SetHeader("Client-ID", ClientId);
         }
         internal virtual void Dispose(bool disposing)
         {
@@ -97,6 +98,7 @@ namespace NTwitch.Helix.Rest.API
                 RestClient.SetCancelToken(_loginCancelToken.Token);
                 
                 AuthToken = token;
+                RestClient.SetHeader("Authorization", $"Bearer {AuthToken}");
 
                 LoginState = LoginState.LoggedIn;
             }
@@ -196,8 +198,8 @@ namespace NTwitch.Helix.Rest.API
 
         private async Task<Stream> SendInternalAsync(string method, string endpoint, RestRequest request)
         {
-            if (!request.Options.IgnoreState)
-                CheckState();
+            //if (!request.Options.IgnoreState)
+            //    CheckState();
             if (request.Options.RetryMode == null)
                 request.Options.RetryMode = DefaultRetryMode;
 
@@ -257,29 +259,38 @@ namespace NTwitch.Helix.Rest.API
             options = RequestOptions.CreateOrClone(options);
 
             var queryParams = new StringBuilder("?");
-            if (args.CommunityIds.IsSpecified)
+            if (args.CommunityIds.Value != null)
                 queryParams.Append(string.Join("&", args.CommunityIds.Value.Select(x => $"community_id={x}")));
-            if (args.Languages.IsSpecified)
+            if (args.Languages.Value != null)
             {
                 if (queryParams.Length > 1) queryParams.Append("&");
                 queryParams.Append(string.Join("&", args.Languages.Value.Select(x => $"language={x}")));
             }
-            if (args.UserIds.IsSpecified)
+            if (args.UserIds.Value != null)
             {
                 if (queryParams.Length > 1) queryParams.Append("&");
                 queryParams.Append(string.Join("&", args.UserIds.Value.Select(x => $"user_id={x}")));
             }
-            if (args.UserNames.IsSpecified)
+            if (args.UserNames.Value != null)
             {
                 if (queryParams.Length > 1) queryParams.Append("&");
                 queryParams.Append(string.Join("&", args.UserNames.Value.Select(x => $"user_login={x}")));
             }
             if (args.Type.IsSpecified)
-                queryParams.Append($"type={args.Type.ToString()}");
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
+                queryParams.Append($"type={args.Type.ToString().ToLower()}");
+            }
             if (args.First.IsSpecified)
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
                 queryParams.Append($"first={args.First.ToString()}");
-            if (args.After.IsSpecified)
+            }
+            if (args.After.Value != null)
+            {
+                if (queryParams.Length > 1) queryParams.Append("&");
                 queryParams.Append($"after={args.After.ToString()}");
+            }
 
             return await SendAsync<Broadcast>("GET", () => "streams" + queryParams, options: options).ConfigureAwait(false);
         }
@@ -290,15 +301,15 @@ namespace NTwitch.Helix.Rest.API
             options = RequestOptions.CreateOrClone(options);
 
             var queryParams = new StringBuilder("?");
-            if (userIds.Count() > 0)
+            if (userIds != null && userIds.Count() > 0)
                 queryParams.Append(string.Join("&", userIds.Select(x => $"id={x}")));
-            if (userNames.Count() > 0)
+            if (userNames != null && userNames.Count() > 0)
             {
                 if (queryParams.Length > 0) queryParams.Append("&");
                 queryParams.Append(string.Join("&", userNames.Select(x => $"login={x}")));
             }
 
-            var response = await SendAsync<User>("GET", () => "users" + queryParams, options: options).ConfigureAwait(false);
+            var response = await SendAsync<User>("GET", () => "users" + (queryParams.Length < 2 ? "" : queryParams.ToString()), options: options).ConfigureAwait(false);
             return response.Data.ToReadOnlyCollection(() => response.Data.Count());
         }
         public async Task<User> ModifyMyUserAsync(string description, RequestOptions options = null)
@@ -328,7 +339,7 @@ namespace NTwitch.Helix.Rest.API
         public async Task<Video> GetVideosAsync(GetVideosParams args, RequestOptions options = null)
         {
             options = RequestOptions.CreateOrClone(options);
-
+            throw new NotImplementedException();
         }
 
         //Helpers

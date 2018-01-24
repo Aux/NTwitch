@@ -1,4 +1,5 @@
 ﻿using System;
+using NTwitch.Rest;
 
 namespace NTwitch.Helix.Rest
 {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NTwitch.Rest;
 using System;
 using System.IO;
 using System.Linq;
@@ -25,11 +26,9 @@ namespace NTwitch.Helix.Rest
 
             _client = new HttpClient(new HttpClientHandler
             {
-                //AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 UseCookies = false,
                 UseProxy = false
             });
-            //SetHeader("accept-encoding", "gzip, deflate");
 
             _cancelToken = CancellationToken.None;
             _errorDeserializer = new JsonSerializer();
@@ -79,6 +78,8 @@ namespace NTwitch.Helix.Rest
         {
             cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_cancelToken, cancelToken).Token;
             HttpResponseMessage response = await _client.SendAsync(request, cancelToken).ConfigureAwait(false);
+
+            var value = await response.Content.ReadAsStringAsync();
 
             var headers = response.Headers.ToDictionary(x => x.Key, x => x.Value.FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
             var stream = !headerOnly ? await response.Content.ReadAsStreamAsync().ConfigureAwait(false) : null;

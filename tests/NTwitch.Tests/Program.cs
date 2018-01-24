@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NTwitch.Helix.Rest;
 
@@ -19,12 +20,13 @@ namespace NTwitch.Tests
             _client = new TwitchRestClient(new TwitchRestConfig
             {
                 ClientId = clientId,
-                LogLevel = Helix.LogSeverity.Debug
+                LogLevel = LogSeverity.Debug
             });
 
             await _client.LoginAsync(token);
 
-            var user = await _client.GetUsersAsync("auxesistv");
+            var user = await _client.GetUsersAsync(userNames: new[] { "auxesistv" });
+            var broadcasts = await _client.GetBroadcastsAsync(limit: 126, languages: new[] { "en" }).Flatten();
 
             await Task.Delay(-1);
         }

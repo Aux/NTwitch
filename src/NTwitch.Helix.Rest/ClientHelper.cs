@@ -34,7 +34,7 @@ namespace NTwitch.Helix.Rest
         }
 
         // Broadcasts
-        public static IAsyncEnumerable<IReadOnlyCollection<RestBroadcast>> GetBroadcastsAsync(BaseTwitchClient client, ulong[] communityIds = null, string[] languages = null, ulong[] userIds = null, string[] userNames = null, BroadcastType? broadcastType = null, int limit = 20, RequestOptions options = null)
+        public static IAsyncEnumerable<IReadOnlyCollection<RestBroadcast>> GetBroadcastsAsync(BaseTwitchClient client, string[] communityIds = null, string[] languages = null, ulong[] userIds = null, string[] userNames = null, BroadcastType? broadcastType = null, int limit = 20, RequestOptions options = null)
         {
             return new PagedAsyncEnumerable<RestBroadcast>(
                 TwitchConfig.MaxBroadcastsPerBatch,

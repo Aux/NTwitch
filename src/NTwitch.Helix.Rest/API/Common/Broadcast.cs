@@ -11,9 +11,9 @@ namespace NTwitch.Helix.API
         [JsonProperty("user_id")]
         public Optional<ulong> UserId { get; set; }
         [JsonProperty("game_id")]
-        public Optional<ulong> GameId { get; set; }
+        public Optional<string> GameId { get; set; }
         [JsonProperty("community_ids")]
-        public Optional<ulong[]> CommunityIds { get; set; }
+        public Optional<string[]> CommunityIds { get; set; }
         [JsonProperty("type")]
         public Optional<string> Type { get; set; }
         [JsonProperty("title")]

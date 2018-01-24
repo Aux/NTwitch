@@ -11,27 +11,27 @@ namespace NTwitch.Helix.Rest
         public TwitchRestClient(TwitchRestConfig config) : base(config, CreateApiClient(config)) { }
 
         private static API.TwitchRestApiClient CreateApiClient(TwitchRestConfig config)
-            => new API.TwitchRestApiClient(config.RestClientProvider, TwitchConfig.UserAgent);
+            => new API.TwitchRestApiClient(config.RestClientProvider, config.ClientId, TwitchConfig.UserAgent);
         internal override void Dispose(bool disposing)
         {
             if (disposing)
                 ApiClient.Dispose();
         }
 
-        internal override async Task OnLoginAsync(string token)
-        {
-            var user = await ApiClient.GetMyUserAsync(new RequestOptions { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
-            ApiClient.CurrentUserId = user.Id;
-            base.CurrentUser = RestSelfUser.Create(this, user);
-        }
+        //internal override async Task OnLoginAsync(string token)
+        //{
+        //    var models = await ApiClient.GetUsersAsync(null, null, new RequestOptions { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+        //    var user = models.SingleOrDefault();
+        //    ApiClient.CurrentUserId = user.Id;
+        //    base.CurrentUser = RestSelfUser.Create(this, user);
+        //}
+
+        // Broadcasts
+        public IAsyncEnumerable<IReadOnlyCollection<RestBroadcast>> GetBroadcastsAsync(string[] communityIds = null, string[] languages = null, ulong[] userIds = null, string[] userNames = null, BroadcastType? broadcastType = null, int limit = 20, RequestOptions options = null)
+            => ClientHelper.GetBroadcastsAsync(this, communityIds, languages, userIds, userNames, broadcastType, limit, options);
         
-        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(params ulong[] userIds)
-            => GetUsersAsync(userIds, null);
-        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(ulong[] userIds, RequestOptions options = null)
-            => ClientHelper.GetUsersAsync(this, userIds, options);
-        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(params string[] userNames)
-            => GetUsersAsync(userNames, null);
-        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(string[] userNames, RequestOptions options = null)
-            => ClientHelper.GetUsersAsync(this, userNames, options);
+        // Users
+        public Task<IReadOnlyCollection<RestUser>> GetUsersAsync(ulong[] userIds = null, string[] userNames = null, RequestOptions options = null)
+            => ClientHelper.GetUsersAsync(this, userIds, userNames, options);
     }
 }

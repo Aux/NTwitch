@@ -2,7 +2,7 @@
 {
     internal class GetBroadcastsParams
     {
-        public Optional<ulong[]> CommunityIds { get; set; }
+        public Optional<string[]> CommunityIds { get; set; }
         public Optional<string[]> Languages { get; set; }
         public Optional<ulong[]> UserIds { get; set; }
         public Optional<string[]> UserNames { get; set; }
