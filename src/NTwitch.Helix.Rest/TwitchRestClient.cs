@@ -19,13 +19,13 @@ namespace NTwitch.Helix.Rest
                 ApiClient.Dispose();
         }
 
-        //internal override async Task OnLoginAsync(string token)
-        //{
-        //    var models = await ApiClient.GetUsersAsync(null, null, new RequestOptions { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
-        //    var user = models.SingleOrDefault();
-        //    ApiClient.CurrentUserId = user.Id;
-        //    base.CurrentUser = RestSelfUser.Create(this, user);
-        //}
+        internal override async Task OnLoginAsync(string token)
+        {
+            var models = await ApiClient.GetUsersAsync(null, null, new RequestOptions { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+            var user = models.SingleOrDefault();
+            ApiClient.CurrentUserId = user.Id;
+            base.CurrentUser = RestSelfUser.Create(this, user);
+        }
 
         // Clips
         public Task<RestClip> GetClipAsync(string clipId, RequestOptions options = null)
