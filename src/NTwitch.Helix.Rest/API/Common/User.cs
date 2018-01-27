@@ -13,9 +13,9 @@ namespace NTwitch.Helix.API
         [JsonProperty("display_name")]
         public Optional<string> Username { get; set; }
         [JsonProperty("type")]
-        public Optional<string> Type { get; set; }
+        public Optional<UserType> Type { get; set; }
         [JsonProperty("broadcaster_type")]
-        public Optional<string> BroadcasterType { get; set; }
+        public Optional<BroadcasterType> BroadcasterType { get; set; }
         [JsonProperty("description")]
         public Optional<string> Description { get; set; }
         [JsonProperty("profile_image_url")]

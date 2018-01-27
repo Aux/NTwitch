@@ -9,7 +9,7 @@ namespace NTwitch.Helix.Rest
     public class RestUser : RestNamedEntity<ulong>
     {
         public string Username { get; private set; }
-        public string Type { get; private set; }
+        public UserType Type { get; private set; }
         public string BroadcasterType { get; private set; }
         public string Description { get; private set; }
         public string ProfileImageUrl { get; private set; }
