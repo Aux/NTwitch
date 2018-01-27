@@ -9,7 +9,7 @@ namespace NTwitch.Helix.API
 
         // User
         [JsonProperty("login")]
-        public Optional<string> Name { get; set; }
+        public string Name { get; set; }
         [JsonProperty("display_name")]
         public Optional<string> Username { get; set; }
         [JsonProperty("type")]

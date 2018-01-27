@@ -6,9 +6,8 @@ using Model = NTwitch.Helix.API.User;
 
 namespace NTwitch.Helix.Rest
 {
-    public class RestUser : RestEntity<ulong>
+    public class RestUser : RestNamedEntity<ulong>
     {
-        public string Name { get; private set; }
         public string Username { get; private set; }
         public string Type { get; private set; }
         public string BroadcasterType { get; private set; }
@@ -17,18 +16,16 @@ namespace NTwitch.Helix.Rest
         public string OfflineImageUrl { get; private set; }
         public string ViewCount { get; private set; }
 
-        internal RestUser(BaseTwitchClient twitch, ulong id)
-            : base(twitch, id) { }
+        internal RestUser(BaseTwitchClient twitch, ulong id, string name)
+            : base(twitch, id, name) { }
         internal static RestUser Create(BaseTwitchClient twitch, Model model)
         {
-            var entity = new RestUser(twitch, model.Id);
+            var entity = new RestUser(twitch, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }
         internal virtual void Update(Model model)
         {
-            if (model.Name.IsSpecified)
-                Name = model.Name.Value;
             if (model.Username.IsSpecified)
                 Username = model.Username.Value;
             if (model.Type.IsSpecified)
