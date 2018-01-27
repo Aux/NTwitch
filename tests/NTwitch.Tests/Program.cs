@@ -25,7 +25,9 @@ namespace NTwitch.Tests
 
             await _client.LoginAsync(token);
 
-            var user = await _client.GetUsersAsync(userNames: new[] { "auxesistv" });
+            var user = await _client.GetUserAsync("auxesistv");
+            var users = await _client.GetUsersAsync(userNames: new[] { "auxesistv" });
+            
             var broadcasts = await _client.GetBroadcastsAsync(limit: 126, languages: new[] { "en" }).Flatten();
 
             await Task.Delay(-1);

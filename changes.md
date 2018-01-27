@@ -4,6 +4,7 @@
 - Properly implemented the `Optional<T>` class for entity models.
 - Changed entity helper class access to public.
 - Added automatic pagination where possible.
+- Added REST ratelimit handling
 
 #### Breaking Changes: 
 - The `Stream` entity type has been renamed to `Broadcast`, along with all accompanying types.
