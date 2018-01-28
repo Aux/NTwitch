@@ -14,7 +14,7 @@ namespace NTwitch.Rest
         Task<RestChatBadges> GetChatBadgesAsync(RequestOptions options = null);
 
         // Streams
-        Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null);
+        Task<RestBroadcast> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null);
 
         // Teams
         Task<IReadOnlyCollection<RestSimpleTeam>> GetTeamsAsync(RequestOptions options = null);

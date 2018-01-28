@@ -16,8 +16,8 @@ namespace NTwitch.Rest
         Task<RestChannelFollow> GetFollowAsync(ulong channelId, RequestOptions options = null);
 
         // Streams
-        Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null);
-        Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null);
+        Task<RestBroadcast> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null);
+        Task<IReadOnlyCollection<RestBroadcast>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null);
 
         // Subscriptions
         Task<RestChannelSubscription> GetSubscriptionAsync(ulong channelId, RequestOptions options = null);

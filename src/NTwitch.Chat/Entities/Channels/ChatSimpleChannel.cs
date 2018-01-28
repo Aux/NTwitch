@@ -73,7 +73,7 @@ namespace NTwitch.Chat
 
         // Streams
         /// <summary> Get this channel's stream information, if available </summary>
-        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
+        public Task<RestBroadcast> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
             => ClientHelper.GetStreamAsync(Client, Id, type, options);
 
         // Teams

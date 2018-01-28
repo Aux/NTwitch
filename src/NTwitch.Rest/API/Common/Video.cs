@@ -47,9 +47,9 @@ namespace NTwitch.Rest.API
         [JsonProperty("animated_preview_url")]
         public Optional<string> AnimatedPreviewUrl { get; set; }
         [JsonProperty("fps")]
-        public Optional<Dictionary<string, float>> Fps { get; set; }
+        public Optional<IReadOnlyDictionary<string, float>> Fps { get; set; }
         [JsonProperty("resolutions")]
-        public Optional<Dictionary<string, string>> Resolutions { get; set; }
+        public Optional<IReadOnlyDictionary<string, string>> Resolutions { get; set; }
 
         [JsonProperty("preview")]
         public Optional<PreviewImage> Preview { get; set; }

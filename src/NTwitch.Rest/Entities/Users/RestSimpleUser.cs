@@ -53,10 +53,10 @@ namespace NTwitch.Rest
         
         // Streams
         /// <summary> Get this user's stream </summary>
-        public Task<RestStream> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
+        public Task<RestBroadcast> GetStreamAsync(StreamType type = StreamType.Live, RequestOptions options = null)
             => ClientHelper.GetStreamAsync(Client, Id, type);
         /// <summary> Get streams this user is following, requires `user_read` </summary>
-        public Task<IReadOnlyCollection<RestStream>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null)
+        public Task<IReadOnlyCollection<RestBroadcast>> GetFollowedStreamsAsync(StreamType type = StreamType.Live, PageOptions paging = null, RequestOptions options = null)
             => ClientHelper.GetFollowedStreamsAsync(Client, type, paging, options);
 
         // Subscriptions
