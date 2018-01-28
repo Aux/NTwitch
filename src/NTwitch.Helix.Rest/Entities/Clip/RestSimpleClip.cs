@@ -4,7 +4,9 @@ namespace NTwitch.Helix.Rest
 {
     public class RestSimpleClip : RestEntity<string>
     {
+        /// <summary> The url to this clip's page </summary>
         public string Url { get; private set; }
+        /// <summary> The url to this clip's edit page </summary>
         public string EditUrl { get; private set; }
 
         internal RestSimpleClip(BaseTwitchClient twitch, string id)

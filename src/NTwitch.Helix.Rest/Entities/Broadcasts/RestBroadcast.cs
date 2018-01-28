@@ -8,13 +8,21 @@ namespace NTwitch.Helix.Rest
 {
     public class RestBroadcast : RestEntity<ulong>
     {
+        /// <summary> The id of the user associated with this broadcast </summary>
         public ulong UserId { get; private set; }
+        /// <summary> The id of the game being played </summary>
         public ulong? GameId { get; private set; }
+        /// <summary> The ids of communities this broadcast is linked to </summary>
         public IReadOnlyCollection<string> CommunityIds { get; private set; }
-        public string Type { get; private set; }
+        /// <summary> The type of broadcast </summary>
+        public BroadcastType Type { get; private set; }
+        /// <summary> The title of this broadcast </summary>
         public string Title { get; private set; }
+        /// <summary> The current number of viewers watching this broadcast </summary>
         public int ViewerCount { get; private set; }
+        /// <summary> The date and time this broadcast began </summary>
         public DateTime StartedAt { get; private set; }
+        /// <summary> The language spoken in this broadcast </summary>
         public string Language { get; private set; }
         internal string ThumbnailImageUrl { get; private set; }
 
@@ -53,6 +61,7 @@ namespace NTwitch.Helix.Rest
                 ThumbnailImageUrl = model.ThumbnailImageUrl.Value;
         }
 
+        /// <summary> Update this object to the most recent information available </summary>
         public async Task UpdateAsync(RequestOptions options = null)
         {
             var args = new Helix.API.GetBroadcastsParams
@@ -64,19 +73,20 @@ namespace NTwitch.Helix.Rest
             Update(models.Data.SingleOrDefault());
         }
 
+        /// <summary> Get the user associated with this broadcast </summary>
         public async Task<RestUser> GetUserAsync(RequestOptions options = null)
             => (await ClientHelper.GetUsersAsync(Twitch, new[] { UserId }, options: options).ConfigureAwait(false)).SingleOrDefault();
-
+        /// <summary> Get the game being played in this broadcast </summary>
         public async Task<RestGame> GetGameAsync(RequestOptions options = null)
         {
             if (!GameId.HasValue) return null;
             return (await ClientHelper.GetGamesAsync(Twitch, new[] { GameId.Value }, options: options).ConfigureAwait(false)).SingleOrDefault();
         }
-        
+        /// <summary> Create a clip at this moment of the broadcast </summary>
         public Task<RestSimpleClip> CreateClipAsync(RequestOptions options = null)
             => ClientHelper.CreateClipAsync(Twitch, Id, options);
-
-        public string GetThumbnailUrl(int width, int height)
+        /// <summary> Get the url for this broadcast's preview image </summary>
+        public string GetThumbnailImageUrl(int width = 242, int height = 138)
             => ThumbnailImageUrl.Replace("{width}", width.ToString()).Replace("{height}", height.ToString());
     }
 }

@@ -4,13 +4,14 @@ namespace NTwitch.Helix.Rest
 {
     public class RestSelfUser : RestUser
     {
+        /// <summary> The email associated with this user's account </summary>
         public string Email { get; private set; }
 
-        internal RestSelfUser(BaseTwitchClient twitch, ulong id)
-            : base(twitch, id) { }
+        internal RestSelfUser(BaseTwitchClient twitch, ulong id, string name)
+            : base(twitch, id, name) { }
         internal new static RestSelfUser Create(BaseTwitchClient twitch, Model model)
         {
-            var entity = new RestSelfUser(twitch, model.Id);
+            var entity = new RestSelfUser(twitch, model.Id, model.Name);
             entity.Update(model);
             return entity;
         }

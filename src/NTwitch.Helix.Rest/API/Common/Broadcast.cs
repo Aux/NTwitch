@@ -15,7 +15,7 @@ namespace NTwitch.Helix.API
         [JsonProperty("community_ids")]
         public Optional<string[]> CommunityIds { get; set; }
         [JsonProperty("type")]
-        public Optional<string> Type { get; set; }
+        public Optional<BroadcastType> Type { get; set; }
         [JsonProperty("title")]
         public Optional<string> Title { get; set; }
         [JsonProperty("viewer_count")]

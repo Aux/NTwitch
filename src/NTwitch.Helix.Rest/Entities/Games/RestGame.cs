@@ -6,6 +6,7 @@ namespace NTwitch.Helix.Rest
 {
     public class RestGame : RestNamedEntity<ulong>
     {
+        /// <summary> The url to this game's box art image </summary>
         public string BoxArtUrl { get; private set; }
         
         internal RestGame(BaseTwitchClient twitch, ulong id, string name)
@@ -21,6 +22,7 @@ namespace NTwitch.Helix.Rest
             BoxArtUrl = model.BoxArtUrl;
         }
 
+        /// <summary> Update this object to the most recent information available </summary>
         public async Task UpdateAsync(RequestOptions options = null)
         {
             var models = await Twitch.ApiClient.GetGamesAsync(new[] { Id }, null, options: options).ConfigureAwait(false);
