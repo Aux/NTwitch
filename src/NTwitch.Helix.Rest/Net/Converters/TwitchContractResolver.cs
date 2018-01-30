@@ -58,6 +58,8 @@ namespace NTwitch.Helix.Net.Converters
             
             //Entities
             var typeInfo = type.GetTypeInfo();
+            if (typeInfo.IsEnum)
+                return EnumConverter.Instance;
             if (typeInfo.ImplementedInterfaces.Any(x => x == typeof(IEntity<ulong>)))
                 return UInt64EntityConverter.Instance;
             if (typeInfo.ImplementedInterfaces.Any(x => x == typeof(IEntity<string>)))
