@@ -94,7 +94,7 @@ namespace NTwitch.Helix.Rest
             await ApiClient.LogoutAsync().ConfigureAwait(false);
 
             await OnLogoutAsync().ConfigureAwait(false);
-            //CurrentUser = null;
+            CurrentUser = null;
             LoginState = LoginState.LoggedOut;
 
             await _loggedOutEvent.InvokeAsync().ConfigureAwait(false);

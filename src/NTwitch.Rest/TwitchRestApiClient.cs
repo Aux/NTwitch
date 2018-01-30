@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using NTwitch.Queue;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Net;
 
 namespace NTwitch.Rest.API
 {
@@ -213,10 +214,376 @@ namespace NTwitch.Rest.API
             return responseStream;
         }
 
-        //
-        // Entity blah blah goes here
-        //
+        // Authorization
+        public async Task<TokenData> GetTokenAsync(RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<TokenData>("GET", "", options: options).ConfigureAwait(false);
+        }
 
+        // Channels
+        public async Task<Channel> GetMyChannelAsync(RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_read");
+            return await SendAsync<Channel>("GET", () => "channel", options: options).ConfigureAwait(false);
+        }
+        public async Task<Channel> GetChannelAsync(ulong channelId, RequestOptions options = null)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            try
+            {
+                return await SendAsync<Channel>("GET", () => $"channels/{channelId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == (HttpStatusCode)422) { return null; }
+        }
+        public async Task<Channel> ModifyChannelAsync(ulong channelId, ModifyChannelParams args, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+            return await SendJsonAsync<Channel>("PUT", () => $"channels/{channelId}", new { channel = args }, options: options).ConfigureAwait(false);
+        }
+        public async Task<UserData> GetChannelEditorsAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_read");
+            return await SendAsync<UserData>("GET", () => $"channels/{channelId}/editors", options: options).ConfigureAwait(false);
+        }
+        public async Task<FollowData> GetChannelFollowersAsync(ulong channelId, GetChannelFollowersParams args, RequestOptions options = null) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "direction", args.IsAscending.GetValueOrDefault() ? "asc" : "desc" },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+
+            return await SendAsync<FollowData>("GET", () => $"channels/{channelId}/follows{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<VideoData> GetChannelVideosAsync(ulong channelId, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            return await SendAsync<VideoData>("GET", () => $"channels/{channelId}/videos", options: options).ConfigureAwait(false);
+        }
+        public async Task<Community> GetChannelCommunityAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+
+            try
+            {
+                return await SendAsync<Community>("GET", () => $"channels/{channelId}/community", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
+        }
+        public async Task SetChannelCommunityAsync(ulong channelId, string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+
+            try
+            {
+                await SendAsync("PUT", () => $"channels/{channelId}/community/{communityId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { return; }
+        }
+        public async Task RemoveChannelCommunityAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("channel_editor");
+
+            try
+            {
+                await SendAsync("DELETE", () => $"channels/{channelId}/community", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { return; }
+        }
+
+        // Chat
+        public async Task<CheerData> GetCheersAsync(ulong? channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "channel_id", channelId }
+            };
+            
+            return await SendAsync<CheerData>("GET", () => $"bits/actions{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<ChatBadges> GetChatBadgesAsync(ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<ChatBadges>("GET", () => $"chat/{channelId}/badges", options: options).ConfigureAwait(false);
+        }
+        public async Task<EmoteSet> GetEmotesAsync(ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_subscriptions");
+            return await SendAsync<EmoteSet>("GET", () => $"users/{userId}/emotes", options: options).ConfigureAwait(false);
+        }
+
+        // Communities
+        public async Task<Community> GetCommunityAsync(string communityId, bool isName, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            string query = isName ? $"?name={communityId}" : $"/{communityId}";
+
+            try
+            {
+                return await SendAsync<Community>("GET", () => $"communities{query}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
+        }
+        public async Task<CommunityData> GetTopCommunitiesAsync(RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<CommunityData>("GET", () => "communities/top", options: options).ConfigureAwait(false);
+        }
+        public async Task<CommunityPermissions> GetCommunityPermissionsAsync(string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            return await SendAsync<CommunityPermissions>("GET", () => $"communities/{communityId}/permissions", options: options).ConfigureAwait(false);
+        }
+        public async Task SendCommunityReportAsync(string communityId, ulong channelId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            try
+            {
+                await SendAsync("GET", () => $"communities/{communityId}/report_channel?channel_id={channelId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task ModifyCommunityAsync(string communityId, ModifyCommunityParams args, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+            
+            await SendJsonAsync("PUT", () => $"communitites/{communityId}", args, options: options).ConfigureAwait(false);
+        }
+        public async Task SetCommunityAvatarAsync(string communityId, string imageBase64, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendJsonAsync("POST", () => $"communities/{communityId}/images/avatar", new { avatar_image = imageBase64 }, options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task RemoveCommunityAvatarAsync(string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendAsync("DELETE", () => $"communities/{communityId}/images/avatar", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task SetCommunityCoverAsync(string communityId, string imageBase64, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendJsonAsync("POST", () => $"", new { cover_image = imageBase64 }, options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task RemoveCommunityCoverAsync(string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendAsync("DELETE", () => $"communities/{communityId}/images/cover", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task<CommunityData> GetCommunityModeratorsAsync(string communityId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+            return await SendAsync<CommunityData>("GET", () => $"communities/{communityId}/moderators", options: options).ConfigureAwait(false);
+        }
+        public async Task AddCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendAsync("Put", $"communities/{communityId}/moderators/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task RemoveCommunityModeratorAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_edit");
+
+            try
+            {
+                await SendAsync("DELETE", $"communities/{communityId}/moderators/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task<CommunityData> GetCommunityBansAsync(string communityId, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+            return await SendAsync<CommunityData>("GET", () => $"communities/{communityId}/bans", options: options).ConfigureAwait(false);
+        }
+        public async Task AddCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+
+            try
+            {
+                await SendAsync("Put", () => $"communities/{communityId}/bans/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task RemoveCommunityBanAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+
+            try
+            {
+                await SendAsync("DELETE", () => $"communities/{communityId}/bans/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task<CommunityData> GetCommunityTimeoutsAsync(string communityId, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+            return await SendAsync<CommunityData>("GET", () => $"communities/{communityId}/timeouts", options: options).ConfigureAwait(false);
+        }
+        public async Task AddCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+
+            try
+            {
+                await SendAsync("Put", $"communities/{communityId}/timeouts/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+        public async Task RemoveCommunityTimeoutAsync(string communityId, ulong userId, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("communities_moderate");
+
+            try
+            {
+                await SendAsync("DELETE", () => $"communities/{communityId}/timeouts/{userId}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NoContent) { }
+        }
+
+        // Ingests
+        public async Task<IngestData> GetIngestsAsync(RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+            return await SendAsync<IngestData>("GET", () => "ingests", options: options).ConfigureAwait(false);
+        }
+
+        // Broadcasts
+        public async Task<BroadcastData> GetBroadcastAsync(ulong channelId, BroadcastType type, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            string query = type == default(BroadcastType) ? $"?stream_type={type.ToString().ToLower()}" : "";
+
+            try
+            {
+                return await SendAsync<BroadcastData>("GET", () => $"streams/{channelId}{query}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
+        }
+        public async Task<BroadcastData> GetBroadcastsAsync(GetBroadcastsParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "channel", args.ChannelIds.IsSpecified ? string.Join(",", args.ChannelIds.Value) : null },
+                { "game", args.Game.GetValueOrDefault() },
+                { "language", args.Language.GetValueOrDefault() },
+                { "type", args.Type.GetValueOrDefault() },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+            
+            return await SendAsync<BroadcastData>("GET", () => $"stream{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<BroadcastData> GetFeaturedBroadcastsAsync(GetFeaturedBroadcastsParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+            
+            return await SendAsync<BroadcastData>("GET", () => $"streams/featured{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<BroadcastData> GetFollowedBroadcastsAsync(GetFollowedBroadcastsParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AddRequiredScopes("user_read");
+
+            var query = new Dictionary<string, object>
+            {
+                { "type", args.Type.GetValueOrDefault() },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+
+            return await SendAsync<BroadcastData>("GET", () => $"streams/followed{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<Broadcast> GetBroadcastSummaryAsync(string game, RequestOptions options)
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            string query = string.IsNullOrWhiteSpace(game) ? "" : $"?game={game}";
+
+            try
+            {
+                return await SendAsync<Broadcast>("GET", () => $"streams/summary{query}", options: options).ConfigureAwait(false);
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
+        }
+        
         //Helpers
         protected void CheckState(bool validateClientId = false)
         {
@@ -263,6 +630,21 @@ namespace NTwitch.Rest.API
                 throw new InvalidOperationException("Unsupported expression");
 
             return (expr as MemberExpression).Member.Name;
+        }
+        private static string GetQueryParameters(Dictionary<string, object> args)
+        {
+            var builder = new StringBuilder();
+            foreach (var arg in args)
+            {
+                if (builder.Length == 0)
+                    builder.Append("?");
+                else
+                    builder.Append("&");
+
+                if (arg.Value != null)
+                    builder.Append($"{arg.Key}={arg.Value}");
+            }
+            return builder.ToString();
         }
     }
 }

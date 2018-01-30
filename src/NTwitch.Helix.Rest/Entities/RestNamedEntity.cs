@@ -13,5 +13,8 @@ namespace NTwitch.Helix.Rest
         {
             Name = name;
         }
+
+        public override string ToString()
+            => Name;
     }
 }
