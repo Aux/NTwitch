@@ -25,8 +25,10 @@ namespace NTwitch.Tests
 
             await _client.LoginAsync(token);
 
-            var user = await _client.GetUserAsync("auxesistv");
-            var users = await _client.GetUsersAsync(userNames: new[] { "auxesistv" });
+            var clip = await _client.GetClipAsync("ThisIdDoesNotExist");
+
+            var user = await _client.GetUserAsync("Not a valid user");
+            var users = await _client.GetUsersAsync(userNames: new[] { "Not a valid user" });
             
             var broadcasts = await _client.GetBroadcastsAsync(limit: 126, languages: new[] { "en" }).Flatten();
 

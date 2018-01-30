@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -225,8 +226,12 @@ namespace NTwitch.Helix.Rest.API
         {
             options = RequestOptions.CreateOrClone(options);
 
-            var response = await SendAsync<Clip>("GET", () => $"clips?id={clipId}", options: options).ConfigureAwait(false);
-            return response.Data.SingleOrDefault();
+            try
+            {
+                var response = await SendAsync<Clip>("GET", () => $"clips?id={clipId}", options: options).ConfigureAwait(false);
+                return response.Data.SingleOrDefault();
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
         }
 
         // Games

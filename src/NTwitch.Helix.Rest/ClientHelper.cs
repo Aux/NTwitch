@@ -18,7 +18,9 @@ namespace NTwitch.Helix.Rest
         public static async Task<RestClip> GetClipAsync(BaseTwitchClient client, string clipId, RequestOptions options = null)
         {
             var model = await client.ApiClient.GetClipAsync(clipId, options).ConfigureAwait(false);
-            return RestClip.Create(client, model);
+            if (model != null)
+                return RestClip.Create(client, model);
+            return null;
         }
 
         // Games

@@ -19,8 +19,9 @@ namespace NTwitch.Helix.Rest
                 ApiClient.Dispose();
         }
 
-        internal override async Task OnLoginAsync(string token)
+        internal override async Task OnLoginAsync(string token, bool validateToken)
         {
+            if (!validateToken) return;
             var models = await ApiClient.GetUsersAsync(null, null, new RequestOptions { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
             var user = models.SingleOrDefault();
             ApiClient.CurrentUserId = user.Id;

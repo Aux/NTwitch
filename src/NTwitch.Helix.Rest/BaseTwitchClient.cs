@@ -62,7 +62,7 @@ namespace NTwitch.Helix.Rest
             try
             {
                 await ApiClient.LoginAsync(token).ConfigureAwait(false);
-                await OnLoginAsync(token).ConfigureAwait(false);
+                await OnLoginAsync(token, validateToken).ConfigureAwait(false);
                 LoginState = LoginState.LoggedIn;
             }
             catch (Exception)
@@ -73,7 +73,7 @@ namespace NTwitch.Helix.Rest
 
             await _loggedInEvent.InvokeAsync().ConfigureAwait(false);
         }
-        internal virtual Task OnLoginAsync(string token)
+        internal virtual Task OnLoginAsync(string token, bool validateToken)
             => Task.Delay(0);
 
         /// <inheritdoc />
