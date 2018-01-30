@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="../../NTwitch.targets" />
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <AssemblyName>NTwitch.Helix.Core</AssemblyName>
     <RootNamespace>NTwitch.Helix</RootNamespace>
+    <Description>The core components for the NTwitch library's Helix implementation.</Description>
+    <TargetFrameworks>net45;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
     <PackageReference Include="System.Interactive.Async" Version="3.1.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="../../NTwitch.targets" />
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <AssemblyName>NTwitch.Helix.Rest</AssemblyName>
+    <Description>A core NTwitch library containing the REST client and models for interaction with the Helix api.</Description>
+    <TargetFrameworks>net45;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
   </ItemGroup>
-
 </Project>
