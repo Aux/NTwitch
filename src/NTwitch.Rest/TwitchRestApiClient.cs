@@ -583,6 +583,58 @@ namespace NTwitch.Rest.API
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.NotFound) { return null; }
         }
+
+        // Search
+        public async Task<ChannelData> FindChannelsAsync(FindChannelsParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "query", args.Query.GetValueOrDefault() },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+            
+            return await SendAsync<ChannelData>("GET", () => $"search/channels{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<GameData> FindGamesAsync(FindGamesParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "query", args.Query.GetValueOrDefault() },
+                { "live", args.IsLive.GetValueOrDefault() },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+           
+            return await SendAsync<GameData>("GET", () => $"search/games{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+        public async Task<BroadcastData> FindBroadcastsAsync(FindBroadcastsParams args, RequestOptions options) // Supports Paging
+        {
+            options = RequestOptions.CreateOrClone(options);
+            options.AllowUnauthenticated = true;
+
+            var query = new Dictionary<string, object>
+            {
+                { "query", args.Query.GetValueOrDefault() },
+                { "hls", args.IsHLS.GetValueOrDefault() },
+                { "limit", args.Limit.GetValueOrDefault() },
+                { "offset", args.Offset.GetValueOrDefault() }
+            };
+
+            return await SendAsync<BroadcastData>("GET", () => $"search/streams{GetQueryParameters(query)}", options: options).ConfigureAwait(false);
+        }
+
+        // Subscribers
+        // Teams
+        // Users
+        // Videos
+        // Clips
         
         //Helpers
         protected void CheckState(bool validateClientId = false)
