@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../NTwitch.targets" />
+  <PropertyGroup>
+    <AssemblyName>NTwitch.Helix.Webhook</AssemblyName>
+    <Description>A core NTwitch library containing the Webhook client and models</Description>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NTwitch.Core\NTwitch.Core.csproj" />
+    <ProjectReference Include="..\..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
+    <ProjectReference Include="..\..\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj" />
+    <ProjectReference Include="..\NTwitch.Core\NTwitch.Core.csproj" />
+    <ProjectReference Include="..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
+    <ProjectReference Include="..\NTwitch.Helix.Rest\NTwitch.Helix.Rest.csproj" />
+  </ItemGroup>
+</Project>

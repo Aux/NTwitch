@@ -3,9 +3,14 @@
   <PropertyGroup>
     <AssemblyName>NTwitch.Helix.Rest</AssemblyName>
     <Description>A core NTwitch library containing the REST client and models for interaction with the Helix api.</Description>
-    <TargetFrameworks>net45;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NTwitch.Helix.Core\NTwitch.Helix.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Net.Http.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
