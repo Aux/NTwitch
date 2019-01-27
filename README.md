@@ -1,3 +1,5 @@
+This repository is now depreciated, for an updated library see https://github.com/Akitaux/Twitch
+
 # NTwitch
 [![NuGet](https://img.shields.io/nuget/v/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) [![NuGet Pre Release](https://img.shields.io/nuget/vpre/NTwitch.svg)](https://www.nuget.org/packages/NTwitch) [![MyGet Pre Release](https://img.shields.io/myget/aux/vpre/NTwitch.svg)](https://www.myget.org/feed/Packages/aux) [![Discord](https://discordapp.com/api/guilds/257698577894080512/widget.png)](https://discord.gg/yd8x2wM)
 
